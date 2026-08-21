@@ -113,9 +113,17 @@
 
 ## 0.6 – Character Forge Runtime
 
-- [ ] A4 Ops Deck als normalen Hauptworkflow implementieren
-- [ ] A3 Cinematic Forge als Charakter-/Entwicklungsansicht implementieren
+- [ ] **Nächste Iteration – Presentation-Schnitt festlegen:** Zustandsprojektion, UI-Aktionen und Textschlüssel zwischen Runtime-Kern und gemeinsamer A4/A3-Komponentenschicht spezifizieren
+- [ ] **Abnahme der nächsten Iteration:** dokumentierter Datenvertrag deckt Overview, Skills, Traits, Spezialisierung und Biografie ab, ohne UI-Direktzugriff auf Domain-Zustand
+- [ ] A4 Ops Deck als normalen Hauptworkflow auf der gemeinsamen Presentation-Schicht implementieren
+- [ ] A3 Cinematic Forge als Charakter-/Entwicklungsansicht aus denselben Komponenten implementieren
 - [ ] editierbare Namen, Alias, zusätzliche Spitznamen und Motto anbinden
 - [ ] Skillnetz, Traits, Spezialisierung und dynamische Biografie darstellen
 - [ ] Level-/Skill-/Trait-Up-Feedback und Reduced-Motion-Fallbacks anbinden
 - [ ] Ranking-/Network-Ansicht vorbereiten, aber Sync weiterhin getrennt halten
+
+### Bewusst nicht Teil der nächsten Iteration
+
+- kein grafisches Framework und keine neue Abhängigkeit auswählen
+- keine Domain-, Persistence- oder Sync-Logik ändern
+- keine A3-/A4-Parallelimplementierungen beginnen, bevor der gemeinsame Presentation-Vertrag abgenommen ist
