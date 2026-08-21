@@ -2,26 +2,17 @@ name: Runtime Core
 
 on:
   pull_request:
-    paths:
-      - 'src/**'
-      - 'tests/runtime/**'
-      - 'manifests/RUNTIME_MANIFEST.json'
-      - 'manifests/TRAIT_ENGINE_MANIFEST.json'
-      - 'manifests/JOURNAL_MANIFEST.json'
-      - 'manifests/PROGRESSION_MANIFEST.json'
-      - 'schemas/character_state.schema.json'
-      - '.github/workflows/runtime-core.yml'
   push:
     branches: [main]
-    paths:
-      - 'src/**'
-      - 'tests/runtime/**'
-      - 'manifests/RUNTIME_MANIFEST.json'
-      - 'manifests/TRAIT_ENGINE_MANIFEST.json'
-      - 'manifests/JOURNAL_MANIFEST.json'
-      - 'manifests/PROGRESSION_MANIFEST.json'
-      - 'schemas/character_state.schema.json'
-      - '.github/workflows/runtime-core.yml'
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-core-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   runtime-core:
