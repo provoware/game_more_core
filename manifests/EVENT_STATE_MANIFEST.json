@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "version": "0.8.1-alpha.1",
+  "state_block": "event",
+  "domain_type": "EventState",
+  "goal": "kanonischer journalfaehiger Eventzustand als Grundlage fuer 0.8.2 Economy und 0.8.3 Event-Loop",
+  "fields": {
+    "event_id": {
+      "type": "string",
+      "required": true,
+      "immutable": true
+    },
+    "display_name": {
+      "type": "string",
+      "required": true
+    },
+    "location": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "fields": [
+        "location_id",
+        "display_name",
+        "region",
+        "access_status"
+      ],
+      "access_statuses": [
+        "unverified",
+        "authorized",
+        "public",
+        "fictionalized"
+      ]
+    },
+    "budget_cents": {
+      "type": "integer",
+      "minimum": 0,
+      "purpose": "Event-Budgetrahmen; kein Economy-Ledger"
+    },
+    "acts": {
+      "type": "array",
+      "unique_by": "act_id",
+      "item_fields": [
+        "act_id",
+        "display_name",
+        "status"
+      ],
+      "statuses": [
+        "planned",
+        "confirmed",
+        "cancelled"
+      ]
+    },
+    "crew": {
+      "type": "array",
+      "unique_by": "character_id",
+      "item_fields": [
+        "character_id",
+        "role",
+        "status"
+      ],
+      "statuses": [
+        "assigned",
+        "confirmed",
+        "unavailable"
+      ]
+    },
+    "equipment": {
+      "type": "array",
+      "unique_by": "equipment_id",
+      "item_fields": [
+        "equipment_id",
+        "label",
+        "quantity",
+        "status"
+      ],
+      "statuses": [
+        "required",
+        "reserved",
+        "ready",
+        "missing"
+      ],
+      "purpose": "Event-Anforderung/Readiness; Besitz und Markt folgen in 0.8.2"
+    },
+    "time_window": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "fields": [
+        "start_local",
+        "end_local",
+        "timezone"
+      ],
+      "rules": [
+        "ISO-8601 mit UTC-Offset",
+        "end_local > start_local"
+      ]
+    },
+    "safety_status": {
+      "type": "string",
+      "values": [
+        "unreviewed",
+        "cleared",
+        "restricted",
+        "blocked"
+      ]
+    },
+    "phase": {
+      "type": "string",
+      "values": [
+        "draft",
+        "planning",
+        "procurement",
+        "transport",
+        "setup",
+        "soundcheck",
+        "live",
+        "crisis",
+        "teardown",
+        "settlement",
+        "completed",
+        "cancelled"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0,
+      "increment_per_mutation": 1
+    }
+  },
+  "phase_transitions": {
+    "draft": [
+      "planning",
+      "cancelled"
+    ],
+    "planning": [
+      "procurement",
+      "cancelled"
+    ],
+    "procurement": [
+      "planning",
+      "transport",
+      "cancelled"
+    ],
+    "transport": [
+      "setup",
+      "cancelled"
+    ],
+    "setup": [
+      "soundcheck",
+      "crisis",
+      "cancelled"
+    ],
+    "soundcheck": [
+      "live",
+      "crisis",
+      "cancelled"
+    ],
+    "live": [
+      "crisis",
+      "teardown"
+    ],
+    "crisis": [
+      "live",
+      "teardown",
+      "cancelled"
+    ],
+    "teardown": [
+      "settlement"
+    ],
+    "settlement": [
+      "completed"
+    ],
+    "completed": [],
+    "cancelled": []
+  },
+  "physical_phase_gate": {
+    "phases": [
+      "transport",
+      "setup",
+      "soundcheck",
+      "live",
+      "crisis",
+      "teardown",
+      "settlement"
+    ],
+    "requires": [
+      "location != null",
+      "location.access_status != unverified",
+      "time_window != null",
+      "safety_status == cleared"
+    ]
+  },
+  "journal_events": {
+    "create": "event.created",
+    "planning_update": "event.planning_updated",
+    "phase_change": "event.phase_changed",
+    "legacy_reserved": [
+      "event.started",
+      "event.incident_resolved",
+      "event.completed"
+    ]
+  },
+  "idempotency": {
+    "event_id_format": "<command_id>:event",
+    "transaction_id_format": "tx:<command_id>",
+    "stale_revision_rejected": true
+  },
+  "persistence": {
+    "preserve_unrelated_state_blocks": true,
+    "combined_replay": "bunkerfrequenz.application.game_recovery.replay_game_event"
+  },
+  "out_of_scope_0_8_1": [
+    "Marktpreise",
+    "Kaufen/Verkaufen/Verbrauchen",
+    "Inventarbesitz",
+    "Event-Abrechnung",
+    "Ruf- und Character-Folgen des kompletten Events"
+  ]
+}
