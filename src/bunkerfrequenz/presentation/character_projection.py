@@ -30,6 +30,11 @@ TRAIT_FAMILIES = frozenset(
         "opportunist",
     }
 )
+CAPABILITY_KEYS = (
+    "can_edit_profile",
+    "can_undo_profile",
+    "can_execute_action",
+)
 
 
 def _skill_projection(skill_name: str, value: int, xp: int) -> dict[str, Any]:
@@ -131,10 +136,16 @@ def _top_skill(entry: Mapping[str, Any]) -> dict[str, Any]:
     return {key: entry[key] for key in ("skill_id", "label_key", "value", "xp", "trend")}
 
 
+def _capability_projection(capabilities: Mapping[str, Any] | None) -> dict[str, bool]:
+    values = capabilities or {}
+    return {key: bool(values.get(key, False)) for key in CAPABILITY_KEYS}
+
+
 def build_character_projection(
     character: CharacterState,
     journal_records: Sequence[Mapping[str, Any]],
     text_catalog: Mapping[str, str],
+    capabilities: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build a detached, deterministic, text-key-only character projection."""
     character.validate()
@@ -173,11 +184,7 @@ def build_character_projection(
         "traits": traits,
         "specialization": specialization,
         "biography": build_biography_projection(character.character_id, journal_records),
-        "capabilities": {
-            "can_edit_profile": False,
-            "can_undo_profile": False,
-            "can_execute_action": False,
-        },
+        "capabilities": _capability_projection(capabilities),
         "feedback": [],
     }
     _require_catalog_keys(projection, text_catalog)
