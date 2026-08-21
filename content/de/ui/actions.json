@@ -19,5 +19,5 @@
   "action.teardown_event.label": "Event abbauen",
   "action.create_decor.label": "Dekoration bauen",
   "action.program_music.label": "Musik programmieren",
-  "ui.action.resources.not_defined": "Energie- und Stresswirkung ist noch nicht festgelegt."
+  "ui.action.resources.defined": "Energie- und Stresswirkung ist für diese Aktion festgelegt."
 }
