@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://provoware.de/schemas/bunkerfrequenz/event_state.schema.json",
+  "title": "BUNKERFREQUENZ EventState",
+  "type": "object",
+  "required": [
+    "event_id",
+    "display_name",
+    "location",
+    "budget_cents",
+    "acts",
+    "crew",
+    "equipment",
+    "time_window",
+    "safety_status",
+    "phase",
+    "revision"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "location": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "location_id",
+        "display_name",
+        "region",
+        "access_status"
+      ],
+      "properties": {
+        "location_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "region": {
+          "type": "string",
+          "minLength": 1
+        },
+        "access_status": {
+          "enum": [
+            "unverified",
+            "authorized",
+            "public",
+            "fictionalized"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "budget_cents": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "acts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "act_id",
+          "display_name",
+          "status"
+        ],
+        "properties": {
+          "act_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "display_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "planned",
+              "confirmed",
+              "cancelled"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "crew": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "character_id",
+          "role",
+          "status"
+        ],
+        "properties": {
+          "character_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "assigned",
+              "confirmed",
+              "unavailable"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "equipment_id",
+          "label",
+          "quantity",
+          "status"
+        ],
+        "properties": {
+          "equipment_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "enum": [
+              "required",
+              "reserved",
+              "ready",
+              "missing"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "time_window": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "start_local",
+        "end_local",
+        "timezone"
+      ],
+      "properties": {
+        "start_local": {
+          "type": "string",
+          "minLength": 1
+        },
+        "end_local": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timezone": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "safety_status": {
+      "enum": [
+        "unreviewed",
+        "cleared",
+        "restricted",
+        "blocked"
+      ]
+    },
+    "phase": {
+      "enum": [
+        "draft",
+        "planning",
+        "procurement",
+        "transport",
+        "setup",
+        "soundcheck",
+        "live",
+        "crisis",
+        "teardown",
+        "settlement",
+        "completed",
+        "cancelled"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}
