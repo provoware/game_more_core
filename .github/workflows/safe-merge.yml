@@ -96,6 +96,6 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           ACTOR: ${{ github.actor }}
         run: |
-          python3 tools/github_merge_guard.py merge-pr \
+          PYTHONPATH=. python3 tools/github_merge_guard_retry.py merge-pr \
             --pr "$PR_NUMBER" \
             --actor "$ACTOR"
