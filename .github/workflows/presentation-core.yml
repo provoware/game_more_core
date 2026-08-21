@@ -5,6 +5,7 @@ on:
     paths:
       - 'src/bunkerfrequenz/presentation/**'
       - 'src/bunkerfrequenz/application/presentation_capabilities.py'
+      - 'src/bunkerfrequenz/application/presentation_events.py'
       - 'src/bunkerfrequenz/application/command_dispatcher.py'
       - 'tests/presentation/**'
       - 'content/de/ui/**'
@@ -15,6 +16,7 @@ on:
     paths:
       - 'src/bunkerfrequenz/presentation/**'
       - 'src/bunkerfrequenz/application/presentation_capabilities.py'
+      - 'src/bunkerfrequenz/application/presentation_events.py'
       - 'src/bunkerfrequenz/application/command_dispatcher.py'
       - 'tests/presentation/**'
       - 'content/de/ui/**'
@@ -47,6 +49,7 @@ jobs:
           PYTHONPATH=src python3 -m compileall -q \
             src/bunkerfrequenz/presentation \
             src/bunkerfrequenz/application/presentation_capabilities.py \
+            src/bunkerfrequenz/application/presentation_events.py \
             src/bunkerfrequenz/application/command_dispatcher.py
       - name: Presentation tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v

@@ -2,22 +2,29 @@
 
 ## Status
 
-Die 0.6-Foundation besitzt:
+Die gemeinsame 0.6-Foundation besitzt jetzt:
 
 - eine schreibgeschützte Character-Projektion,
 - eine getrennte Biografieprojektion aus validierten Journal-Ereignissen,
 - deutsche Skill-/Trait-/Effekt-/Konsequenz-/Spezialisierungs-/Stufenkataloge,
-- gezielte Presentation-Tests und einen eigenen Remote-CI-Gate.
+- bestätigte Application-Capabilities und einen zentralen Schreibcommand-Dispatcher aus 0.6.1,
+- einen unveränderlichen, rein lokalen Presentation-State,
+- bestätigtes deterministisches Progressionsfeedback,
+- gezielte Runtime-/Presentation-Tests und getrennte Remote-CI-Gates.
 
-0.6.1 ergänzt darauf genau eine Application-Grenze für Capabilities und Schreibbefehle. Lokaler Presentation-State, bestätigtes Progressionsfeedback, A4 Ops Deck und A3 Cinematic Forge bleiben gemäß `TODO.md` getrennte Folgeiterationen.
+A4 Ops Deck und A3 Cinematic Forge bleiben gemäß `TODO.md` getrennte Folgeiterationen. 0.6.2 führt ausdrücklich noch kein grafisches UI-Framework ein.
 
 ## Zweck
 
 Presentation ist die Schicht zwischen Spielkern und sichtbarer Oberfläche:
 
 ```text
-Spielkern → schreibgeschützte Projection → A4 oder A3
-Spielkern ← Application-Command         ← Klick oder Tastatur
+Spielkern → Application-Leseabfragen → schreibgeschützte Projection → A4 oder A3
+Spielkern ← Application-Command                                ← Klick oder Tastatur
+                         │
+                         └─ bestätigte Event-IDs → Feedback-Projektion
+
+Lokale Ansicht/Filter/Feedback-Ausblendung bleiben ausschließlich im Presentation-State.
 ```
 
 Eine Projection bereitet Daten nur zur Anzeige auf. Ein Command ist ein klar benannter Auftrag an die Application-Schicht. Die UI verändert niemals selbst `CharacterState`, Journal oder Save-Dateien.
@@ -30,16 +37,18 @@ Eine Projection bereitet Daten nur zur Anzeige auf. Ein Command ist ein klar ben
 4. Profiländerungen gehen ausschließlich an `CharacterProfileService.update()`; Undo an `undo_last_profile_update()`.
 5. Spielaktionen gehen ausschließlich an `CharacterActionService.execute()`.
 6. Biografie entsteht nur aus validierten Journal-Ereignissen.
-7. Feedback/Animation reagiert erst auf bestätigte Domain-Ereignisse und blockiert keine Bedienung.
+7. Feedback reagiert nur auf bestätigte, katalogisierte Domain-/Journal-Ereignisse und blockiert keine Bedienung.
 8. Ranking und Sync werden erst angebunden, wenn bestätigte Datenquellen existieren.
-9. Presentation liest keine Persistence-Interna, um Berechtigungen zu erraten; Capabilities werden von Application geliefert.
+9. Presentation liest keine Persistence-Interna; Capabilities und bestätigte Eventrecords werden über Application-Leseabfragen geliefert.
 10. Für dieselbe Projektion existiert genau eine kanonische Implementierung.
 11. Der Command-Dispatcher verändert keine Domain-Regeln und schreibt niemals direkt in Persistenzdateien.
 12. Application liefert nach Schreibaktionen bestätigten Character-State; erst Presentation erzeugt daraus die Anzeigeprojektion.
+13. `view.select`, `biography.filter` und `feedback.dismiss` sind lokale Presentation-Transitionen und erzeugen weder Save- noch Journal-Einträge.
+14. Reduced Motion verändert nur die Darstellungsform, niemals Inhalt, Reihenfolge oder Gameplay-Zustand.
 
 ## Datenvertrag der Character-Projektion
 
-`build_character_projection(character, journal_records, text_catalog, capabilities=None)` liefert ein neues Dictionary. Listen und Capabilities sind vom Eingabeobjekt getrennte Kopien; optionale Werte sind `null` oder leere Listen.
+`build_character_projection(character, journal_records, text_catalog, capabilities=None, feedback=None)` liefert ein neues Dictionary. Listen, Capabilities und Feedback sind vom Eingabeobjekt getrennte Kopien; optionale Werte sind `null` oder leere Listen.
 
 | Block | Pflichtfelder | Regel |
 |---|---|---|
@@ -51,15 +60,15 @@ Eine Projection bereitet Daten nur zur Anzeige auf. Ein Command ist ein klar ben
 | `specialization` | `specialization_id`, `label_key`, `stage`, `stage_label_key` oder `null` | aus Domain-State, sichtbarer Name aus Content. |
 | `biography` | `entry_id`, `event_id`, `category`, `title_key`, `body_key`, `placeholders`, `sequence` | nur validierte Biografie-Journalereignisse, sortiert nach Sequenz/Event-ID. |
 | `capabilities` | `can_edit_profile`, `can_undo_profile`, `can_execute_action` | ohne bestätigte Application-Werte sicher `false`; fremde Capability-Felder werden nicht projiziert. |
-| `feedback` | `feedback_id`, `kind`, `title_key`, `detail_keys`, `reduced_motion` | bis 0.6.2 leer; danach nur aus bestätigten Events. |
+| `feedback` | `feedback_id`, `source_event_id`, `kind`, `title_key`, `subject_label_key`, `detail_keys`, `reduced_motion` | ausschließlich bereits bestätigtes Presentation-Feedback; detached kopiert. |
 
-### Textschlüssel
+Alle von Projection oder Feedback ausgegebenen Textschlüssel müssen im übergebenen Textkatalog existieren. Fehlende Schlüssel sind ein Entwicklungsfehler und werden nicht durch sichtbare Texte im Code kaschiert.
 
-Skill-, Trait-, Effekt-, Konsequenz-, Spezialisierungs- und Stufenschlüssel müssen im übergebenen Katalog existieren. Fehlende Schlüssel sind ein Entwicklungsfehler und werden nicht durch sichtbare Texte im Code kaschiert.
-
-### Biografie
+## Biografie
 
 Die Character-Projektion verwendet `build_biography_projection(...)` als einzige zuständige Biografieaufbereitung. Eine zweite Biografie-Implementierung innerhalb der Character-Projektion ist nicht zulässig.
+
+Die erlaubten Biografie-Kategorien stammen aus `manifests/BIOGRAFIE_MANIFEST.json`. Der lokale Filter erhält diesen Katalog als Eingabe; `state.py` führt bewusst keine zweite handgepflegte Kategorienliste.
 
 ## 0.6.1 – Application-Capabilities
 
@@ -86,32 +95,102 @@ Ein einziger Application-Dispatcher akzeptiert nur:
 | `profile.undo_last` | `character_id`, `command_id`, `event_id`, `transaction_id` | `undo_last_profile_update()` |
 | `action.execute` | `character_id`, `command_id`, `action_id`, `action_instance_id`, optionale fachliche Auswahl | `CharacterActionService.execute()` |
 
-Der Dispatcher:
+Der Dispatcher prüft Zuordnung/IDs, erlaubt nur die katalogisierten Profilfelder, gibt keine UI-gesteuerten Balanceparameter frei und liefert bestätigten `CharacterState`, Commit-Event-IDs sowie Idempotenzstatus zurück. UI-Feedback wird nicht im Dispatcher erzeugt.
 
-- prüft Character-Zuordnung und notwendige IDs,
-- erlaubt beim Profil nur `display_name`, `alias`, `additional_nicknames`, `motto`,
-- gibt keine UI-gesteuerten Balanceparameter wie `base_xp` frei,
-- übernimmt bei Profilbefehlen Event-/Transaction-IDs unverändert,
-- übernimmt bei Spielaktionen `action_instance_id` unverändert; Journal-/Transaction-IDs bleiben wie bisher deterministisch aus dieser ID abgeleitet,
-- ersetzt im vertrauenswürdigen `JournalContext` ausschließlich `command_id` durch die bestätigte UI-Command-ID,
-- liefert einen bestätigten `CharacterState`, Commit-Event-IDs und den Idempotenzstatus zurück,
-- erzeugt noch kein UI-Feedback; das folgt separat in 0.6.2.
+## 0.6.2 – Lokaler Presentation-State
 
-Wiederholte identische Profilupdates und Spielaktionen werden über die vorhandene Persistenz-/Action-Idempotenz nicht doppelt geschrieben. Ein wiederholtes identisches Undo wird anhand seines bereits bestätigten Kompensationsereignisses ebenfalls als idempotenter Replay behandelt.
+`PresentationState` ist eine unveränderliche (`frozen`) lokale Datenstruktur mit:
 
-## Geplante lokale UI-Commands ab 0.6.2
+- `selected_view`: `overview`, `skills_traits` oder `biography`,
+- `biography_filter`: `all` oder eine aus dem Biografie-Manifest übergebene Kategorie,
+- `dismissed_feedback_ids`: lokale Menge ausgeblendeter Feedbackkarten,
+- `reduced_motion`: rein darstellungsbezogene Option.
 
-| Command | Eingabe | Ziel |
+Lokale Transitionen:
+
+| Funktion | Command-Bedeutung | Persistenzwirkung |
 |---|---|---|
-| `view.select` | `overview`, `skills_traits` oder `biography` | lokaler Presentation-State |
-| `biography.filter` | Kategorie oder `all` | lokaler Presentation-State |
-| `feedback.dismiss` | `feedback_id` | lokaler Presentation-State |
+| `select_view(...)` | `view.select` | keine |
+| `filter_biography(...)` | `biography.filter` | keine |
+| `dismiss_feedback(...)` | `feedback.dismiss` | keine |
+| `visible_feedback(...)` | lokale Anzeigeabfrage | keine |
 
-Diese lokalen Commands dürfen weder Domain-State noch Journal verändern.
+Ungültige lokale IDs erzeugen `PresentationStateError` mit maschinenlesbarem `code`, `field` und `value`.
 
-## Gemeinsame Komponenten
+## 0.6.2 – Bestätigte Eventabfrage
 
-A3 und A4 verwenden später dieselben acht Komponenten:
+Presentation liest das Journal nicht direkt. `get_confirmed_events(event_ids, persistence)` in der Application-Schicht liefert detached Kopien genau der bereits bestätigten Event-IDs in der angeforderten Reihenfolge.
+
+Regeln:
+
+- leere Bestätigung → leeres Ergebnis,
+- leere oder doppelte angeforderte IDs → Validierungsfehler,
+- eine als bestätigt bezeichnete, aber im Journal fehlende ID → `PersistenceError`,
+- zurückgegebene Records sind Kopien und können das Journal nicht verändern.
+
+## 0.6.2 – Progressionsfeedback
+
+`build_confirmed_feedback(...)` verarbeitet nur Ereignisse, die **beide** Bedingungen erfüllen:
+
+1. ihre `event_id` steht in den bestätigten IDs,
+2. ihr `event_type` steht im übergebenen Katalog aus `JOURNAL_MANIFEST.json`.
+
+Unterstützte Feedbacktypen:
+
+| Journal-Ereignis | Feedback-Art |
+|---|---|
+| `character.level_up` | `level_up` |
+| `character.skill_level_up` | `skill_level_up` |
+| `character.trait_unlocked` | `trait_unlocked` |
+| `character.trait_tier_up` | `trait_tier_up` |
+| `character.specialization_changed` | `specialization_changed` |
+| `character.resonance_rank_up` | `resonance_rank_up` |
+
+Unbekannte, nicht bestätigte oder unvollständige Ereignisse erzeugen keine Karte. Sie lösen insbesondere kein frei erfundenes Feedback aus.
+
+### Feedback-ID
+
+```text
+feedback_id = "feedback:" + SHA256(event_id)
+```
+
+Damit ist dieselbe bestätigte Domain-Aktion auf Wiederholung eindeutig erkennbar und lokal ausblendbar.
+
+### Texte
+
+Sichtbare Feedbacktexte liegen ausschließlich in `content/de/ui/feedback.json`. Die Projektion transportiert nur Textschlüssel und Platzhalter.
+
+Skill-, Trait- und Spezialisierungsfeedback kann zusätzlich einen `subject_label_key` auf die bereits vorhandenen katalogisierten Namen verweisen.
+
+### Reduced Motion
+
+`reduced_motion=true` ändert ausschließlich das Darstellungsflag der Feedbackkarte. `feedback_id`, Textschlüssel, Platzhalter, Reihenfolge und fachliche Bedeutung bleiben identisch. Eine spätere Oberfläche zeigt dann eine statische Karte statt bewegter Level-/Skill-Up-Inszenierung.
+
+## Bestätigter Datenfluss 0.6.2
+
+```text
+UI-Command
+   ↓
+Command-Dispatcher
+   ↓
+bestehender Application-Service
+   ↓
+Persistence Commit
+   ↓
+CommandResult.committed_event_ids
+   ↓
+get_confirmed_events(...)
+   ↓
+build_confirmed_feedback(...)
+   ↓
+build_character_projection(..., feedback=...)
+```
+
+Bei idempotenter Wiederholung einer bereits bestätigten Action liefert der Dispatcher keine neuen `committed_event_ids`; dadurch entsteht kein zweites Feedback für denselben Commit.
+
+## Gemeinsame Komponenten ab 0.6.3
+
+A3 und A4 verwenden dieselben acht Komponenten:
 
 - `CharacterHeader`
 - `StatusSummary`
@@ -124,7 +203,7 @@ A3 und A4 verwenden später dieselben acht Komponenten:
 
 A4 ordnet sie als geführten Hauptablauf an. A3 inszeniert dieselben Daten stärker visuell. Neue Fachlogik gehört weder in A3 noch in A4.
 
-## Abnahme 0.6.1
+## Abnahme 0.6.2
 
 ```bash
 PYTHONPATH=src python3 -m compileall -q src
@@ -139,20 +218,22 @@ Remote-Gates:
 
 Abnahmebedingungen:
 
-- genau eine Character-Projection-Implementierung,
-- keine Mutation von Domain-/Journal-/Capability-Eingaben,
-- Capabilities kommen ausschließlich aus der Application-Leseabfrage,
-- alle drei Schreibcommand-Typen laufen über einen Dispatcher,
-- keine zweite Persistenz- oder Fachlogik im Dispatcher,
-- wiederholte bestätigte UI-Aktionen erzeugen keine Doppelbuchung,
-- alle ausgegebenen Progressions-Textschlüssel bleiben katalogisiert,
-- beide Remote-Gates grün vor Merge.
+- lokaler Presentation-State ist immutable und nicht persistent,
+- Biografie-Filter nutzt den kanonischen Kategorienkatalog statt einer zweiten Liste,
+- bestätigte Eventrecords kommen über die Application-Grenze,
+- Feedback entsteht nur aus bestätigten und journal-katalogisierten Ereignissen,
+- Feedback-IDs sind deterministisch aus Event-IDs abgeleitet,
+- alle sichtbaren Feedbacktexte sind ausgelagert,
+- Reduced Motion verändert keine fachlichen Daten,
+- Character-Projektion kopiert Feedback defensiv und validiert dessen Textschlüssel,
+- kompletter Command→Commit→Eventquery→Feedback→Projection-Pfad ist getestet,
+- idempotenter Replay erzeugt keine neuen Commit-IDs und damit kein doppeltes Feedback,
+- Runtime Core und Presentation Core sind auf demselben PR-Head grün.
 
 ## Nächste Umsetzung
 
-Nach abgenommenem 0.6.1 folgt gemäß `TODO.md`:
+Nach abgenommenem 0.6.2 folgt gemäß `TODO.md`:
 
-1. lokaler Presentation-State + bestätigtes Feedback,
-2. gemeinsame Komponenten + A4 Ops Deck,
-3. A3 Cinematic Forge auf denselben Bausteinen,
-4. Ranking/Network erst danach.
+1. gemeinsame Komponenten + A4 Ops Deck,
+2. A3 Cinematic Forge auf exakt denselben Bausteinen,
+3. Ranking/Network anschließend.

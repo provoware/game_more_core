@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any, Mapping, Sequence
 
 from bunkerfrequenz.domain.character import CharacterState
@@ -116,6 +117,23 @@ def _specialization_projection(value: Mapping[str, Any] | None) -> dict[str, Any
     }
 
 
+def _feedback_text_keys(feedback: Sequence[Mapping[str, Any]]) -> list[str]:
+    keys: list[str] = []
+    for entry in feedback:
+        title_key = entry.get("title_key")
+        if isinstance(title_key, str):
+            keys.append(title_key)
+        subject_key = entry.get("subject_label_key")
+        if isinstance(subject_key, str):
+            keys.append(subject_key)
+        detail_keys = entry.get("detail_keys", [])
+        if isinstance(detail_keys, Sequence) and not isinstance(detail_keys, (str, bytes)):
+            for detail in detail_keys:
+                if isinstance(detail, Mapping) and isinstance(detail.get("text_key"), str):
+                    keys.append(detail["text_key"])
+    return keys
+
+
 def _require_catalog_keys(projection: Mapping[str, Any], text_catalog: Mapping[str, str]) -> None:
     keys = [entry["label_key"] for entry in projection["skills"]]
     for entry in projection["traits"]:
@@ -127,6 +145,7 @@ def _require_catalog_keys(projection: Mapping[str, Any], text_catalog: Mapping[s
                 projection["specialization"]["stage_label_key"],
             )
         )
+    keys.extend(_feedback_text_keys(projection["feedback"]))
     missing = sorted(key for key in keys if key not in text_catalog)
     if missing:
         raise KeyError(f"Fehlende Textschlüssel: {', '.join(missing)}")
@@ -146,6 +165,7 @@ def build_character_projection(
     journal_records: Sequence[Mapping[str, Any]],
     text_catalog: Mapping[str, str],
     capabilities: Mapping[str, Any] | None = None,
+    feedback: Sequence[Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Build a detached, deterministic, text-key-only character projection."""
     character.validate()
@@ -160,6 +180,7 @@ def build_character_projection(
     )
     traits = [entry for family in trait_families if (entry := _trait_projection(character, family))]
     specialization = _specialization_projection(character.specialization)
+    projected_feedback = deepcopy(list(feedback or ()))
 
     projection = {
         "meta": {"projection_version": "0.6", "character_id": character.character_id},
@@ -185,7 +206,7 @@ def build_character_projection(
         "specialization": specialization,
         "biography": build_biography_projection(character.character_id, journal_records),
         "capabilities": _capability_projection(capabilities),
-        "feedback": [],
+        "feedback": projected_feedback,
     }
     _require_catalog_keys(projection, text_catalog)
     return projection
