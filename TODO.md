@@ -115,8 +115,9 @@
 
 - [x] Presentation-Schnitt festgelegt: Zustandsprojektion, UI-Aktionen und Textschlüssel zwischen Runtime-Kern und gemeinsamer A4/A3-Komponentenschicht spezifiziert
 - [x] Datenvertrag deckt Overview, Skills, Traits, Spezialisierung und Biografie ab, ohne UI-Direktzugriff auf Domain-Zustand
-- [ ] **Nächste Iteration – Character-Projektion implementieren:** reine Zustandsprojektion nach `docs/PRESENTATION_CONTRACT_0.6.md` samt gezieltem Unit-Test anlegen
-- [ ] **Abnahme der nächsten Iteration:** dieselbe Eingabe erzeugt dieselbe, vom Domain-Objekt unabhängige Projektion; Sortierung, Fortschrittsgrenzen und Textschlüssel sind gezielt getestet
+- [x] reine Character-Projektion für Overview, Skills, Traits und Spezialisierung nach `docs/PRESENTATION_CONTRACT_0.6.md` angelegt
+- [x] deutsche Skill-, Trait-, Effekt-, Konsequenz-, Spezialisierungs- und Stufenkataloge gegen die vier Progressionsmanifeste abgesichert
+- [x] Sortierung, Fortschrittsgrenzen, unabhängige Ausgabewerte und alle ausgegebenen Textschlüssel gezielt getestet
 - [ ] A4 Ops Deck als normalen Hauptworkflow auf der gemeinsamen Presentation-Schicht implementieren
 - [ ] A3 Cinematic Forge als Charakter-/Entwicklungsansicht aus denselben Komponenten implementieren
 - [ ] editierbare Namen, Alias, zusätzliche Spitznamen und Motto anbinden
@@ -127,6 +128,7 @@
 ### Bewusst nicht Teil der nächsten Iteration
 
 - kein grafisches Framework und keine neue Abhängigkeit auswählen
+- keine weiteren Sprachen und keine allgemeine Lokalisierungsbibliothek einführen
 - keine Domain-, Persistence- oder Sync-Logik ändern
 - noch keinen Command-Adapter implementieren
 - keine A3-/A4-Parallelimplementierungen beginnen, bevor der gemeinsame Presentation-Vertrag abgenommen ist

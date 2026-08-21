@@ -5,6 +5,8 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ## Unveröffentlicht
 
 ### Hinzugefügt
+- Die Character-Projektion liefert Skill-, Trait- und Spezialisierungsdaten nur über katalogisierte Textschlüssel; getrennte deutsche Kataloge decken alle benötigten Manifest-IDs ab.
+- Ein gezielter Presentation-Test prüft die vollständige Katalogabdeckung und jeden von der Projektion ausgegebenen Label-, Effekt-, Konsequenz- und Stufenschlüssel.
 - Zusätzliche Spitznamen sind im Character-State serialisierbar und über den bestehenden Profilservice inklusive Undo und Recovery editierbar.
 - Ein Ordner-/Dateiindex, ein übergreifendes Spielschema und verbindliche Ablageregeln trennen Basistools, Dokumentation und maschinenlesbare Verträge.
 - Der Presentation-Vertrag 0.6 legt die gemeinsame, schreibgeschützte Character-Projektion, erlaubte UI-Commands, Textschlüsselgrenzen und Komponenten für A4 Ops Deck und A3 Cinematic Forge fest.
@@ -14,8 +16,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Der Action-Vertragsprüfer meldet vier gezielte Checkpoints per Ampel und erklärt Aufruf sowie Ampelbedeutung über `--help`.
 
 ### Bewusst offen
+- Weitere Sprachen und eine allgemeine Lokalisierungsbibliothek bleiben ausdrücklich einer späteren Iteration vorbehalten.
 - Die grafische Profilanbindung folgt weiterhin gemeinsam mit A4 Ops Deck und A3 Cinematic Forge in 0.6.
-- Die nächste kleine Iteration implementiert zunächst nur die Character-Projektion samt gezieltem Test; UI-Framework und Command-Adapter bleiben offen.
+- Biografieprojektion, UI-Framework und Command-Adapter bleiben für getrennte Folgeiterationen offen.
 
 ## [0.5.2-alpha.1] – 2026-08-21
 
