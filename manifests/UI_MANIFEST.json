@@ -1,18 +1,15 @@
 {
-  "schema_version": 1,
-  "version": "0.4.3-alpha.2",
-  "design_family": "industrial_brutalist_variant_a",
-  "design_reference_asset": "docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp",
-  "principles": ["current_task_first","progress_visible_without_reading_long_text","semantic_color_plus_icon_plus_text","large_targets","keyboard_first_supported","animations_never_block_gameplay","all_visible_text_externalized"],
-  "variants": [
+  "schema_version":1,"version":"0.4.3-alpha.2","design_family":"industrial_brutalist_variant_a","design_reference_asset":"docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp",
+  "principles":["current_task_first","progress_visible_without_reading_long_text","semantic_color_plus_icon_plus_text","large_targets","keyboard_first_supported","animations_never_block_gameplay","all_visible_text_externalized"],
+  "variants":[
     {"id":"A1_CONTROL_ROOM","name":"Control Room","layout":"left_roster_center_character_right_context_bottom_journal","best_for":"desktop_overview","density":"medium"},
     {"id":"A2_COMPACT_GRID","name":"Compact Grid","layout":"modular_metric_cards_two_column_skill_matrix_collapsible_network","best_for":"fast_management","density":"high"},
     {"id":"A3_CINEMATIC_FORGE","name":"Cinematic Forge","layout":"large_character_stage_radial_skill_web_context_drawer","best_for":"character_identity_and_level_up","density":"low_medium"},
     {"id":"A4_OPS_DECK","name":"Ops Deck","layout":"vertical_workflow_rail_center_action_workspace_right_live_status","best_for":"guided_beginner_workflow","density":"medium"}
   ],
-  "screens": ["dashboard","character_overview","skills_traits","biography","training","ranking_network","level_up_overlay","skill_up_overlay","trait_unlock_overlay","specialization_overlay"],
-  "focus_model": {"primary":"current_action","secondary":"character_state","tertiary":"context_and_network","max_primary_actions_visible":3,"workflow":["current_goal","next_action","result","development","next_goal"]},
-  "contrast": {"background":"#0B0D0E","surface":"#171A1D","text_primary":"#F4F4F2","text_secondary":"#C1C5C8","action":"#E10600","warning":"#FFC400","success":"#39D353","info":"#33B5E5","focus":"#FFD54A","disabled":"#6B7075","rule":"color_never_sole_information"},
-  "accessibility": {"minimum_body_px":16,"preferred_body_px":18,"minimum_target_px":44,"focus_ring_px":3,"keyboard_navigation":true,"screen_reader_labels":true,"reduced_motion":true,"high_contrast_mode":true},
-  "responsive": {"desktop_min_width":1180,"compact_breakpoint":900,"narrow_behavior":"stack_context_panels_keep_current_action_visible"}
+  "screens":["dashboard","character_overview","skills_traits","biography","training","ranking_network","level_up_overlay","skill_up_overlay","trait_unlock_overlay","specialization_overlay"],
+  "focus_model":{"primary":"current_action","secondary":"character_state","tertiary":"context_and_network","max_primary_actions_visible":3,"workflow":["current_goal","next_action","result","development","next_goal"]},
+  "contrast":{"background":"#0B0D0E","surface":"#171A1D","text_primary":"#F4F4F2","text_secondary":"#C1C5C8","action":"#E10600","warning":"#FFC400","success":"#39D353","info":"#33B5E5","focus":"#FFD54A","disabled":"#6B7075","rule":"color_never_sole_information"},
+  "accessibility":{"minimum_body_px":16,"preferred_body_px":18,"minimum_target_px":44,"focus_ring_px":3,"keyboard_navigation":true,"screen_reader_labels":true,"reduced_motion":true,"high_contrast_mode":true},
+  "responsive":{"desktop_min_width":1180,"compact_breakpoint":900,"narrow_behavior":"stack_context_panels_keep_current_action_visible"}
 }
