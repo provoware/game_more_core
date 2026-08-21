@@ -2,9 +2,9 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.6.5",
-  "status": "ranking_network_foundation_implemented_validation_pending",
-  "current_focus": "confirmed_ranking_network_projection_validation",
+  "active_iteration": "0.7.1",
+  "status": "character_forge_action_selection_locally_validated_remote_pending",
+  "current_focus": "a4_manifest_action_selection",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
@@ -83,14 +83,22 @@
     "online_presence_inferred": false,
     "telegram_transport_implemented": false
   },
+  "character_forge_vertical_slice": {
+    "status": "started",
+    "implemented_step": "a4_action_selection",
+    "manifest_actions_selectable": 20,
+    "prerequisites_fail_closed": true,
+    "energy_stress_effects": "not_defined_in_action_contract",
+    "full_loop_pending": ["biography", "autosave", "undo", "reload"]
+  },
   "repository_audit": {
     "status": "closed",
     "repair_pull_request": 22,
     "merged_commit": "73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea",
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
-  "next_iteration": "0.7",
-  "next_goal": "Nach validiertem 0.6.5 den spielbaren Character-Forge-Vertical-Slice Profil → Aktion → Progression → Feedback → Biografie → Autosave → Undo → Reload verbinden",
+  "next_iteration": "0.7.2",
+  "next_goal": "Den begonnenen Character-Forge-Ablauf um katalogisierte Ressourcenwirkung sowie Biografie, Autosave, Undo und Reload erweitern",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,

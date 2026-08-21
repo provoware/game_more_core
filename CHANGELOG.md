@@ -13,6 +13,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Skill-Fortschritt wird für negative/überlaufende XP defensiv begrenzt und zeigt am Skillmaximum keinen falschen Restbedarf.
 
 ### Hinzugefügt
+- 0.7.1 startet den spielbaren Character-Forge-Slice mit einer A4-Auswahlprojektion für alle 20 katalogisierten Actions.
+- Die Auswahl zeigt Dauer, bestätigte Voraussetzungen und gewichtete erwartete Skillwirkung; fehlende Energie-/Stressverträge bleiben ausdrücklich unbekannt.
+- Nicht bestätigte Voraussetzungen sperren Actions fail-closed, ohne Domain-Zustand aus der Presentation zu verändern.
 - Zielgerichteter GitHub-Workflow `Presentation Core` für Presentation-Code, relevante Application-Grenzdateien, Presentation-Tests und UI-Textkataloge.
 - Repository-Audit `docs/REPOSITORY_AUDIT_2026-08-21.md` mit Ursache, Befunden, Reparatur- und PR-Konsolidierungsentscheidung.
 - Explizite Informationshierarchie und PR-/Merge-Disziplin in `AGENTS.md` und `docs/REPOSITORY_RULES.md`.
