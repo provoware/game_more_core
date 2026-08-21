@@ -5,6 +5,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ## Unveröffentlicht
 
 ### Hinzugefügt
+- Bestätigtes, statisches Character-Fortschrittsfeedback als reine Presentation-Projektion.
 - Zusätzliche Spitznamen sind im Character-State serialisierbar und über den bestehenden Profilservice inklusive Undo und Recovery editierbar.
 - Ein Ordner-/Dateiindex, ein übergreifendes Spielschema und verbindliche Ablageregeln trennen Basistools, Dokumentation und maschinenlesbare Verträge.
 - Der Presentation-Vertrag 0.6 legt die gemeinsame, schreibgeschützte Character-Projektion, erlaubte UI-Commands, Textschlüsselgrenzen und Komponenten für A4 Ops Deck und A3 Cinematic Forge fest.
