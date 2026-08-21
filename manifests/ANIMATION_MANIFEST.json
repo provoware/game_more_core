@@ -1,0 +1,10 @@
+{
+  "schema_version":1,"version":"0.4.3-alpha.1","animations":[
+    {"id":"anim.level_up","duration_ms":2800,"max_blocking_ms":0,"skippable":true,"fallback":"static_level_card","motif":"industrial_meter_pressure"},
+    {"id":"anim.skill_up","duration_ms":1600,"max_blocking_ms":0,"skippable":true,"fallback":"static_skill_badge","motif":"signal_trace"},
+    {"id":"anim.trait_unlock","duration_ms":2200,"max_blocking_ms":0,"skippable":true,"fallback":"static_trait_card","motif":"steel_plate_stamp"},
+    {"id":"anim.specialization","duration_ms":3200,"max_blocking_ms":0,"skippable":true,"fallback":"static_specialization_card","motif":"routing_diagram_lock_in"}
+  ],
+  "reduced_motion":{"replace_camera_motion":true,"replace_flashes":true,"maximum_opacity_pulse_hz":1},
+  "failure_policy":"missing_animation_never_blocks_or_changes_game_state"
+}

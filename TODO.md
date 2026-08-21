@@ -1,35 +1,26 @@
 # TODO – BUNKERFREQUENZ
 
 ## 0.4 – Foundation
-- [x] Architekturvertrag, Modulgrenzen und Character-Datenmodell
-- [x] identische Startwerte, Skill-/Level-/Resonanzmodell
-- [x] 11 Grundstorys, Biografie-Regeln, Textauslagerung
-- [x] Pflicht-Manifeste und Entwicklerübergabe-Regeln
+- [x] Architekturvertrag, Modulgrenzen, Character-Datenmodell, identische Startwerte, Grundstorys und Textauslagerung
 
 ## 0.4.1 – Character Progression Contract
-- [x] 165 Traits über 15 numerische Effektvorlagen
-- [x] fünf Trait-Stufen und Freischaltschwellen
-- [x] Trainings-Diminishing-Returns und Skillkurve 10–100
-- [x] sechs Spezialisierungen ohne harten Klassenzwang
+- [x] 165 Traits / 15 Effektvorlagen / fünf Stufen / sechs Spezialisierungen
 - [x] deterministischer Simulator + Referenzlauf 1.000 × 720 Tage
 
 ## 0.4.2 – Persistence Contract
-- [x] 39 Journal-Eventtypen katalogisiert
-- [x] Transaktionszustände und Commit-Invariante definiert
-- [x] Autosave alle 60 Sekunden, dirty-only
-- [x] Undo-/Kompensationsregeln je Ereignisgruppe
-- [x] Snapshot-Trigger exakt definiert
-- [x] Crash-/Korruptionsmatrix und Recovery-Reihenfolge
-- [x] Save-/Journal-Schema v2
-- [x] Migration v1 → v2 vorbereitet
-- [x] Zeitanker- und Offline-Catch-up-Regeln konkretisiert
+- [x] 39 Journal-Eventtypen, Transaktionszustände, Autosave 60s
+- [x] Undo/Kompensation, Snapshot-Trigger, Crash-/Recovery-Matrix
+- [x] Save-/Journal-Schema v2, Migration v1 → v2, Zeitanker
 
 ## 0.4.3 – UI/UX Blueprint
-- [ ] vier klar unterschiedliche Industrial-Brutalist-Layouts auf einem Entwurfsbild
-- [ ] Character Overview, Skills/Traits, Biografie, Ranking/Network
-- [ ] Level-/Skill-Up-Inszenierung
-- [ ] Kontrast-, Fokus-, Tastatur- und Fallbackregeln
-- [ ] UI-Texte außerhalb des Codes
+- [x] vier klar unterschiedliche Industrial-Brutalist-Layouts spezifiziert
+- [x] Character Overview, Skills/Traits, Biografie, Ranking/Network
+- [x] Level-/Skill-/Trait-/Spezialisierungs-Inszenierung
+- [x] Kontrast-, Fokus-, Tastatur- und Fallbackregeln
+- [x] UI-Texte außerhalb des Codes
+- [x] Reduced-Motion und High-Contrast verbindlich
+- [x] gemeinsamer Komponentenvertrag verhindert parallele UI-Systeme
+- [x] Vier-Varianten-Entwurfsbild als visuelle Referenz vorgesehen
 
 ## 0.4.4 – Gameplay Action Contract
 - [ ] spielbare Aktionen katalogisieren

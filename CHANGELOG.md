@@ -2,26 +2,24 @@
 
 Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
-## [0.4.2-alpha.1] – 2026-08-21
+## [0.4.3-alpha.1] – 2026-08-21
 
 ### Hinzugefügt
-- exakter Persistence Contract mit Transaktionszuständen und Commit-Invariante.
-- 39 katalogisierte Journal-Eventtypen.
-- Undo-Klassen und Kompensationsregeln.
-- Snapshot-, Crash-, Korruptions- und Recovery-Regeln.
-- Save-/Journal-Schema v2 sowie Persistence-Transaction-Schema.
-- Migration v1 → v2 und robuste Zeitanker-/Offline-Catch-up-Regeln.
-
-### Geändert
-- Autosave auf exakt 60 Sekunden, dirty-only und zusätzliche kritische Flush-Punkte konkretisiert.
-- README/TODO/Version/Projektstatus auf 0.4.2 aktualisiert.
+- Character Forge UI/UX Blueprint mit A1 Control Room, A2 Compact Grid, A3 Cinematic Forge und A4 Ops Deck.
+- UI-Manifest mit Fokus-, Kontrast-, Accessibility- und Responsive-Regeln.
+- Animation-Manifest für Level-, Skill-, Trait- und Spezialisierungsinszenierung.
+- ausgelagerte deutsche UI-Texte und UI-Schema.
 
 ### Validierung
-- Eventtypen eindeutig, Transaktionszustände vollständig, Snapshot-Schwellen numerisch fest.
-- Migration ist nicht destruktiv und verlangt Snapshot/Backup/Validierung/Rollback.
+- exakt vier Layoutvarianten innerhalb derselben Designfamilie.
+- Farbe ist nie alleinige Information; Animationen blockieren keinen Game-State.
+- alle sichtbaren neuen UI-Texte sind ausgelagert.
+
+## [0.4.2-alpha.1] – 2026-08-21
+- Persistence Contract, 39 Journaltypen, Save-/Journal-Schema v2, Undo, Snapshots, Migration und Recovery.
 
 ## [0.4.1-alpha.1] – 2026-08-21
-- Trait Engine, Progression Contract, deterministischer Simulator und Referenzbericht ergänzt.
+- Trait Engine, Progression Contract, Simulator und Referenzbericht.
 
 ## [0.4.0-alpha.1] – 2026-08-21
-- Architekturvertrag, Character-Foundation, 11 Hauptfiguren, 165 Traits und Grundverträge ergänzt.
+- Architekturvertrag und Character-Foundation.
