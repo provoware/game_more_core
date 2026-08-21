@@ -5,7 +5,7 @@ import unittest
 from bunkerfrequenz.application.action_resolver import ActionResolver
 from bunkerfrequenz.application.character_action_service import CharacterActionService
 from bunkerfrequenz.application.profile_service import CharacterProfileService
-from bunkerfrequenz.application.recovery_service import CharacterRecoveryService
+from bunkerfrequenz.application.recovery_service import CharacterRecoveryService, replay_character_event
 from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.infrastructure.persistence import FaultInjectedCrash, JournalContext, PersistenceError, PersistenceKernel
 
@@ -126,15 +126,31 @@ class RecoveryTest(unittest.TestCase):
             kernel = PersistenceKernel(tmp, ALLOWED)
             profiles = CharacterProfileService(kernel)
             start = CharacterState("c-r", "R", alias="Alt")
-            changed = profiles.update(start, {"alias": "Neu", "motto": "Bass"}, event_id="profile-1", transaction_id="tx-profile-1", context=CTX)
+            changed = profiles.update(
+                start,
+                {"alias": "Neu", "additional_nicknames": ["Echo", "Impuls"], "motto": "Bass"},
+                event_id="profile-1",
+                transaction_id="tx-profile-1",
+                context=CTX,
+            )
             self.assertEqual(changed.alias, "Neu")
+            self.assertEqual(changed.additional_nicknames, ["Echo", "Impuls"])
             undone = profiles.undo_last_profile_update(event_id="undo-profile-1", transaction_id="tx-undo-profile-1", context=CTX)
             self.assertEqual(undone.alias, "Alt")
+            self.assertEqual(undone.additional_nicknames, [])
             self.assertEqual(undone.motto, "")
             last = kernel.last_transaction_records()[0]
             self.assertEqual(last["compensation_for"], "profile-1")
             with self.assertRaises(PersistenceError):
                 profiles.undo_last_profile_update(event_id="undo-again", transaction_id="tx-undo-again", context=CTX)
+
+    def test_profile_replay_restores_additional_nicknames(self):
+        state = {"character": CharacterState("c-r", "R").to_dict()}
+        replayed = replay_character_event(
+            state,
+            {"event_type": "character.profile_updated", "payload": {"new": {"additional_nicknames": ["Echo"]}}},
+        )
+        self.assertEqual(replayed["character"]["additional_nicknames"], ["Echo"])
 
 
 if __name__ == "__main__":

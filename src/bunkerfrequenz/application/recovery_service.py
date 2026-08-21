@@ -20,7 +20,7 @@ def replay_character_event(derived_state: dict, record: dict) -> dict:
         character.specialization = payload.get("new")
     elif event_type == "character.profile_updated":
         for key, value in payload.get("new", {}).items():
-            if key in {"display_name", "alias", "motto"}:
+            if key in {"display_name", "alias", "additional_nicknames", "motto"}:
                 setattr(character, key, value)
     # Level-/trait-up events are consequences of the XP/evidence records above and
     # are intentionally informational during replay to avoid applying twice.

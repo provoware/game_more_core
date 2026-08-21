@@ -2,6 +2,14 @@
 
 Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
+## Unveröffentlicht
+
+### Hinzugefügt
+- Zusätzliche Spitznamen sind im Character-State serialisierbar und über den bestehenden Profilservice inklusive Undo und Recovery editierbar.
+
+### Bewusst offen
+- Die grafische Profilanbindung folgt weiterhin gemeinsam mit A4 Ops Deck und A3 Cinematic Forge in 0.6.
+
 ## [0.5.2-alpha.1] – 2026-08-21
 
 ### Hinzugefügt

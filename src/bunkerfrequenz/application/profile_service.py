@@ -4,7 +4,8 @@ from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 
 
-_EDITABLE = {"display_name", "alias", "motto"}
+_EDITABLE = {"display_name", "alias", "additional_nicknames", "motto"}
+ProfileValue = str | list[str]
 
 
 class CharacterProfileService:
@@ -14,7 +15,7 @@ class CharacterProfileService:
     def update(
         self,
         character: CharacterState,
-        changes: dict[str, str],
+        changes: dict[str, ProfileValue],
         *,
         event_id: str,
         transaction_id: str,
@@ -24,14 +25,20 @@ class CharacterProfileService:
         if unknown:
             raise ValueError(f"Nicht editierbare Profilfelder: {', '.join(sorted(unknown))}")
         updated = CharacterState.from_dict(character.to_dict())
-        old: dict[str, str] = {}
-        new: dict[str, str] = {}
+        old: dict[str, ProfileValue] = {}
+        new: dict[str, ProfileValue] = {}
         for key, value in changes.items():
+            if key == "additional_nicknames" and not isinstance(value, list):
+                raise ValueError("Zusätzliche Spitznamen müssen als Liste übergeben werden")
+            if key != "additional_nicknames" and not isinstance(value, str):
+                raise ValueError(f"Profilfeld {key} muss Text sein")
             if key == "display_name" and not value.strip():
                 raise ValueError("Anzeigename darf nicht leer sein")
-            old[key] = getattr(updated, key)
-            setattr(updated, key, value)
-            new[key] = value
+            old_value = getattr(updated, key)
+            old[key] = list(old_value) if isinstance(old_value, list) else old_value
+            new_value = list(value) if key == "additional_nicknames" and isinstance(value, list) else value
+            setattr(updated, key, new_value)
+            new[key] = new_value
         updated.validate()
         self.persistence.initialize_state({"character": character.to_dict()})
         self.persistence.commit(
