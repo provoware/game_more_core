@@ -2,21 +2,29 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.6",
-  "status": "presentation_foundation_repaired_and_gated",
-  "current_focus": "single_canonical_presentation_foundation_before_a4_a3",
+  "active_iteration": "0.6.1",
+  "status": "repository_audit_closed_presentation_foundation_clean",
+  "current_focus": "application_capabilities_and_single_command_dispatcher",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
     "runtime_core": {
       "status": "success",
-      "pull_request": 6,
-      "workflow_run": 32498193699
+      "pull_request": 22,
+      "workflow_run": 32505897397
     },
     "presentation_core": {
-      "status": "required_for_0.6_presentation_changes",
-      "workflow": ".github/workflows/presentation-core.yml"
+      "status": "success",
+      "pull_request": 22,
+      "workflow_run": 32505897399
     }
+  },
+  "repository_audit": {
+    "status": "closed",
+    "repair_pull_request": 22,
+    "merged_commit": "73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea",
+    "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21],
+    "open_pull_requests_after_cleanup": 0
   },
   "next_iteration": "0.6.1",
   "next_goal": "Presentation-Fähigkeiten aus der Application ableiten und einen einzigen Command-Dispatcher für bestätigte Schreibaktionen einführen",
@@ -24,5 +32,5 @@
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T18:42:00+02:00"
+  "updated_at": "2026-08-21T19:03:30+02:00"
 }
