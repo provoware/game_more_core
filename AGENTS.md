@@ -40,6 +40,12 @@ Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Je
 - Ein grüner lokaler Test ersetzt keinen roten oder fehlenden Remote-Nachweis, wenn für den Scope ein Remote-Gate existiert.
 - Nach einer Inhaltsänderung am geprüften Code ist der dazugehörige Gate erneut erforderlich.
 - Merge-Entscheidungen beziehen sich auf den tatsächlich geprüften Head-SHA.
+- Für Pull Requests nach `main` müssen die Check-IDs `runtime-core`, `presentation-core` und `repository-health` vorhanden und grün sein.
+- Ein fehlender Required Check gilt wie ein roter Check und blockiert den Merge.
+- Ein PR-Head muss den aktuellen `main` enthalten; veraltete Branch-Basen werden vor Merge aktualisiert oder rebased.
+- Versionsgebundene alte Feature-Branches unterhalb der aktiven Iteration sind keine gültige Merge-Quelle nach `main`.
+- `repository-health` schützt Struktur und Informationskonsistenz; fachliche Runtime-/Presentation-Gates bleiben zusätzlich verpflichtend.
+- Zielpolicy für `main` ist in `manifests/REPOSITORY_GUARD_MANIFEST.json` und `docs/REPOSITORY_GUARD.md` definiert. Eine nicht technisch aktivierte GitHub-Branch-Regel darf nie als aktiv behauptet werden.
 
 ## Reproduzierbare Updates
 
@@ -114,4 +120,5 @@ Offene Punkte werden als prüfbare Aufgaben in `TODO.md` formuliert.
 - keine generierten Nachweise ohne dokumentierten Erzeugungsweg
 - keine Vermischung von lokalem PASS und Remote-CI
 - keine konkurrierenden Implementierungen derselben kanonischen Datei parallel mergen
-- keinen bekannten roten CI-Stand nach `main` übernehmen
+- keinen bekannten roten oder fehlenden Required-Check nach `main` übernehmen
+- keinen Repository-Guard durch alten Branch, Force-Ref oder ungeprüften Direktmerge umgehen

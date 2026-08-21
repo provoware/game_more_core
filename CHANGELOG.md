@@ -17,6 +17,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Skill-Fortschritt wird für negative/überlaufende XP defensiv begrenzt und zeigt am Skillmaximum keinen falschen Restbedarf.
 
 ### Hinzugefügt
+- Repository Guard vor 0.7.2 mit `manifests/REPOSITORY_GUARD_MANIFEST.json`, `tools/repository_health.py`, `docs/REPOSITORY_GUARD.md` und dem neuen Workflow `Repository Health`.
+- `repository-health` prüft JSON, Python-Struktur/Compile, Git-Konfliktmarker, Informationskonsistenz, kanonische Presentation-Symbole, öffentliche Exporte und Required-Workflow-Verträge.
+- PR-Heads werden gegen den aktuellen Base-Branch geprüft; versionsgebundene alte Feature-Branches unterhalb der aktiven Iteration werden fail-closed abgewiesen.
 - 0.7.1 startet den spielbaren Character-Forge-Slice mit einer A4-Auswahlprojektion für alle 20 katalogisierten Actions.
 - Die Auswahl zeigt Dauer, bestätigte Voraussetzungen und gewichtete erwartete Skillwirkung; fehlende Energie-/Stressverträge bleiben ausdrücklich unbekannt.
 - Nicht bestätigte Voraussetzungen sperren Actions fail-closed, ohne Domain-Zustand aus der Presentation zu verändern.
@@ -35,6 +38,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - End-to-End-Test `Command → Commit → bestätigte Eventabfrage → Feedback → Character-Projektion`.
 
 ### Geändert
+- `Runtime Core` und `Presentation Core` laufen künftig auf jedem Pull Request ohne PR-Pfadfilter, damit ihre Check-IDs zuverlässig als Required Checks konfiguriert werden können.
+- Zielpolicy für `main`: Pull Request erforderlich, Branch aktuell, Conversation Resolution, keine Force Pushes/Branch-Löschung sowie `runtime-core`, `presentation-core`, `repository-health` verpflichtend. Die GitHub-Aktivierung bleibt extern, weil die verbundene Schnittstelle Branch-Protection nicht sicher schreiben kann.
+- README, TODO, Projektstatus, Repository-Regeln, Repository-Index und Testmanifest auf den Repository-Guard vor 0.7.2 abgeglichen.
 - README, TODO, Projektstatus, Projektmanifest, Repository-Index und Testmanifest auf den tatsächlich validierten Stand bis 0.7.1 und den nächsten Schritt 0.7.2 abgeglichen.
 - `PROJEKTMANIFEST.json` führt die aktive Entwicklungsphase jetzt als `0.7` und referenziert das Ranking-/Network-Manifest.
 - `TEST_MANIFEST.json` katalogisiert die 0.7.1-Action-Auswahl- und Review-Regressionen.
@@ -56,6 +62,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Die Produktversion wurde durch Wartungs-/Presentation-Arbeit nicht künstlich erhöht; `VERSION.json` bleibt bis zur nächsten abgenommenen Produktstufe auf `0.5.2-alpha.1`.
 
 ### Validierung
+- Repository Guard / PR #34 erster Implementierungs-Head `081c08f5ca1c660fb0d384879414142893571cb0`: Runtime Core `32522336221` = erfolgreich; Presentation Core `32522336259` = erfolgreich; Repository Health `32522336287` = erfolgreich.
 - Repository-Reparatur #22: Runtime Core `32505897397` = erfolgreich; Presentation Core `32505897399` = erfolgreich.
 - 0.6.1 PR #24: Runtime Core `32510846508` = erfolgreich; Presentation Core `32510846537` = erfolgreich.
 - 0.6.2 PR #26: Runtime Core `32511953788` = erfolgreich; Presentation Core `32511953619` = erfolgreich.

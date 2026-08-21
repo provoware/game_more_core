@@ -17,6 +17,7 @@
 | letzte versionierte Runtime-Baseline | `0.5.2-alpha.1` |
 | zuletzt abgeschlossene Feature-Iteration | `0.7.1 – A4 Action-Auswahl` |
 | nächster logischer Feature-Schritt | `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf` |
+| Repository Guard | implementiert und remote validiert; GitHub-Branch-Protection für `main` noch extern zu aktivieren |
 | Runtime | Character State, Actions, Traits, Resonanz, Journal, Snapshot, Recovery |
 | A4 Ops Deck | validiert; geführter Workflow + Action-Auswahl |
 | A3 Cinematic Forge | validiert; gleiche Komponenten/Commands wie A4 |
@@ -35,6 +36,7 @@
 | nächste Arbeitsschritte | [`TODO.md`](TODO.md) |
 | Architektur und Grenzen | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
 | Spiel-/Datenfluss verstehen | [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) |
+| Repository Guard / Branch-Policy | [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md) |
 | Presentation-Schnitt | [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md) |
 | A4 Ops Deck | [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md) |
 | A3 Cinematic Forge | [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md) |
@@ -80,6 +82,16 @@
 - Action-Auswahl erzeugt erst beim Ausführen einen vollständigen Dispatcher-Command mit `command_id` und `action_instance_id`
 - A4 prüft `can_execute_action` beim Rendern erneut und sperrt stale Auswahlzustände fail-closed
 - alle sichtbaren Texte liegen unter `content/de/ui/`
+
+### Repository Guard
+
+- `repository-health` prüft JSON, Python-Compile/Struktur, Merge-Konfliktmarker und Informationskonsistenz
+- kanonische Presentation-Symbole und öffentliche Package-Exporte werden auf Eindeutigkeit geprüft
+- versionsgebundene alte Feature-Branches werden gegen die aktive Iteration blockiert
+- PR-Heads müssen den aktuellen Base-Branch enthalten
+- `runtime-core`, `presentation-core` und `repository-health` liefern bei jedem Pull Request einen stabilen Check-Status
+- Zielpolicy für `main` ist maschinenlesbar in `manifests/REPOSITORY_GUARD_MANIFEST.json`
+- GitHub-Branch-Protection ist noch nicht technisch aktiviert, da die verbundene GitHub-Schnittstelle dafür keine sichere Schreibaktion bereitstellt
 
 ## Gemeinsamer Datenfluss
 
@@ -131,14 +143,22 @@ PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
 PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
 ```
 
+### Repository Health
+
+```bash
+PYTHONPATH=src python3 -m compileall -q src tools/repository_health.py
+PYTHONPATH=src python3 tools/repository_health.py
+```
+
 ### Bisherige Remote-Abnahmen
 
 - 0.6.3 / PR #28: Runtime Core `32514970109`, Presentation Core `32514970398`
 - 0.6.4 / PR #29: Runtime Core `32516833552`, Presentation Core `32516833514`
 - 0.6.5 / PR #30: Runtime Core `32517683276`, Presentation Core `32517683263`
 - 0.7.1 / PR #31: Runtime Core `32519042006`, Presentation Core `32519041908`
+- Repository Guard / PR #34 erster Implementierungs-Head: Runtime Core `32522336221`, Presentation Core `32522336259`, Repository Health `32522336287`
 
-Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt. Seine Änderungen werden durch die Repository-Reparatur vollständig entfernt; Details stehen im `CHANGELOG.md`.
+Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 vollständig aus dem kanonischen Baum entfernt. Der neue Repository Guard ist die technische Folgemaßnahme gegen dieselbe Fehlerklasse.
 
 ### Verträge / Simulation
 
@@ -149,7 +169,7 @@ python3 tools/simulate_characters/progression_simulator.py \
   --output reports/PROGRESSION_SIMULATION_0.4.1.json
 ```
 
-Prüfungen werden risikobasiert ausgeführt; Dokumentänderungen lösen nicht unnötig fachfremde Tests aus.
+Fachliche Prüfungen bleiben risikobasiert. Für Pull Requests nach `main` liefern Runtime Core, Presentation Core und Repository Health jedoch immer einen eindeutigen Merge-Status.
 
 ## Verbindliche Dokumente
 
@@ -164,8 +184,9 @@ Prüfungen werden risikobasiert ausgeführt; Dokumentänderungen lösen nicht un
 - [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md)
 - [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md)
 - [`docs/RANKING_NETWORK_0.6.5.md`](docs/RANKING_NETWORK_0.6.5.md)
+- [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md)
 - [`docs/DATENMODELL.md`](docs/DATENMODELL.md)
 
 ## Entwicklungsregel
 
-Eine Iteration bearbeitet eine klar begründete Zielstelle. Parallelimplementierungen derselben kanonischen Datei werden nicht weitergeführt. Relevante CI-Gates müssen vor einem Merge grün sein. Details stehen in [`AGENTS.md`](AGENTS.md).
+Eine Iteration bearbeitet eine klar begründete Zielstelle. Parallelimplementierungen derselben kanonischen Datei werden nicht weitergeführt. Für `main` müssen `runtime-core`, `presentation-core` und `repository-health` grün sein; der PR-Head muss den aktuellen Base-Stand enthalten. Details stehen in [`AGENTS.md`](AGENTS.md) und [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md).
