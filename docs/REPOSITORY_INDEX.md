@@ -51,6 +51,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `docs/RECOVERY_0.5.1.md` | Snapshot, Wiederherstellung und Undo |
 | `docs/UI_UX_BLUEPRINT.md` | A1–A4 Design-/UX-Richtung |
 | `docs/PRESENTATION_CONTRACT_0.6.md` | Projection, Capabilities, bestätigte Events, lokaler State, Feedback und A4/A3-Grenzen |
+| `docs/A4_OPS_DECK_0.6.3.md` | acht gemeinsame Komponenten, dispatcher-kompatible Primäraktionen und A4-View-Model-Vertrag |
 | `docs/DATENMODELL.md` | fachliche Datenobjekte und Beziehungen |
 | `docs/ENTWICKLERHANDBUCH.md` | Übernahme, Prüfstrategie und Release-/PR-Ablauf |
 | `docs/REPOSITORY_AUDIT_2026-08-21.md` | Auditbefunde und Reparaturentscheidungen |
@@ -63,14 +64,17 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `src/bunkerfrequenz/domain/` | Character State, Progression, Trait-Auswirkungen |
 | `src/bunkerfrequenz/application/` | Action-/Profil-/Recovery-Use-Cases, Presentation-Capabilities, Command-Dispatcher und bestätigte Eventabfrage |
 | `src/bunkerfrequenz/infrastructure/` | Journal, State, Snapshot, atomare Speicherung und Recovery |
-| `src/bunkerfrequenz/presentation/` | Character-/Biografieprojektion, immutable lokaler Presentation-State und bestätigtes Feedback; keine Domain-Writes |
+| `src/bunkerfrequenz/presentation/` | Character-/Biografieprojektion, lokaler State, Feedback, gemeinsame Komponenten und A4-View-Model; keine Domain-Writes |
 
-Wichtige neue 0.6.2-Dateien:
+Wichtige Presentation-Dateien:
 
 - `src/bunkerfrequenz/application/presentation_events.py` – detached Abfrage bestätigter Journal-Event-IDs.
 - `src/bunkerfrequenz/presentation/state.py` – lokaler View-/Filter-/Dismiss-/Reduced-Motion-State.
 - `src/bunkerfrequenz/presentation/feedback.py` – deterministisches Progressionsfeedback.
+- `src/bunkerfrequenz/presentation/components.py` – acht gemeinsame frameworkfreie Character-Forge-Komponenten.
+- `src/bunkerfrequenz/presentation/a4_ops_deck.py` – manifestgesteuertes A4-Ops-Deck-View-Model.
 - `content/de/ui/feedback.json` – sichtbare Feedbacktexte.
+- `content/de/ui/character_forge.json` – allgemeine Character-Forge-, Komponenten-, Profil- und Workflowtexte.
 
 `__init__.py`-Dateien exportieren vorhandene Funktionen; sie dürfen keine zweite Fachimplementierung enthalten.
 
@@ -79,7 +83,7 @@ Wichtige neue 0.6.2-Dateien:
 | Bereich | Zweck |
 |---|---|
 | `tests/runtime/` | Character, Action, Persistence, Recovery, Resonanz, Command-Dispatcher und bestätigte Eventabfrage |
-| `tests/presentation/` | Projection, Biografie, Textschlüssel, Capabilities, lokaler State, Feedback und End-to-End-Feedbackpipeline |
+| `tests/presentation/` | Projection, Biografie, Capabilities, lokaler State, Feedback, gemeinsame Komponenten, A4-Vertrag und End-to-End-Dispatcher-Kompatibilität |
 | `tests/gameplay/` | Action-Vertrag |
 | `tests/simulation/` | reproduzierbare Progressions-/Balance-Regression |
 
@@ -109,7 +113,7 @@ Alle liegen unter `manifests/`.
 ## Inhalte, Tools und Berichte
 
 - `content/de/characters.json` und `level_titles.json` enthalten deutsche Spielinhalte.
-- `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel einschließlich `feedback.json`.
+- `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel einschließlich `feedback.json` und der A4-/Komponententexte in `character_forge.json`.
 - `tools/validate_action_contract.py` prüft den Action-Vertrag.
 - `tools/simulate_characters/progression_simulator.py` erzeugt reproduzierbare Balance-Läufe.
 - `reports/` enthält freigegebene Prüfnachweise; Berichte sind keine Runtime-Eingabe.
