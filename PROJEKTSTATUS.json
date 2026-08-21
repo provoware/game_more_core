@@ -2,21 +2,23 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.7.1",
-  "status": "character_forge_action_selection_locally_validated_remote_pending",
-  "current_focus": "a4_manifest_action_selection",
+  "active_iteration": "0.7.2",
+  "status": "repository_recovered_0_7_1_review_hardened",
+  "current_focus": "resource_effects_and_complete_character_forge_flow_next",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
     "runtime_core": {
-      "status": "pending_for_0.6.5",
-      "last_success_pull_request": 29,
-      "last_success_workflow_run": 32516833552
+      "status": "success",
+      "pull_request": 31,
+      "workflow_run": 32519042006,
+      "validated_head": "27a7b002e33060be937cd64e368593984b5065b9"
     },
     "presentation_core": {
-      "status": "pending_for_0.6.5",
-      "last_success_pull_request": 29,
-      "last_success_workflow_run": 32516833514
+      "status": "success",
+      "pull_request": 31,
+      "workflow_run": 32519041908,
+      "validated_head": "27a7b002e33060be937cd64e368593984b5065b9"
     }
   },
   "presentation_application_boundary": {
@@ -56,26 +58,20 @@
     "status": "validated_and_merged",
     "pull_request": 29,
     "merged_commit": "53f0617ce0c00051c5fae481c43e4ff048dddf94",
-    "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b",
     "runtime_core_workflow_run": 32516833552,
     "presentation_core_workflow_run": 32516833514,
     "reuses_a4_components": true,
     "reuses_a4_commands": true,
     "reuses_a4_accessibility": true,
-    "animation_feedback_kinds": [
-      "level_up",
-      "skill_level_up",
-      "trait_unlocked",
-      "trait_tier_up",
-      "specialization_changed",
-      "resonance_rank_up"
-    ],
     "animation_blocking_ms": 0,
     "reduced_motion_static_fallback": true
   },
   "presentation_ranking_network": {
-    "status": "implemented_validation_pending",
-    "branch": "presentation/0.6.5-ranking-network-foundation",
+    "status": "validated_and_merged",
+    "pull_request": 30,
+    "merged_commit": "4090c3e2118e81d0927fbc7a5cfcdf48190631e9",
+    "runtime_core_workflow_run": 32517683276,
+    "presentation_core_workflow_run": 32517683263,
     "default_top_limit": 10,
     "unbounded_player_source": true,
     "sort_modes": ["level", "reputation", "resonance", "skill", "events", "clubs"],
@@ -84,12 +80,32 @@
     "telegram_transport_implemented": false
   },
   "character_forge_vertical_slice": {
-    "status": "started",
+    "status": "0.7.1_validated_and_merged_review_hardening_applied",
+    "pull_request": 31,
+    "merged_commit": "888be18146197272578f4baa5516f78a894d9464",
+    "runtime_core_workflow_run": 32519042006,
+    "presentation_core_workflow_run": 32519041908,
     "implemented_step": "a4_action_selection",
     "manifest_actions_selectable": 20,
     "prerequisites_fail_closed": true,
+    "dispatcher_command_built_only_with_runtime_ids": true,
+    "a4_rechecks_execute_capability": true,
     "energy_stress_effects": "not_defined_in_action_contract",
-    "full_loop_pending": ["biography", "autosave", "undo", "reload"]
+    "full_loop_pending": ["resource_effects", "biography", "autosave", "undo", "reload"]
+  },
+  "repository_repair": {
+    "status": "recovered_and_remote_validated",
+    "repair_pull_request": 33,
+    "validated_implementation_head": "20173007845762147c68f024c6f537a9fe864643",
+    "runtime_core_workflow_run": 32521168502,
+    "presentation_core_workflow_run": 32521168460,
+    "invalid_merge_pull_request": 32,
+    "invalid_merge_commit": "5800d056ec961620ae4d577a2b55e2bc22ca5550",
+    "invalid_runtime_core_run": 32519874996,
+    "invalid_presentation_core_run": 32519875016,
+    "invalid_failure": "SyntaxError unmatched parenthesis in a3_cinematic_forge.py",
+    "restored_green_tree_commit": "888be18146197272578f4baa5516f78a894d9464",
+    "repair_branch": "maintenance/recover-green-0.7.1"
   },
   "repository_audit": {
     "status": "closed",
@@ -98,10 +114,10 @@
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
   "next_iteration": "0.7.2",
-  "next_goal": "Den begonnenen Character-Forge-Ablauf um katalogisierte Ressourcenwirkung sowie Biografie, Autosave, Undo und Reload erweitern",
+  "next_goal": "Energie-/Stresswirkung katalogisieren und den vollständigen Character-Forge-Ablauf mit Biografie, Autosave, Undo und Reload verbinden",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T21:12:00+02:00"
+  "updated_at": "2026-08-21T21:58:00+02:00"
 }

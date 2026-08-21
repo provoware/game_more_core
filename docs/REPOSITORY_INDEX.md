@@ -5,7 +5,8 @@
 Dieser Index beantwortet: **Wo liegt was und welche Datei ist zuständig?**
 
 - Runtime-Baseline: `0.5.2-alpha.1`
-- aktive Entwicklung: `0.6.4 – A3 Cinematic Forge`
+- zuletzt abgeschlossene Feature-Iteration: `0.7.1 – A4 Action-Auswahl`
+- nächster Feature-Schritt: `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
 
 Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben Iteration angepasst.
 
@@ -50,13 +51,13 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `docs/PERSISTENCE_CONTRACT.md` | Journal-, Save- und Transaktionsregeln |
 | `docs/RECOVERY_0.5.1.md` | Snapshot, Wiederherstellung und Undo |
 | `docs/UI_UX_BLUEPRINT.md` | A1–A4 Design-/UX-Richtung |
-| `docs/PRESENTATION_CONTRACT_0.6.md` | Projection, Capabilities, bestätigte Events, lokaler State und gemeinsame A3/A4-Grenzen |
-| `docs/A4_OPS_DECK_0.6.3.md` | acht gemeinsame Komponenten, dispatcher-kompatible Primäraktionen und A4-View-Model-Vertrag |
-| `docs/A3_CINEMATIC_FORGE_0.6.4.md` | A3-Zonen, Animation-Cues, A3↔A4-Vertragsidentität und Reduced Motion |
-| `docs/A3_CINEMATIC_FORGE_0.6.4.md` | A3-Komposition, A3↔A4-Invarianten und fail-soft Animationsvertrag |
+| `docs/PRESENTATION_CONTRACT_0.6.md` | Projection, Capabilities, bestätigte Events, lokaler State, Feedback und A4/A3-Grenzen |
+| `docs/A4_OPS_DECK_0.6.3.md` | acht gemeinsame Komponenten und A4-Interaktionsvertrag |
+| `docs/A3_CINEMATIC_FORGE_0.6.4.md` | A3-Komposition, A3↔A4-Invarianten und Animationsvertrag |
+| `docs/RANKING_NETWORK_0.6.5.md` | bestätigte Ranking-/Network-Projektion und Server-Autoritätsgrenze |
 | `docs/DATENMODELL.md` | fachliche Datenobjekte und Beziehungen |
 | `docs/ENTWICKLERHANDBUCH.md` | Übernahme, Prüfstrategie und Release-/PR-Ablauf |
-| `docs/REPOSITORY_AUDIT_2026-08-21.md` | Auditbefunde und Reparaturentscheidungen |
+| `docs/REPOSITORY_AUDIT_2026-08-21.md` | Auditbefunde und frühere Reparaturentscheidungen |
 | `docs/assets/` | visuelle Referenzen |
 
 ## Codebereiche
@@ -66,8 +67,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `src/bunkerfrequenz/domain/` | Character State, Progression, Trait-Auswirkungen |
 | `src/bunkerfrequenz/application/` | Action-/Profil-/Recovery-Use-Cases, Presentation-Capabilities, Command-Dispatcher und bestätigte Eventabfrage |
 | `src/bunkerfrequenz/infrastructure/` | Journal, State, Snapshot, atomare Speicherung und Recovery |
-| `src/bunkerfrequenz/presentation/` | Projection, lokaler State, Feedback, gemeinsame Komponenten, A4/A3-View-Models und nicht blockierende Animation-Cues |
-| `src/bunkerfrequenz/presentation/` | Character-/Biografieprojektion, lokaler State, Feedback, gemeinsame Komponenten sowie A4-/A3-View-Models; keine Domain-Writes |
+| `src/bunkerfrequenz/presentation/` | Character-/Biografieprojektion, lokaler State, Feedback, A4/A3, Ranking/Network und Action-Auswahl; keine Domain-Writes |
 
 Wichtige Presentation-Dateien:
 
@@ -75,18 +75,15 @@ Wichtige Presentation-Dateien:
 - `src/bunkerfrequenz/presentation/state.py` – lokaler View-/Filter-/Dismiss-/Reduced-Motion-State.
 - `src/bunkerfrequenz/presentation/feedback.py` – deterministisches Progressionsfeedback.
 - `src/bunkerfrequenz/presentation/components.py` – acht gemeinsame frameworkfreie Character-Forge-Komponenten.
-- `src/bunkerfrequenz/presentation/interaction_actions.py` – gemeinsamer A3/A4-Vertrag für dispatcher-fertige Primäraktionen.
-- `src/bunkerfrequenz/presentation/text_catalog.py` – gemeinsame rekursive Prüfung sichtbarer Textschlüssel.
-- `src/bunkerfrequenz/presentation/animation_cues.py` – nicht blockierende Inszenierungsanweisungen aus sichtbarem bestätigtem Feedback.
-- `src/bunkerfrequenz/presentation/a4_ops_deck.py` – manifestgesteuertes A4-Ops-Deck-View-Model.
-- `src/bunkerfrequenz/presentation/a3_cinematic_forge.py` – Cinematic-Forge-Anordnung derselben Komponenten.
+- `src/bunkerfrequenz/presentation/a4_ops_deck.py` – A4-Ops-Deck-View-Model, Primäraktionsvertrag und aktuelle Capability-Revalidierung.
+- `src/bunkerfrequenz/presentation/a3_cinematic_forge.py` – A3-Komposition auf dem validierten A4-Vertrag.
+- `src/bunkerfrequenz/presentation/ranking_network.py` – Ranking-/Network-Projektion aus bestätigten Daten.
+- `src/bunkerfrequenz/presentation/action_selection.py` – 20 Manifest-Actions als Auswahl + expliziter Builder für dispatcher-fertige `action.execute`-Commands.
+- `content/de/ui/actions.json` – sichtbare Action-Namen und Ressourcenhinweis.
 - `content/de/ui/feedback.json` – sichtbare Feedbacktexte.
-- `content/de/ui/character_forge.json` – Character-Forge-, Komponenten-, Workflow- und Cinematic-Texte.
-- `src/bunkerfrequenz/presentation/a4_ops_deck.py` – manifestgesteuertes A4-Ops-Deck-View-Model und validierter Interaktionsvertrag.
-- `src/bunkerfrequenz/presentation/a3_cinematic_forge.py` – cinematic A3-Komposition auf dem A4-Interaktionsvertrag ohne neue Fachlogik.
-- `content/de/ui/feedback.json` – sichtbare Feedbacktexte.
-- `content/de/ui/character_forge.json` – Character-Forge-, Komponenten-, Profil-, Workflow- und Cinematic-Texte.
-- `manifests/ANIMATION_MANIFEST.json` – katalogisierte nicht blockierende Level-/Skill-/Trait-/Spezialisierungs-/Resonanzanimationen und Fallbacks.
+- `content/de/ui/character_forge.json` – Character-Forge-, Workflow-, Ranking- und Cinematic-Texte.
+- `manifests/ANIMATION_MANIFEST.json` – nicht blockierende Entwicklungsanimationen und Fallbacks.
+- `manifests/RANKING_NETWORK_MANIFEST.json` – Ranking-/Network-Regeln.
 
 `__init__.py`-Dateien exportieren vorhandene Funktionen; sie dürfen keine zweite Fachimplementierung enthalten.
 
@@ -95,17 +92,18 @@ Wichtige Presentation-Dateien:
 | Bereich | Zweck |
 |---|---|
 | `tests/runtime/` | Character, Action, Persistence, Recovery, Resonanz, Command-Dispatcher und bestätigte Eventabfrage |
-| `tests/presentation/` | Projection, State, Feedback, Komponenten, A4, A3, Animation-Cues und A3↔A4-Vertragsidentität |
-| `tests/presentation/` | Projection, Biografie, Capabilities, lokaler State, Feedback, gemeinsame Komponenten, A4-Vertrag, A3↔A4-Vertrag und Dispatcher-Kompatibilität |
+| `tests/presentation/` | Projection, A4/A3, Feedback, Ranking/Network, Action-Auswahl und Dispatcher-Kompatibilität |
 | `tests/gameplay/` | Action-Vertrag |
 | `tests/simulation/` | reproduzierbare Progressions-/Balance-Regression |
 
+Für 0.7.1 sind insbesondere `tests/presentation/test_action_selection.py` und `tests/presentation/test_a4_ops_deck.py` relevant.
+
 ## Remote-CI
 
-- `runtime-core.yml`: Runtime-/Domain-/Application-/Infrastructure-Gate; kompiliert wegen `src/**` auch Presentation-Änderungen.
+- `runtime-core.yml`: Runtime-/Domain-/Application-/Infrastructure-Gate.
 - `presentation-core.yml`: Presentation, zugehörige Application-Grenzdateien, Presentation-Tests und relevante UI-Textkataloge.
 
-Ein rotes für den Scope relevantes Gate blockiert den Merge.
+Ein rotes für den Scope relevantes Gate blockiert den Merge. Der versehentliche PR #32 ist ein dokumentierter Negativfall und keine gültige Entwicklungsbasis.
 
 ## Maschinenlesbare Verträge
 
@@ -114,7 +112,7 @@ Ein rotes für den Scope relevantes Gate blockiert den Merge.
 - **Charakter/Entwicklung:** `CHARAKTER`, `SKILL`, `TRAIT`, `TRAIT_ENGINE`, `PROGRESSION`, `LEVEL`, `BIOGRAFIE`
 - **Aktionen/Laufzeit:** `ACTION`, `RUNTIME`, `JOURNAL`
 - **Speicherung/Zeit:** `PERSISTENCE`, `SAVEFORMAT`, `MIGRATION`, `ZEIT`, `SYNC`
-- **Darstellung/Text:** `UI`, `ANIMATION`, `TEXT`
+- **Darstellung/Text:** `UI`, `ANIMATION`, `TEXT`, `RANKING_NETWORK`
 - **Projektsteuerung:** `ARCHITEKTUR`, `TEST`, `RELEASE`
 
 Alle liegen unter `manifests/`.
@@ -126,9 +124,7 @@ Alle liegen unter `manifests/`.
 ## Inhalte, Tools und Berichte
 
 - `content/de/characters.json` und `level_titles.json` enthalten deutsche Spielinhalte.
-- `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel.
-- `manifests/ANIMATION_MANIFEST.json` definiert nicht blockierende Level-/Skill-/Trait-/Spezialisierungs-/Resonanz-Inszenierungen.
-- `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel einschließlich Feedback-, A4- und A3-Cinematic-Texte.
+- `content/de/ui/` enthält alle sichtbaren Character-Forge-/Action-/Feedbacktexte.
 - `tools/validate_action_contract.py` prüft den Action-Vertrag.
 - `tools/simulate_characters/progression_simulator.py` erzeugt reproduzierbare Balance-Läufe.
 - `reports/` enthält freigegebene Prüfnachweise; Berichte sind keine Runtime-Eingabe.
