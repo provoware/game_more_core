@@ -1,0 +1,23 @@
+{
+  "action.training_session.label": "Training absolvieren",
+  "action.soundcheck.label": "Soundcheck durchführen",
+  "action.explore_location.label": "Ort erkunden",
+  "action.purchase_equipment.label": "Ausrüstung kaufen",
+  "action.build_upgrade.label": "Ausbau bauen",
+  "action.book_artist.label": "Act buchen",
+  "action.prepare_event.label": "Event vorbereiten",
+  "action.run_event.label": "Event durchführen",
+  "action.resolve_event_crisis.label": "Eventkrise lösen",
+  "action.repair_technical.label": "Technik reparieren",
+  "action.scene_networking.label": "In der Szene vernetzen",
+  "action.research_location.label": "Ort recherchieren",
+  "action.transport_logistics.label": "Transport organisieren",
+  "action.plan_club.label": "Club planen",
+  "action.operate_club.label": "Club betreiben",
+  "action.trade_club_share.label": "Clubanteil handeln",
+  "action.resolve_crew_conflict.label": "Crewkonflikt lösen",
+  "action.teardown_event.label": "Event abbauen",
+  "action.create_decor.label": "Dekoration bauen",
+  "action.program_music.label": "Musik programmieren",
+  "ui.action.resources.not_defined": "Energie- und Stresswirkung ist noch nicht festgelegt."
+}

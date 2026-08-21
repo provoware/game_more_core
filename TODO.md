@@ -3,9 +3,9 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Aktive Entwicklungsiteration:** `0.6.5 – Ranking / Network Foundation`
-- **Abgeschlossen:** `0.6.4 – A3 Cinematic Forge`
-- **Aktiver Entwicklungsbranch:** `presentation/0.6.5-ranking-network-foundation`
+- **Aktive Entwicklungsiteration:** `0.7.1 – A4 Action-Auswahl`
+- **Voriteration:** `0.6.5 – Ranking / Network Foundation` (Implementierung lokal; Remote-Nachweise weiterhin ausstehend)
+- **Aktiver Entwicklungsbranch:** `work`
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -99,6 +99,16 @@
 ### 0.7 – Spielbarer Character-Forge-Vertical-Slice
 
 `Profil → Training/Aktion → Skill-/Trait-Fortschritt → Feedback → Biografie → Autosave → Undo → Reload`
+
+#### 0.7.1 – A4 Action-Auswahl
+
+- [x] alle 20 Manifest-Actions als eine kanonische A4-Auswahlliste projizieren
+- [x] Dauer, Voraussetzungen und gewichtete erwartete Skillwirkung anzeigen
+- [x] nicht bestätigte Voraussetzungen sperren die Action fail-closed
+- [x] fehlende Energie-/Stresswerte ausdrücklich als nicht festgelegt markieren statt Werte zu erfinden
+- [ ] Energie-/Stresskosten fachlich je Action katalogisieren und im Resolver anwenden
+- [ ] vollständigen Vertical-Slice als Application-Ablauf mit Biografie, Autosave, Undo und Reload verbinden
+- [ ] gezielten Remote-Gate für den tatsächlich geprüften 0.7-Head nachweisen
 
 ### 0.8 – Event-/Wirtschafts-Integration
 

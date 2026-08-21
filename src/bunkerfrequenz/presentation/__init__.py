@@ -2,6 +2,7 @@
 
 from bunkerfrequenz.presentation.a3_cinematic_forge import build_a3_cinematic_forge
 from bunkerfrequenz.presentation.a4_ops_deck import build_a4_ops_deck
+from bunkerfrequenz.presentation.action_selection import build_action_selection
 from bunkerfrequenz.presentation.biography_projection import build_biography_projection
 from bunkerfrequenz.presentation.character_projection import build_character_projection
 from bunkerfrequenz.presentation.components import (
@@ -35,6 +36,7 @@ __all__ = [
     "PresentationStateError",
     "build_a3_cinematic_forge",
     "build_a4_ops_deck",
+    "build_action_selection",
     "build_biography_projection",
     "build_biography_timeline",
     "build_character_header",
