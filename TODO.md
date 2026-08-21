@@ -3,9 +3,9 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Aktive Entwicklungsiteration:** `0.6.3 – gemeinsame Komponenten + A4 Ops Deck`
-- **Abgeschlossen:** `0.6.2 – lokaler Presentation-State + bestätigtes Feedback`
-- **Offene konkurrierende PRs:** `0`
+- **Aktive Entwicklungsiteration:** `0.6.4 – A3 Cinematic Forge`
+- **Abgeschlossen:** `0.6.3 – gemeinsame Komponenten + A4 Ops Deck`
+- **Aktiver Implementierungs-PR:** `#29 – 0.6.4 A3 Cinematic Forge`
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -47,26 +47,33 @@
 
 ## 0.6.3 – Gemeinsame Komponenten + A4 Ops Deck
 
-**Aktiver Fokus.** Erst gemeinsame frameworkfreie Komponenten, dann A4 als geführter Workflow. Keine zweite Projection und keine zweite Command-Schicht.
-
-- [ ] acht gemeinsame Komponenten implementieren: `CharacterHeader`, `StatusSummary`, `SkillList`, `TraitList`, `SpecializationCard`, `BiographyTimeline`, `ProfileEditor`, `ProgressFeedback`
-- [ ] Komponenten erhalten ausschließlich ihren Projection-Block und lokalen Presentation-State
-- [ ] `ProfileEditor` nutzt ausschließlich den bestehenden zentralen Command-Dispatcher
-- [ ] `ProgressFeedback` nutzt nur bestätigte Feedback-Projektion und lokale Dismiss-/Reduced-Motion-Regeln
-- [ ] A4 Ops Deck als Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel` zusammensetzen
-- [ ] maximal drei Primäraktionen gleichzeitig zulassen
-- [ ] große Klick-/Touch-Ziele, sichtbaren Tastaturfokus, High-Contrast und Farbe+Icon+Text absichern
-- [ ] leere/fehlende optionale Bereiche robust darstellen, ohne erfundene Daten
-- [ ] Namen, Alias, zusätzliche Spitznamen und Motto über den bestätigten 0.6.1-Command-Weg editierbar machen
-- [ ] A4 bleibt frameworkfrei/testbar; konkrete grafische Toolkit-/Web-Runtime erst nach stabilem View-Model-Vertrag
+- [x] acht gemeinsame Komponenten implementiert: `CharacterHeader`, `StatusSummary`, `SkillList`, `TraitList`, `SpecializationCard`, `BiographyTimeline`, `ProfileEditor`, `ProgressFeedback`
+- [x] Komponenten erhalten nur Projection-Blöcke und lokalen Presentation-State
+- [x] `ProfileEditor` nutzt ausschließlich den bestehenden zentralen Command-Dispatcher-Vertrag
+- [x] `ProgressFeedback` nutzt bestätigte Feedback-Projektion und lokale Dismiss-/Reduced-Motion-Regeln
+- [x] A4 Ops Deck als Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel` umgesetzt
+- [x] maximal drei Primäraktionen; vierte Aktion wird abgewiesen statt still abgeschnitten
+- [x] 44-px-Ziele, 3-px-Fokus, High-Contrast und Farbe+Icon+Text aus Manifestvertrag eingebunden
+- [x] leere/fehlende optionale Bereiche bleiben leer statt Daten zu erfinden
+- [x] Namen, Alias, zusätzliche Spitznamen und Motto laufen über den bestätigten 0.6.1-Command-Weg
+- [x] A4 bleibt frameworkfrei und testbar
+- [x] PR #28: Runtime Core `32514970109` + Presentation Core `32514970398` grün
+- [x] PR #28 gemergt (`49603304960147c326953474174aafcff366dcd7`)
 
 ## 0.6.4 – A3 Cinematic Forge aus denselben Bausteinen
 
-- [ ] A3 verwendet exakt dieselbe Projection, Komponenten und Commands wie A4
-- [ ] Skillnetz, Traits, Spezialisierung, Biografie und Resonanz visuell stärker inszenieren
-- [ ] Level-/Skill-/Trait-/Resonanz-Up-Feedback anbinden
-- [ ] keine zweite Fachlogik und keinen zweiten Persistence-Weg einführen
-- [ ] Vertragstest A3↔A4 für Komponenten, Commands und Projection-Identität ergänzen
+- [x] A3 verwendet dieselbe Projection und exakt dieselben acht Komponenten wie A4
+- [x] A3 übernimmt Primäraktionen direkt aus dem validierten A4-Interaktionsvertrag
+- [x] Character Stage, Live-Status, radiales Skill-/Trait-Netz, Context-/Profile-/Story-Drawer und Development Overlay definiert
+- [x] Level-, Skill-, Trait-Unlock-, Trait-Tier-, Spezialisierungs- und Resonanz-Up-Feedback an katalogisierte Animationen gebunden
+- [x] `anim.trait_tier_up` und `anim.resonance_up` mit statischen Fallbacks ergänzt
+- [x] Reduced Motion erzwingt statische Entwicklungskarten ohne Inhaltsverlust
+- [x] fehlende oder blockierende Animation fällt fail-soft auf statische Karte zurück
+- [x] Vertragstest A3↔A4 für Komponenten, Commands, Accessibility und Primäraktionslimit ergänzt
+- [x] sichtbare A3-Texte in `content/de/ui/character_forge.json` ausgelagert
+- [x] Runtime Core `32516833552` auf PR #29 grün
+- [x] Presentation Core `32516833514` auf PR #29 grün
+- [ ] PR #29 mit geprüftem Head mergen
 
 ## 0.6.5 – Ranking / Network vorbereiten
 
@@ -103,6 +110,7 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 - [x] **0.6 Foundation** Presentation-Vertrag, Textkataloge, Character-/Biografieprojektion und Repository-Reparatur
 - [x] **0.6.1** bestätigte Application-Capabilities + zentraler Command-Dispatcher
 - [x] **0.6.2** immutable lokaler Presentation-State + bestätigtes deterministisches Progressionsfeedback
+- [x] **0.6.3** gemeinsame Komponenten + A4 Ops Deck
 
 ## PR-Regel
 

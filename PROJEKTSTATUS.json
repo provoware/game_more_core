@@ -2,21 +2,23 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.6.3",
-  "status": "confirmed_feedback_validated_shared_components_a4_next",
-  "current_focus": "shared_components_and_a4_ops_deck",
+  "active_iteration": "0.6.4",
+  "status": "a3_cinematic_forge_validated_merge_pending",
+  "current_focus": "merge_validated_a3_cinematic_forge",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
     "runtime_core": {
       "status": "success",
-      "pull_request": 26,
-      "workflow_run": 32511953788
+      "pull_request": 29,
+      "workflow_run": 32516833552,
+      "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b"
     },
     "presentation_core": {
       "status": "success",
-      "pull_request": 26,
-      "workflow_run": 32511953619
+      "pull_request": 29,
+      "workflow_run": 32516833514,
+      "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b"
     }
   },
   "presentation_application_boundary": {
@@ -42,17 +44,46 @@
     "reduced_motion": true,
     "persistent": false
   },
+  "presentation_a4_ops_deck": {
+    "status": "validated_and_merged",
+    "pull_request": 28,
+    "merged_commit": "49603304960147c326953474174aafcff366dcd7",
+    "runtime_core_workflow_run": 32514970109,
+    "presentation_core_workflow_run": 32514970398,
+    "shared_components": 8,
+    "max_primary_actions": 3,
+    "framework_runtime": false
+  },
+  "presentation_a3_cinematic_forge": {
+    "status": "validated_merge_pending",
+    "pull_request": 29,
+    "branch": "presentation/0.6.4-a3-cinematic-forge-final",
+    "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b",
+    "reuses_a4_components": true,
+    "reuses_a4_commands": true,
+    "reuses_a4_accessibility": true,
+    "animation_feedback_kinds": [
+      "level_up",
+      "skill_level_up",
+      "trait_unlocked",
+      "trait_tier_up",
+      "specialization_changed",
+      "resonance_rank_up"
+    ],
+    "animation_blocking_ms": 0,
+    "reduced_motion_static_fallback": true
+  },
   "repository_audit": {
     "status": "closed",
     "repair_pull_request": 22,
     "merged_commit": "73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea",
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
-  "next_iteration": "0.6.3",
-  "next_goal": "Acht gemeinsame frameworkfreie Character-Forge-Komponenten und A4 Ops Deck auf der bestätigten Projection-/Command-/Feedback-Grenze implementieren",
+  "next_iteration": "0.6.5",
+  "next_goal": "Nach Merge von 0.6.4 eine bestätigte Ranking-/Network-Projektion für beliebig viele Spieler ohne erfundene Online-Daten vorbereiten",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T20:15:00+02:00"
+  "updated_at": "2026-08-21T21:08:00+02:00"
 }
