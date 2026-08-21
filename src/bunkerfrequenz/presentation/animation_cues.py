@@ -84,7 +84,7 @@ def build_animation_cues(
         if not isinstance(fallback, str) or not fallback.strip():
             raise ValueError(f"Animation {animation_id} benötigt statischen Fallback")
 
-        reduced_motion = state.reduced_motion or bool(entry.get("reduced_motion", False))
+        reduced_motion = state.reduced_motion
         cues.append(
             {
                 "cue_id": f"cue:{feedback_id}",
