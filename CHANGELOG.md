@@ -4,6 +4,22 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### 0.7.2 – Character-Forge-Vertical-Slice
+
+- alle 20 Manifest-Actions besitzen verbindliche Energie-/Stresswirkungen; der Character State begrenzt beide Ressourcen auf `0–100`.
+- `character.resources_changed` wird vor den Progressionsereignissen journalisiert und beim Recovery mit Alt-/Neuwertprüfung deterministisch replayt.
+- Action, Progression und ausreichend bedeutende dynamische Biografieeinträge werden atomar über denselben bestätigten Action-Commit geführt.
+- `CharacterForgeSessionService` verbindet bestätigte Commands mit 60-Sekunden-Autosave, Recovery-Snapshot und Reload.
+- Undo bleibt auf vorhandene kompensierende Regeln beschränkt; Gameplay-Actions werden nicht inkonsistent teilweise zurückgedreht.
+- A4 Ops Deck zeigt reale Ressourcenwerte; A4 und A3 projizieren denselben bestätigten Status-, Biografie- und Feedbackzustand.
+- vollständiger Integrationstest für `Action → Ressourcen → Progression → Feedback → Biografie → Autosave → Undo → Reload → A4/A3` ergänzt.
+- erste Remote-Abnahme auf PR #41 deckte zwei veraltete synthetische Action-Fixtures ohne neuen Pflicht-Ressourcenvertrag auf; ausschließlich diese Test-Fixtures wurden neutral angepasst, die Produktlogik blieb unverändert.
+- validierter PR-Head `5f7ded400a5fca1ee25307797628ab2584de9812`: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406` erfolgreich.
+- PR #41 wurde nach grüner Abnahme als Merge `a7544abd923787d20e174c9eced54f548753c801` übernommen, jedoch außerhalb des vorgeschriebenen `/safe-merge`-Kommandos. Folgende normale PRs verwenden wieder ausschließlich `/safe-merge`.
+- README visuell neu strukturiert; eigene laienfreundliche `docs/SPIELERANLEITUNG.md` für den Character-Forge-Ablauf ergänzt.
+- TODO, Projektstatus, Projektmanifest, Testmanifest und Repository-Index auf den abgeschlossenen 0.7.2-Stand und den nächsten Schritt 0.8 abgeglichen.
+- Main-Integrity-Incident #40 zum direkten `fb96a489...`-Commit analysiert und geschlossen: Guard reagierte korrekt auf fehlende PR-Provenienz; der betroffene AGENTS-Inhalt wurde in PR #41 erneut dreifach grün validiert.
+
 ### Behoben
 - `/safe-merge` behandelt GitHubs verzögerte Commit→PR-Zuordnung robust: Der Merge wird exakt einmal ausgeführt; nur die nachgelagerte Provenienz-Leseprüfung wird begrenzt nach `0/1/2/4/8` Sekunden wiederholt.
 - Der erste echte `/safe-merge`-Smoke-Test PR #36 wurde korrekt gemergt, meldete wegen GitHub-Eventual-Consistency aber zunächst fälschlich `SAFE MERGE BLOCKED`; PR #37 trennt jetzt sauber Vor-Merge-Blockade von bereits geschriebenem Merge mit noch nicht bestätigter Nachprüfung.
