@@ -5,6 +5,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ## Unveröffentlicht
 
 ### Hinzugefügt
+- Eine schreibgeschützte Biografieprojektion filtert validierte, katalogisierte Journal-Einträge und liefert sie in kanonischer Anzeigereihenfolge.
 - Die Character-Projektion liefert Skill-, Trait- und Spezialisierungsdaten nur über katalogisierte Textschlüssel; getrennte deutsche Kataloge decken alle benötigten Manifest-IDs ab.
 - Ein gezielter Presentation-Test prüft die vollständige Katalogabdeckung und jeden von der Projektion ausgegebenen Label-, Effekt-, Konsequenz- und Stufenschlüssel.
 - Eine reine Character-Projektion 0.6 liefert kopierte, deterministisch sortierte Anzeige-, Fortschritts-, Trait- und Biografiedaten samt gezielter Tests.
