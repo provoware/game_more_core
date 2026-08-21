@@ -33,6 +33,43 @@ def level_for_total_xp(total_xp: int) -> int:
     return level
 
 
+def resonance_cost_for_rank(rank: int) -> int:
+    if rank < 1:
+        raise ValueError("Resonanzrang beginnt bei 1")
+    return round(5000 + 1800 * (rank - 1) ** 1.22)
+
+
+def resonance_rank_for_xp(resonance_xp: int) -> int:
+    if resonance_xp < 0:
+        raise ValueError("Resonanz-XP darf nicht negativ sein")
+    rank = 0
+    spent = 0
+    while resonance_xp >= spent + resonance_cost_for_rank(rank + 1):
+        spent += resonance_cost_for_rank(rank + 1)
+        rank += 1
+    return rank
+
+
+def resonance_title(rank: int) -> str:
+    titles = (
+        "Verdächtig erfahren",
+        "Akustisch auffällig",
+        "Strukturell bedenklich",
+        "Szenetechnisch unvermeidbar",
+        "Amtlich nicht vorgesehen",
+        "Physikalisch fragwürdig",
+        "Betonhistorisch relevant",
+        "Frequenztechnisch unvernünftig",
+        "Legendenstatus",
+        "Mythos",
+    )
+    if rank <= 0:
+        return "Noch ohne Resonanz"
+    if rank <= len(titles):
+        return titles[rank - 1]
+    return f"Mythos +{rank - 10}"
+
+
 def apply_skill_xp(state: CharacterState, skill_id: str, amount: int) -> list[dict]:
     if skill_id not in state.skills:
         raise ValueError(f"Unbekannter Skill: {skill_id}")
@@ -59,6 +96,21 @@ def apply_skill_xp(state: CharacterState, skill_id: str, amount: int) -> list[di
     state.level = level_for_total_xp(state.total_xp)
     if state.level != old_level:
         events.append({"event_type": "character.level_up", "payload": {"old": old_level, "new": state.level}})
+
+    level_50_xp = ProgressionRules.total_xp_for_level(50)
+    old_resonance_rank = state.resonance_rank
+    state.resonance_xp = max(0, state.total_xp - level_50_xp)
+    state.resonance_rank = resonance_rank_for_xp(state.resonance_xp)
+    if state.resonance_rank > old_resonance_rank:
+        events.append({
+            "event_type": "character.resonance_rank_up",
+            "payload": {
+                "old": old_resonance_rank,
+                "new": state.resonance_rank,
+                "resonance_xp": state.resonance_xp,
+                "title": resonance_title(state.resonance_rank),
+            },
+        })
     return events
 
 
