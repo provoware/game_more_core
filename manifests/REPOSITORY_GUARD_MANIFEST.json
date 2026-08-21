@@ -18,6 +18,7 @@
     "safe_merge_workflow": ".github/workflows/safe-merge.yml",
     "main_integrity_workflow": ".github/workflows/main-integrity.yml",
     "merge_guard_tool": "tools/github_merge_guard.py",
+    "merge_retry_tool": "tools/github_merge_guard_retry.py",
     "required_workflow_names": [
       "Runtime Core",
       "Presentation Core",
@@ -36,6 +37,7 @@
       ".github/workflows/main-integrity.yml",
       "tools/repository_health.py",
       "tools/github_merge_guard.py",
+      "tools/github_merge_guard_retry.py",
       "manifests/REPOSITORY_GUARD_MANIFEST.json",
       "tests/repository/"
     ],
