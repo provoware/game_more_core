@@ -18,7 +18,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - README, TODO, Projektstatus, Projektmanifest, Runtime-/Testmanifest und Repository-Index auf die aktive Iteration 0.8.1 abgeglichen; Runtime-Produktbaseline bleibt bewusst `0.5.2-alpha.1`.
 - 0.8.2 bleibt klar getrennt: Marktpreise, Inventarbesitz, Kaufen/Verkaufen/Verbrauchen und Economy-Ledger sind nicht Bestandteil von 0.8.1.
 - versehentlich angelegter leerer `tmp`-Direktcommit wurde vor Fortsetzung von 0.8.1 über PR #47 mit drei grünen Gates und `SAFE MERGE PASS` vollständig entfernt.
-- Remote-Abnahme von 0.8.1 über Runtime Core, Presentation Core und Repository Health steht noch aus.
+- erste 0.8.1-Remote-Abnahme auf PR #48 / Head `79cc26bec0a780322874ea6f3ced458e8ee72bd6`: Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` erfolgreich; finale Informationsänderungen werden anschließend auf ihrem eigenen Head erneut geprüft.
 
 ### 0.7.2 – Character-Forge-Vertical-Slice
 
