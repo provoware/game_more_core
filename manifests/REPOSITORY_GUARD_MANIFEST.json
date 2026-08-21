@@ -28,6 +28,17 @@
       "maintain",
       "write"
     ],
+    "protected_guard_paths": [
+      ".github/workflows/runtime-core.yml",
+      ".github/workflows/presentation-core.yml",
+      ".github/workflows/repository-health.yml",
+      ".github/workflows/safe-merge.yml",
+      ".github/workflows/main-integrity.yml",
+      "tools/repository_health.py",
+      "tools/github_merge_guard.py",
+      "manifests/REPOSITORY_GUARD_MANIFEST.json",
+      "tests/repository/"
+    ],
     "merge_method": "merge",
     "direct_push_to_main_valid": false,
     "unresolved_review_threads_valid": false
