@@ -5,6 +5,10 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ## Unveröffentlicht
 
 ### Behoben
+- Der versehentliche Merge von PR #32 aus einem alten `0.6.4`-Branch wurde vollständig aus dem Repository-Baum zurückgenommen; wiederhergestellt wurde der letzte grüne Stand nach PR #31 (`888be18146197272578f4baa5516f78a894d9464`).
+- Der durch PR #32 eingeführte Syntaxfehler `unmatched ')'` in `a3_cinematic_forge.py` und die parallel zurückgebrachten Presentation-Helfer wurden entfernt.
+- Offener Review-P1 aus PR #31 behoben: Action-Auswahlkarten geben kein unvollständiges scheinbar ausführbares `action.execute`-Payload mehr aus. `build_action_execute_command(...)` ergänzt `command_id` und `action_instance_id` erst unmittelbar vor der Ausführung.
+- Offener Review-P2 aus PR #31 behoben: A4 prüft `can_execute_action` beim Zusammensetzen erneut und deaktiviert stale zuvor freigegebene Auswahlkarten fail-closed.
 - Die durch parallele Presentation-Merges beschädigte `character_projection.py` wurde auf genau eine kanonische, kompilierbare Implementierung zurückgeführt.
 - Die zusammenkopierten, widersprüchlichen Character-Projection-Tests wurden zu einem eindeutigen Vertragstest-Satz konsolidiert.
 - `presentation/__init__.py` exportiert Character- und Biografieprojektion wieder eindeutig, ohne konkurrierende `__all__`-Blöcke.
@@ -16,6 +20,8 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - 0.7.1 startet den spielbaren Character-Forge-Slice mit einer A4-Auswahlprojektion für alle 20 katalogisierten Actions.
 - Die Auswahl zeigt Dauer, bestätigte Voraussetzungen und gewichtete erwartete Skillwirkung; fehlende Energie-/Stressverträge bleiben ausdrücklich unbekannt.
 - Nicht bestätigte Voraussetzungen sperren Actions fail-closed, ohne Domain-Zustand aus der Presentation zu verändern.
+- `build_action_execute_command(...)` als expliziter Konstruktor für vollständige, bereits mit dem bestehenden Dispatcher kompatible Action-Commands.
+- Regressionstests für direkte Dispatcher-Ausführung eines erzeugten Action-Commands und für Capability-Entzug zwischen Auswahlaufbau und A4-Projektion.
 - Zielgerichteter GitHub-Workflow `Presentation Core` für Presentation-Code, relevante Application-Grenzdateien, Presentation-Tests und UI-Textkataloge.
 - Repository-Audit `docs/REPOSITORY_AUDIT_2026-08-21.md` mit Ursache, Befunden, Reparatur- und PR-Konsolidierungsentscheidung.
 - Explizite Informationshierarchie und PR-/Merge-Disziplin in `AGENTS.md` und `docs/REPOSITORY_RULES.md`.
@@ -29,10 +35,12 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - End-to-End-Test `Command → Commit → bestätigte Eventabfrage → Feedback → Character-Projektion`.
 
 ### Geändert
-- README, Projektstatus und Projektmanifest trennen klar die versionierte Runtime-Baseline `0.5.2-alpha.1` von der aktiven 0.6-Entwicklung.
-- `TODO.md` führt nur noch eine sequenzielle Presentation-Implementierung statt paralleler Teilansätze.
-- Presentation-Vertrag, Repository-Index und Entwicklerhandbuch wurden auf die tatsächlich implementierte 0.6-Foundation und die CI-/PR-Regeln abgeglichen.
-- `TEST_MANIFEST.json` katalogisiert Presentation- und 0.6.1-Application-Grenzchecks.
+- README, TODO, Projektstatus, Projektmanifest, Repository-Index und Testmanifest auf den tatsächlich validierten Stand bis 0.7.1 und den nächsten Schritt 0.7.2 abgeglichen.
+- `PROJEKTMANIFEST.json` führt die aktive Entwicklungsphase jetzt als `0.7` und referenziert das Ranking-/Network-Manifest.
+- `TEST_MANIFEST.json` katalogisiert die 0.7.1-Action-Auswahl- und Review-Regressionen.
+- README, Projektstatus und Projektmanifest trennen klar die versionierte Runtime-Baseline `0.5.2-alpha.1` von der aktiven Entwicklung.
+- `TODO.md` führt nur noch eine sequenzielle Implementierung statt paralleler Teilansätze.
+- Presentation-Vertrag, Repository-Index und Entwicklerhandbuch wurden auf die tatsächlich implementierte Foundation und die CI-/PR-Regeln abgeglichen.
 - Die Character-Projektion akzeptiert bestätigte Capabilities optional, begrenzt sie auf drei öffentliche Booleans und kopiert sie defensiv.
 - Der Dispatcher gibt bestätigten `CharacterState`, Commit-Event-IDs und Idempotenzstatus zurück; er erzeugt bewusst keine zweite Presentation-Projektion.
 - UI-Befehle dürfen keine Balanceparameter wie `base_xp` oder Evidenzquelle setzen.
@@ -41,17 +49,21 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - `Presentation Core` beobachtet zusätzlich die bestätigte Application-Eventabfrage.
 
 ### Auditabschluss
-- PR #14 war trotz fehlgeschlagenem relevantem Compile-Gate gemergt worden und hatte den Presentation-Schaden verursacht.
+- PR #14 war trotz fehlgeschlagenem relevantem Compile-Gate gemergt worden und hatte einen früheren Presentation-Schaden verursacht.
 - Reparatur-PR #22 bestand Runtime Core und Presentation Core und wurde nach `main` gemergt.
 - Die konkurrierenden Presentation-PRs #15–#21 wurden mit Begründung geschlossen; ihre sinnvollen Inhalte wurden in die kanonische TODO-Reihenfolge übernommen.
-- Die Produktversion wurde durch die Wartungs-/Presentation-Arbeit nicht künstlich erhöht; `VERSION.json` bleibt bis zur nächsten abgenommenen Produktstufe auf `0.5.2-alpha.1`.
+- PR #32 wurde später ebenfalls trotz zweier roter Kern-Gates gemergt; dieser Merge wird nicht als gültige Entwicklungsbasis behandelt und durch die aktuelle Reparatur vollständig entfernt.
+- Die Produktversion wurde durch Wartungs-/Presentation-Arbeit nicht künstlich erhöht; `VERSION.json` bleibt bis zur nächsten abgenommenen Produktstufe auf `0.5.2-alpha.1`.
 
 ### Validierung
 - Repository-Reparatur #22: Runtime Core `32505897397` = erfolgreich; Presentation Core `32505897399` = erfolgreich.
 - 0.6.1 PR #24: Runtime Core `32510846508` = erfolgreich; Presentation Core `32510846537` = erfolgreich.
-- PR #24 wurde mit geprüftem Head nach `main` gemergt (`25006d07d33199fea2db8208c192ca2f6fa1095d`).
 - 0.6.2 PR #26: Runtime Core `32511953788` = erfolgreich; Presentation Core `32511953619` = erfolgreich.
-- PR #26 wurde mit geprüftem Head nach `main` gemergt (`5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a`).
+- 0.6.3 PR #28: Runtime Core `32514970109` = erfolgreich; Presentation Core `32514970398` = erfolgreich.
+- 0.6.4 PR #29: Runtime Core `32516833552` = erfolgreich; Presentation Core `32516833514` = erfolgreich.
+- 0.6.5 PR #30: Runtime Core `32517683276` = erfolgreich; Presentation Core `32517683263` = erfolgreich.
+- 0.7.1 PR #31: Runtime Core `32519042006` = erfolgreich; Presentation Core `32519041908` = erfolgreich.
+- PR #32: Runtime Core `32519874996` = fehlgeschlagen; Presentation Core `32519875016` = fehlgeschlagen; beide stoppten beim Compile wegen `SyntaxError: unmatched ')'` in `a3_cinematic_forge.py`.
 - Idempotenter Action-Replay erzeugt keine neuen Commit-IDs und damit keine zweite Feedbackquelle.
 
 ## [0.5.2-alpha.1] – 2026-08-21
