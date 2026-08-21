@@ -8,10 +8,23 @@ from bunkerfrequenz.presentation.state import PresentationState
 
 
 _DISPATCH_ROUTE = "application.command_dispatcher.dispatch_command"
+_PROFILE_CHANGE_FIELDS = frozenset({"display_name", "alias", "additional_nicknames", "motto"})
 _COMMAND_REQUIREMENTS = {
     "profile.update": ("character_id", "command_id", "event_id", "transaction_id", "changes"),
     "profile.undo_last": ("character_id", "command_id", "event_id", "transaction_id"),
     "action.execute": ("character_id", "command_id", "action_id", "action_instance_id"),
+}
+_COMMAND_ALLOWED_FIELDS = {
+    "profile.update": frozenset({
+        "type", "character_id", "command_id", "event_id", "transaction_id", "changes"
+    }),
+    "profile.undo_last": frozenset({
+        "type", "character_id", "command_id", "event_id", "transaction_id"
+    }),
+    "action.execute": frozenset({
+        "type", "character_id", "command_id", "action_id", "action_instance_id",
+        "selected_skill", "selected_trait_family"
+    }),
 }
 _COMMAND_CAPABILITIES = {
     "profile.update": "can_edit_profile",
@@ -38,6 +51,12 @@ def _require_mapping(value: Any, field: str) -> Mapping[str, Any]:
     return value
 
 
+def _require_nonempty_text(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{field} muss ein nicht-leerer Text sein")
+    return value
+
+
 def _a4_variant(ui_manifest: Mapping[str, Any]) -> Mapping[str, Any]:
     variants = ui_manifest.get("variants", ())
     if not isinstance(variants, Sequence) or isinstance(variants, (str, bytes)):
@@ -56,12 +75,10 @@ def _normalize_content_card(value: Any, field: str) -> dict[str, Any] | None:
     unknown = set(card) - allowed
     if unknown:
         raise ValueError(f"{field} enthält unbekannte Felder: {', '.join(sorted(unknown))}")
-    title_key = card.get("title_key")
-    if not isinstance(title_key, str) or not title_key.strip():
-        raise ValueError(f"{field}.title_key fehlt")
+    title_key = _require_nonempty_text(card.get("title_key"), f"{field}.title_key")
     detail_key = card.get("detail_key")
-    if detail_key is not None and (not isinstance(detail_key, str) or not detail_key.strip()):
-        raise ValueError(f"{field}.detail_key ist ungültig")
+    if detail_key is not None:
+        _require_nonempty_text(detail_key, f"{field}.detail_key")
     placeholders = card.get("placeholders", {})
     if not isinstance(placeholders, Mapping):
         raise ValueError(f"{field}.placeholders muss ein Mapping sein")
@@ -76,6 +93,50 @@ def _normalize_content_card(value: Any, field: str) -> dict[str, Any] | None:
     return normalized
 
 
+def _validate_dispatcher_command(command_map: Mapping[str, Any], action_id: str, character_id: str) -> str:
+    command_type = command_map.get("type")
+    if command_type not in _COMMAND_REQUIREMENTS:
+        raise ValueError(f"Primäraktion {action_id} hat unbekannten Schreibcommand")
+
+    unknown = set(command_map) - _COMMAND_ALLOWED_FIELDS[command_type]
+    if unknown:
+        raise ValueError(
+            f"Primäraktion {action_id} enthält nicht freigegebene Command-Felder: "
+            f"{', '.join(sorted(unknown))}"
+        )
+    missing = [field for field in _COMMAND_REQUIREMENTS[command_type] if field not in command_map]
+    if missing:
+        raise ValueError(
+            f"Primäraktion {action_id} ist nicht dispatcher-fertig: {', '.join(missing)} fehlt"
+        )
+
+    if command_map.get("character_id") != character_id:
+        raise ValueError(f"Primäraktion {action_id} gehört zu einem anderen Character")
+    for field in _COMMAND_REQUIREMENTS[command_type]:
+        if field == "changes":
+            continue
+        _require_nonempty_text(command_map.get(field), f"Primäraktion {action_id}.command.{field}")
+
+    if command_type == "profile.update":
+        changes = command_map.get("changes")
+        if not isinstance(changes, Mapping) or not changes:
+            raise ValueError(f"Primäraktion {action_id}.changes muss ein nicht-leeres Mapping sein")
+        unknown_changes = set(changes) - _PROFILE_CHANGE_FIELDS
+        if unknown_changes:
+            raise ValueError(
+                f"Primäraktion {action_id} enthält nicht editierbare Profilfelder: "
+                f"{', '.join(sorted(unknown_changes))}"
+            )
+    elif command_type == "action.execute":
+        for field in ("selected_skill", "selected_trait_family"):
+            if field in command_map:
+                _require_nonempty_text(
+                    command_map[field],
+                    f"Primäraktion {action_id}.command.{field}",
+                )
+    return command_type
+
+
 def _normalize_primary_action(
     value: Any,
     *,
@@ -86,37 +147,24 @@ def _normalize_primary_action(
     focus_ring_px: int,
 ) -> dict[str, Any]:
     action = _require_mapping(value, f"primary_actions[{order - 1}]")
-    action_id = action.get("action_id")
-    label_key = action.get("label_key")
-    icon_id = action.get("icon_id")
-    tone = action.get("tone", "primary")
-    enabled = action.get("enabled", True)
-    command = action.get("command")
+    allowed_action_fields = {"action_id", "label_key", "icon_id", "tone", "enabled", "command"}
+    unknown_action_fields = set(action) - allowed_action_fields
+    if unknown_action_fields:
+        raise ValueError(
+            "Primäraktion enthält unbekannte Felder: "
+            + ", ".join(sorted(unknown_action_fields))
+        )
 
-    if not isinstance(action_id, str) or not action_id.strip():
-        raise ValueError("Primäraktion benötigt action_id")
-    if not isinstance(label_key, str) or not label_key.strip():
-        raise ValueError(f"Primäraktion {action_id} benötigt label_key")
-    if not isinstance(icon_id, str) or not icon_id.strip():
-        raise ValueError(f"Primäraktion {action_id} benötigt icon_id")
-    if not isinstance(tone, str) or not tone.strip():
-        raise ValueError(f"Primäraktion {action_id} benötigt tone")
+    action_id = _require_nonempty_text(action.get("action_id"), "Primäraktion.action_id")
+    label_key = _require_nonempty_text(action.get("label_key"), f"Primäraktion {action_id}.label_key")
+    icon_id = _require_nonempty_text(action.get("icon_id"), f"Primäraktion {action_id}.icon_id")
+    tone = _require_nonempty_text(action.get("tone", "primary"), f"Primäraktion {action_id}.tone")
+    enabled = action.get("enabled", True)
     if not isinstance(enabled, bool):
         raise ValueError(f"Primäraktion {action_id}.enabled muss bool sein")
 
-    command_map = _require_mapping(command, f"Primäraktion {action_id}.command")
-    command_type = command_map.get("type")
-    if command_type not in _COMMAND_REQUIREMENTS:
-        raise ValueError(f"Primäraktion {action_id} hat unbekannten Schreibcommand")
-    missing = [field for field in _COMMAND_REQUIREMENTS[command_type] if field not in command_map]
-    if missing:
-        raise ValueError(
-            f"Primäraktion {action_id} ist nicht dispatcher-fertig: {', '.join(missing)} fehlt"
-        )
-    if command_map.get("character_id") != character_id:
-        raise ValueError(f"Primäraktion {action_id} gehört zu einem anderen Character")
-    if command_type == "profile.update" and not isinstance(command_map.get("changes"), Mapping):
-        raise ValueError(f"Primäraktion {action_id}.changes muss ein Mapping sein")
+    command_map = _require_mapping(action.get("command"), f"Primäraktion {action_id}.command")
+    command_type = _validate_dispatcher_command(command_map, action_id, character_id)
 
     capability = _COMMAND_CAPABILITIES[command_type]
     if enabled and not bool(capabilities.get(capability, False)):
@@ -200,9 +248,7 @@ def build_a4_ops_deck(
         )
 
     meta = _require_mapping(projection.get("meta"), "Projection meta")
-    character_id = meta.get("character_id")
-    if not isinstance(character_id, str) or not character_id.strip():
-        raise ValueError("Projection benötigt character_id")
+    character_id = _require_nonempty_text(meta.get("character_id"), "Projection character_id")
     capabilities = _require_mapping(projection.get("capabilities", {}), "Projection capabilities")
 
     primary_actions = [
