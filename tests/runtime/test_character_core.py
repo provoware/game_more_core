@@ -51,6 +51,20 @@ class CharacterCoreTest(unittest.TestCase):
         loaded = CharacterState.from_dict(data)
         self.assertEqual((loaded.resonance_xp, loaded.resonance_rank), (0, 0))
 
+    def test_additional_nicknames_round_trip_without_shared_list(self):
+        state = CharacterState("n", "Name", additional_nicknames=["Echo", "Impuls"])
+        serialized = state.to_dict()
+        loaded = CharacterState.from_dict(serialized)
+        serialized["additional_nicknames"].append("Extern")
+        self.assertEqual(loaded.additional_nicknames, ["Echo", "Impuls"])
+
+        legacy = state.to_dict()
+        legacy.pop("additional_nicknames")
+        self.assertEqual(CharacterState.from_dict(legacy).additional_nicknames, [])
+
+        with self.assertRaises(ValueError):
+            CharacterState("invalid", "Name", additional_nicknames=[""]).validate()
+
 
 if __name__ == "__main__":
     unittest.main()

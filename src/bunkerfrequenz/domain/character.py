@@ -21,6 +21,7 @@ class CharacterState:
     display_name: str
     alias: str = ""
     motto: str = ""
+    additional_nicknames: list[str] = field(default_factory=list)
     level: int = 1
     total_xp: int = 0
     resonance_xp: int = 0
@@ -42,6 +43,10 @@ class CharacterState:
             raise ValueError("Skill-Satz ist unvollständig oder enthält unbekannte Skills")
         if any(not 10 <= value <= 100 for value in self.skills.values()):
             raise ValueError("Skillwert außerhalb 10..100")
+        if not isinstance(self.additional_nicknames, list) or any(
+            not isinstance(value, str) or not value.strip() for value in self.additional_nicknames
+        ):
+            raise ValueError("Zusätzliche Spitznamen müssen nicht leere Texte sein")
         if self.level < 1 or self.total_xp < 0 or self.resonance_xp < 0 or self.resonance_rank < 0:
             raise ValueError("Ungültiger Fortschrittsstand")
 
@@ -51,6 +56,7 @@ class CharacterState:
             "character_id": self.character_id,
             "display_name": self.display_name,
             "alias": self.alias,
+            "additional_nicknames": list(self.additional_nicknames),
             "motto": self.motto,
             "level": self.level,
             "total_xp": self.total_xp,
@@ -73,6 +79,7 @@ class CharacterState:
             character_id=data["character_id"],
             display_name=data["display_name"],
             alias=data.get("alias", ""),
+            additional_nicknames=list(data.get("additional_nicknames", [])),
             motto=data.get("motto", ""),
             level=int(data.get("level", 1)),
             total_xp=int(data.get("total_xp", 0)),

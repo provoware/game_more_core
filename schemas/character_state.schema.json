@@ -8,6 +8,7 @@
     "character_id": {"type":"string","minLength":1},
     "display_name": {"type":"string","minLength":1},
     "alias": {"type":"string"},
+    "additional_nicknames": {"type":"array","items":{"type":"string","minLength":1}},
     "motto": {"type":"string"},
     "level": {"type":"integer","minimum":1,"maximum":50},
     "total_xp": {"type":"integer","minimum":0},
