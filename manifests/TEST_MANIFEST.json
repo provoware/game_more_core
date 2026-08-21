@@ -84,6 +84,20 @@
     "biography_only_from_validated_events",
     "presentation_package_exports_consistent"
   ],
+  "presentation_0_6_1_checks": [
+    "capabilities_read_only",
+    "capabilities_fail_closed_without_confirmed_state",
+    "capabilities_projection_bounded_and_detached",
+    "single_write_command_dispatcher",
+    "profile_command_ids_preserved",
+    "action_instance_id_preserved",
+    "profile_update_idempotent",
+    "profile_undo_idempotent",
+    "action_execute_idempotent",
+    "ui_balance_parameters_not_exposed",
+    "runtime_core_remote_gate",
+    "presentation_core_remote_gate"
+  ],
   "unit_test_commands": [
     "python3 -m unittest tests/simulation/test_progression_simulator.py",
     "python3 -m pytest tests/gameplay/test_action_contract.py",

@@ -3,9 +3,9 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Aktive Entwicklungsiteration:** `0.6 – Character Forge Presentation`
-- **Aktueller Fokus:** `0.6.1 – Application-Grenze für Presentation`
-- **Offene PRs nach Audit:** `0`
+- **Aktive Entwicklungsiteration:** `0.6.2 – lokaler Presentation-State + bestätigtes Feedback`
+- **Abgeschlossen:** `0.6.1 – Application-Grenze für Presentation`
+- **Offene konkurrierende PRs:** `0`
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -21,13 +21,15 @@
 
 ## 0.6.1 – Application-Grenze für Presentation
 
-Zuerst nur lesende Fähigkeiten und eindeutige Schreibwege, noch kein Layout.
-
-- [ ] `can_edit_profile`, `can_undo_profile`, `can_execute_action` ausschließlich aus der Application ableiten
-- [ ] Profile-Update, Profil-Undo und Action-Ausführung über **einen** Command-Dispatcher routen
-- [ ] Command-/Event-/Transaction-/Action-Instance-IDs validieren und unverändert an bestehende Services weitergeben
-- [ ] idempotente Wiederholung derselben UI-Aktion gezielt testen
-- [ ] Projection erhält bestätigte Capabilities, errät keine Rechte
+- [x] `can_edit_profile`, `can_undo_profile`, `can_execute_action` ausschließlich aus der Application ableiten
+- [x] Profile-Update, Profil-Undo und Action-Ausführung über **einen** Command-Dispatcher routen
+- [x] Character-/Command-/Profil-Event-/Profil-Transaction-/Action-Instance-IDs validieren und über die zuständigen bestehenden Services führen
+- [x] UI-gesteuerte Balanceparameter wie `base_xp` und Evidenzquelle nicht freigeben
+- [x] idempotente Wiederholung von Profilupdate, Undo und Action gezielt testen
+- [x] Projection erhält bestätigte Capabilities als begrenzte, defensive Kopie und errät keine Rechte
+- [x] Runtime Core für PR #24 grün (`32510846508`)
+- [x] Presentation Core für PR #24 grün (`32510846537`)
+- [x] PR #24 nach `main` gemergt (`25006d07d33199fea2db8208c192ca2f6fa1095d`)
 
 ## 0.6.2 – Lokaler Presentation-State + bestätigtes Feedback
 
@@ -35,7 +37,9 @@ Zuerst nur lesende Fähigkeiten und eindeutige Schreibwege, noch kein Layout.
 - [ ] `view.select`, `biography.filter`, `feedback.dismiss` als reine lokale Transitionen implementieren
 - [ ] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzereignisse in bestätigtes UI-Feedback projizieren
 - [ ] Feedback-IDs deterministisch aus bestätigten Event-IDs ableiten
+- [ ] nur katalogisierte bestätigte Journal-/Domain-Ereignisse als Feedback akzeptieren
 - [ ] Reduced Motion als statische, nicht blockierende Darstellung absichern
+- [ ] sicherstellen, dass lokaler Presentation-State niemals Save, Journal oder CharacterState verändert
 
 ## 0.6.3 – Gemeinsame Komponenten + A4 Ops Deck
 
@@ -86,6 +90,7 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 - [x] **0.5.1** Snapshot-Replay, Recovery, Fault Injection und Profil-Undo
 - [x] **0.5.2** Trait-Auswirkungen, Soft-Konflikte und Open-End-Resonanz
 - [x] **0.6 Foundation** Presentation-Vertrag, deutsche Textkataloge, Character-/Biografieprojektion und Repository-Reparatur
+- [x] **0.6.1** bestätigte Application-Capabilities + zentraler Command-Dispatcher
 
 ## PR-Regel
 

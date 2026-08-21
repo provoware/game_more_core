@@ -2,22 +2,37 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.6.1",
-  "status": "repository_audit_closed_presentation_foundation_clean",
-  "current_focus": "application_capabilities_and_single_command_dispatcher",
+  "active_iteration": "0.6.2",
+  "status": "application_boundary_validated_presentation_state_feedback_next",
+  "current_focus": "local_presentation_state_and_confirmed_feedback",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
     "runtime_core": {
       "status": "success",
-      "pull_request": 22,
-      "workflow_run": 32505897397
+      "pull_request": 24,
+      "workflow_run": 32510846508
     },
     "presentation_core": {
       "status": "success",
-      "pull_request": 22,
-      "workflow_run": 32505897399
+      "pull_request": 24,
+      "workflow_run": 32510846537
     }
+  },
+  "presentation_application_boundary": {
+    "status": "validated_and_merged",
+    "pull_request": 24,
+    "merged_commit": "25006d07d33199fea2db8208c192ca2f6fa1095d",
+    "capabilities": [
+      "can_edit_profile",
+      "can_undo_profile",
+      "can_execute_action"
+    ],
+    "write_commands": [
+      "profile.update",
+      "profile.undo_last",
+      "action.execute"
+    ]
   },
   "repository_audit": {
     "status": "closed",
@@ -26,11 +41,11 @@
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21],
     "open_pull_requests_after_cleanup": 0
   },
-  "next_iteration": "0.6.1",
-  "next_goal": "Presentation-Fähigkeiten aus der Application ableiten und einen einzigen Command-Dispatcher für bestätigte Schreibaktionen einführen",
+  "next_iteration": "0.6.2",
+  "next_goal": "Unveränderlichen lokalen Presentation-State und bestätigtes, deterministisches Progressionsfeedback ohne Domain- oder Save-Mutation implementieren",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T19:03:30+02:00"
+  "updated_at": "2026-08-21T19:50:00+02:00"
 }
