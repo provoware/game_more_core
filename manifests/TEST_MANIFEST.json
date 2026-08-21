@@ -205,16 +205,46 @@
     "presentation_core_required_status_available",
     "repository_health_required_status_available"
   ],
+  "safe_merge_checks": [
+    "actor_permission_required",
+    "pr_open_non_draft_main_target",
+    "pr_mergeable",
+    "pr_head_contains_current_main",
+    "exact_head_runtime_core_green",
+    "exact_head_presentation_core_green",
+    "exact_head_repository_health_green",
+    "unresolved_review_threads_block",
+    "normal_safe_merge_guard_self_modification_blocked",
+    "merge_expected_head_sha",
+    "merge_api_called_exactly_once",
+    "post_merge_provenance_retry_bounded",
+    "post_merge_retry_never_remerges",
+    "main_integrity_two_parent_merge_required",
+    "main_integrity_single_associated_merged_pr_required",
+    "safe_merge_end_to_end_pass_pr_38"
+  ],
+  "safe_merge_reference": {
+    "pull_request": 38,
+    "validated_head": "c97d02b29a6d6de33c32bf7113179c65d9e3e2f4",
+    "merge_commit": "e1155db2d2a7eaddd313127d89635a1a3dac3ce6",
+    "runtime_core_workflow_run": 32528078989,
+    "presentation_core_workflow_run": 32528078992,
+    "repository_health_workflow_run": 32528078926,
+    "bot_result": "SAFE MERGE PASS"
+  },
   "unit_test_commands": [
     "python3 -m unittest tests/simulation/test_progression_simulator.py",
     "python3 -m pytest tests/gameplay/test_action_contract.py",
     "PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v",
     "PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v",
+    "PYTHONPATH=src:. python3 -m unittest discover -s tests/repository -v",
     "PYTHONPATH=src python3 tools/repository_health.py"
   ],
   "runtime_ci_workflow": ".github/workflows/runtime-core.yml",
   "presentation_ci_workflow": ".github/workflows/presentation-core.yml",
   "repository_health_ci_workflow": ".github/workflows/repository-health.yml",
+  "safe_merge_workflow": ".github/workflows/safe-merge.yml",
+  "main_integrity_workflow": ".github/workflows/main-integrity.yml",
   "runtime_reference_report": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "future_release_checks": [
     "unit",
