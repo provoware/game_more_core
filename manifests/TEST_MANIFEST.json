@@ -98,6 +98,23 @@
     "runtime_core_remote_gate",
     "presentation_core_remote_gate"
   ],
+  "presentation_0_6_2_checks": [
+    "local_presentation_state_immutable",
+    "local_transitions_do_not_persist",
+    "biography_filter_uses_manifest_categories",
+    "confirmed_event_query_application_boundary",
+    "confirmed_event_records_detached",
+    "feedback_requires_confirmed_event_id",
+    "feedback_requires_catalogued_journal_type",
+    "feedback_id_deterministic_from_event_id",
+    "feedback_text_keys_externalized",
+    "reduced_motion_content_invariant",
+    "feedback_projection_detached",
+    "command_commit_event_feedback_projection_integration",
+    "idempotent_replay_no_duplicate_feedback_source",
+    "runtime_core_remote_gate",
+    "presentation_core_remote_gate"
+  ],
   "unit_test_commands": [
     "python3 -m unittest tests/simulation/test_progression_simulator.py",
     "python3 -m pytest tests/gameplay/test_action_contract.py",
