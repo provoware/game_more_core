@@ -3,9 +3,9 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Aktive Entwicklungsiteration:** `0.6.4 – A3 Cinematic Forge`
-- **Abgeschlossen:** `0.6.3 – gemeinsame Komponenten + A4 Ops Deck`
-- **Offene konkurrierende PRs:** `0`
+- **Aktive Entwicklungsiteration:** `0.7.1 – A4 Action-Auswahl`
+- **Voriteration:** `0.6.5 – Ranking / Network Foundation` (Implementierung lokal; Remote-Nachweise weiterhin ausstehend)
+- **Aktiver Entwicklungsbranch:** `work`
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -45,57 +45,68 @@
 
 ## 0.6.3 – Gemeinsame Komponenten + A4 Ops Deck
 
-- [x] exakt acht gemeinsame frameworkfreie Komponenten implementiert
-- [x] Komponenten erhalten ausschließlich Projection-Blöcke und lokalen Presentation-State
-- [x] `ProfileEditor` verweist ausschließlich auf den bestehenden zentralen Dispatcher
-- [x] `ProgressFeedback` filtert Dismiss/Reduced Motion im tatsächlichen Komponentenpayload
-- [x] A4 Ops Deck als Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel`
-- [x] Primäraktionslimit direkt aus `UI_MANIFEST.json`, aktuell maximal drei
-- [x] 44-px-Ziele, 3-px-Fokus, Tastatur, Screenreader, High Contrast und Text+Icon+Tone aus Manifestvertrag
-- [x] leere optionale Bereiche erzeugen keine erfundenen Daten
-- [x] Profilfelder bleiben auf Name, Alias, Spitznamen und Motto begrenzt
-- [x] Primäraktionen sind direkt dispatcher-kompatibel; keine Übersetzungsschicht
-- [x] alte PR-#19-Regressionspunkte gezielt ausgeschlossen
+- [x] acht gemeinsame Komponenten implementiert: `CharacterHeader`, `StatusSummary`, `SkillList`, `TraitList`, `SpecializationCard`, `BiographyTimeline`, `ProfileEditor`, `ProgressFeedback`
+- [x] Komponenten erhalten nur Projection-Blöcke und lokalen Presentation-State
+- [x] `ProfileEditor` nutzt ausschließlich den bestehenden zentralen Command-Dispatcher-Vertrag
+- [x] `ProgressFeedback` nutzt bestätigte Feedback-Projektion und lokale Dismiss-/Reduced-Motion-Regeln
+- [x] A4 Ops Deck als Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel` umgesetzt
+- [x] maximal drei Primäraktionen; vierte Aktion wird abgewiesen statt still abgeschnitten
+- [x] 44-px-Ziele, 3-px-Fokus, High-Contrast und Farbe+Icon+Text aus Manifestvertrag eingebunden
+- [x] leere/fehlende optionale Bereiche bleiben leer statt Daten zu erfinden
+- [x] Namen, Alias, zusätzliche Spitznamen und Motto laufen über den bestätigten 0.6.1-Command-Weg
+- [x] A4 bleibt frameworkfrei und testbar
 - [x] PR #28: Runtime Core `32514970109` + Presentation Core `32514970398` grün
 - [x] PR #28 gemergt (`49603304960147c326953474174aafcff366dcd7`)
 
 ## 0.6.4 – A3 Cinematic Forge aus denselben Bausteinen
 
-**Aktiver Fokus.** A3 darf nur Inszenierung ergänzen; Projection, Komponenten, Capabilities, lokale Zustände und Schreibcommands bleiben dieselben wie in A4.
-
-- [x] A3-Composer `a3_cinematic_forge.py` angelegt
-- [x] exakt dieselben acht Komponenten wie A4 verwenden
-- [x] gemeinsamen Action-Normalisierer für A3 und A4 extrahieren statt Commandregeln zu duplizieren
-- [x] gemeinsame Textschlüsselprüfung für A3/A4 zentralisieren
-- [x] Charakterbühne, radiales Skillnetz, Trait-Orbit, Spezialisierungsfokus, Kontext-Drawer und Biografie-Schiene als reine Layoutprojektion definieren
-- [x] Progress-Overlay ausschließlich aus bestätigtem `ProgressFeedback` ableiten
-- [x] Animation-Cues aus bestätigten sichtbaren Feedbackereignissen erzeugen
-- [x] Level-, Skill-, Trait-, Spezialisierungs- und Resonanz-Up an `ANIMATION_MANIFEST.json` anbinden
-- [x] `anim.resonance_up` mit statischem Fallback ergänzen
-- [x] Animationen bleiben immer überspringbar und `max_blocking_ms = 0`
-- [x] Reduced Motion ersetzt Bewegung durch statische Fallbacks, ohne Inhalt zu ändern
-- [x] Dismissed Feedback erzeugt weder Karte noch Animation-Cue
-- [x] A3 und A4 erzeugen identische normalisierte Schreibaktionen
-- [x] doppelte Primäraktions-IDs werden fail-closed abgewiesen
-- [x] A3 erfindet keine Avatar-/Portraitdaten, solange keine bestätigte Quelle existiert
-- [x] gezielte A3-, Animation- und A3↔A4-Vertragstests angelegt
-- [ ] Runtime Core auf finalem PR-Head grün
-- [ ] Presentation Core auf finalem PR-Head grün
-- [ ] PR mergen und 0.6.4-Abschluss dokumentieren
+- [x] A3 verwendet dieselbe Projection und exakt dieselben acht Komponenten wie A4
+- [x] A3 übernimmt Primäraktionen direkt aus dem validierten A4-Interaktionsvertrag
+- [x] Character Stage, Live-Status, radiales Skill-/Trait-Netz, Context-/Profile-/Story-Drawer und Development Overlay definiert
+- [x] Level-, Skill-, Trait-Unlock-, Trait-Tier-, Spezialisierungs- und Resonanz-Up-Feedback an katalogisierte Animationen gebunden
+- [x] `anim.trait_tier_up` und `anim.resonance_up` mit statischen Fallbacks ergänzt
+- [x] Reduced Motion erzwingt statische Entwicklungskarten ohne Inhaltsverlust
+- [x] fehlende oder blockierende Animation fällt fail-soft auf statische Karte zurück
+- [x] Vertragstest A3↔A4 für Komponenten, Commands, Accessibility und Primäraktionslimit ergänzt
+- [x] sichtbare A3-Texte in `content/de/ui/character_forge.json` ausgelagert
+- [x] Runtime Core `32516833552` auf PR #29 grün
+- [x] Presentation Core `32516833514` auf PR #29 grün
+- [x] PR #29 gemergt (`53f0617ce0c00051c5fae481c43e4ff048dddf94`)
 
 ## 0.6.5 – Ranking / Network vorbereiten
 
-- [ ] Ranking-Projektion für beliebig viele Spieler definieren
-- [ ] Filter/Sortierung nach Level, Skills, Ruf, Events, Clubs und Resonanz vorbereiten
-- [ ] Network-Ansicht zunächst mit bestätigten synchronisierten Daten versorgen
-- [ ] Telegram/Sync weiterhin als eigene Infrastrukturphase behandeln
-- [ ] keine erfundenen Online-, Ranking- oder Presence-Daten anzeigen
+**Aktiver Fokus.** Ranking nutzt bestätigte Character-Projections; Events/Clubs und Sync-Metadaten nur explizit serverbestätigt. Keine Online-/Presence-Erfindung.
+
+- [x] Ranking-Projektion für beliebig viele Spieler definiert
+- [x] Top 10 als Standard und `ALLE ANZEIGEN` für vollständige Liste vorgesehen
+- [x] Sortierung nach Level, Skills, Ruf, Events, Clubs und Resonanz implementiert
+- [x] Competition Ranking mit stabiler Gleichstandsregel implementiert
+- [x] Network-Ansicht verarbeitet Events/Clubs nur aus `server_confirmed_transaction`-Datensätzen
+- [x] fehlende Network-Metriken bleiben `null` und unranked statt als `0` zu erscheinen
+- [x] fehlende Sync-Daten werden `unknown` / `NICHT BESTÄTIGT`, ohne Presence abzuleiten
+- [x] Telegram/Sync weiterhin als eigene Infrastrukturphase behandelt
+- [x] falsche Autorität, unbekannte Metriken, doppelte IDs und Character-Mismatch fail-closed
+- [x] sichtbare Ranking-/Sync-Texte ausgelagert
+- [x] gezielte Ranking-/Network-Vertragstests angelegt
+- [ ] Runtime Core auf aktuellem 0.6.5-PR-Head grün
+- [ ] Presentation Core auf aktuellem 0.6.5-PR-Head grün
+- [ ] sauberen Diff prüfen und PR mergen
 
 ## Danach
 
 ### 0.7 – Spielbarer Character-Forge-Vertical-Slice
 
 `Profil → Training/Aktion → Skill-/Trait-Fortschritt → Feedback → Biografie → Autosave → Undo → Reload`
+
+#### 0.7.1 – A4 Action-Auswahl
+
+- [x] alle 20 Manifest-Actions als eine kanonische A4-Auswahlliste projizieren
+- [x] Dauer, Voraussetzungen und gewichtete erwartete Skillwirkung anzeigen
+- [x] nicht bestätigte Voraussetzungen sperren die Action fail-closed
+- [x] fehlende Energie-/Stresswerte ausdrücklich als nicht festgelegt markieren statt Werte zu erfinden
+- [ ] Energie-/Stresskosten fachlich je Action katalogisieren und im Resolver anwenden
+- [ ] vollständigen Vertical-Slice als Application-Ablauf mit Biografie, Autosave, Undo und Reload verbinden
+- [ ] gezielten Remote-Gate für den tatsächlich geprüften 0.7-Head nachweisen
 
 ### 0.8 – Event-/Wirtschafts-Integration
 
@@ -118,7 +129,8 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 - [x] **0.6 Foundation** Presentation-Vertrag, Textkataloge, Character-/Biografieprojektion und Repository-Reparatur
 - [x] **0.6.1** bestätigte Application-Capabilities + zentraler Command-Dispatcher
 - [x] **0.6.2** immutable lokaler Presentation-State + bestätigtes deterministisches Progressionsfeedback
-- [x] **0.6.3** acht gemeinsame Komponenten + manifestgesteuertes A4 Ops Deck
+- [x] **0.6.3** gemeinsame Komponenten + A4 Ops Deck
+- [x] **0.6.4** A3 Cinematic Forge auf gemeinsamem A4-Vertrag
 
 ## PR-Regel
 

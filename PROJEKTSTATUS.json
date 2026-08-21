@@ -2,21 +2,21 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.6.4",
-  "status": "a4_validated_cinematic_forge_in_progress",
-  "current_focus": "a3_cinematic_forge_shared_components_and_non_blocking_animation_cues",
+  "active_iteration": "0.7.1",
+  "status": "character_forge_action_selection_locally_validated_remote_pending",
+  "current_focus": "a4_manifest_action_selection",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
     "runtime_core": {
-      "status": "success",
-      "pull_request": 28,
-      "workflow_run": 32514970109
+      "status": "pending_for_0.6.5",
+      "last_success_pull_request": 29,
+      "last_success_workflow_run": 32516833552
     },
     "presentation_core": {
-      "status": "success",
-      "pull_request": 28,
-      "workflow_run": 32514970398
+      "status": "pending_for_0.6.5",
+      "last_success_pull_request": 29,
+      "last_success_workflow_run": 32516833514
     }
   },
   "presentation_application_boundary": {
@@ -42,40 +42,27 @@
     "reduced_motion": true,
     "persistent": false
   },
-  "presentation_shared_components_a4": {
+  "presentation_a4_ops_deck": {
     "status": "validated_and_merged",
     "pull_request": 28,
     "merged_commit": "49603304960147c326953474174aafcff366dcd7",
-    "components": [
-      "CharacterHeader",
-      "StatusSummary",
-      "SkillList",
-      "TraitList",
-      "SpecializationCard",
-      "BiographyTimeline",
-      "ProfileEditor",
-      "ProgressFeedback"
-    ],
-    "layout": "A4_OPS_DECK",
+    "runtime_core_workflow_run": 32514970109,
+    "presentation_core_workflow_run": 32514970398,
+    "shared_components": 8,
     "max_primary_actions": 3,
-    "commands_directly_dispatcher_ready": true
+    "framework_runtime": false
   },
-  "presentation_cinematic_forge": {
-    "status": "implementation_in_progress_remote_validation_pending",
-    "layout": "A3_CINEMATIC_FORGE",
-    "shares_a4_components": true,
-    "shares_a4_command_normalizer": true,
-    "zones": [
-      "character_stage",
-      "skill_web",
-      "trait_orbit",
-      "specialization_focus",
-      "context_drawer",
-      "biography_rail",
-      "progress_overlay",
-      "action_dock"
-    ],
-    "animation_events": [
+  "presentation_a3_cinematic_forge": {
+    "status": "validated_and_merged",
+    "pull_request": 29,
+    "merged_commit": "53f0617ce0c00051c5fae481c43e4ff048dddf94",
+    "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b",
+    "runtime_core_workflow_run": 32516833552,
+    "presentation_core_workflow_run": 32516833514,
+    "reuses_a4_components": true,
+    "reuses_a4_commands": true,
+    "reuses_a4_accessibility": true,
+    "animation_feedback_kinds": [
       "level_up",
       "skill_level_up",
       "trait_unlocked",
@@ -84,7 +71,25 @@
       "resonance_rank_up"
     ],
     "animation_blocking_ms": 0,
-    "portrait_source": "not_yet_available_no_data_invented"
+    "reduced_motion_static_fallback": true
+  },
+  "presentation_ranking_network": {
+    "status": "implemented_validation_pending",
+    "branch": "presentation/0.6.5-ranking-network-foundation",
+    "default_top_limit": 10,
+    "unbounded_player_source": true,
+    "sort_modes": ["level", "reputation", "resonance", "skill", "events", "clubs"],
+    "network_metrics_require_server_confirmation": ["events", "clubs"],
+    "online_presence_inferred": false,
+    "telegram_transport_implemented": false
+  },
+  "character_forge_vertical_slice": {
+    "status": "started",
+    "implemented_step": "a4_action_selection",
+    "manifest_actions_selectable": 20,
+    "prerequisites_fail_closed": true,
+    "energy_stress_effects": "not_defined_in_action_contract",
+    "full_loop_pending": ["biography", "autosave", "undo", "reload"]
   },
   "repository_audit": {
     "status": "closed",
@@ -92,11 +97,11 @@
     "merged_commit": "73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea",
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
-  "next_iteration": "0.6.4",
-  "next_goal": "A3 Cinematic Forge auf denselben acht Komponenten und Commands remote validieren und mergen",
+  "next_iteration": "0.7.2",
+  "next_goal": "Den begonnenen Character-Forge-Ablauf um katalogisierte Ressourcenwirkung sowie Biografie, Autosave, Undo und Reload erweitern",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T20:55:00+02:00"
+  "updated_at": "2026-08-21T21:12:00+02:00"
 }

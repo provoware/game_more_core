@@ -53,6 +53,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `docs/PRESENTATION_CONTRACT_0.6.md` | Projection, Capabilities, bestätigte Events, lokaler State und gemeinsame A3/A4-Grenzen |
 | `docs/A4_OPS_DECK_0.6.3.md` | acht gemeinsame Komponenten, dispatcher-kompatible Primäraktionen und A4-View-Model-Vertrag |
 | `docs/A3_CINEMATIC_FORGE_0.6.4.md` | A3-Zonen, Animation-Cues, A3↔A4-Vertragsidentität und Reduced Motion |
+| `docs/A3_CINEMATIC_FORGE_0.6.4.md` | A3-Komposition, A3↔A4-Invarianten und fail-soft Animationsvertrag |
 | `docs/DATENMODELL.md` | fachliche Datenobjekte und Beziehungen |
 | `docs/ENTWICKLERHANDBUCH.md` | Übernahme, Prüfstrategie und Release-/PR-Ablauf |
 | `docs/REPOSITORY_AUDIT_2026-08-21.md` | Auditbefunde und Reparaturentscheidungen |
@@ -66,6 +67,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `src/bunkerfrequenz/application/` | Action-/Profil-/Recovery-Use-Cases, Presentation-Capabilities, Command-Dispatcher und bestätigte Eventabfrage |
 | `src/bunkerfrequenz/infrastructure/` | Journal, State, Snapshot, atomare Speicherung und Recovery |
 | `src/bunkerfrequenz/presentation/` | Projection, lokaler State, Feedback, gemeinsame Komponenten, A4/A3-View-Models und nicht blockierende Animation-Cues |
+| `src/bunkerfrequenz/presentation/` | Character-/Biografieprojektion, lokaler State, Feedback, gemeinsame Komponenten sowie A4-/A3-View-Models; keine Domain-Writes |
 
 Wichtige Presentation-Dateien:
 
@@ -80,6 +82,11 @@ Wichtige Presentation-Dateien:
 - `src/bunkerfrequenz/presentation/a3_cinematic_forge.py` – Cinematic-Forge-Anordnung derselben Komponenten.
 - `content/de/ui/feedback.json` – sichtbare Feedbacktexte.
 - `content/de/ui/character_forge.json` – Character-Forge-, Komponenten-, Workflow- und Cinematic-Texte.
+- `src/bunkerfrequenz/presentation/a4_ops_deck.py` – manifestgesteuertes A4-Ops-Deck-View-Model und validierter Interaktionsvertrag.
+- `src/bunkerfrequenz/presentation/a3_cinematic_forge.py` – cinematic A3-Komposition auf dem A4-Interaktionsvertrag ohne neue Fachlogik.
+- `content/de/ui/feedback.json` – sichtbare Feedbacktexte.
+- `content/de/ui/character_forge.json` – Character-Forge-, Komponenten-, Profil-, Workflow- und Cinematic-Texte.
+- `manifests/ANIMATION_MANIFEST.json` – katalogisierte nicht blockierende Level-/Skill-/Trait-/Spezialisierungs-/Resonanzanimationen und Fallbacks.
 
 `__init__.py`-Dateien exportieren vorhandene Funktionen; sie dürfen keine zweite Fachimplementierung enthalten.
 
@@ -89,6 +96,7 @@ Wichtige Presentation-Dateien:
 |---|---|
 | `tests/runtime/` | Character, Action, Persistence, Recovery, Resonanz, Command-Dispatcher und bestätigte Eventabfrage |
 | `tests/presentation/` | Projection, State, Feedback, Komponenten, A4, A3, Animation-Cues und A3↔A4-Vertragsidentität |
+| `tests/presentation/` | Projection, Biografie, Capabilities, lokaler State, Feedback, gemeinsame Komponenten, A4-Vertrag, A3↔A4-Vertrag und Dispatcher-Kompatibilität |
 | `tests/gameplay/` | Action-Vertrag |
 | `tests/simulation/` | reproduzierbare Progressions-/Balance-Regression |
 
@@ -120,6 +128,7 @@ Alle liegen unter `manifests/`.
 - `content/de/characters.json` und `level_titles.json` enthalten deutsche Spielinhalte.
 - `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel.
 - `manifests/ANIMATION_MANIFEST.json` definiert nicht blockierende Level-/Skill-/Trait-/Spezialisierungs-/Resonanz-Inszenierungen.
+- `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel einschließlich Feedback-, A4- und A3-Cinematic-Texte.
 - `tools/validate_action_contract.py` prüft den Action-Vertrag.
 - `tools/simulate_characters/progression_simulator.py` erzeugt reproduzierbare Balance-Läufe.
 - `reports/` enthält freigegebene Prüfnachweise; Berichte sind keine Runtime-Eingabe.

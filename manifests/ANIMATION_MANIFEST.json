@@ -27,6 +27,14 @@
       "motif": "steel_plate_stamp"
     },
     {
+      "id": "anim.trait_tier_up",
+      "duration_ms": 1800,
+      "max_blocking_ms": 0,
+      "skippable": true,
+      "fallback": "static_trait_tier_card",
+      "motif": "stacked_steel_notch"
+    },
+    {
       "id": "anim.specialization",
       "duration_ms": 3200,
       "max_blocking_ms": 0,
@@ -41,6 +49,11 @@
       "skippable": true,
       "fallback": "static_resonance_card",
       "motif": "frequency_ring_lock"
+      "duration_ms": 2600,
+      "max_blocking_ms": 0,
+      "skippable": true,
+      "fallback": "static_resonance_card",
+      "motif": "concentric_signal_pressure"
     }
   ],
   "reduced_motion": {

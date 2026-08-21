@@ -69,6 +69,7 @@ def build_a4_ops_deck(
     text_catalog: Mapping[str, str],
     *,
     workflow: Mapping[str, Any] | None = None,
+    action_selection: Sequence[Mapping[str, Any]] = (),
 ) -> dict[str, Any]:
     """Compose the A4 Ops Deck from shared components without adding gameplay state."""
     variant = _a4_variant(ui_manifest)
@@ -107,6 +108,33 @@ def build_a4_ops_deck(
         minimum_target_px=minimum_target_px,
         focus_ring_px=focus_ring_px,
     )
+    raw_actions = source_workflow.get("primary_actions", ())
+    if not isinstance(raw_actions, Sequence) or isinstance(raw_actions, (str, bytes)):
+        raise ValueError("primary_actions muss eine Sequenz sein")
+    if len(raw_actions) > max_primary_actions:
+        raise ValueError(
+            f"A4 erlaubt maximal {max_primary_actions} Primäraktionen, erhalten: {len(raw_actions)}"
+        )
+
+    meta = _require_mapping(projection.get("meta"), "Projection meta")
+    character_id = _require_nonempty_text(meta.get("character_id"), "Projection character_id")
+    capabilities = _require_mapping(projection.get("capabilities", {}), "Projection capabilities")
+
+    primary_actions = [
+        _normalize_primary_action(
+            action,
+            order=index,
+            character_id=character_id,
+            capabilities=capabilities,
+            minimum_target_px=minimum_target_px,
+            focus_ring_px=focus_ring_px,
+        )
+        for index, action in enumerate(raw_actions, start=1)
+    ]
+    selectable_actions = deepcopy(list(action_selection))
+    for action in selectable_actions:
+        if not isinstance(action, Mapping) or action.get("command", {}).get("character_id") != character_id:
+            raise ValueError("Action-Auswahl gehört zu einem anderen Character")
 
     components = build_components(projection, state)
     selected_components = _VIEW_COMPONENTS.get(state.selected_view)
@@ -166,6 +194,7 @@ def build_a4_ops_deck(
             "workspace": {
                 "current_goal": deepcopy(content_by_step["current_goal"]),
                 "primary_actions": primary_actions,
+                "action_selection": selectable_actions,
                 "selected_view_component_refs": list(selected_components),
             },
             "live_status": {"component_refs": ["StatusSummary", "ProgressFeedback"]},
