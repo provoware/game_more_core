@@ -5,6 +5,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ## Unveröffentlicht
 
 ### Hinzugefügt
+- Eine reine Character-Projektion 0.6 liefert kopierte, deterministisch sortierte Anzeige-, Fortschritts-, Trait- und Biografiedaten samt gezielter Tests.
 - Zusätzliche Spitznamen sind im Character-State serialisierbar und über den bestehenden Profilservice inklusive Undo und Recovery editierbar.
 - Ein Ordner-/Dateiindex, ein übergreifendes Spielschema und verbindliche Ablageregeln trennen Basistools, Dokumentation und maschinenlesbare Verträge.
 - Der Presentation-Vertrag 0.6 legt die gemeinsame, schreibgeschützte Character-Projektion, erlaubte UI-Commands, Textschlüsselgrenzen und Komponenten für A4 Ops Deck und A3 Cinematic Forge fest.
@@ -15,7 +16,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ### Bewusst offen
 - Die grafische Profilanbindung folgt weiterhin gemeinsam mit A4 Ops Deck und A3 Cinematic Forge in 0.6.
-- Die nächste kleine Iteration implementiert zunächst nur die Character-Projektion samt gezieltem Test; UI-Framework und Command-Adapter bleiben offen.
+- UI-Framework und Command-Adapter bleiben nach der getrennten Character-Projektion weiterhin offen.
 
 ## [0.5.2-alpha.1] – 2026-08-21
 
