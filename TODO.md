@@ -13,21 +13,18 @@
 - [x] Save-/Journal-Schema v2, Migration v1 → v2, Zeitanker
 
 ## 0.4.3 – UI/UX Blueprint
-- [x] vier klar unterschiedliche Industrial-Brutalist-Layouts spezifiziert
-- [x] Character Overview, Skills/Traits, Biografie, Ranking/Network
-- [x] Level-/Skill-/Trait-/Spezialisierungs-Inszenierung
-- [x] Kontrast-, Fokus-, Tastatur- und Fallbackregeln
-- [x] UI-Texte außerhalb des Codes
-- [x] Reduced-Motion und High-Contrast verbindlich
-- [x] gemeinsamer Komponentenvertrag verhindert parallele UI-Systeme
-- [x] Vier-Varianten-Entwurfsbild als visuelle Referenz vorgesehen
+- [x] vier Industrial-Brutalist-Layouts, Character/Skills/Biografie/Ranking
+- [x] Animation, Kontrast, Accessibility, externe UI-Texte
 
 ## 0.4.4 – Gameplay Action Contract
-- [ ] spielbare Aktionen katalogisieren
-- [ ] Skill-XP-Gewichte und Trait-Evidenz je Aktion
-- [ ] Voraussetzungen, Dauer, Risiko, Kosten und Resultate
-- [ ] Journal-/Undo-/Biografie-Zuordnung je Aktion
-- [ ] Action-Contract-Validator
+- [x] 20 spielbare Startaktionen katalogisiert
+- [x] Skill-XP-Gewichte und Trait-Evidenz je Aktion = jeweils 100 %
+- [x] Voraussetzungen, Dauer, Risiko, Kosten und Resultatpipeline
+- [x] Journal-/Undo-/Biografie-Zuordnung je Aktion
+- [x] deterministischer Zufallsvertrag ohne Systemzeit-Seed
+- [x] Schutzregel für reale Locations: legal/autorisiert oder fiktionalisiert
+- [x] Action-Contract-Validator + Testhülle
+- [x] maschinenlesbarer Validierungsbericht PASS
 
 ## Danach
 - [ ] 0.5 Character Core Implementation

@@ -1,0 +1,1 @@
+{"version":"0.4.4-alpha.1","checked_at":"2026-08-21T15:42:00+02:00","checks":{"action_count_20":true,"unique_action_ids":true,"skill_weights_sum_1":true,"trait_weights_sum_1":true,"biography_range_valid":true,"real_location_access_guard_present":true,"system_time_not_random_seed":true},"passed":true}
