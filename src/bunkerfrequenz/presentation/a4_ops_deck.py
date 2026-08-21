@@ -263,10 +263,24 @@ def build_a4_ops_deck(
         )
         for index, action in enumerate(raw_actions, start=1)
     ]
-    selectable_actions = deepcopy(list(action_selection))
-    for action in selectable_actions:
-        if not isinstance(action, Mapping) or action.get("command", {}).get("character_id") != character_id:
+
+    can_execute_action = bool(capabilities.get("can_execute_action", False))
+    selectable_actions: list[dict[str, Any]] = []
+    for index, raw_selection in enumerate(action_selection):
+        selection = deepcopy(dict(_require_mapping(raw_selection, f"action_selection[{index}]")))
+        template = _require_mapping(
+            selection.get("command_template"),
+            f"action_selection[{index}].command_template",
+        )
+        if template.get("character_id") != character_id:
             raise ValueError("Action-Auswahl gehört zu einem anderen Character")
+        enabled = selection.get("enabled")
+        if not isinstance(enabled, bool):
+            raise ValueError("Action-Auswahl.enabled muss bool sein")
+        if enabled and not can_execute_action:
+            selection["enabled"] = False
+            selection["blocked_reason"] = "capability_unconfirmed"
+        selectable_actions.append(selection)
 
     components = build_components(projection, state)
     selected_components = _VIEW_COMPONENTS.get(state.selected_view)
