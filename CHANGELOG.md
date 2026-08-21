@@ -20,6 +20,10 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - `presentation_capabilities.py` als reine Application-Leseabfrage für `can_edit_profile`, `can_undo_profile` und `can_execute_action`.
 - `command_dispatcher.py` als einziger 0.6.1-Schreibweg für `profile.update`, `profile.undo_last` und `action.execute`.
 - gezielte Tests für Capability-Fail-Closed, defensive Projection-Copies, ID-Erhalt, Action-/Profil-Idempotenz und wiederholtes Undo.
+- `PresentationState` als unveränderlicher lokaler Zustand für View, Biografie-Filter, ausgeblendete Feedback-IDs und Reduced Motion.
+- `presentation_events.py` als Application-Leseabfrage für detached Records bereits bestätigter Journal-Ereignisse.
+- deterministisches Progressionsfeedback für Level-, Skill-, Trait-, Spezialisierungs- und Resonanzsprünge sowie ausgelagerte Texte in `content/de/ui/feedback.json`.
+- End-to-End-Test `Command → Commit → bestätigte Eventabfrage → Feedback → Character-Projektion`.
 
 ### Geändert
 - README, Projektstatus und Projektmanifest trennen klar die versionierte Runtime-Baseline `0.5.2-alpha.1` von der aktiven 0.6-Entwicklung.
@@ -29,6 +33,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Die Character-Projektion akzeptiert bestätigte Capabilities optional, begrenzt sie auf drei öffentliche Booleans und kopiert sie defensiv.
 - Der Dispatcher gibt bestätigten `CharacterState`, Commit-Event-IDs und Idempotenzstatus zurück; er erzeugt bewusst keine zweite Presentation-Projektion.
 - UI-Befehle dürfen keine Balanceparameter wie `base_xp` oder Evidenzquelle setzen.
+- Der Biografie-Filter erhält seine erlaubten Kategorien aus `BIOGRAFIE_MANIFEST.json` statt aus einer zweiten Handliste.
+- Die Character-Projektion kann bestätigtes Feedback detached übernehmen und prüft dessen Textschlüssel gegen den Content-Katalog.
+- `Presentation Core` beobachtet zusätzlich die bestätigte Application-Eventabfrage.
 
 ### Auditabschluss
 - PR #14 war trotz fehlgeschlagenem relevantem Compile-Gate gemergt worden und hatte den Presentation-Schaden verursacht.
@@ -40,6 +47,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Repository-Reparatur #22: Runtime Core `32505897397` = erfolgreich; Presentation Core `32505897399` = erfolgreich.
 - 0.6.1 PR #24: Runtime Core `32510846508` = erfolgreich; Presentation Core `32510846537` = erfolgreich.
 - PR #24 wurde mit geprüftem Head nach `main` gemergt (`25006d07d33199fea2db8208c192ca2f6fa1095d`).
+- 0.6.2 PR #26: Runtime Core `32511953788` = erfolgreich; Presentation Core `32511953619` = erfolgreich.
+- PR #26 wurde mit geprüftem Head nach `main` gemergt (`5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a`).
+- Idempotenter Action-Replay erzeugt keine neuen Commit-IDs und damit keine zweite Feedbackquelle.
 
 ## [0.5.2-alpha.1] – 2026-08-21
 

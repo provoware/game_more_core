@@ -2,7 +2,7 @@
 
 <p>
   <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
-  <img alt="Aktive Entwicklung 0.6.2 Presentation" src="https://img.shields.io/badge/Aktive_Entwicklung-0.6.2_Presentation-7dff00">
+  <img alt="Aktive Entwicklung 0.6.3 Presentation" src="https://img.shields.io/badge/Aktive_Entwicklung-0.6.3_Presentation-7dff00">
   <img alt="Runtime Python Standardbibliothek" src="https://img.shields.io/badge/Runtime-Python_Standardbibliothek-00c2ff">
 </p>
 
@@ -15,15 +15,14 @@
 | Bereich | Stand |
 |---|---|
 | letzte versionierte Runtime-Baseline | `0.5.2-alpha.1` |
-| aktive Entwicklungsiteration | `0.6.2 – lokaler Presentation-State + bestätigtes Feedback` |
+| aktive Entwicklungsiteration | `0.6.3 – gemeinsame Komponenten + A4 Ops Deck` |
 | Runtime | Character State, Actions, Traits, Resonanz, Journal, Snapshot, Recovery |
-| Application-Grenze | Capabilities + zentraler Dispatcher für Profil, Undo und Actions abgeschlossen |
-| Presentation | Character-/Biografieprojektion mit bestätigten Capabilities; lokaler State/Feedback folgt |
-| grafische Spieloberfläche | noch nicht implementiert |
+| Presentation | Character-/Biografieprojektion, bestätigte Capabilities/Commands, lokaler immutable State und bestätigtes Feedback |
+| grafische Spieloberfläche | noch nicht implementiert; A4 Ops Deck ist nächster Schritt |
 | Telegram/Sync | geplant, noch nicht implementiert |
 | Wirtschaft/Clubs | geplant, noch nicht implementiert |
 
-**Wichtig:** `VERSION.json` beschreibt die letzte versionierte Runtime-Baseline. Die laufende 0.6-Entwicklung steht in `PROJEKTSTATUS.json` und `TODO.md`. Dadurch wird eine noch nicht abgeschlossene Presentation-Stufe nicht fälschlich als Release ausgegeben.
+**Wichtig:** `VERSION.json` beschreibt die letzte versionierte Runtime-Baseline. Die laufende nächste Entwicklungsiteration steht in `PROJEKTSTATUS.json` und `TODO.md`. Dadurch wird eine noch nicht abgeschlossene 0.6-Arbeit nicht fälschlich als neues Release ausgegeben.
 
 ## Schnellzugriff
 
@@ -66,12 +65,13 @@
 - gemeinsamer Presentation-Vertrag für A4 Ops Deck und A3 Cinematic Forge
 - schreibgeschützte Character-Projektion
 - getrennte Biografieprojektion aus validierten Journal-Ereignissen
-- bestätigte Application-Capabilities: Profil bearbeiten, Undo möglich, Action ausführbar
-- ein zentraler Command-Dispatcher für `profile.update`, `profile.undo_last`, `action.execute`
-- wiederholte bestätigte UI-Schreibaktionen werden idempotent behandelt
-- deutsche Skill-, Trait-, Effekt-, Konsequenz-, Spezialisierungs- und Stufenkataloge
+- bestätigte Application-Capabilities und ein zentraler Schreibcommand-Dispatcher
+- immutable lokaler Presentation-State für Ansicht, Filter, Feedback-Dismiss und Reduced Motion
+- bestätigte Eventabfrage über die Application-Grenze statt direktem Journalzugriff aus Presentation
+- deterministisches Feedback für Level-, Skill-, Trait-, Spezialisierungs- und Resonanzsprünge
+- sichtbare Feedbacktexte vollständig in `content/de/ui/feedback.json` ausgelagert
 - keine sichtbaren Texte in der Spiellogik
-- Runtime Core und Presentation Core als getrennte zielgerichtete CI-Gates
+- eigener zielgerichteter Presentation-CI-Gate
 
 ## Datenfluss
 
@@ -89,26 +89,28 @@ Spielaktion ──► deterministische Auflösung ──► Domain-Ereignisse
                                          │             │
                                          └──────┬──────┘
                                                 ▼
-                              Application-Capabilities / Commands
+                              Application-Capabilities / bestätigte Events
                                                 │
                                                 ▼
                                    schreibgeschützte Projection
+                                                │
+                                     lokaler Presentation-State
                                                 │
                                       ┌─────────┴─────────┐
                                       ▼                   ▼
                                  A4 Ops Deck      A3 Cinematic Forge
 ```
 
-A4 und A3 dürfen Daten später unterschiedlich anordnen, aber keine unterschiedlichen Fachregeln oder Schreibwege besitzen.
+A4 und A3 dürfen Daten später unterschiedlich anordnen, aber keine unterschiedlichen Fachregeln besitzen.
 
 ## Architekturgrenzen
 
 | Bereich | Verantwortung | Darf nicht |
 |---|---|---|
 | `domain` | Charakter, Progression, Traits | UI oder Infrastruktur kennen |
-| `application` | Use Cases, Capabilities und Commands koordinieren | Persistenz umgehen oder UI-Layout erzeugen |
+| `application` | Use Cases, Capabilities, Commands und bestätigte Abfragen koordinieren | Persistenz umgehen |
 | `infrastructure` | Journal, Save, Snapshot, Recovery | sichtbare UI-Texte verwalten |
-| `presentation` | schreibgeschützte Anzeigeprojektionen | Domain-Zustand direkt verändern |
+| `presentation` | schreibgeschützte Anzeigeprojektionen und rein lokalen UI-State | Domain-Zustand direkt verändern |
 | `content` | sichtbare/lokalisierte Texte | technische Regeln ersetzen |
 
 ## Gezielte Prüfungen
@@ -120,7 +122,7 @@ PYTHONPATH=src python3 -m compileall -q src
 PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
 ```
 
-Die Runtime-Baseline `0.5.2-alpha.1` und die 0.6.1-Application-Grenze wurden über **Runtime Core** erfolgreich geprüft.
+Die Runtime-Baseline `0.5.2-alpha.1` wurde im zugehörigen PR zusätzlich über den GitHub-Workflow **Runtime Core** erfolgreich geprüft.
 
 ### Presentation
 
@@ -129,7 +131,7 @@ PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
 PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
 ```
 
-Die 0.6.1-Grenze wurde zusätzlich über **Presentation Core** erfolgreich geprüft.
+Für Änderungen an der Presentation existiert zusätzlich `.github/workflows/presentation-core.yml`. 0.6.2 bestand auf PR #26 sowohl Runtime Core (`32511953788`) als auch Presentation Core (`32511953619`).
 
 ### Verträge / Simulation
 
@@ -140,7 +142,7 @@ python3 tools/simulate_characters/progression_simulator.py \
   --output reports/PROGRESSION_SIMULATION_0.4.1.json
 ```
 
-Prüfungen werden risikobasiert ausgeführt; reine Status-/Dokumentänderungen lösen keine unnötigen Volltests aus.
+Prüfungen werden risikobasiert ausgeführt; nicht jede Dokumentänderung löst unnötig alle Tests aus.
 
 ## Verbindliche Dokumente
 

@@ -5,7 +5,7 @@
 Dieser Index beantwortet: **Wo liegt was und welche Datei ist zuständig?**
 
 - Runtime-Baseline: `0.5.2-alpha.1`
-- aktive Entwicklung: `0.6.2 – lokaler Presentation-State + bestätigtes Feedback`
+- aktive Entwicklung: `0.6.3 – gemeinsame Komponenten + A4 Ops Deck`
 
 Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben Iteration angepasst.
 
@@ -50,7 +50,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `docs/PERSISTENCE_CONTRACT.md` | Journal-, Save- und Transaktionsregeln |
 | `docs/RECOVERY_0.5.1.md` | Snapshot, Wiederherstellung und Undo |
 | `docs/UI_UX_BLUEPRINT.md` | A1–A4 Design-/UX-Richtung |
-| `docs/PRESENTATION_CONTRACT_0.6.md` | Projection, Application-Capabilities, Schreibcommands und gemeinsame A4/A3-Grenzen |
+| `docs/PRESENTATION_CONTRACT_0.6.md` | Projection, Capabilities, bestätigte Events, lokaler State, Feedback und A4/A3-Grenzen |
 | `docs/DATENMODELL.md` | fachliche Datenobjekte und Beziehungen |
 | `docs/ENTWICKLERHANDBUCH.md` | Übernahme, Prüfstrategie und Release-/PR-Ablauf |
 | `docs/REPOSITORY_AUDIT_2026-08-21.md` | Auditbefunde und Reparaturentscheidungen |
@@ -61,14 +61,16 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | Bereich | Verantwortung |
 |---|---|
 | `src/bunkerfrequenz/domain/` | Character State, Progression, Trait-Auswirkungen |
-| `src/bunkerfrequenz/application/action_resolver.py` | deterministische fachliche Action-Auflösung |
-| `src/bunkerfrequenz/application/character_action_service.py` | bestätigte Action-Commits über Persistence |
-| `src/bunkerfrequenz/application/profile_service.py` | Profiländerung und sicherer Profil-Undo |
-| `src/bunkerfrequenz/application/presentation_capabilities.py` | reine Application-Leseabfrage für drei öffentliche UI-Capabilities |
-| `src/bunkerfrequenz/application/command_dispatcher.py` | einziger 0.6.1-Schreibweg von UI-Commands zu bestehenden Application-Services |
-| `src/bunkerfrequenz/application/recovery_service.py` | Character-Replay und Wiederherstellung |
+| `src/bunkerfrequenz/application/` | Action-/Profil-/Recovery-Use-Cases, Presentation-Capabilities, Command-Dispatcher und bestätigte Eventabfrage |
 | `src/bunkerfrequenz/infrastructure/` | Journal, State, Snapshot, atomare Speicherung und Recovery |
-| `src/bunkerfrequenz/presentation/` | schreibgeschützte Character-/Biografieprojektionen; keine Domain-Writes |
+| `src/bunkerfrequenz/presentation/` | Character-/Biografieprojektion, immutable lokaler Presentation-State und bestätigtes Feedback; keine Domain-Writes |
+
+Wichtige neue 0.6.2-Dateien:
+
+- `src/bunkerfrequenz/application/presentation_events.py` – detached Abfrage bestätigter Journal-Event-IDs.
+- `src/bunkerfrequenz/presentation/state.py` – lokaler View-/Filter-/Dismiss-/Reduced-Motion-State.
+- `src/bunkerfrequenz/presentation/feedback.py` – deterministisches Progressionsfeedback.
+- `content/de/ui/feedback.json` – sichtbare Feedbacktexte.
 
 `__init__.py`-Dateien exportieren vorhandene Funktionen; sie dürfen keine zweite Fachimplementierung enthalten.
 
@@ -76,15 +78,15 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 
 | Bereich | Zweck |
 |---|---|
-| `tests/runtime/` | Character-, Action-, Persistence-, Recovery-, Resonanz- und Command-Dispatcher-Kern |
-| `tests/presentation/` | Projection, Biografie, Textschlüssel, Application-Capabilities und später A4/A3-Vertrag |
+| `tests/runtime/` | Character, Action, Persistence, Recovery, Resonanz, Command-Dispatcher und bestätigte Eventabfrage |
+| `tests/presentation/` | Projection, Biografie, Textschlüssel, Capabilities, lokaler State, Feedback und End-to-End-Feedbackpipeline |
 | `tests/gameplay/` | Action-Vertrag |
 | `tests/simulation/` | reproduzierbare Progressions-/Balance-Regression |
 
 ## Remote-CI
 
 - `runtime-core.yml`: Runtime-/Domain-/Application-/Infrastructure-Gate.
-- `presentation-core.yml`: Presentation plus die zwei kanonischen 0.6.1-Application-Grenzdateien und relevante UI-Textkataloge.
+- `presentation-core.yml`: Presentation, zugehörige Application-Grenzdateien, Presentation-Tests und relevante UI-Textkataloge.
 
 Ein rotes für den Scope relevantes Gate blockiert den Merge.
 
@@ -107,7 +109,7 @@ Alle liegen unter `manifests/`.
 ## Inhalte, Tools und Berichte
 
 - `content/de/characters.json` und `level_titles.json` enthalten deutsche Spielinhalte.
-- `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel.
+- `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel einschließlich `feedback.json`.
 - `tools/validate_action_contract.py` prüft den Action-Vertrag.
 - `tools/simulate_characters/progression_simulator.py` erzeugt reproduzierbare Balance-Läufe.
 - `reports/` enthält freigegebene Prüfnachweise; Berichte sind keine Runtime-Eingabe.

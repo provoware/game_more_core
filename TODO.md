@@ -3,51 +3,62 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Aktive Entwicklungsiteration:** `0.6.2 – lokaler Presentation-State + bestätigtes Feedback`
-- **Abgeschlossen:** `0.6.1 – Application-Grenze für Presentation`
+- **Aktive Entwicklungsiteration:** `0.6.3 – gemeinsame Komponenten + A4 Ops Deck`
+- **Abgeschlossen:** `0.6.2 – lokaler Presentation-State + bestätigtes Feedback`
 - **Offene konkurrierende PRs:** `0`
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
 - [x] beschädigte doppelte `character_projection.py` auf eine kanonische Implementierung zurückgeführt
-- [x] widersprüchlich zusammenkopierte Projection-Tests zu einem Vertragstest-Satz konsolidiert
-- [x] `presentation/__init__.py` auf eindeutige Exporte für Character- und Biografieprojektion repariert
-- [x] eigener zielgerichteter `Presentation Core`-CI-Workflow angelegt
+- [x] widersprüchliche Projection-Tests konsolidiert
+- [x] eindeutige Presentation-Package-Exporte wiederhergestellt
+- [x] `Presentation Core` als eigener zielgerichteter CI-Gate angelegt
 - [x] Release-Baseline und aktive Entwicklungsiteration in den Info-Dateien getrennt
-- [x] konkurrierende PR-Ideen in diese sequenzielle Roadmap überführt
-- [x] Runtime Core und Presentation Core auf Reparatur-Head grün
-- [x] Reparatur-PR #22 nach `main` gemergt
+- [x] PR #22 mit Runtime Core + Presentation Core grün gemergt
 - [x] konkurrierende Presentation-PRs #15–#21 mit Begründung geschlossen
 
 ## 0.6.1 – Application-Grenze für Presentation
 
 - [x] `can_edit_profile`, `can_undo_profile`, `can_execute_action` ausschließlich aus der Application ableiten
-- [x] Profile-Update, Profil-Undo und Action-Ausführung über **einen** Command-Dispatcher routen
-- [x] Character-/Command-/Profil-Event-/Profil-Transaction-/Action-Instance-IDs validieren und über die zuständigen bestehenden Services führen
-- [x] UI-gesteuerte Balanceparameter wie `base_xp` und Evidenzquelle nicht freigeben
-- [x] idempotente Wiederholung von Profilupdate, Undo und Action gezielt testen
-- [x] Projection erhält bestätigte Capabilities als begrenzte, defensive Kopie und errät keine Rechte
-- [x] Runtime Core für PR #24 grün (`32510846508`)
-- [x] Presentation Core für PR #24 grün (`32510846537`)
-- [x] PR #24 nach `main` gemergt (`25006d07d33199fea2db8208c192ca2f6fa1095d`)
+- [x] Profilupdate, Profil-Undo und Action-Ausführung über **einen** Command-Dispatcher routen
+- [x] notwendige IDs validieren und über die zuständigen bestehenden Services führen
+- [x] UI-gesteuerte Balanceparameter nicht freigeben
+- [x] Profilupdate, Undo und Action-Wiederholung idempotent testen
+- [x] Projection erhält bestätigte Capabilities als begrenzte defensive Kopie
+- [x] PR #24: Runtime Core `32510846508` + Presentation Core `32510846537` grün
+- [x] PR #24 gemergt (`25006d07d33199fea2db8208c192ca2f6fa1095d`)
 
 ## 0.6.2 – Lokaler Presentation-State + bestätigtes Feedback
 
-- [ ] unveränderlichen lokalen Zustand für `overview`, `skills_traits`, `biography` anlegen
-- [ ] `view.select`, `biography.filter`, `feedback.dismiss` als reine lokale Transitionen implementieren
-- [ ] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzereignisse in bestätigtes UI-Feedback projizieren
-- [ ] Feedback-IDs deterministisch aus bestätigten Event-IDs ableiten
-- [ ] nur katalogisierte bestätigte Journal-/Domain-Ereignisse als Feedback akzeptieren
-- [ ] Reduced Motion als statische, nicht blockierende Darstellung absichern
-- [ ] sicherstellen, dass lokaler Presentation-State niemals Save, Journal oder CharacterState verändert
+- [x] unveränderlichen lokalen Zustand für `overview`, `skills_traits`, `biography` angelegt
+- [x] `view.select`, `biography.filter`, `feedback.dismiss` als reine lokale Transitionen umgesetzt
+- [x] Biografie-Filter nutzt Kategorien aus `BIOGRAFIE_MANIFEST.json` statt einer zweiten Handliste
+- [x] bestätigte Journalrecords über Application-Leseabfrage `get_confirmed_events(...)` bereitgestellt
+- [x] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzereignisse in bestätigtes UI-Feedback projiziert
+- [x] Feedback-IDs deterministisch aus bestätigten Event-IDs abgeleitet
+- [x] nur katalogisierte bestätigte Journal-/Domain-Ereignisse als Feedback akzeptiert
+- [x] sichtbare Feedbacktexte nach `content/de/ui/feedback.json` ausgelagert
+- [x] Reduced Motion als statische, nicht blockierende Darstellungsoption abgesichert
+- [x] Character-Projektion übernimmt Feedback detached und validiert dessen Textschlüssel
+- [x] End-to-End `Command → Commit → Eventquery → Feedback → Projection` getestet
+- [x] idempotenter Replay erzeugt keine neuen Commit-IDs und kein doppeltes Feedback
+- [x] PR #26: Runtime Core `32511953788` + Presentation Core `32511953619` grün
+- [x] PR #26 gemergt (`5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a`)
 
 ## 0.6.3 – Gemeinsame Komponenten + A4 Ops Deck
 
+**Aktiver Fokus.** Erst gemeinsame frameworkfreie Komponenten, dann A4 als geführter Workflow. Keine zweite Projection und keine zweite Command-Schicht.
+
 - [ ] acht gemeinsame Komponenten implementieren: `CharacterHeader`, `StatusSummary`, `SkillList`, `TraitList`, `SpecializationCard`, `BiographyTimeline`, `ProfileEditor`, `ProgressFeedback`
-- [ ] Komponenten erhalten nur ihren Projection-Block und lokalen Presentation-State
-- [ ] A4 Ops Deck als geführten Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel` zusammensetzen
-- [ ] maximal drei Primäraktionen, große Ziele, sichtbarer Fokus und High-Contrast prüfen
-- [ ] editierbare Namen, Alias, zusätzliche Spitznamen und Motto über den Command-Weg anbinden
+- [ ] Komponenten erhalten ausschließlich ihren Projection-Block und lokalen Presentation-State
+- [ ] `ProfileEditor` nutzt ausschließlich den bestehenden zentralen Command-Dispatcher
+- [ ] `ProgressFeedback` nutzt nur bestätigte Feedback-Projektion und lokale Dismiss-/Reduced-Motion-Regeln
+- [ ] A4 Ops Deck als Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel` zusammensetzen
+- [ ] maximal drei Primäraktionen gleichzeitig zulassen
+- [ ] große Klick-/Touch-Ziele, sichtbaren Tastaturfokus, High-Contrast und Farbe+Icon+Text absichern
+- [ ] leere/fehlende optionale Bereiche robust darstellen, ohne erfundene Daten
+- [ ] Namen, Alias, zusätzliche Spitznamen und Motto über den bestätigten 0.6.1-Command-Weg editierbar machen
+- [ ] A4 bleibt frameworkfrei/testbar; konkrete grafische Toolkit-/Web-Runtime erst nach stabilem View-Model-Vertrag
 
 ## 0.6.4 – A3 Cinematic Forge aus denselben Bausteinen
 
@@ -89,9 +100,10 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 - [x] **0.5.0** Headless Character-/Action-/Persistence-Core
 - [x] **0.5.1** Snapshot-Replay, Recovery, Fault Injection und Profil-Undo
 - [x] **0.5.2** Trait-Auswirkungen, Soft-Konflikte und Open-End-Resonanz
-- [x] **0.6 Foundation** Presentation-Vertrag, deutsche Textkataloge, Character-/Biografieprojektion und Repository-Reparatur
+- [x] **0.6 Foundation** Presentation-Vertrag, Textkataloge, Character-/Biografieprojektion und Repository-Reparatur
 - [x] **0.6.1** bestätigte Application-Capabilities + zentraler Command-Dispatcher
+- [x] **0.6.2** immutable lokaler Presentation-State + bestätigtes deterministisches Progressionsfeedback
 
 ## PR-Regel
 
-Für dieselbe Zielstelle wird künftig nur **ein aktiver Implementierungs-PR** geführt. Alternative Ansätze werden nicht parallel gemergt; nützliche Aspekte werden zuerst in dieser Roadmap konsolidiert und danach in der vorgesehenen Reihenfolge umgesetzt.
+Für dieselbe Zielstelle wird nur **ein aktiver Implementierungs-PR** geführt. Alternative Ansätze werden nicht parallel gemergt; sinnvolle Aspekte werden zuerst hier konsolidiert und danach in der vorgesehenen Reihenfolge umgesetzt.
