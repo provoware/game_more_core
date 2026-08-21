@@ -18,6 +18,8 @@ Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Je
 10. CHANGELOG bei fachlicher oder verbindlicher Prozessänderung aktualisieren.
 11. Version nur erhöhen, wenn eine neue freigegebene Entwicklungsstufe entsteht.
 12. Erst committen und mergen, wenn der geplante Scope und seine Nachweise zusammenpassen.
+13. eine sinnvolle hilfreiche optimierung pro iteration eines der bereiche : Hilfe im Tool, Gameplay oder Codequalität und Fehlerhandling.
+14. führe pro iteration eine erweiterungsidee oder späterer verbesserung anhängend in einer info datei. mit details und begründung.
 
 ## Pflichtangaben je Iteration
 
