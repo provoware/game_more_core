@@ -5,7 +5,7 @@
   "lineage_id": "e59052dd-e910-4405-9a06-1db621d818e7",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_development_phase": "0.8",
+  "active_development_phase": "0.7",
   "design_direction": "industrial_brutalist_variant_a",
   "architecture_layers": [
     "domain",
