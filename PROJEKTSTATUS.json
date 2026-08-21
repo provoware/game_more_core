@@ -3,21 +3,19 @@
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
   "active_iteration": "0.8.1",
-  "status": "0_8_1_event_state_foundation_implemented_remote_validation_pending",
-  "current_focus": "0_8_1_event_state_foundation",
-  "last_validated_feature_iteration": "0.7.2",
+  "status": "0_8_1_event_state_foundation_remote_validated_merge_pending",
+  "current_focus": "0_8_1_event_state_foundation_closeout",
+  "last_validated_feature_iteration": "0.8.1",
   "last_validated_release": "0.5.2-alpha.1",
-  "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
+  "validation_reference": "PR #48 / head 79cc26bec0a780322874ea6f3ced458e8ee72bd6",
   "remote_validation": {
-    "status": "pending_for_0.8.1",
-    "last_validated_feature": {
-      "iteration": "0.7.2",
-      "pull_request": 41,
-      "validated_head": "5f7ded400a5fca1ee25307797628ab2584de9812",
-      "runtime_core_workflow_run": 32533954380,
-      "presentation_core_workflow_run": 32533954387,
-      "repository_health_workflow_run": 32533954406
-    }
+    "status": "success_for_0.8.1_initial_head",
+    "pull_request": 48,
+    "validated_head": "79cc26bec0a780322874ea6f3ced458e8ee72bd6",
+    "runtime_core_workflow_run": 32537531324,
+    "presentation_core_workflow_run": 32537531305,
+    "repository_health_workflow_run": 32537531303,
+    "final_information_head_revalidation_required": true
   },
   "presentation_application_boundary": {
     "status": "validated_and_merged",
@@ -133,8 +131,13 @@
     "full_loop_pending": []
   },
   "event_state_foundation": {
-    "status": "implemented_remote_validation_pending",
+    "status": "remote_validated_merge_pending",
     "iteration": "0.8.1",
+    "pull_request": 48,
+    "validated_head": "79cc26bec0a780322874ea6f3ced458e8ee72bd6",
+    "runtime_core_workflow_run": 32537531324,
+    "presentation_core_workflow_run": 32537531305,
+    "repository_health_workflow_run": 32537531303,
     "state_block": "event",
     "domain_module": "src/bunkerfrequenz/domain/event.py",
     "application_service": "src/bunkerfrequenz/application/event_state_service.py",
@@ -178,7 +181,7 @@
     "idempotent_commands": true,
     "physical_phase_safety_gate": true,
     "character_event_state_blocks_preserved": true,
-    "fault_injection_recovery_test_present": true,
+    "fault_injection_recovery_test_passed": true,
     "economy_ledger_implemented": false,
     "inventory_ownership_implemented": false
   },
@@ -256,5 +259,5 @@
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-22T01:15:00+02:00"
+  "updated_at": "2026-08-22T01:38:00+02:00"
 }
