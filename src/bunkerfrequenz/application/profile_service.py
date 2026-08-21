@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bunkerfrequenz.application.state_blocks import merge_state_block
 from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 
@@ -44,7 +45,7 @@ class CharacterProfileService:
         self.persistence.commit(
             transaction_id,
             [{"event_id": event_id, "event_type": "character.profile_updated", "payload": {"old": old, "new": new}}],
-            {"character": updated.to_dict()},
+            merge_state_block(self.persistence, "character", updated.to_dict()),
             context,
         )
         return updated
@@ -73,7 +74,7 @@ class CharacterProfileService:
                 "payload": {"old": current, "new": reverse, "undo_of": original["event_id"]},
                 "compensation_for": original["event_id"],
             }],
-            {"character": character.to_dict()},
+            merge_state_block(self.persistence, "character", character.to_dict()),
             context,
         )
         return character
