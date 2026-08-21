@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "protected_branch": "main",
+  "target_branch_policy": {
+    "require_pull_request": true,
+    "require_up_to_date_before_merge": true,
+    "require_conversation_resolution": true,
+    "allow_force_pushes": false,
+    "allow_deletions": false,
+    "required_status_checks": [
+      "runtime-core",
+      "presentation-core",
+      "repository-health"
+    ]
+  },
+  "canonical_information": {
+    "version": "VERSION.json",
+    "project_manifest": "PROJEKTMANIFEST.json",
+    "project_status": "PROJEKTSTATUS.json",
+    "todo": "TODO.md",
+    "readme": "README.md"
+  },
+  "canonical_symbols": {
+    "build_character_projection": "src/bunkerfrequenz/presentation/character_projection.py",
+    "build_biography_projection": "src/bunkerfrequenz/presentation/biography_projection.py",
+    "build_a4_ops_deck": "src/bunkerfrequenz/presentation/a4_ops_deck.py",
+    "build_a3_cinematic_forge": "src/bunkerfrequenz/presentation/a3_cinematic_forge.py",
+    "build_ranking_network_projection": "src/bunkerfrequenz/presentation/ranking_network.py"
+  },
+  "public_packages": [
+    "bunkerfrequenz.presentation"
+  ],
+  "required_workflows": {
+    "runtime-core": ".github/workflows/runtime-core.yml",
+    "presentation-core": ".github/workflows/presentation-core.yml",
+    "repository-health": ".github/workflows/repository-health.yml"
+  },
+  "stale_branch_guard": {
+    "enabled": true,
+    "exempt_prefixes": [
+      "maintenance/",
+      "hotfix/",
+      "recovery/"
+    ]
+  }
+}
