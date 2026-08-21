@@ -136,6 +136,24 @@
     "runtime_core_remote_gate",
     "presentation_core_remote_gate"
   ],
+  "presentation_0_6_4_checks": [
+    "a3_reuses_exact_eight_a4_components",
+    "a3_primary_commands_identical_to_a4",
+    "a3_accessibility_contract_identical_to_a4",
+    "a3_layout_only_recomposition",
+    "a3_level_skill_trait_specialization_resonance_cues",
+    "a3_animation_max_blocking_zero",
+    "a3_animation_skippable",
+    "a3_animation_never_blocks_input",
+    "a3_reduced_motion_static_fallback",
+    "a3_missing_animation_fails_soft_static",
+    "a3_unsafe_animation_fails_soft_static",
+    "a3_feedback_dismiss_shared_with_component",
+    "a3_visible_text_keys_catalogued",
+    "a3_inherits_a4_action_limit_and_validation",
+    "runtime_core_remote_gate",
+    "presentation_core_remote_gate"
+  ],
   "unit_test_commands": [
     "python3 -m unittest tests/simulation/test_progression_simulator.py",
     "python3 -m pytest tests/gameplay/test_action_contract.py",
