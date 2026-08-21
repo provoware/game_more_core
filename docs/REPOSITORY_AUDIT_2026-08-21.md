@@ -2,9 +2,11 @@
 
 ## Ergebnis
 
-Der geprüfte `main`-Stand war **nicht fehlerfrei**. Der Runtime-Kern `0.5.2-alpha.1` besitzt einen erfolgreichen Remote-Nachweis, aber die danach parallel entstandene 0.6-Presentation-Arbeit hatte einen kritischen Merge-Schaden erzeugt.
+Der vor dem Audit geprüfte `main`-Stand war **nicht fehlerfrei**. Der Runtime-Kern `0.5.2-alpha.1` war intakt, aber parallele 0.6-Presentation-Arbeit hatte einen kritischen Merge-Schaden erzeugt.
 
-## Kritischer Befund
+Der Audit ist inzwischen **abgeschlossen**: Die Presentation-Foundation wurde repariert, beide relevanten Remote-Gates waren auf demselben Reparatur-Head grün, PR #22 wurde nach `main` gemergt und die sieben konkurrierenden Presentation-PRs #15–#21 wurden mit dokumentierter Übernahme ihrer sinnvollen Anforderungen geschlossen.
+
+## Kritischer Ausgangsbefund
 
 PR #14 wurde gemergt, obwohl der für `src/**` relevante GitHub-Workflow `Runtime Core` bereits beim Compile-Schritt fehlgeschlagen war. Im resultierenden `main` waren zwei konkurrierende Versionen von `character_projection.py` und ihres Tests ineinanderkopiert. Auch `presentation/__init__.py` enthielt doppelte, konkurrierende Exportblöcke.
 
@@ -26,7 +28,7 @@ Zum Auditzeitpunkt waren sieben überlappende Presentation-PRs offen:
 - #20 alternative Komponenten-/Adapterstruktur
 - #21 A3/A4-Gesamtprojektion mit erneut eigener Projection-Variante
 
-Diese PRs enthalten fachlich sinnvolle Einzelideen, bearbeiten aber teilweise dieselben kanonischen Dateien mit unterschiedlichen Strukturen. Ein seriöser Merge aller Varianten würde die gerade festgelegte Architektur erneut aufspalten.
+Diese PRs enthielten fachlich sinnvolle Einzelideen, bearbeiteten aber teilweise dieselben kanonischen Dateien mit unterschiedlichen Strukturen. Alle sieben wurden nach der Reparatur geschlossen; die sinnvollen Anforderungen sind sequenziell in `TODO.md` erhalten.
 
 ## Reparaturentscheidung
 
@@ -54,9 +56,28 @@ Diese PRs enthalten fachlich sinnvolle Einzelideen, bearbeiten aber teilweise di
 - rotes relevantes CI-Gate blockiert Merge
 - Release-Baseline und aktive Entwicklungsiteration werden getrennt geführt
 
+## Validierter Reparaturstand
+
+Reparatur-PR: **#22**
+
+Geprüfter Head:
+
+`fc9be2ca5cc4ca669fbb800899a0515dc2e543e6`
+
+Remote-Gates auf genau diesem Head:
+
+- `Runtime Core` → **SUCCESS**, Workflow Run `32505897397`
+- `Presentation Core` → **SUCCESS**, Workflow Run `32505897399`
+
+Merge nach `main`:
+
+`73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea`
+
+Danach wurden #15–#21 geschlossen. Offene PRs nach dem Cleanup: **0**.
+
 ## Konsolidierte Folge-Reihenfolge
 
-Die fachlich sinnvollen Inhalte der parallelen PRs gehen nicht verloren. Sie sind in `TODO.md` geordnet:
+Die fachlich sinnvollen Inhalte der geschlossenen Parallel-PRs stehen in `TODO.md` in dieser Reihenfolge:
 
 1. Application-Capabilities + ein Command-Dispatcher
 2. lokaler Presentation-State + bestätigtes Feedback
@@ -66,27 +87,16 @@ Die fachlich sinnvollen Inhalte der parallelen PRs gehen nicht verloren. Sie sin
 
 Dadurch entsteht kein zweiter Presentation-Kern.
 
-## Validierungsstrategie
-
-Für diese Reparatur sind relevant:
-
-```bash
-PYTHONPATH=src python3 -m compileall -q src
-PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
-PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
-```
-
-Remote müssen der bestehende `Runtime Core` und der neue `Presentation Core` für den tatsächlichen Reparatur-Head grün sein, bevor nach `main` gemergt wird.
-
 ## Versionsentscheidung
 
-Die Reparatur erhöht `VERSION.json` nicht künstlich. `0.5.2-alpha.1` bleibt die letzte freigegebene Runtime-Baseline. Die aktive 0.6-Arbeit wird in `PROJEKTSTATUS.json` und `TODO.md` geführt, bis daraus eine eigenständig abgenommene Produktstufe wird.
+Die Reparatur erhöht `VERSION.json` nicht künstlich. `0.5.2-alpha.1` bleibt die letzte freigegebene Runtime-Baseline. Die aktive Entwicklung steht nun bei `0.6.1` und wird in `PROJEKTSTATUS.json` und `TODO.md` geführt.
 
-## Abschlusskriterium
+## Abschlussstatus
 
-Der Audit ist erst abgeschlossen, wenn:
+- [x] Reparatur-PR remote grün
+- [x] Reparatur auf `main` gemergt
+- [x] überlappende offene Presentation-PRs geschlossen
+- [x] offener PR-Bestand auf 0 reduziert
+- [x] Projektstatus auf 0.6.1 als nächsten kanonischen Schritt gesetzt
 
-- Reparatur-PR remote grün ist,
-- Reparatur auf `main` gemergt ist,
-- die überlappenden offenen Presentation-PRs geschlossen sind,
-- `main` danach erneut den erwarteten Status zeigt.
+**Auditstatus: ABGESCHLOSSEN.**
