@@ -2,29 +2,21 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.7.2",
-  "status": "0_7_2_validated_and_merged_closeout_0_8_ready",
-  "current_focus": "0_7_2_documentation_closeout_before_0_8",
+  "active_iteration": "0.8.1",
+  "status": "0_8_1_event_state_foundation_implemented_remote_validation_pending",
+  "current_focus": "0_8_1_event_state_foundation",
+  "last_validated_feature_iteration": "0.7.2",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
-    "runtime_core": {
-      "status": "success",
+    "status": "pending_for_0.8.1",
+    "last_validated_feature": {
+      "iteration": "0.7.2",
       "pull_request": 41,
-      "workflow_run": 32533954380,
-      "validated_head": "5f7ded400a5fca1ee25307797628ab2584de9812"
-    },
-    "presentation_core": {
-      "status": "success",
-      "pull_request": 41,
-      "workflow_run": 32533954387,
-      "validated_head": "5f7ded400a5fca1ee25307797628ab2584de9812"
-    },
-    "repository_health": {
-      "status": "success",
-      "pull_request": 41,
-      "workflow_run": 32533954406,
-      "validated_head": "5f7ded400a5fca1ee25307797628ab2584de9812"
+      "validated_head": "5f7ded400a5fca1ee25307797628ab2584de9812",
+      "runtime_core_workflow_run": 32533954380,
+      "presentation_core_workflow_run": 32533954387,
+      "repository_health_workflow_run": 32533954406
     }
   },
   "presentation_application_boundary": {
@@ -119,8 +111,14 @@
     "manifest_actions_selectable": 20,
     "manifest_actions_with_resource_effects": 20,
     "resource_bounds": {
-      "energy": [0, 100],
-      "stress": [0, 100]
+      "energy": [
+        0,
+        100
+      ],
+      "stress": [
+        0,
+        100
+      ]
     },
     "resource_event": "character.resources_changed",
     "prerequisites_fail_closed": true,
@@ -132,10 +130,57 @@
     "profile_undo_compensating_only": true,
     "resource_recovery_replay": true,
     "a4_a3_same_confirmed_source": true,
-    "full_loop_pending": [],
-    "merge_path": "github_pr_merge_after_green_gates",
-    "safe_merge_command_used": false,
-    "process_note": "PR #41 war fachlich dreifach grün, wurde aber außerhalb des vorgeschriebenen /safe-merge-Kommandos gemergt; folgende normale PRs verwenden wieder ausschließlich /safe-merge."
+    "full_loop_pending": []
+  },
+  "event_state_foundation": {
+    "status": "implemented_remote_validation_pending",
+    "iteration": "0.8.1",
+    "state_block": "event",
+    "domain_module": "src/bunkerfrequenz/domain/event.py",
+    "application_service": "src/bunkerfrequenz/application/event_state_service.py",
+    "combined_recovery": "src/bunkerfrequenz/application/game_recovery.py",
+    "manifest": "manifests/EVENT_STATE_MANIFEST.json",
+    "schema": "schemas/event_state.schema.json",
+    "contract": "docs/EVENT_STATE_0.8.1.md",
+    "fields": [
+      "event_id",
+      "display_name",
+      "location",
+      "budget_cents",
+      "acts",
+      "crew",
+      "equipment",
+      "time_window",
+      "safety_status",
+      "phase",
+      "revision"
+    ],
+    "phases": [
+      "draft",
+      "planning",
+      "procurement",
+      "transport",
+      "setup",
+      "soundcheck",
+      "live",
+      "crisis",
+      "teardown",
+      "settlement",
+      "completed",
+      "cancelled"
+    ],
+    "journal_events": [
+      "event.created",
+      "event.planning_updated",
+      "event.phase_changed"
+    ],
+    "stale_revision_rejected": true,
+    "idempotent_commands": true,
+    "physical_phase_safety_gate": true,
+    "character_event_state_blocks_preserved": true,
+    "fault_injection_recovery_test_present": true,
+    "economy_ledger_implemented": false,
+    "inventory_ownership_implemented": false
   },
   "repository_repair": {
     "status": "recovered_and_remote_validated",
@@ -184,6 +229,9 @@
     "main_integrity_enabled": true,
     "resolved_integrity_incident": 40,
     "resolved_integrity_incident_commit": "fb96a489a56a3505a627964b018d4d9b18484e04",
+    "accidental_tmp_repair_pull_request": 47,
+    "accidental_tmp_repair_merge": "a8f6cc96586ee21ff34140a04189b467d96d3ab1",
+    "accidental_tmp_repair_safe_merge": true,
     "branch_protection_target_documented": true,
     "branch_protection_write_available_in_connector": false,
     "branch_protection_state": "native_server_side_activation_pending_optional_hardening"
@@ -202,11 +250,11 @@
       21
     ]
   },
-  "next_iteration": "0.8",
-  "next_goal": "Eventplanung, Equipmentmarkt, Clubbetrieb und Clubbewertung auf den validierten Character-/Persistence-Kern setzen und als vollständigen Event-/Wirtschaftsablauf integrieren.",
+  "next_iteration": "0.8.2",
+  "next_goal": "Equipment-Katalog, Inventarbesitz und dynamische Economy über bestätigte Inventory-/Economy-Events an den validierten EventState anbinden.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-22T00:57:00+02:00"
+  "updated_at": "2026-08-22T01:15:00+02:00"
 }
