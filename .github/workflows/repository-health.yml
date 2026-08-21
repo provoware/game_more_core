@@ -46,6 +46,7 @@ jobs:
             src \
             tools/repository_health.py \
             tools/github_merge_guard.py \
+            tools/github_merge_guard_retry.py \
             tests/repository
 
       - name: Repository guard unit tests
