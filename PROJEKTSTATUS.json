@@ -3,20 +3,22 @@
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
   "active_iteration": "0.6.4",
-  "status": "a3_cinematic_forge_implemented_remote_validation_pending",
-  "current_focus": "a3_cinematic_forge_shared_contract_validation",
+  "status": "a3_cinematic_forge_validated_merge_pending",
+  "current_focus": "merge_validated_a3_cinematic_forge",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
     "runtime_core": {
-      "status": "pending_for_0.6.4",
-      "last_success_pull_request": 28,
-      "last_success_workflow_run": 32514970109
+      "status": "success",
+      "pull_request": 29,
+      "workflow_run": 32516833552,
+      "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b"
     },
     "presentation_core": {
-      "status": "pending_for_0.6.4",
-      "last_success_pull_request": 28,
-      "last_success_workflow_run": 32514970398
+      "status": "success",
+      "pull_request": 29,
+      "workflow_run": 32516833514,
+      "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b"
     }
   },
   "presentation_application_boundary": {
@@ -53,8 +55,10 @@
     "framework_runtime": false
   },
   "presentation_a3_cinematic_forge": {
-    "status": "implemented_validation_pending",
+    "status": "validated_merge_pending",
+    "pull_request": 29,
     "branch": "presentation/0.6.4-a3-cinematic-forge-final",
+    "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b",
     "reuses_a4_components": true,
     "reuses_a4_commands": true,
     "reuses_a4_accessibility": true,
@@ -76,10 +80,10 @@
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
   "next_iteration": "0.6.5",
-  "next_goal": "Nach validiertem 0.6.4 eine bestätigte Ranking-/Network-Projektion für beliebig viele Spieler ohne erfundene Online-Daten vorbereiten",
+  "next_goal": "Nach Merge von 0.6.4 eine bestätigte Ranking-/Network-Projektion für beliebig viele Spieler ohne erfundene Online-Daten vorbereiten",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T20:58:00+02:00"
+  "updated_at": "2026-08-21T21:08:00+02:00"
 }
