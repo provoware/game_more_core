@@ -163,7 +163,8 @@ def normalize_primary_actions(
             f"Presentation erlaubt maximal {max_primary_actions} Primäraktionen, "
             f"erhalten: {len(raw_actions)}"
         )
-    return [
+
+    normalized = [
         normalize_primary_action(
             action,
             order=index,
@@ -174,3 +175,7 @@ def normalize_primary_actions(
         )
         for index, action in enumerate(raw_actions, start=1)
     ]
+    action_ids = [action["action_id"] for action in normalized]
+    if len(set(action_ids)) != len(action_ids):
+        raise ValueError("Primäraktions-IDs dürfen nicht doppelt vorkommen")
+    return normalized
