@@ -18,6 +18,7 @@ ACTION = {
     "action_id": "action.feedback_test",
     "category": "event",
     "risk_profile": "low",
+    "resource_effects": {"energy_delta": 0, "stress_delta": 0},
     "skill_weights": {"technik": 1.0},
     "trait_evidence_weights": {"klangfokus": 1.0},
     "prerequisites": [],
