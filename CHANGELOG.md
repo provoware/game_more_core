@@ -4,24 +4,35 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Behoben
+- Die durch parallele Presentation-Merges beschädigte `character_projection.py` wurde auf genau eine kanonische, kompilierbare Implementierung zurückgeführt.
+- Die zusammenkopierten, widersprüchlichen Character-Projection-Tests wurden zu einem eindeutigen Vertragstest-Satz konsolidiert.
+- `presentation/__init__.py` exportiert Character- und Biografieprojektion wieder eindeutig, ohne konkurrierende `__all__`-Blöcke.
+- Die Character-Projektion bindet die bestehende `build_biography_projection(...)` als einzige Biografie-Aufbereitung ein, statt eine zweite Implementierung zu führen.
+- Gesperrte bekannte Traits geben keine versteckten Evidenz- oder Fortschrittswerte an die Presentation weiter.
+- Skill-Fortschritt wird für negative/überlaufende XP defensiv begrenzt und zeigt am Skillmaximum keinen falschen Restbedarf.
+
 ### Hinzugefügt
-- Eine schreibgeschützte Biografieprojektion filtert validierte, katalogisierte Journal-Einträge und liefert sie in kanonischer Anzeigereihenfolge.
-- Die Character-Projektion liefert Skill-, Trait- und Spezialisierungsdaten nur über katalogisierte Textschlüssel; getrennte deutsche Kataloge decken alle benötigten Manifest-IDs ab.
-- Ein gezielter Presentation-Test prüft die vollständige Katalogabdeckung und jeden von der Projektion ausgegebenen Label-, Effekt-, Konsequenz- und Stufenschlüssel.
-- Eine reine Character-Projektion 0.6 liefert kopierte, deterministisch sortierte Anzeige-, Fortschritts-, Trait- und Biografiedaten samt gezielter Tests.
-- Zusätzliche Spitznamen sind im Character-State serialisierbar und über den bestehenden Profilservice inklusive Undo und Recovery editierbar.
-- Ein Ordner-/Dateiindex, ein übergreifendes Spielschema und verbindliche Ablageregeln trennen Basistools, Dokumentation und maschinenlesbare Verträge.
-- Der Presentation-Vertrag 0.6 legt die gemeinsame, schreibgeschützte Character-Projektion, erlaubte UI-Commands, Textschlüsselgrenzen und Komponenten für A4 Ops Deck und A3 Cinematic Forge fest.
+- Zielgerichteter GitHub-Workflow `Presentation Core` für Presentation-Code, Presentation-Tests und relevante UI-Textkataloge.
+- Repository-Audit `docs/REPOSITORY_AUDIT_2026-08-21.md` mit Ursache, Befunden, Reparatur- und PR-Konsolidierungsentscheidung.
+- Explizite Informationshierarchie und PR-/Merge-Disziplin in `AGENTS.md` und `docs/REPOSITORY_RULES.md`.
+- Sequenzielle 0.6-Roadmap für Application-Capabilities/Command-Dispatcher, lokalen Presentation-State/Feedback, A4, A3 und Ranking/Network.
 
 ### Geändert
-- Die README führt nun über eine kompakte, farblich markierte Projektübersicht zu Status, Architektur, Werkzeugen und verbindlichen Detaildokumenten.
-- Der Action-Vertragsprüfer meldet vier gezielte Checkpoints per Ampel und erklärt Aufruf sowie Ampelbedeutung über `--help`.
+- README, Projektstatus und Projektmanifest trennen jetzt klar die versionierte Runtime-Baseline `0.5.2-alpha.1` von der aktiven Entwicklungsiteration `0.6`.
+- `TODO.md` wurde von parallelen Teilimplementierungen auf eine einzige ausführbare Reihenfolge reduziert.
+- Presentation-Vertrag, Repository-Index und Entwicklerhandbuch wurden auf die tatsächlich implementierte 0.6-Foundation und die neuen CI-/PR-Regeln abgeglichen.
+- `TEST_MANIFEST.json` katalogisiert die verbindlichen Presentation-Checks und den zugehörigen Remote-Workflow.
+- Der Runtime-Abnahmebericht 0.5.2 dokumentiert jetzt den tatsächlich erfolgreichen Remote-CI-Lauf von PR #6 statt weiterhin `pending_pull_request` zu behaupten.
 
-### Bewusst offen
-- Weitere Sprachen und eine allgemeine Lokalisierungsbibliothek bleiben ausdrücklich einer späteren Iteration vorbehalten.
-- Die grafische Profilanbindung folgt weiterhin gemeinsam mit A4 Ops Deck und A3 Cinematic Forge in 0.6.
-- Biografieprojektion, UI-Framework und Command-Adapter bleiben für getrennte Folgeiterationen offen.
-- UI-Framework und Command-Adapter bleiben nach der getrennten Character-Projektion weiterhin offen.
+### Auditbefund
+- PR #14 wurde trotz fehlgeschlagenem relevanten Compile-Gate gemergt; dadurch enthielt `main` nicht kompilierbaren Presentation-Code.
+- Sieben gleichzeitig offene Presentation-PRs (#15–#21) bearbeiten überlappende Zielstellen und werden nach erfolgreicher Reparatur zugunsten der konsolidierten `TODO.md`-Reihenfolge geschlossen.
+- Die Produktversion wird durch diese Wartungs-/Auditreparatur nicht künstlich erhöht; `VERSION.json` bleibt bis zur nächsten abgenommenen Produktstufe auf `0.5.2-alpha.1`.
+
+### Validierung
+- Die Reparatur muss den gezielten `Runtime Core`- und `Presentation Core`-Remote-Gate bestehen, bevor sie nach `main` gemergt wird.
+- Nach dem Merge werden konkurrierende offene Presentation-PRs geschlossen; ihre fachlich sinnvollen Punkte bleiben als geordnete Folgeaufgaben erhalten.
 
 ## [0.5.2-alpha.1] – 2026-08-21
 
@@ -30,22 +41,21 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - positive/negative Caps und die beiden katalogisierten Soft-Konflikte.
 - persistierte Resonanz-XP und offene Resonanzränge nach Level 50.
 - Journaltyp `character.resonance_xp_gained` und Manifestabgleichstest für Trait-Regeln.
-- `reports/RUNTIME_VALIDATION_0.5.2.json` als lokale Diff-Abnahme; Remote-CI bleibt bis zum Pull Request ausdrücklich ausstehend.
+- `reports/RUNTIME_VALIDATION_0.5.2.json` als reproduzierbarer Runtime-Abnahmenachweis.
 
 ### Geändert
 - Action Resolver bindet aktive, für die Aktion relevante Traits deterministisch ein.
 - Character-State-Schema, Progression-/Level-/Runtime-/Testmanifeste und Runtime-CI-Pfade auf 0.5.2 abgeglichen.
-- Projektversion auf `0.5.2-alpha.1`; README/TODO/Projektstatus auf den abgeschlossenen lokalen Stand gesetzt.
+- Projektversion auf `0.5.2-alpha.1`.
 - Arbeitsregeln um prüfbare Vorplanung, reproduzierbare Update-Nachweise und ein eindeutiges Iterationsende ergänzt.
-- Phase 0.6 mit dem gemeinsamen Presentation-Vertrag als kleinster nächster Arbeitseinheit konkretisiert, ohne Runtime-Status oder Version vorzeitig zu ändern.
 
 ### Validierung
 - `compileall`, 27 gezielte Runtime-/Recovery-Tests, Action-Vertragsprüfung und 0.4.1-Balance-Regression lokal bestanden.
-- Remote-CI wird erst nach dem Commit über den Pull Request als grün bestätigt; kein lokaler Bericht behauptet vorzeitig einen Remote-Erfolg.
+- `Runtime Core` für PR #6 remote erfolgreich bestanden.
 
 ### Bewusst offen
-- 0.6 setzt A4 Ops Deck und A3 Cinematic Forge auf den Runtime-Kern.
-- 0.6.1 führt die getrennte Presentation-Testschicht ein.
+- 0.6 setzt die gemeinsame Character-Forge-Presentation auf den validierten Runtime-Kern.
+- grafisches Framework, Ranking/Network und Telegram/Sync bleiben späteren Iterationen vorbehalten.
 
 ## [0.5.1-alpha.1] – 2026-08-21
 
@@ -125,8 +135,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ### Validierung
 - exakt 20 eindeutige Action-IDs.
-- Skill- und Trait-Evidenz-Gewichte jeder Aktion summieren sich jeweils auf 1,0.
-- Journal-Referenzen liegen im 0.4.2-Katalog; Systemzeit ist kein Zufallsseed.
+- Skill- und Trait-Gewichte je Action = 1.0.
+- Biografie-Relevanz 0–100.
+- Systemzeit nicht als Zufallsseed.
 - Vertragsbericht = PASS.
 
 ## [0.4.3-alpha.1] – 2026-08-21
@@ -175,7 +186,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ### Bewusst unverändert
 - `TRAIT_MANIFEST.json` mit seinen 165 individuellen Namen und Zuordnungen bleibt byte-identisch; numerische Regeln werden über die referenzierten Effektvorlagen in `TRAIT_ENGINE_MANIFEST.json` ergänzt.
-- kein Spiel-Laufzeitcode, keine UI, keine Telegram- oder Persistenzimplementierung.
+- kein Spiel-Laufzeitcode, keine UI, kein Telegram, keine Persistenzimplementierung.
 
 ### Validierung
 - alle neuen/geänderten JSON-Dateien syntaktisch gültig.
