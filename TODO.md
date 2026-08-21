@@ -3,9 +3,9 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Aktive Entwicklungsiteration:** `0.6.4 – A3 Cinematic Forge`
-- **Abgeschlossen:** `0.6.3 – gemeinsame Komponenten + A4 Ops Deck`
-- **Aktiver Implementierungs-PR:** `#29 – 0.6.4 A3 Cinematic Forge`
+- **Aktive Entwicklungsiteration:** `0.6.5 – Ranking / Network Foundation`
+- **Abgeschlossen:** `0.6.4 – A3 Cinematic Forge`
+- **Aktiver Entwicklungsbranch:** `presentation/0.6.5-ranking-network-foundation`
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -73,15 +73,26 @@
 - [x] sichtbare A3-Texte in `content/de/ui/character_forge.json` ausgelagert
 - [x] Runtime Core `32516833552` auf PR #29 grün
 - [x] Presentation Core `32516833514` auf PR #29 grün
-- [ ] PR #29 mit geprüftem Head mergen
+- [x] PR #29 gemergt (`53f0617ce0c00051c5fae481c43e4ff048dddf94`)
 
 ## 0.6.5 – Ranking / Network vorbereiten
 
-- [ ] Ranking-Projektion für beliebig viele Spieler definieren
-- [ ] Filter/Sortierung nach Level, Skills, Ruf, Events, Clubs und Resonanz vorbereiten
-- [ ] Network-Ansicht zunächst mit bestätigten synchronisierten Daten versorgen
-- [ ] Telegram/Sync weiterhin als eigene Infrastrukturphase behandeln
-- [ ] keine erfundenen Online-, Ranking- oder Presence-Daten anzeigen
+**Aktiver Fokus.** Ranking nutzt bestätigte Character-Projections; Events/Clubs und Sync-Metadaten nur explizit serverbestätigt. Keine Online-/Presence-Erfindung.
+
+- [x] Ranking-Projektion für beliebig viele Spieler definiert
+- [x] Top 10 als Standard und `ALLE ANZEIGEN` für vollständige Liste vorgesehen
+- [x] Sortierung nach Level, Skills, Ruf, Events, Clubs und Resonanz implementiert
+- [x] Competition Ranking mit stabiler Gleichstandsregel implementiert
+- [x] Network-Ansicht verarbeitet Events/Clubs nur aus `server_confirmed_transaction`-Datensätzen
+- [x] fehlende Network-Metriken bleiben `null` und unranked statt als `0` zu erscheinen
+- [x] fehlende Sync-Daten werden `unknown` / `NICHT BESTÄTIGT`, ohne Presence abzuleiten
+- [x] Telegram/Sync weiterhin als eigene Infrastrukturphase behandelt
+- [x] falsche Autorität, unbekannte Metriken, doppelte IDs und Character-Mismatch fail-closed
+- [x] sichtbare Ranking-/Sync-Texte ausgelagert
+- [x] gezielte Ranking-/Network-Vertragstests angelegt
+- [ ] Runtime Core auf aktuellem 0.6.5-PR-Head grün
+- [ ] Presentation Core auf aktuellem 0.6.5-PR-Head grün
+- [ ] sauberen Diff prüfen und PR mergen
 
 ## Danach
 
@@ -111,6 +122,7 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 - [x] **0.6.1** bestätigte Application-Capabilities + zentraler Command-Dispatcher
 - [x] **0.6.2** immutable lokaler Presentation-State + bestätigtes deterministisches Progressionsfeedback
 - [x] **0.6.3** gemeinsame Komponenten + A4 Ops Deck
+- [x] **0.6.4** A3 Cinematic Forge auf gemeinsamem A4-Vertrag
 
 ## PR-Regel
 

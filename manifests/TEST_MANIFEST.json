@@ -154,6 +154,25 @@
     "runtime_core_remote_gate",
     "presentation_core_remote_gate"
   ],
+  "presentation_0_6_5_checks": [
+    "ranking_unbounded_player_source_top10_default",
+    "ranking_show_all",
+    "ranking_competition_ties",
+    "ranking_stable_character_id_tiebreaker",
+    "ranking_level_reputation_resonance_skill_modes",
+    "ranking_events_clubs_server_confirmed_only",
+    "ranking_missing_metrics_null_and_unranked",
+    "network_no_presence_inference",
+    "network_unknown_sync_when_unconfirmed",
+    "network_server_authority_required",
+    "network_identity_mismatch_rejected",
+    "network_unknown_metric_rejected",
+    "ranking_duplicate_identity_rejected",
+    "ranking_projection_detached",
+    "ranking_visible_text_keys_catalogued",
+    "runtime_core_remote_gate",
+    "presentation_core_remote_gate"
+  ],
   "unit_test_commands": [
     "python3 -m unittest tests/simulation/test_progression_simulator.py",
     "python3 -m pytest tests/gameplay/test_action_contract.py",

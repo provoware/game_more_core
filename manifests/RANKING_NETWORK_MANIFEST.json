@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "version": "0.6.5-alpha.1",
+  "default_top_limit": 10,
+  "ranking_style": "competition",
+  "sort_modes": [
+    "level",
+    "reputation",
+    "resonance",
+    "skill",
+    "events",
+    "clubs"
+  ],
+  "confirmed_network_metrics": [
+    "events",
+    "clubs"
+  ],
+  "sync_statuses": [
+    "current",
+    "pending",
+    "failed",
+    "offline",
+    "unknown"
+  ],
+  "missing_metric_policy": "null_unranked_after_confirmed_values",
+  "presence_policy": "no_online_presence_inference_without_confirmed_source",
+  "player_count_policy": "unbounded_source_list_top10_default_show_all_optional",
+  "tie_policy": "same_value_same_rank_next_rank_skips_positions",
+  "stable_tiebreaker": "character_id",
+  "visible_text_catalog": "content/de/ui/character_forge.json"
+}

@@ -2,23 +2,21 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.6.4",
-  "status": "a3_cinematic_forge_validated_merge_pending",
-  "current_focus": "merge_validated_a3_cinematic_forge",
+  "active_iteration": "0.6.5",
+  "status": "ranking_network_foundation_implemented_validation_pending",
+  "current_focus": "confirmed_ranking_network_projection_validation",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
     "runtime_core": {
-      "status": "success",
-      "pull_request": 29,
-      "workflow_run": 32516833552,
-      "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b"
+      "status": "pending_for_0.6.5",
+      "last_success_pull_request": 29,
+      "last_success_workflow_run": 32516833552
     },
     "presentation_core": {
-      "status": "success",
-      "pull_request": 29,
-      "workflow_run": 32516833514,
-      "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b"
+      "status": "pending_for_0.6.5",
+      "last_success_pull_request": 29,
+      "last_success_workflow_run": 32516833514
     }
   },
   "presentation_application_boundary": {
@@ -55,10 +53,12 @@
     "framework_runtime": false
   },
   "presentation_a3_cinematic_forge": {
-    "status": "validated_merge_pending",
+    "status": "validated_and_merged",
     "pull_request": 29,
-    "branch": "presentation/0.6.4-a3-cinematic-forge-final",
+    "merged_commit": "53f0617ce0c00051c5fae481c43e4ff048dddf94",
     "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b",
+    "runtime_core_workflow_run": 32516833552,
+    "presentation_core_workflow_run": 32516833514,
     "reuses_a4_components": true,
     "reuses_a4_commands": true,
     "reuses_a4_accessibility": true,
@@ -73,17 +73,27 @@
     "animation_blocking_ms": 0,
     "reduced_motion_static_fallback": true
   },
+  "presentation_ranking_network": {
+    "status": "implemented_validation_pending",
+    "branch": "presentation/0.6.5-ranking-network-foundation",
+    "default_top_limit": 10,
+    "unbounded_player_source": true,
+    "sort_modes": ["level", "reputation", "resonance", "skill", "events", "clubs"],
+    "network_metrics_require_server_confirmation": ["events", "clubs"],
+    "online_presence_inferred": false,
+    "telegram_transport_implemented": false
+  },
   "repository_audit": {
     "status": "closed",
     "repair_pull_request": 22,
     "merged_commit": "73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea",
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
-  "next_iteration": "0.6.5",
-  "next_goal": "Nach Merge von 0.6.4 eine bestätigte Ranking-/Network-Projektion für beliebig viele Spieler ohne erfundene Online-Daten vorbereiten",
+  "next_iteration": "0.7",
+  "next_goal": "Nach validiertem 0.6.5 den spielbaren Character-Forge-Vertical-Slice Profil → Aktion → Progression → Feedback → Biografie → Autosave → Undo → Reload verbinden",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T21:08:00+02:00"
+  "updated_at": "2026-08-21T21:12:00+02:00"
 }

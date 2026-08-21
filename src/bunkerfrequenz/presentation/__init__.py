@@ -17,6 +17,7 @@ from bunkerfrequenz.presentation.components import (
     build_trait_list,
 )
 from bunkerfrequenz.presentation.feedback import build_confirmed_feedback
+from bunkerfrequenz.presentation.ranking_network import build_ranking_network_projection
 from bunkerfrequenz.presentation.state import (
     VIEW_IDS,
     PresentationState,
@@ -42,6 +43,7 @@ __all__ = [
     "build_confirmed_feedback",
     "build_profile_editor",
     "build_progress_feedback",
+    "build_ranking_network_projection",
     "build_skill_list",
     "build_specialization_card",
     "build_status_summary",
