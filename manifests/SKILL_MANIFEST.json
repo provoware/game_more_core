@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "version": "0.4.0-alpha.1",
+  "skills": [
+    {"skill_id":"skill.technik","name":"Technik","base_value":10},{"skill_id":"skill.musik","name":"Musik","base_value":10},{"skill_id":"skill.organisation","name":"Organisation","base_value":10},{"skill_id":"skill.kreativitaet","name":"Kreativität","base_value":10},{"skill_id":"skill.kommunikation","name":"Kommunikation","base_value":10},{"skill_id":"skill.menschenkenntnis","name":"Menschenkenntnis","base_value":10},{"skill_id":"skill.orientierung","name":"Orientierung","base_value":10},{"skill_id":"skill.handwerk","name":"Handwerk","base_value":10},{"skill_id":"skill.logistik","name":"Logistik","base_value":10},{"skill_id":"skill.improvisation","name":"Improvisation","base_value":10},{"skill_id":"skill.verhandlung","name":"Verhandlung","base_value":10},{"skill_id":"skill.szenewissen","name":"Szenewissen","base_value":10},{"skill_id":"skill.risikoeinschaetzung","name":"Risikoeinschätzung","base_value":10},{"skill_id":"skill.konzentration","name":"Konzentration","base_value":10},{"skill_id":"skill.belastbarkeit","name":"Belastbarkeit","base_value":10},{"skill_id":"skill.instinkt","name":"Instinkt","base_value":10}
+  ],
+  "xp_formula": {"expression":"base_xp*difficulty*quality*novelty*practice*fatigue*repetition","ranges":{"base_xp":[4,40],"difficulty":[0.8,1.5],"quality":[0.75,1.35],"novelty":[0.55,1.15],"practice":[0.9,1.25],"fatigue":[0.6,1.0],"repetition":[0.4,1.0]}},
+  "training_daily_effectiveness": [1.0,0.85,0.65,0.40]
+}

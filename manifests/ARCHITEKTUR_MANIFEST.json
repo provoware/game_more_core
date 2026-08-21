@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "version": "0.4.0-alpha.1",
+  "layers": [
+    "domain",
+    "application",
+    "infrastructure",
+    "presentation",
+    "content"
+  ],
+  "invariants": [
+    "story_does_not_define_start_skill",
+    "all_start_characters_share_base_values",
+    "display_names_are_not_ids",
+    "ui_writes_via_application_commands",
+    "journal_is_append_only",
+    "undo_uses_compensating_events",
+    "system_time_is_not_sole_authority",
+    "network_failure_must_not_block_local_core_gameplay",
+    "visible_text_is_externalized",
+    "schema_changes_require_migration_or_explicit_break"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "product": "BUNKERFREQUENZ",
+  "version": "0.4.0-alpha.1",
+  "phase": "0.4",
+  "stage": "architecture-foundation",
+  "date": "2026-08-21",
+  "lineage_id": "e59052dd-e910-4405-9a06-1db621d818e7",
+  "schema_versions": {
+    "character": 1,
+    "trait": 1,
+    "journal": 1,
+    "save": 1,
+    "manifest": 1
+  }
+}

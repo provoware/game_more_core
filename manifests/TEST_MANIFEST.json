@@ -1,0 +1,1 @@
+{"schema_version":1,"version":"0.4.0-alpha.1","principle":"risk_based_targeted_validation","foundation_required_checks":["json_syntax","unique_ids","character_base_value_equality","trait_count_165","manifest_schema_consistency"],"future_release_checks":["unit","integration","save_load","undo","recovery","migration","time","sync"]}
