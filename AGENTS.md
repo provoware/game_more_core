@@ -20,9 +20,10 @@ Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Je
 12. Erst committen und mergen, wenn der geplante Scope und seine Nachweise zusammenpassen.
 13. Pro Iteration eine sinnvolle, hilfreiche Optimierung in mindestens einem der Bereiche Hilfe im Tool, Gameplay, Codequalität oder Fehlerhandling prüfen und begründet umsetzen oder als Folgepunkt festhalten.
 14. Pro Iteration eine konkrete spätere Erweiterungs-/Verbesserungsidee mit Nutzen und Begründung in der zuständigen Info-Datei ergänzen.
+15. pro iteration eine optimierung oder erweiterung der Laienspielanleitung.
 
 ## Pflichtangaben je Iteration
-
+- **Fortschritt:** Entwicklungsfortschritt in %
 - **Ziel:** gewünschter Zustand in einem Satz.
 - **Abnahme:** beobachtbares Ergebnis für den Abschluss.
 - **Scope:** konkrete Dateien/Funktionen/Dokumentblöcke.
@@ -78,7 +79,7 @@ Bei Widersprüchen gilt:
 `VERSION.json` bezeichnet die letzte versionierte Produkt-/Runtime-Baseline. Eine laufende nächste Iteration darf in `PROJEKTSTATUS.json` und `TODO.md` weiter sein, ohne die Baseline vorzeitig umzubenennen.
 
 ## Architekturgrenzen
-
+- patchen von klein nach großen codeteilen. checkpoints und checkliste nutzen.
 - UI darf Domain-Zustand nicht direkt schreiben.
 - Economy verändert Character-Zustand nur über definierte Services/Events.
 - Sync arbeitet mit IDs, Versionen und Events, nicht mit UI-Objekten.
