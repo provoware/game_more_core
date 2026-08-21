@@ -16,10 +16,10 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ### Geändert
 - Projektversion auf `0.4.1-alpha.1`.
 - `README.md`, `TODO.md`, `PROJEKTSTATUS.json` und `PROJEKTMANIFEST.json` auf den validierten 0.4.1-Stand aktualisiert.
-- `SKILL_MANIFEST.json` auf die nun verbindliche Skill-XP-Formel und Progression-Referenz präzisiert.
+- `SKILL_MANIFEST.json` auf die verbindliche Skill-XP-Formel und Progression-Referenz präzisiert.
 - `LEVEL_MANIFEST.json` mit Referenz auf den Progression-Vertrag ergänzt.
 - `TEST_MANIFEST.json` um ausschließlich für 0.4.1 relevante Prüfungen erweitert.
-- `docs/CHARACTER_FORGE.md` um konkrete Trait-/Spezialisierungsregeln ergänzt.
+- `docs/CHARACTER_FORGE.md` um konkrete Trait-/Spezialisierungsregeln erweitert, ohne bestehende Foundation-Inhalte zu entfernen.
 
 ### Bewusst unverändert
 - `TRAIT_MANIFEST.json` mit seinen 165 individuellen Namen und Zuordnungen bleibt byte-identisch; numerische Regeln werden über die referenzierten Effektvorlagen in `TRAIT_ENGINE_MANIFEST.json` ergänzt.
@@ -45,3 +45,18 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Grundverträge für Save, Autosave, Undo, Journal, Snapshot, Recovery, Hybridzeit und Synchronisation.
 - Maschinenlesbare Manifeste und JSON-Schemas.
 - Entwicklerregeln in `AGENTS.md`.
+
+### Geändert
+- `README.md` von Platzhalter auf kanonische Projektübersicht und aktuellen TODO-Stand erweitert.
+
+### Validierung
+- JSON-Strukturen müssen syntaktisch gültig sein.
+- Trait-IDs müssen eindeutig sein und exakt 165 registrierte Traits ergeben.
+- alle 11 Character Definitions müssen dieselben Startwerte referenzieren.
+- alle Manifest-/Schema-Pfade müssen innerhalb des dokumentierten 0.4-Scopes liegen.
+
+### Nicht enthalten
+- Kein Laufzeitcode.
+- Keine Telegram-Implementierung.
+- Keine Wirtschaftssimulation.
+- Keine UI-Implementierung.

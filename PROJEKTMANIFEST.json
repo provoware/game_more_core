@@ -6,13 +6,22 @@
   "version": "0.4.1-alpha.1",
   "phase": "0.4.1",
   "design_direction": "industrial_brutalist_variant_a",
-  "architecture_layers": ["domain", "application", "infrastructure", "presentation", "content"],
+  "architecture_layers": [
+    "domain",
+    "application",
+    "infrastructure",
+    "presentation",
+    "content"
+  ],
   "runtime_code_present": false,
   "developer_tool_code_present": true,
   "canonical_todo": "TODO.md",
   "canonical_changelog": "CHANGELOG.md",
   "architecture_doc": "docs/ARCHITEKTURVERTRAG.md",
   "progression_contract": "docs/PROGRESSION_CONTRACT.md",
-  "progression_manifests": ["manifests/TRAIT_ENGINE_MANIFEST.json", "manifests/PROGRESSION_MANIFEST.json"],
+  "progression_manifests": [
+    "manifests/TRAIT_ENGINE_MANIFEST.json",
+    "manifests/PROGRESSION_MANIFEST.json"
+  ],
   "progression_reference_report": "reports/PROGRESSION_SIMULATION_0.4.1.json"
 }
