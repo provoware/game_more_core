@@ -8,24 +8,68 @@
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
-    "runtime_core": {"status": "pending_for_0.6.5", "last_success_pull_request": 29, "last_success_workflow_run": 32516833552},
-    "presentation_core": {"status": "pending_for_0.6.5", "last_success_pull_request": 29, "last_success_workflow_run": 32516833514}
+    "runtime_core": {
+      "status": "pending_for_0.6.5",
+      "last_success_pull_request": 29,
+      "last_success_workflow_run": 32516833552
+    },
+    "presentation_core": {
+      "status": "pending_for_0.6.5",
+      "last_success_pull_request": 29,
+      "last_success_workflow_run": 32516833514
+    }
+  },
+  "presentation_application_boundary": {
+    "status": "validated_and_merged",
+    "pull_request": 24,
+    "merged_commit": "25006d07d33199fea2db8208c192ca2f6fa1095d",
+    "capabilities": ["can_edit_profile", "can_undo_profile", "can_execute_action"],
+    "write_commands": ["profile.update", "profile.undo_last", "action.execute"]
+  },
+  "presentation_local_state_feedback": {
+    "status": "validated_and_merged",
+    "pull_request": 26,
+    "merged_commit": "5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a",
+    "local_commands": ["view.select", "biography.filter", "feedback.dismiss"],
+    "feedback_events": [
+      "character.level_up",
+      "character.skill_level_up",
+      "character.trait_unlocked",
+      "character.trait_tier_up",
+      "character.specialization_changed",
+      "character.resonance_rank_up"
+    ],
+    "reduced_motion": true,
+    "persistent": false
   },
   "presentation_a4_ops_deck": {
     "status": "validated_and_merged",
     "pull_request": 28,
     "merged_commit": "49603304960147c326953474174aafcff366dcd7",
+    "runtime_core_workflow_run": 32514970109,
+    "presentation_core_workflow_run": 32514970398,
     "shared_components": 8,
-    "max_primary_actions": 3
+    "max_primary_actions": 3,
+    "framework_runtime": false
   },
   "presentation_a3_cinematic_forge": {
     "status": "validated_and_merged",
     "pull_request": 29,
     "merged_commit": "53f0617ce0c00051c5fae481c43e4ff048dddf94",
+    "validated_implementation_head": "6bc346166437148e7ffe184abe5895d6b41d8b5b",
     "runtime_core_workflow_run": 32516833552,
     "presentation_core_workflow_run": 32516833514,
     "reuses_a4_components": true,
     "reuses_a4_commands": true,
+    "reuses_a4_accessibility": true,
+    "animation_feedback_kinds": [
+      "level_up",
+      "skill_level_up",
+      "trait_unlocked",
+      "trait_tier_up",
+      "specialization_changed",
+      "resonance_rank_up"
+    ],
     "animation_blocking_ms": 0,
     "reduced_motion_static_fallback": true
   },
