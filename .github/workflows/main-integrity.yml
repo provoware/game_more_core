@@ -37,7 +37,7 @@ jobs:
         id: verify
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 tools/github_merge_guard.py verify-main --sha "${{ github.sha }}"
+        run: PYTHONPATH=. python3 tools/github_merge_guard_retry.py verify-main --sha "${{ github.sha }}"
 
       - name: Record blocking integrity incident
         if: failure() && steps.verify.outcome == 'failure'
@@ -48,4 +48,4 @@ jobs:
           python3 tools/github_merge_guard.py incident \
             --sha "${{ github.sha }}" \
             --run-url "$RUN_URL" \
-            --reason "Main-Merge besitzt keine vollständig bestätigte PR-/CI-Provenienz"
+            --reason "Main-Merge besitzt nach begrenztem Retry keine vollständig bestätigte PR-/CI-Provenienz"
