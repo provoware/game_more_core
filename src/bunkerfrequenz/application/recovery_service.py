@@ -1,8 +1,33 @@
 from __future__ import annotations
 
-from bunkerfrequenz.domain.character import CharacterState
+from bunkerfrequenz.domain.character import CharacterState, RESOURCE_MAX, RESOURCE_MIN
 from bunkerfrequenz.domain.progression import add_trait_evidence, apply_skill_xp
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceKernel, RecoveryReceipt
+
+
+def _replay_resource_change(character: CharacterState, payload: dict) -> None:
+    energy = payload.get("energy")
+    stress = payload.get("stress")
+    if not isinstance(energy, dict) or not isinstance(stress, dict):
+        raise ValueError("Ressourcen-Replay benötigt energy und stress")
+    for name, block, current in (
+        ("energy", energy, character.energy),
+        ("stress", stress, character.stress),
+    ):
+        if set(block) != {"old", "delta", "new"}:
+            raise ValueError(f"Ressourcen-Replay {name} besitzt ungültige Felder")
+        old = block["old"]
+        delta = block["delta"]
+        new = block["new"]
+        if any(isinstance(value, bool) or not isinstance(value, int) for value in (old, delta, new)):
+            raise ValueError(f"Ressourcen-Replay {name} benötigt Ganzzahlen")
+        if current != old:
+            raise ValueError(f"Ressourcen-Replay {name} passt nicht zum bestätigten Ausgangszustand")
+        expected = min(RESOURCE_MAX, max(RESOURCE_MIN, old + delta))
+        if new != expected or not RESOURCE_MIN <= new <= RESOURCE_MAX:
+            raise ValueError(f"Ressourcen-Replay {name} besitzt inkonsistenten Zielwert")
+    character.energy = energy["new"]
+    character.stress = stress["new"]
 
 
 def replay_character_event(derived_state: dict, record: dict) -> dict:
@@ -12,7 +37,9 @@ def replay_character_event(derived_state: dict, record: dict) -> dict:
     event_type = record["event_type"]
     payload = record.get("payload", {})
 
-    if event_type == "character.skill_xp_gained":
+    if event_type == "character.resources_changed":
+        _replay_resource_change(character, payload)
+    elif event_type == "character.skill_xp_gained":
         apply_skill_xp(character, payload["skill_id"], int(payload["amount"]))
     elif event_type == "character.trait_evidence_gained":
         add_trait_evidence(character, payload["family"], float(payload["amount"]), payload["evidence_source"])
