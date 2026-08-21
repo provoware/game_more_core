@@ -3,8 +3,8 @@
   "canonical_name": "BUNKERFREQUENZ",
   "repository": "provoware/game_more_core",
   "lineage_id": "e59052dd-e910-4405-9a06-1db621d818e7",
-  "version": "0.4.4-alpha.1",
-  "phase": "0.4.4",
+  "version": "0.5.0-alpha.1",
+  "phase": "0.5",
   "design_direction": "industrial_brutalist_variant_a",
   "architecture_layers": [
     "domain",
@@ -13,7 +13,7 @@
     "presentation",
     "content"
   ],
-  "runtime_code_present": false,
+  "runtime_code_present": true,
   "developer_tool_code_present": true,
   "canonical_todo": "TODO.md",
   "canonical_changelog": "CHANGELOG.md",
@@ -33,9 +33,13 @@
     "manifests/ZEIT_MANIFEST.json"
   ],
   "ui_ux_blueprint": "docs/UI_UX_BLUEPRINT.md",
+  "design_reference_asset": "docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp",
   "ui_manifest": "manifests/UI_MANIFEST.json",
   "animation_manifest": "manifests/ANIMATION_MANIFEST.json",
   "gameplay_action_contract": "docs/GAMEPLAY_ACTION_CONTRACT.md",
   "action_manifest": "manifests/ACTION_MANIFEST.json",
-  "contract_validation_report": "reports/CONTRACT_VALIDATION_0.4.4.json"
+  "contract_validation_report": "reports/CONTRACT_VALIDATION_0.4.4.json",
+  "runtime_doc": "docs/CHARACTER_CORE_0.5.md",
+  "runtime_manifest": "manifests/RUNTIME_MANIFEST.json",
+  "runtime_validation_report": "reports/RUNTIME_VALIDATION_0.5.0.json"
 }

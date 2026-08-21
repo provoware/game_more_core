@@ -1,5 +1,5 @@
 {
-  "schema_version":1,"version":"0.4.3-alpha.1","design_family":"industrial_brutalist_variant_a",
+  "schema_version":1,"version":"0.4.3-alpha.2","design_family":"industrial_brutalist_variant_a","design_reference_asset":"docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp",
   "principles":["current_task_first","progress_visible_without_reading_long_text","semantic_color_plus_icon_plus_text","large_targets","keyboard_first_supported","animations_never_block_gameplay","all_visible_text_externalized"],
   "variants":[
     {"id":"A1_CONTROL_ROOM","name":"Control Room","layout":"left_roster_center_character_right_context_bottom_journal","best_for":"desktop_overview","density":"medium"},

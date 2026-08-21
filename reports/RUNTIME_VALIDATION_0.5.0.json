@@ -1,0 +1,30 @@
+{
+  "version": "0.5.0-alpha.1",
+  "validated_at": "2026-08-21T16:09:00+02:00",
+  "environment": "Python 3 standard library",
+  "checks": {
+    "compileall": true,
+    "runtime_tests_passed": 14,
+    "runtime_tests_failed": 0,
+    "deterministic_action_resolution": true,
+    "skill_competence_affects_outcome": true,
+    "equal_character_start_values": true,
+    "trait_unlock_gate": true,
+    "no_forced_start_specialization": true,
+    "journal_hash_chain_reload": true,
+    "duplicate_idempotency": true,
+    "duplicate_mismatch_rejected": true,
+    "duplicate_inside_same_commit_collapsed": true,
+    "unknown_event_type_rejected": true,
+    "corrupt_tail_detected": true,
+    "autosave_60_second_contract": true,
+    "action_commit_reload_integration": true,
+    "stress_actions": 200,
+    "stress_journal_reload_ok": true
+  },
+  "design_asset": {
+    "path": "docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp",
+    "sha256_source_export": "b31dc39f9f96097cc85a946448e7c9b4e04b6c418d5204be098f2160f6dc9a08"
+  },
+  "passed": true
+}
