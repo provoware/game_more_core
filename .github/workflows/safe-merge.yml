@@ -1,0 +1,43 @@
+name: Safe Merge
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: safe-merge-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  safe-merge:
+    if: >-
+      github.event.issue.pull_request &&
+      github.event.comment.body == '/safe-merge'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trusted main guard
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate and merge exact PR head
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          python3 tools/github_merge_guard.py merge-pr \
+            --pr "$PR_NUMBER" \
+            --actor "$ACTOR"
