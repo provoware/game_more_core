@@ -2,23 +2,29 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.7.2",
-  "status": "repository_safety_end_to_end_validated_0_7_2_released",
-  "current_focus": "0_7_2_resource_effects_and_character_forge_vertical_slice",
+  "active_iteration": "0.8",
+  "status": "0_7_2_validated_and_merged_0_8_ready",
+  "current_focus": "0_8_event_economy_integration_planning",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
     "runtime_core": {
       "status": "success",
-      "pull_request": 31,
-      "workflow_run": 32519042006,
-      "validated_head": "27a7b002e33060be937cd64e368593984b5065b9"
+      "pull_request": 41,
+      "workflow_run": 32533954380,
+      "validated_head": "5f7ded400a5fca1ee25307797628ab2584de9812"
     },
     "presentation_core": {
       "status": "success",
-      "pull_request": 31,
-      "workflow_run": 32519041908,
-      "validated_head": "27a7b002e33060be937cd64e368593984b5065b9"
+      "pull_request": 41,
+      "workflow_run": 32533954387,
+      "validated_head": "5f7ded400a5fca1ee25307797628ab2584de9812"
+    },
+    "repository_health": {
+      "status": "success",
+      "pull_request": 41,
+      "workflow_run": 32533954406,
+      "validated_head": "5f7ded400a5fca1ee25307797628ab2584de9812"
     }
   },
   "presentation_application_boundary": {
@@ -102,24 +108,34 @@
     "telegram_transport_implemented": false
   },
   "character_forge_vertical_slice": {
-    "status": "0.7.1_validated_and_merged_review_hardening_applied_0.7.2_released",
-    "pull_request": 31,
-    "merged_commit": "888be18146197272578f4baa5516f78a894d9464",
-    "runtime_core_workflow_run": 32519042006,
-    "presentation_core_workflow_run": 32519041908,
-    "implemented_step": "a4_action_selection",
+    "status": "0.7.2_validated_and_merged",
+    "pull_request": 41,
+    "validated_implementation_head": "5f7ded400a5fca1ee25307797628ab2584de9812",
+    "merged_commit": "a7544abd923787d20e174c9eced54f548753c801",
+    "runtime_core_workflow_run": 32533954380,
+    "presentation_core_workflow_run": 32533954387,
+    "repository_health_workflow_run": 32533954406,
+    "implemented_step": "complete_character_forge_vertical_slice",
     "manifest_actions_selectable": 20,
+    "manifest_actions_with_resource_effects": 20,
+    "resource_bounds": {
+      "energy": [0, 100],
+      "stress": [0, 100]
+    },
+    "resource_event": "character.resources_changed",
     "prerequisites_fail_closed": true,
     "dispatcher_command_built_only_with_runtime_ids": true,
     "a4_rechecks_execute_capability": true,
-    "energy_stress_effects": "next_0.7.2_contract",
-    "full_loop_pending": [
-      "resource_effects",
-      "biography",
-      "autosave",
-      "undo",
-      "reload"
-    ]
+    "biography_from_confirmed_events": true,
+    "autosave_interval_seconds": 60,
+    "autosave_snapshot_enabled": true,
+    "profile_undo_compensating_only": true,
+    "resource_recovery_replay": true,
+    "a4_a3_same_confirmed_source": true,
+    "full_loop_pending": [],
+    "merge_path": "github_pr_merge_after_green_gates",
+    "safe_merge_command_used": false,
+    "process_note": "PR #41 war fachlich dreifach grün, wurde aber außerhalb des vorgeschriebenen /safe-merge-Kommandos gemergt; folgende normale PRs verwenden wieder ausschließlich /safe-merge."
   },
   "repository_repair": {
     "status": "recovered_and_remote_validated",
@@ -166,6 +182,8 @@
       8
     ],
     "main_integrity_enabled": true,
+    "resolved_integrity_incident": 40,
+    "resolved_integrity_incident_commit": "fb96a489a56a3505a627964b018d4d9b18484e04",
     "branch_protection_target_documented": true,
     "branch_protection_write_available_in_connector": false,
     "branch_protection_state": "native_server_side_activation_pending_optional_hardening"
@@ -184,11 +202,11 @@
       21
     ]
   },
-  "next_iteration": "0.7.2",
-  "next_goal": "Energie-/Stresswirkung der 20 Actions katalogisieren und den vollständigen Character-Forge-Ablauf Aktion → Progression → Feedback → Biografie → Autosave → Undo → Reload verbinden",
+  "next_iteration": "0.8",
+  "next_goal": "Eventplanung, Equipmentmarkt, Clubbetrieb und Clubbewertung auf den validierten Character-/Persistence-Kern setzen und als vollständigen Event-/Wirtschaftsablauf integrieren.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T23:24:00+02:00"
+  "updated_at": "2026-08-22T00:46:00+02:00"
 }
