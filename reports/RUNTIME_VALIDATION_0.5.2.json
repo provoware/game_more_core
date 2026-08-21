@@ -1,6 +1,6 @@
 {
   "version": "0.5.2-alpha.1",
-  "validated_at": "2026-08-21T00:00:00Z",
+  "validated_at": "2026-08-21T15:33:37+02:00",
   "environment": "Python 3 standard library",
   "local_checks": {
     "compileall": true,
@@ -20,8 +20,12 @@
   },
   "remote_ci": {
     "workflow": "Runtime Core",
-    "status": "pending_pull_request"
+    "status": "success",
+    "pull_request": 6,
+    "head_sha": "ea033ee7a406b66d865ae5b192f3b2179bf863a4",
+    "workflow_run": 32498193699
   },
   "passed_local": true,
-  "passed": false
+  "passed_remote": true,
+  "passed": true
 }
