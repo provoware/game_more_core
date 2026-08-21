@@ -1,1 +1,76 @@
-{"schema_version":1,"version":"0.4.0-alpha.1","source":"validated_journal_events","categories":["first_time","major_success","major_failure","level_milestone","trait","specialization","relationship","major_find","event","club","economy","personal_mission","rare_random_event"],"default_importance_threshold":70,"freeform_unvalidated_generation":false}
+{
+  "schema_version": 2,
+  "version": "0.7.2-alpha.1",
+  "source": "validated_journal_events",
+  "categories": [
+    "first_time",
+    "major_success",
+    "major_failure",
+    "level_milestone",
+    "trait",
+    "specialization",
+    "relationship",
+    "major_find",
+    "event",
+    "club",
+    "economy",
+    "personal_mission",
+    "rare_random_event"
+  ],
+  "default_importance_threshold": 70,
+  "freeform_unvalidated_generation": false,
+  "action_candidate": {
+    "enabled": true,
+    "importance_threshold": 70,
+    "importance_bounds": [0, 100],
+    "outcome_adjustments": {
+      "failed": 10,
+      "partial": -10,
+      "success": 0,
+      "excellent": 10,
+      "legendary": 20
+    },
+    "failed_category": "major_failure",
+    "fallback_category": "major_success",
+    "category_by_action_category": {
+      "event": "event",
+      "crisis": "event",
+      "exploration": "major_find",
+      "research": "major_find",
+      "club": "club",
+      "economy": "economy",
+      "market": "economy",
+      "social": "relationship"
+    },
+    "text_keys": {
+      "major_success": {
+        "title_key": "biography.action.major_success.title",
+        "body_key": "biography.action.major_success.body"
+      },
+      "major_failure": {
+        "title_key": "biography.action.major_failure.title",
+        "body_key": "biography.action.major_failure.body"
+      },
+      "major_find": {
+        "title_key": "biography.action.major_find.title",
+        "body_key": "biography.action.major_find.body"
+      },
+      "event": {
+        "title_key": "biography.action.event.title",
+        "body_key": "biography.action.event.body"
+      },
+      "club": {
+        "title_key": "biography.action.club.title",
+        "body_key": "biography.action.club.body"
+      },
+      "economy": {
+        "title_key": "biography.action.economy.title",
+        "body_key": "biography.action.economy.body"
+      },
+      "relationship": {
+        "title_key": "biography.action.relationship.title",
+        "body_key": "biography.action.relationship.body"
+      }
+    }
+  }
+}
