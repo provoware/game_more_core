@@ -4,33 +4,52 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Behoben
+- Die durch parallele Presentation-Merges beschädigte `character_projection.py` wurde auf genau eine kanonische, kompilierbare Implementierung zurückgeführt.
+- Die zusammenkopierten, widersprüchlichen Character-Projection-Tests wurden zu einem eindeutigen Vertragstest-Satz konsolidiert.
+- `presentation/__init__.py` exportiert Character- und Biografieprojektion wieder eindeutig, ohne konkurrierende `__all__`-Blöcke.
+- Die Character-Projektion bindet die bestehende `build_biography_projection(...)` als einzige Biografie-Aufbereitung ein, statt eine zweite Implementierung zu führen.
+- Gesperrte bekannte Traits geben keine versteckten Evidenz- oder Fortschrittswerte an die Presentation weiter.
+- Skill-Fortschritt wird für negative/überlaufende XP defensiv begrenzt und zeigt am Skillmaximum keinen falschen Restbedarf.
+
 ### Hinzugefügt
+- Zielgerichteter GitHub-Workflow `Presentation Core` für Presentation-Code, relevante Application-Grenzdateien, Presentation-Tests und UI-Textkataloge.
+- Repository-Audit `docs/REPOSITORY_AUDIT_2026-08-21.md` mit Ursache, Befunden, Reparatur- und PR-Konsolidierungsentscheidung.
+- Explizite Informationshierarchie und PR-/Merge-Disziplin in `AGENTS.md` und `docs/REPOSITORY_RULES.md`.
+- Sequenzielle 0.6-Roadmap für Application-Capabilities/Command-Dispatcher, lokalen Presentation-State/Feedback, A4, A3 und Ranking/Network.
 - `presentation_capabilities.py` als reine Application-Leseabfrage für `can_edit_profile`, `can_undo_profile` und `can_execute_action`.
-- `command_dispatcher.py` als einziger bestätigter Schreibweg für `profile.update`, `profile.undo_last` und `action.execute`.
-- `PresentationState` als unveränderlicher lokaler Zustand für Ansicht, Biografie-Filter, ausgeblendetes Feedback und Reduced Motion.
-- `presentation_events.py` als Application-Leseabfrage für detached Kopien bereits bestätigter Journal-Ereignisse.
-- `feedback.py` für deterministisches Progressionsfeedback aus bestätigten Level-, Skill-, Trait-, Spezialisierungs- und Resonanzereignissen.
-- `content/de/ui/feedback.json` für vollständig ausgelagerte sichtbare Feedbacktexte.
-- End-to-End-Test für `Command → Commit → bestätigte Events → Feedback → Character-Projektion`.
-- Zielgerichteter `Presentation Core`-Workflow für Presentation-Code, zugehörige Application-Grenzen, Tests und UI-Textkataloge.
-- Repository-Audit und verbindliche Ein-PR-pro-Zielstelle-Regel.
+- `command_dispatcher.py` als einziger 0.6.1-Schreibweg für `profile.update`, `profile.undo_last` und `action.execute`.
+- gezielte Tests für Capability-Fail-Closed, defensive Projection-Copies, ID-Erhalt, Action-/Profil-Idempotenz und wiederholtes Undo.
+- `PresentationState` als unveränderlicher lokaler Zustand für View, Biografie-Filter, ausgeblendete Feedback-IDs und Reduced Motion.
+- `presentation_events.py` als Application-Leseabfrage für detached Records bereits bestätigter Journal-Ereignisse.
+- deterministisches Progressionsfeedback für Level-, Skill-, Trait-, Spezialisierungs- und Resonanzsprünge sowie ausgelagerte Texte in `content/de/ui/feedback.json`.
+- End-to-End-Test `Command → Commit → bestätigte Eventabfrage → Feedback → Character-Projektion`.
 
 ### Geändert
-- Character-Projektion übernimmt bestätigte Capabilities und Feedback als defensive Kopien und validiert deren sichtbare Textschlüssel.
-- Biografie-Filter verwendet die Kategorien aus `BIOGRAFIE_MANIFEST.json` statt einer zweiten handgepflegten Liste.
+- README, Projektstatus und Projektmanifest trennen klar die versionierte Runtime-Baseline `0.5.2-alpha.1` von der aktiven 0.6-Entwicklung.
+- `TODO.md` führt nur noch eine sequenzielle Presentation-Implementierung statt paralleler Teilansätze.
+- Presentation-Vertrag, Repository-Index und Entwicklerhandbuch wurden auf die tatsächlich implementierte 0.6-Foundation und die CI-/PR-Regeln abgeglichen.
+- `TEST_MANIFEST.json` katalogisiert Presentation- und 0.6.1-Application-Grenzchecks.
+- Die Character-Projektion akzeptiert bestätigte Capabilities optional, begrenzt sie auf drei öffentliche Booleans und kopiert sie defensiv.
+- Der Dispatcher gibt bestätigten `CharacterState`, Commit-Event-IDs und Idempotenzstatus zurück; er erzeugt bewusst keine zweite Presentation-Projektion.
 - UI-Befehle dürfen keine Balanceparameter wie `base_xp` oder Evidenzquelle setzen.
-- README, TODO, Projektstatus, Repository-Index und Testmanifest führen die aktive Entwicklung jetzt auf `0.6.3 – gemeinsame Komponenten + A4 Ops Deck`.
+- Der Biografie-Filter erhält seine erlaubten Kategorien aus `BIOGRAFIE_MANIFEST.json` statt aus einer zweiten Handliste.
+- Die Character-Projektion kann bestätigtes Feedback detached übernehmen und prüft dessen Textschlüssel gegen den Content-Katalog.
+- `Presentation Core` beobachtet zusätzlich die bestätigte Application-Eventabfrage.
 
-### Behoben
-- Frühere parallele Presentation-Merges wurden durch PR #22 auf eine einzige kanonische Character-Projektion, eindeutige Package-Exporte und konsistente Tests zurückgeführt.
-- Gesperrte Traits verraten keine versteckten Evidenzwerte; Skill-Fortschritt ist defensiv begrenzt.
+### Auditabschluss
+- PR #14 war trotz fehlgeschlagenem relevantem Compile-Gate gemergt worden und hatte den Presentation-Schaden verursacht.
+- Reparatur-PR #22 bestand Runtime Core und Presentation Core und wurde nach `main` gemergt.
+- Die konkurrierenden Presentation-PRs #15–#21 wurden mit Begründung geschlossen; ihre sinnvollen Inhalte wurden in die kanonische TODO-Reihenfolge übernommen.
+- Die Produktversion wurde durch die Wartungs-/Presentation-Arbeit nicht künstlich erhöht; `VERSION.json` bleibt bis zur nächsten abgenommenen Produktstufe auf `0.5.2-alpha.1`.
 
 ### Validierung
-- Repository-Reparatur PR #22: Runtime Core `32505897397` und Presentation Core `32505897399` erfolgreich.
-- 0.6.1 PR #24: Runtime Core `32510846508` und Presentation Core `32510846537` erfolgreich; Merge `25006d07d33199fea2db8208c192ca2f6fa1095d`.
-- 0.6.2 PR #26: Runtime Core `32511953788` und Presentation Core `32511953619` erfolgreich; Merge `5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a`.
+- Repository-Reparatur #22: Runtime Core `32505897397` = erfolgreich; Presentation Core `32505897399` = erfolgreich.
+- 0.6.1 PR #24: Runtime Core `32510846508` = erfolgreich; Presentation Core `32510846537` = erfolgreich.
+- PR #24 wurde mit geprüftem Head nach `main` gemergt (`25006d07d33199fea2db8208c192ca2f6fa1095d`).
+- 0.6.2 PR #26: Runtime Core `32511953788` = erfolgreich; Presentation Core `32511953619` = erfolgreich.
+- PR #26 wurde mit geprüftem Head nach `main` gemergt (`5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a`).
 - Idempotenter Action-Replay erzeugt keine neuen Commit-IDs und damit keine zweite Feedbackquelle.
-- Die Produktversion bleibt bewusst `0.5.2-alpha.1`; 0.6.x ist weiterhin aktive Presentation-Entwicklung.
 
 ## [0.5.2-alpha.1] – 2026-08-21
 
@@ -45,84 +64,179 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Action Resolver bindet aktive, für die Aktion relevante Traits deterministisch ein.
 - Character-State-Schema, Progression-/Level-/Runtime-/Testmanifeste und Runtime-CI-Pfade auf 0.5.2 abgeglichen.
 - Projektversion auf `0.5.2-alpha.1`.
+- Arbeitsregeln um prüfbare Vorplanung, reproduzierbare Update-Nachweise und ein eindeutiges Iterationsende ergänzt.
 
 ### Validierung
 - `compileall`, 27 gezielte Runtime-/Recovery-Tests, Action-Vertragsprüfung und 0.4.1-Balance-Regression lokal bestanden.
 - `Runtime Core` für PR #6 remote erfolgreich bestanden.
 
 ### Bewusst offen
-- Character-Forge-Presentation baut modular auf diesem Runtime-Kern auf.
-- grafisches Framework, Ranking/Network und Telegram/Sync folgen später.
+- 0.6 setzt die gemeinsame Character-Forge-Presentation auf den validierten Runtime-Kern.
+- grafisches Framework, Ranking/Network und Telegram/Sync bleiben späteren Iterationen vorbehalten.
 
 ## [0.5.1-alpha.1] – 2026-08-21
 
 ### Hinzugefügt
-- State-Envelope mit Journal-Sequenz, Journal-Head und SHA-256-Datenhash.
-- Snapshot Writer und rekonstruierbarer Snapshot-Index.
-- Recovery aus gültigem State-/Snapshot-Checkpoint plus deterministischem Journal-Replay.
-- Quarantäne für beschädigte Journal-Tails und `RECOVERY_RECEIPT.json`.
+- State-Envelope mit angewandter Journal-Sequenz, Journal-Head und SHA-256-Datenhash.
+- Snapshot Writer und aus gültigen Snapshot-Dateien rekonstruierbarer Snapshot-Index.
+- Recovery aus letztem gültigem State-/Snapshot-Checkpoint plus deterministischem Journal-Replay.
+- Quarantäne für beschädigte Journal-Tails und `RECOVERY_RECEIPT.json` als Wiederherstellungsnachweis.
 - Fault-Injection-Punkte nach `JOURNAL_DURABLE`, `STATE_APPLIED` und `META_COMMITTED`.
-- `CharacterRecoveryService` und sicherer Ein-Schritt-Profil-Undo über Kompensationsereignis.
+- `CharacterRecoveryService` für idempotentes Character-Replay.
+- `CharacterProfileService` mit sicherem Ein-Schritt-Undo für Name/Alias/Motto über ein kompensierendes Journal-Ereignis.
+- `docs/RECOVERY_0.5.1.md` und `reports/RUNTIME_VALIDATION_0.5.1.json`.
+
+### Geändert
+- Projektversion auf `0.5.1-alpha.1`.
+- Runtime-Manifest um Recovery-, Snapshot- und Undo-Fähigkeiten ergänzt.
+- README/TODO/Projektstatus auf 0.5.1 und die getrennten Folgephasen 0.5.2/0.6 aktualisiert.
+- 0.5.0-State bleibt als Legacy-Checkpoint lesbar; keine destruktive Migration.
 
 ### Validierung
-- `compileall` und 21/21 gezielte Runtime-/Recovery-Tests lokal bestanden.
-- Crash- und Korruptionsfälle, Snapshot-Recovery, Quarantäne und idempotente Wiederherstellung bestanden.
+- `compileall` lokal bestanden.
+- 21/21 gezielte Runtime-/Recovery-Tests lokal bestanden.
+- Crash nach durablem Journal wird aus dem bestätigten Checkpoint rekonstruiert.
+- Crash nach State-Write wird ohne doppelte Progressionsanwendung korrigiert.
+- Crash nach vollständig geschriebenem Meta-Zustand benötigt keine unnötige Recovery.
+- beschädigter State wird aus Snapshot + nachfolgendem Journal wiederhergestellt.
+- korrupter Journal-Tail wird vor Reparatur quarantänisiert.
+- erneute Recovery auf gesundem Stand ist idempotent.
+
+### Bewusst offen
+- konkrete Laufzeitanwendung der 15 Trait-Effekte und Soft-Konflikte folgt in 0.5.2.
+- Open-End-Resonanz nach Level 50 folgt in 0.5.2.
+- grafische Character-Forge-Runtime folgt in 0.6.
 
 ## [0.5.0-alpha.1] – 2026-08-21
 
 ### Hinzugefügt
-- erster headless Runtime-Kern ohne externe Python-Abhängigkeiten.
-- `CharacterState`, deterministischer Action Resolver und `CharacterActionService`.
-- Persistence Kernel mit Journal Schema v2, Sequenz, SHA-256-Kette, `fsync`, atomaren State-/Meta-Writes und Idempotenz.
-- Runtime-/Integrationstests sowie GitHub-Workflow `runtime-core.yml`.
+- erster headless Runtime-Kern unter `src/bunkerfrequenz/` ohne externe Python-Abhängigkeiten.
+- `CharacterState` mit identischer Startbasis, Skills, Trait-Fortschritt und Spezialisierung.
+- deterministischer Action Resolver mit Skill-/Risiko-Einfluss und Trait-Evidenzquellen.
+- `CharacterActionService` als Application-Grenze zwischen Domain und Persistenz.
+- Persistence Kernel mit Journal Schema v2, monotone Sequenz, SHA-256-Kette, `fsync`, atomaren State-/Meta-Writes und Idempotenzprüfung.
+- `RUNTIME_MANIFEST.json`, `character_state.schema.json` und `CHARACTER_CORE_0.5.md`.
+- gezielte Runtime-/Integrationstests sowie GitHub-Actions-Workflow `runtime-core.yml`.
+- übersichtlichere visuelle Referenz `docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp`.
+- versionierter Runtime-Abnahmebericht `reports/RUNTIME_VALIDATION_0.5.0.json`.
+
+### Geändert
+- Projektversion auf `0.5.0-alpha.1`.
+- README, TODO, Projektstatus und Projektmanifest auf den ersten Runtime-Stand aktualisiert.
+- UI/UX Blueprint und UI-Manifest mit der kanonischen visuellen Referenz verknüpft.
+- Agentenregeln um Journal-Katalogtreue für Runtime-Events präzisiert.
 
 ### Validierung
-- 14/14 Runtime-/Integrationstests und 200 Action/Commit/Reload-Schritte bestanden.
-- korrupter Journal-Tail wird erkannt; gleiche Event-ID ist bei gleichem Inhalt idempotent und bei abweichendem Inhalt ungültig.
+- `compileall` für `src/` bestanden.
+- 14/14 gezielte Runtime-/Integrationstests bestanden.
+- 200 aufeinanderfolgende Action/Commit/Reload-Schritte ohne Journal- oder Zustandsfehler.
+- korrupter Journal-Tail wird zuverlässig erkannt.
+- gleiche Event-ID mit gleichem Inhalt ist idempotent; abweichender Inhalt wird abgelehnt.
+
+### Bewusst offen
+- automatische Recovery/Quarantäne nach erkanntem Fehler, Snapshot-Replay und Fault-Injection folgen in 0.5.1.
+- noch keine grafische Game-Runtime, Telegram- oder Wirtschaftsimplementierung.
 
 ## [0.4.4-alpha.1] – 2026-08-21
 
 ### Hinzugefügt
 - `ACTION_MANIFEST.json` mit 20 datengetriebenen Startaktionen.
-- Skill-XP-/Trait-Evidenz-Gewichte, Resolver-Pipeline, Ergebnisstufen und Anti-Grind-Bezüge.
-- Action-Schema, Validator und Vertragsbericht.
+- exakte Skill-XP- und Trait-Evidenz-Gewichte je Aktion.
+- deterministische Action-Resolver-Pipeline, Ergebnisstufen und Anti-Grind-Bezüge.
+- Action-Schema, Validator, Testhülle und `reports/CONTRACT_VALIDATION_0.4.4.json`.
+- Schutzregel für reale Locations: nur legal/autorisiert oder klar fiktionalisiert.
+
+### Geändert
+- README/TODO/Version/Projektstatus auf `0.4.4-alpha.1`.
+- `TEST_MANIFEST.json` um Persistence-, UI- und Action-Vertragsgates erweitert.
 
 ### Validierung
-- 20 eindeutige Action-IDs; Skill-/Trait-Gewichte je Action = 1.0; Journalreferenzen gültig; Systemzeit kein Zufallsseed.
+- exakt 20 eindeutige Action-IDs.
+- Skill- und Trait-Gewichte je Action = 1.0.
+- Biografie-Relevanz 0–100.
+- Systemzeit nicht als Zufallsseed.
+- Vertragsbericht = PASS.
 
 ## [0.4.3-alpha.1] – 2026-08-21
 
 ### Hinzugefügt
 - UI/UX Blueprint mit A1 Control Room, A2 Compact Grid, A3 Cinematic Forge und A4 Ops Deck.
-- UI-/Animation-Manifeste, UI-Schema und ausgelagerte deutsche Character-Forge-Texte.
+- UI- und Animation-Manifeste, UI-Schema und ausgelagerte deutsche Character-Forge-Texte.
 
 ### Validierung
-- vier Layoutvarianten; Farbe nie alleinige Information; Tastatur, High Contrast und Reduced Motion vorgesehen.
+- exakt vier Layoutvarianten innerhalb derselben Designfamilie.
+- Farbe nie als alleinige Information; Tastatur, High-Contrast und Reduced-Motion vorgesehen.
+- Animationen blockieren keinen Game-State und besitzen statische Fallbacks.
 
 ## [0.4.2-alpha.1] – 2026-08-21
 
 ### Hinzugefügt
-- Persistence Contract mit Journal-Eventtypen, Transaktionszuständen, Save-/Journal-Schema v2, Snapshot-, Undo-, Crash-, Recovery- und Migrationsregeln.
-- Autosave exakt alle 60 Sekunden, dirty-only und zusätzliche kritische Flush-Punkte.
+- exakter Persistence Contract mit 39 Journal-Eventtypen, Transaktionszuständen und Commit-Invariante.
+- Save-/Journal-Schema v2, Snapshot-/Undo-/Crash-/Recovery-Regeln und Migration v1 → v2.
+- robuste Zeitanker- und Offline-Catch-up-Regeln.
+
+### Geändert
+- Autosave auf exakt 60 Sekunden, dirty-only und kritische Flush-Punkte konkretisiert.
+
+### Validierung
+- Eventtypen eindeutig; Snapshot-Schwellen numerisch fest.
+- Migration nicht destruktiv und mit Snapshot/Backup/Validierung/Rollback.
 
 ## [0.4.1-alpha.1] – 2026-08-21
 
 ### Hinzugefügt
-- Trait Engine mit fünf Stufen, 15 numerischen Effektvorlagen, Stack-Caps und Soft-Konflikten.
-- Progressionsvertrag mit Skillkurve, Trainings-Abwertung und sechs Spezialisierungen.
-- deterministischer Progression-Simulator und Referenzbericht.
+- `TRAIT_ENGINE_MANIFEST.json` mit fünf Freischaltstufen, 15 numerischen Effektvorlagen, Trait-Evidenzquellen, Stack-Caps und zwei begründeten Soft-Konflikten.
+- `PROGRESSION_MANIFEST.json` mit Skillkurve 10–100, Trainings-Abwertung und sechs datengetriebenen Spezialisierungen.
+- deterministischer Progression-Simulator unter `tools/simulate_characters/`.
+- gezielte Simulationstests für Manifest-Invarianten, Determinismus und Balance-Gate.
+- versionierter Referenzbericht `reports/PROGRESSION_SIMULATION_0.4.1.json`.
+- JSON-Schemas für Trait Engine und Progression.
+- `docs/PROGRESSION_CONTRACT.md`.
+
+### Geändert
+- Projektversion auf `0.4.1-alpha.1`.
+- `README.md`, `TODO.md`, `PROJEKTSTATUS.json` und `PROJEKTMANIFEST.json` auf den validierten 0.4.1-Stand aktualisiert.
+- `SKILL_MANIFEST.json` auf die verbindliche Skill-XP-Formel und Progression-Referenz präzisiert.
+- `LEVEL_MANIFEST.json` mit Referenz auf den Progression-Vertrag ergänzt.
+- `TEST_MANIFEST.json` um ausschließlich für 0.4.1 relevante Prüfungen erweitert.
+- `docs/CHARACTER_FORGE.md` um konkrete Trait-/Spezialisierungsregeln erweitert, ohne bestehende Foundation-Inhalte zu entfernen.
+
+### Bewusst unverändert
+- `TRAIT_MANIFEST.json` mit seinen 165 individuellen Namen und Zuordnungen bleibt byte-identisch; numerische Regeln werden über die referenzierten Effektvorlagen in `TRAIT_ENGINE_MANIFEST.json` ergänzt.
+- kein Spiel-Laufzeitcode, keine UI, kein Telegram, keine Persistenzimplementierung.
 
 ### Validierung
-- 15 eindeutige Effektvorlagen, fünf monotone Trait-Stufen und Referenzsimulation 1.000 Charaktere × 720 Tage mit Seed `90409`; alle Balance-Gates bestanden.
+- alle neuen/geänderten JSON-Dateien syntaktisch gültig.
+- exakt 15 eindeutige numerische Trait-Effektvorlagen.
+- fünf monoton steigende Trait-Stufen.
+- Referenzsimulation: 1.000 Charaktere × 720 Spieltage, Seed `90409`.
+- Ergebnis: alle sechs Balance-Gates bestanden.
+- Unit-Tests: Manifest-Invarianten, deterministische Wiederholbarkeit und Balance-Gate bestanden.
 
 ## [0.4.0-alpha.1] – 2026-08-21
 
 ### Hinzugefügt
-- Architekturvertrag für Domain, Application, Infrastructure, Presentation und Content.
-- getrennte Character-Definition/Instanz/Fortschritt-Modelle.
-- 11 Hauptfiguren mit identischen Startwerten, 15 Trait-Vorlagen und 165 individuellen Trait-Namen.
-- XP-/Level-Grundformel, Resonanzmodell, Biografie-, Save-, Journal-, Snapshot-, Recovery-, Hybridzeit- und Sync-Verträge.
-- Maschinenlesbare Manifeste, Schemas und Entwicklerregeln.
+- Architekturvertrag für modulare Trennung von Domain, Application, Infrastructure, Presentation und Content.
+- Character-Definition/Instanz/Fortschritt als getrennte Datenmodelle.
+- 11 Hauptfiguren mit identischen Startwerten und narrativ getrennten Grundstorys.
+- 15 gemeinsame Trait-Effektvorlagen und 165 individuelle Trait-Namen.
+- XP-/Level-Grundformel und Resonanzmodell nach Level 50.
+- Regeln für dynamische Biografie.
+- Grundverträge für Save, Autosave, Undo, Journal, Snapshot, Recovery, Hybridzeit und Synchronisation.
+- Maschinenlesbare Manifeste und JSON-Schemas.
+- Entwicklerregeln in `AGENTS.md`.
+
+### Geändert
+- `README.md` von Platzhalter auf kanonische Projektübersicht und aktuellen TODO-Stand erweitert.
+
+### Validierung
+- JSON-Strukturen müssen syntaktisch gültig sein.
+- Trait-IDs müssen eindeutig sein und exakt 165 registrierte Traits ergeben.
+- alle 11 Character Definitions müssen dieselben Startwerte referenzieren.
+- alle Manifest-/Schema-Pfade müssen innerhalb des dokumentierten 0.4-Scopes liegen.
 
 ### Nicht enthalten
-- noch kein Laufzeitcode, Telegram, Wirtschaft oder UI-Runtime.
+- Kein Laufzeitcode.
+- Keine Telegram-Implementierung.
+- Keine Wirtschaftssimulation.
+- Keine UI-Implementierung.
