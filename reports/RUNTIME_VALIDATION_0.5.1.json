@@ -21,8 +21,12 @@
   },
   "remote_ci": {
     "workflow": "Runtime Core",
-    "status": "pending"
+    "run_id": 32495689168,
+    "compile_runtime": "success",
+    "runtime_tests": "success",
+    "status": "success"
   },
+  "validation_note": "Der erste Remote-Lauf deckte die fehlende GENESIS-State-Initialisierung vor der ersten Aktion auf. Die Ursache wurde an der bestehenden CharacterActionService-Grenze korrigiert; der unmittelbar folgende Runtime-CI lief vollständig erfolgreich.",
   "passed_local": true,
-  "passed": false
+  "passed": true
 }
