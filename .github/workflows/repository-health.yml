@@ -41,7 +41,15 @@ jobs:
           python-version: '3.12'
 
       - name: Compile repository Python
-        run: PYTHONPATH=src python3 -m compileall -q src tools/repository_health.py
+        run: |
+          PYTHONPATH=src python3 -m compileall -q \
+            src \
+            tools/repository_health.py \
+            tools/github_merge_guard.py \
+            tests/repository
+
+      - name: Repository guard unit tests
+        run: PYTHONPATH=src:. python3 -m unittest discover -s tests/repository -v
 
       - name: Validate repository health contract
         env:

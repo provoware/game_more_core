@@ -1,0 +1,101 @@
+name: Safe Merge
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: safe-merge-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  safe-merge:
+    if: >-
+      github.event.issue.pull_request &&
+      github.event.comment.body == '/safe-merge'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trusted main guard
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Block self-modifying guard changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+          from urllib import parse, request
+
+          with open('manifests/REPOSITORY_GUARD_MANIFEST.json', encoding='utf-8') as handle:
+              manifest = json.load(handle)
+          protected = manifest['merge_safety']['protected_guard_paths']
+          token = os.environ['GITHUB_TOKEN']
+          repository = os.environ['GITHUB_REPOSITORY']
+          pr_number = os.environ['PR_NUMBER']
+          changed = []
+          page = 1
+          while True:
+              url = (
+                  f'https://api.github.com/repos/{repository}/pulls/{pr_number}/files?'
+                  + parse.urlencode({'per_page': 100, 'page': page})
+              )
+              req = request.Request(
+                  url,
+                  headers={
+                      'Accept': 'application/vnd.github+json',
+                      'Authorization': f'Bearer {token}',
+                      'X-GitHub-Api-Version': '2022-11-28',
+                      'User-Agent': 'BUNKERFREQUENZ-safe-merge',
+                  },
+              )
+              with request.urlopen(req, timeout=30) as response:
+                  items = json.load(response)
+              if not items:
+                  break
+              changed.extend(item['filename'] for item in items)
+              if len(items) < 100:
+                  break
+              page += 1
+
+          blocked = sorted(
+              filename
+              for filename in changed
+              if any(
+                  filename == rule or (rule.endswith('/') and filename.startswith(rule))
+                  for rule in protected
+              )
+          )
+          if blocked:
+              print('::error::/safe-merge darf den Merge-Guard nicht selbst verändern: ' + ', '.join(blocked))
+              print('Security-/Guard-Änderungen benötigen einen ausdrücklich auditierten Bootstrap-PR.')
+              sys.exit(1)
+          print('SAFE MERGE SECURITY BOUNDARY PASS')
+          PY
+
+      - name: Validate and merge exact PR head
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          python3 tools/github_merge_guard.py merge-pr \
+            --pr "$PR_NUMBER" \
+            --actor "$ACTOR"

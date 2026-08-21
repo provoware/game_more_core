@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "protected_branch": "main",
   "target_branch_policy": {
     "require_pull_request": true,
@@ -12,6 +12,36 @@
       "presentation-core",
       "repository-health"
     ]
+  },
+  "merge_safety": {
+    "safe_merge_command": "/safe-merge",
+    "safe_merge_workflow": ".github/workflows/safe-merge.yml",
+    "main_integrity_workflow": ".github/workflows/main-integrity.yml",
+    "merge_guard_tool": "tools/github_merge_guard.py",
+    "required_workflow_names": [
+      "Runtime Core",
+      "Presentation Core",
+      "Repository Health"
+    ],
+    "allowed_actor_permissions": [
+      "admin",
+      "maintain",
+      "write"
+    ],
+    "protected_guard_paths": [
+      ".github/workflows/runtime-core.yml",
+      ".github/workflows/presentation-core.yml",
+      ".github/workflows/repository-health.yml",
+      ".github/workflows/safe-merge.yml",
+      ".github/workflows/main-integrity.yml",
+      "tools/repository_health.py",
+      "tools/github_merge_guard.py",
+      "manifests/REPOSITORY_GUARD_MANIFEST.json",
+      "tests/repository/"
+    ],
+    "merge_method": "merge",
+    "direct_push_to_main_valid": false,
+    "unresolved_review_threads_valid": false
   },
   "canonical_information": {
     "version": "VERSION.json",
