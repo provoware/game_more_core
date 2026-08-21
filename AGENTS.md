@@ -2,52 +2,67 @@
 
 ## Ziel
 
-Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Jede Änderung muss einen fachlichen Grund haben.
+Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Jede Änderung braucht einen fachlichen Grund, eine zuständige Zielstelle und einen überprüfbaren Abschluss.
 
 ## Verbindlicher Workflow
 
-Jede Iteration besteht aus genau einer geplanten Änderungseinheit. Vor dem ersten Patch wird ein Arbeitsplan festgehalten; ungeplante Nebenbefunde werden nicht mitbearbeitet.
-
-1. Anforderung, fachliches Ziel und Abnahmekriterium bestimmen.
-2. Betroffene Module, Dateien und konkrete Zeilen oder Blöcke ermitteln.
-3. Bestehende Zielstellen und ihre direkten Verträge vor der Änderung lesen.
-4. Patchgrund, Risiken, Abhängigkeiten und bewusste Nicht-Änderungen festhalten.
-5. Eine geordnete Schrittliste mit höchstens einem aktiven Schritt erstellen.
-6. Kleinste saubere Änderung an der vorhandenen Stelle umsetzen; keine Parallelimplementierung erzeugen.
-7. Nebenbefunde nur bei unmittelbarer Blockade beheben, sonst als nächste Iteration in `TODO.md` eintragen.
-8. Nach dem letzten Patch genau die betroffenen Ausgaben, Verträge und Tests validieren.
-9. README/TODO nur bei einer echten Status- oder Ablaufänderung aktualisieren.
+1. Ziel und Abnahmekriterium der Iteration festlegen.
+2. Betroffene Module, Dateien und direkten Verträge ermitteln.
+3. Bestehende Zielstelle lesen, bevor neuer Code oder eine neue Datei entsteht.
+4. Scope, Grund, Risiken und bewusste Nicht-Ziele festhalten.
+5. Kleinste saubere Änderung an der zuständigen Stelle umsetzen; keine Parallelimplementierung erzeugen.
+6. Nebenbefunde nur bei unmittelbarer Blockade beheben, sonst als nächste Aufgabe in `TODO.md` aufnehmen.
+7. Nur die für den Scope relevanten Tests und Validatoren ausführen.
+8. Diff gegen den Plan prüfen; Format- oder Dokumentänderungen ohne fachlichen Grund entfernen.
+9. README/TODO/Status/Manifest nur aktualisieren, wenn sich der dort beschriebene Zustand wirklich ändert.
 10. CHANGELOG bei fachlicher oder verbindlicher Prozessänderung aktualisieren.
-11. Version nur erhöhen, wenn der Änderungsumfang dies rechtfertigt.
-12. Diff, Arbeitsbaum und Änderungsprotokoll vor dem Commit gegen den Plan prüfen.
+11. Version nur erhöhen, wenn eine neue freigegebene Entwicklungsstufe entsteht.
+12. Erst committen und mergen, wenn der geplante Scope und seine Nachweise zusammenpassen.
 
 ## Pflichtangaben je Iteration
 
-Der Plan muss vor der Änderung knapp und prüfbar benennen:
-
-- **Ziel:** gewünschter fachlicher Zustand in einem Satz.
-- **Abnahme:** beobachtbares Ergebnis, das den Abschluss belegt.
-- **Scope:** betroffene Dateien sowie Zeilen, Funktionen oder Dokumentblöcke.
-- **Grund:** warum der Eingriff nötig ist und warum die gewählte Stelle zuständig ist.
-- **Risiken:** mögliche Regressionen, Daten- oder Vertragsfolgen.
+- **Ziel:** gewünschter Zustand in einem Satz.
+- **Abnahme:** beobachtbares Ergebnis für den Abschluss.
+- **Scope:** konkrete Dateien/Funktionen/Dokumentblöcke.
+- **Grund:** warum genau diese Stelle geändert wird.
+- **Risiken:** mögliche Regressionen oder Vertragsfolgen.
 - **Nicht-Ziele:** bewusst unveränderte Bereiche.
-- **Schritte:** Analyse, Patch, einmalige Endvalidierung, Diff-Prüfung und Abschluss.
+- **Prüfung:** genau die Kommandos/CI-Gates, die den Scope absichern.
 
-Ändert sich der Scope während der Arbeit, wird der Plan vor einem weiteren Patch aktualisiert. Ohne neuen Befund wird keine Prüfung wiederholt.
+Ändert sich der Scope, wird der Plan vor dem nächsten Patch angepasst. Ohne neuen Befund wird eine Prüfung nicht wiederholt.
+
+## PR- und Merge-Disziplin
+
+- Pro fachlichem Modul gibt es höchstens **einen aktiven Implementierungs-PR**. Alternative Parallel-PRs werden nicht gleichzeitig weitergeführt.
+- Ein neuer PR darf keinen bereits offenen PR mit derselben Zielstelle still duplizieren.
+- Überholte oder konkurrierende PRs werden geschlossen; erhaltene Ideen werden vorher in `TODO.md` konsolidiert.
+- Ein PR mit fehlgeschlagenem relevantem CI-Gate wird **nicht gemergt**.
+- Ein grüner lokaler Test ersetzt keinen roten oder fehlenden Remote-Nachweis, wenn für den Scope ein Remote-Gate existiert.
+- Nach einer Inhaltsänderung am geprüften Code ist der dazugehörige Gate erneut erforderlich.
+- Merge-Entscheidungen beziehen sich auf den tatsächlich geprüften Head-SHA.
 
 ## Reproduzierbare Updates
 
-- Befehle werden vom Repository-Root ausgeführt und im Abschluss wörtlich dokumentiert.
-- Zufällige oder zeitabhängige Prüfungen verwenden einen festen Seed beziehungsweise einen dokumentierten Zeitanker.
-- Generierte Dateien nennen Quellstand, Parameter und Erzeugungsbefehl; volatile Daten werden nicht ohne fachlichen Grund versioniert.
-- Abnahmeberichte unterscheiden lokale Prüfung, Remote-CI und noch ausstehende Nachweise eindeutig.
-- Ein erfolgreicher Lauf wird nicht behauptet, wenn Abhängigkeiten, Netzwerk oder Umgebung ihn verhindert haben.
-- Prüfungsergebnisse müssen dem tatsächlich gepatchten Stand entstammen; nach der Endvalidierung folgt keine Inhaltsänderung ohne neue Validierung.
-- Commits enthalten nur den geplanten Scope und erhalten eine fachlich eindeutige Nachricht.
+- Befehle laufen vom Repository-Root und werden im Abschluss wörtlich dokumentiert.
+- Zufällige oder zeitabhängige Prüfungen verwenden festen Seed bzw. dokumentierten Zeitanker.
+- Generierte Dateien nennen Quelle, Parameter und Erzeugungsbefehl.
+- Abnahmeberichte unterscheiden lokale Prüfung, Remote-CI und ausstehende Nachweise eindeutig.
+- Ein erfolgreicher Lauf wird nicht behauptet, wenn Umgebung oder Netzwerk ihn verhindert haben.
+- Commits enthalten nur den geplanten Scope und eine fachlich eindeutige Nachricht.
 
-## Iterationsabschluss
+## Informationshierarchie
 
-Der Abschluss enthält ein kompaktes Änderungsprotokoll, die relevanten Prüfkommandos mit Ergebnis, bekannte Grenzen und genau zwei konstruktive Empfehlungen für die nächste Iteration. Offene Punkte werden als prüfbare Aufgaben in `TODO.md` formuliert.
+Bei Widersprüchen gilt:
+
+1. Architektur-/Fachvertrag für Verhalten und Grenzen.
+2. Manifest/Schema für katalogisierte Werte und Datenformen.
+3. Runtime + Tests für die Implementierung dieser Verträge.
+4. `PROJEKTSTATUS.json` für aktuellen Entwicklungszustand.
+5. `TODO.md` für nächste Arbeitseinheiten.
+6. README/Index als Navigation, nicht als zweite Fachregel.
+7. CHANGELOG als historische Änderungsspur.
+
+`VERSION.json` bezeichnet die letzte versionierte Produkt-/Runtime-Baseline. Eine laufende nächste Iteration darf in `PROJEKTSTATUS.json` und `TODO.md` weiter sein, ohne die Baseline vorzeitig umzubenennen.
 
 ## Architekturgrenzen
 
@@ -58,22 +73,35 @@ Der Abschluss enthält ein kompaktes Änderungsprotokoll, die relevanten Prüfko
 - Animationen dürfen Gameplay nie blockieren.
 - sichtbare Namen sind keine Identifikatoren.
 - bestehende Journal-Ereignisse werden nicht überschrieben.
-- Runtime-Code darf nur Journal-Eventtypen persistieren, die in `manifests/JOURNAL_MANIFEST.json` katalogisiert sind.
+- Runtime persistiert nur in `manifests/JOURNAL_MANIFEST.json` katalogisierte Eventtypen.
 - Domain-Aktionen liefern Ereignisse; dauerhafte Zustandsänderungen laufen über den Persistence Kernel.
 - Systemzeit ist keine alleinige Autorität und niemals Zufallsseed.
 
 ## Agentenrollen
 
-- Architektur: Modulgrenzen, Invarianten, Datenverträge.
-- Character Forge: Skills, Traits, Progression, Balance.
-- Gameplay: Spielschleifen, Konsequenzen, Spielspaß.
-- Content: Story, Dialog, reale Bezüge, Textschlüssel.
-- UI/UX: intuitive Bedienung, Kontrast, Fokus.
-- Persistenz: Save, Journal, Undo, Recovery, Migration.
-- Sync: Netzwerk, Konflikte, Offline-Warteschlange.
-- Simulation: Zeit, Zufall, Wirtschaft.
-- QA: zielgerichtete Tests und Regression.
-- Release: Version, Manifeste, Changelog, Nachweise.
+- **Architektur:** Modulgrenzen, Invarianten, Datenverträge.
+- **Character Forge:** Skills, Traits, Progression, Balance.
+- **Gameplay:** Spielschleifen, Konsequenzen, Spielspaß.
+- **Content:** Story, Dialog, reale Bezüge, Textschlüssel.
+- **UI/UX:** intuitive Bedienung, Kontrast, Fokus, Reduced Motion.
+- **Persistenz:** Save, Journal, Undo, Recovery, Migration.
+- **Sync:** Netzwerk, Konflikte, Offline-Warteschlange.
+- **Simulation:** Zeit, Zufall, Wirtschaft.
+- **QA:** zielgerichtete Tests, Regression und CI-Status.
+- **Release:** Version, Manifeste, Changelog und Nachweise.
+
+## Iterationsabschluss
+
+Der Abschluss enthält:
+
+- aktuellen Stand,
+- konkrete technische Änderungen,
+- ausgeführte Prüfungen mit Ergebnis,
+- bekannte Grenzen,
+- **drei nummerierte weiterführende Vorschläge**,
+- eine klare Empfehlung mit Auswirkungsstufe auf das Game.
+
+Offene Punkte werden als prüfbare Aufgaben in `TODO.md` formuliert.
 
 ## Nicht tun
 
@@ -81,7 +109,9 @@ Der Abschluss enthält ein kompaktes Änderungsprotokoll, die relevanten Prüfko
 - keine kosmetischen Massenänderungen ohne Nutzen
 - keine globalen Prüfungen, wenn eine gezielte Prüfung genügt
 - keine hart codierten sichtbaren Texte in Spiellogik
-- keine neuen Abhängigkeiten ohne klaren Vorteil
+- keine neuen Abhängigkeiten ohne belegten Vorteil
 - keine alten Save-/Schema-Versionen still brechen
 - keine generierten Nachweise ohne dokumentierten Erzeugungsweg
-- keine Vermischung von lokal bestandener Prüfung und Remote-CI-Status
+- keine Vermischung von lokalem PASS und Remote-CI
+- keine konkurrierenden Implementierungen derselben kanonischen Datei parallel mergen
+- keinen bekannten roten CI-Stand nach `main` übernehmen

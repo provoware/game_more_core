@@ -4,7 +4,8 @@
   "repository": "provoware/game_more_core",
   "lineage_id": "e59052dd-e910-4405-9a06-1db621d818e7",
   "version": "0.5.2-alpha.1",
-  "phase": "0.5.2",
+  "release_baseline": "0.5.2-alpha.1",
+  "active_development_phase": "0.6",
   "design_direction": "industrial_brutalist_variant_a",
   "architecture_layers": [
     "domain",
@@ -14,9 +15,13 @@
     "content"
   ],
   "runtime_code_present": true,
+  "presentation_code_present": true,
   "developer_tool_code_present": true,
+  "canonical_status": "PROJEKTSTATUS.json",
   "canonical_todo": "TODO.md",
   "canonical_changelog": "CHANGELOG.md",
+  "repository_index": "docs/REPOSITORY_INDEX.md",
+  "repository_rules": "docs/REPOSITORY_RULES.md",
   "architecture_doc": "docs/ARCHITEKTURVERTRAG.md",
   "progression_contract": "docs/PROGRESSION_CONTRACT.md",
   "progression_manifests": [
@@ -33,6 +38,7 @@
     "manifests/ZEIT_MANIFEST.json"
   ],
   "ui_ux_blueprint": "docs/UI_UX_BLUEPRINT.md",
+  "presentation_contract": "docs/PRESENTATION_CONTRACT_0.6.md",
   "design_reference_asset": "docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp",
   "ui_manifest": "manifests/UI_MANIFEST.json",
   "animation_manifest": "manifests/ANIMATION_MANIFEST.json",
@@ -42,5 +48,10 @@
   "runtime_doc": "docs/CHARACTER_CORE_0.5.md",
   "recovery_doc": "docs/RECOVERY_0.5.1.md",
   "runtime_manifest": "manifests/RUNTIME_MANIFEST.json",
-  "runtime_validation_report": "reports/RUNTIME_VALIDATION_0.5.2.json"
+  "test_manifest": "manifests/TEST_MANIFEST.json",
+  "runtime_validation_report": "reports/RUNTIME_VALIDATION_0.5.2.json",
+  "ci_workflows": {
+    "runtime": ".github/workflows/runtime-core.yml",
+    "presentation": ".github/workflows/presentation-core.yml"
+  }
 }

@@ -1,13 +1,28 @@
 {
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
-  "status": "progression_effects_resonance_locally_validated",
-  "current_iteration": "0.5.2",
-  "last_validated_release": null,
+  "release_baseline": "0.5.2-alpha.1",
+  "active_iteration": "0.6",
+  "status": "presentation_foundation_repaired_and_gated",
+  "current_focus": "single_canonical_presentation_foundation_before_a4_a3",
+  "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
-  "next_iteration": "0.6",
-  "next_goal": "A4 Ops Deck und A3 Cinematic Forge als einen vollständigen Character-Workflow anbinden",
+  "remote_validation": {
+    "runtime_core": {
+      "status": "success",
+      "pull_request": 6,
+      "workflow_run": 32498193699
+    },
+    "presentation_core": {
+      "status": "required_for_0.6_presentation_changes",
+      "workflow": ".github/workflows/presentation-core.yml"
+    }
+  },
+  "next_iteration": "0.6.1",
+  "next_goal": "Presentation-Fähigkeiten aus der Application ableiten und einen einzigen Command-Dispatcher für bestätigte Schreibaktionen einführen",
   "runtime_code": true,
+  "presentation_code": true,
   "developer_tool_code": true,
-  "updated_at": "2026-08-21T16:45:00+02:00"
+  "repository_policy": "one_active_implementation_pr_per_canonical_target",
+  "updated_at": "2026-08-21T18:42:00+02:00"
 }

@@ -1,46 +1,78 @@
 # BUNKERFREQUENZ
 
 <p>
-  <img alt="Version 0.5.2 alpha 1" src="https://img.shields.io/badge/Version-0.5.2--alpha.1-ff4d00">
-  <img alt="Phase Progression Effects und Resonance" src="https://img.shields.io/badge/Phase-Progression_%26_Resonance-7dff00">
+  <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
+  <img alt="Aktive Entwicklung 0.6 Presentation" src="https://img.shields.io/badge/Aktive_Entwicklung-0.6_Presentation-7dff00">
   <img alt="Runtime Python Standardbibliothek" src="https://img.shields.io/badge/Runtime-Python_Standardbibliothek-00c2ff">
-  <img alt="Status Headless Core" src="https://img.shields.io/badge/Status-Headless_Core-222222">
 </p>
 
-> **Techno-/FreeTekno-Crew-RPG:** Charaktere, Entscheidungen und Krisen formen eine Crew. Der deterministische Kern läuft bereits ohne grafische Oberfläche; Character Forge, Wirtschaft und Synchronisation folgen modular.
+> **Techno-/FreeTekno-Crew-RPG:** Verhalten, Training, Entscheidungen und Krisen formen individuelle Charaktere. Der headless Character-/Action-/Persistence-Kern ist vorhanden; Character Forge, Wirtschaft und Synchronisation werden modular darauf aufgebaut.
 
 ![BUNKERFREQUENZ System- und Character-Forge-Blueprint](docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp)
 
+## Status auf einen Blick
+
+| Bereich | Stand |
+|---|---|
+| letzte versionierte Runtime-Baseline | `0.5.2-alpha.1` |
+| aktive Entwicklungsiteration | `0.6 – Character Forge Presentation` |
+| Runtime | Character State, Actions, Traits, Resonanz, Journal, Snapshot, Recovery |
+| Presentation | Vertrag, Textkataloge, Character-/Biografieprojektion; A4/A3 folgen sequenziell |
+| grafische Spieloberfläche | noch nicht implementiert |
+| Telegram/Sync | geplant, noch nicht implementiert |
+| Wirtschaft/Clubs | geplant, noch nicht implementiert |
+
+**Wichtig:** `VERSION.json` beschreibt die letzte versionierte Runtime-Baseline. Die laufende nächste Entwicklungsiteration steht in `PROJEKTSTATUS.json` und `TODO.md`. Dadurch wird eine noch nicht abgeschlossene 0.6-Arbeit nicht fälschlich als neues Release ausgegeben.
+
 ## Schnellzugriff
 
-| Ziel | Einstieg |
+| Ziel | Datei |
 |---|---|
-| Projekt verstehen | [Spielschema](docs/GAME_SCHEMA.md) |
-| Datei finden | [Ordner- und Dateiindex](docs/REPOSITORY_INDEX.md) |
-| Tool oder Dokument richtig ablegen | [Repository-Regeln](docs/REPOSITORY_RULES.md) |
-| Architektur prüfen | [Architekturvertrag](docs/ARCHITEKTURVERTRAG.md) |
-| Weiterarbeiten | [Presentation-Vertrag 0.6](docs/PRESENTATION_CONTRACT_0.6.md) · [Entwicklerhandbuch](docs/ENTWICKLERHANDBUCH.md) · [TODO](TODO.md) |
-| Änderungen verfolgen | [Changelog](CHANGELOG.md) |
+| aktueller Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
+| nächste Arbeitsschritte | [`TODO.md`](TODO.md) |
+| Architektur und Grenzen | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
+| Spiel-/Datenfluss verstehen | [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) |
+| 0.6 Presentation-Schnitt | [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md) |
+| Datei finden | [`docs/REPOSITORY_INDEX.md`](docs/REPOSITORY_INDEX.md) |
+| Ablageregeln | [`docs/REPOSITORY_RULES.md`](docs/REPOSITORY_RULES.md) |
+| als Entwickler übernehmen | [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md) |
+| Änderungshistorie | [`CHANGELOG.md`](CHANGELOG.md) |
 
-## Aktueller Stand
+## Was bereits funktioniert
 
-**Version:** `0.5.2-alpha.1` · **Nächste Phase:** `0.6 Character Forge Runtime`
+### Character / Progression
 
-Der headless Kern bietet:
+- 11 Hauptfiguren mit identischer Startbasis und stabilen technischen IDs
+- editierbare Namen, Alias, zusätzliche Spitznamen und Motto im Domain-/Profilmodell
+- 16 Skills
+- 165 individuelle Trait-Namen über 15 gemeinsame Effektfamilien
+- Spezialisierungen mit Vor- und Nachteilen
+- Level 1–50 und anschließend offene Resonanzränge
+- deterministische Action Resolution
 
-- 11 Figuren mit identischer Startbasis, stabilen IDs und editierbarem Profil,
-- 16 Skills, 165 Trait-Namen und 15 deterministische Effektfamilien,
-- Action Resolver mit begrenzten Trait-Modifikatoren und Soft-Konflikten,
-- Level 1–50 mit offener Resonanz-Progression danach,
-- append-only Journal, atomare Zustände, Snapshots, Recovery und sicheren Profil-Undo,
-- ausschließlich Python-Standardbibliothek im Runtime-Kern.
+### Persistenz / Recovery
 
-Noch **nicht** enthalten sind grafische Game-UI, Telegram-Anbindung und Wirtschaft. Der verbindliche Arbeitsstand steht in [`TODO.md`](TODO.md).
+- append-only Journal mit Sequenz und SHA-256-Kette
+- atomare Zustandsdateien
+- 60-Sekunden-Autosave-Regel, dirty-only
+- Snapshots und Journal-Replay
+- Quarantäne beschädigter Journal-Tails
+- Recovery Receipt
+- sicherer kompensierender Ein-Schritt-Profil-Undo
 
-## Spiel in einem Ablauf
+### Presentation-Foundation 0.6
+
+- gemeinsamer Presentation-Vertrag für A4 Ops Deck und A3 Cinematic Forge
+- schreibgeschützte Character-Projektion
+- getrennte Biografieprojektion aus validierten Journal-Ereignissen
+- deutsche Skill-, Trait-, Effekt-, Konsequenz-, Spezialisierungs- und Stufenkataloge
+- keine sichtbaren Texte in der Spiellogik
+- eigener zielgerichteter Presentation-CI-Gate
+
+## Datenfluss
 
 ```text
-Inhalt + Manifeste
+Content + Manifeste
         │
         ▼
 Spielaktion ──► deterministische Auflösung ──► Domain-Ereignisse
@@ -50,73 +82,71 @@ Spielaktion ──► deterministische Auflösung ──► Domain-Ereignisse
                                          │             │
                                          ▼             ▼
                                       Journal        Zustand
-                                         │
-                                         ▼
-                              Projektion für die spätere UI
+                                         │             │
+                                         └──────┬──────┘
+                                                ▼
+                                   schreibgeschützte Projection
+                                                │
+                                      ┌─────────┴─────────┐
+                                      ▼                   ▼
+                                 A4 Ops Deck      A3 Cinematic Forge
 ```
 
-Die fachlichen Begriffe, Grenzen und Datenflüsse erklärt das [`GAME_SCHEMA`](docs/GAME_SCHEMA.md). Maschinenlesbare Manifeste und JSON-Schemas bleiben verbindlich.
+A4 und A3 dürfen Daten später unterschiedlich anordnen, aber keine unterschiedlichen Fachregeln besitzen.
 
 ## Architekturgrenzen
 
 | Bereich | Verantwortung | Darf nicht |
 |---|---|---|
-| `domain` | Charakter, Progression, Trait-Regeln | Infrastruktur oder UI kennen |
-| `application` | Aktionen koordinieren, Ereignisse liefern | Zustand an der Persistenz vorbei speichern |
-| `infrastructure` | Journal, Save, Snapshot, Recovery | sichtbare Texte oder UI-Objekte verwalten |
-| `content` | sichtbare Texte und Figureninhalte | technische IDs ersetzen |
-| `presentation` *(ab 0.6)* | Zustand anzeigen, Aktionen auslösen | Domain-Zustand direkt schreiben |
+| `domain` | Charakter, Progression, Traits | UI oder Infrastruktur kennen |
+| `application` | Use Cases und Commands koordinieren | Persistenz umgehen |
+| `infrastructure` | Journal, Save, Snapshot, Recovery | sichtbare UI-Texte verwalten |
+| `presentation` | schreibgeschützte Anzeigeprojektionen | Domain-Zustand direkt verändern |
+| `content` | sichtbare/lokalisierte Texte | technische Regeln ersetzen |
 
-Weitere Invarianten stehen im [`Architekturvertrag`](docs/ARCHITEKTURVERTRAG.md).
+## Gezielte Prüfungen
 
-## Repository-Prinzip
-
-<table>
-  <tr><th>🟧 Tool</th><th>📘 Dokumentation</th><th>🟦 Vertrag/Daten</th></tr>
-  <tr>
-    <td>Kleines ausführbares Entwicklerwerkzeug unter <code>tools/</code>.</td>
-    <td>Erklärung, Entscheidung oder Anleitung unter <code>docs/</code>.</td>
-    <td>Maschinenlesbare Regeln in <code>manifests/</code> und <code>schemas/</code>.</td>
-  </tr>
-</table>
-
-Ein Tool erklärt keine Fachregel neu, sondern führt vorhandene Verträge aus oder prüft sie. Ausführliche Nutzungshinweise gehören in die Dokumentation. Die vollständige Ablageregel steht in [`docs/REPOSITORY_RULES.md`](docs/REPOSITORY_RULES.md).
-
-## Basiswerkzeuge
-
-Es gibt bewusst nur kleine, direkt ausführbare Entwicklerwerkzeuge:
-
-```bash
-# Action-Vertrag prüfen
-python3 tools/validate_action_contract.py
-
-# deterministische Progression simulieren
-python3 tools/simulate_characters/progression_simulator.py \
-  --runs 1000 --days 720 --seed 90409 \
-  --output reports/PROGRESSION_SIMULATION_0.4.1.json
-```
-
-Der Simulator ist **kein** Spiel-Laufzeitcode. Werkzeuge verwenden nur die Python-Standardbibliothek und lesen die kanonischen Manifeste.
-
-## Gezielte Runtime-Prüfung
+### Runtime
 
 ```bash
 PYTHONPATH=src python3 -m compileall -q src
 PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
 ```
 
-Lokaler Referenzstand: **27/27 Runtime-/Recovery-Tests bestanden**. Der versionierte Nachweis liegt in [`reports/RUNTIME_VALIDATION_0.5.2.json`](reports/RUNTIME_VALIDATION_0.5.2.json); Remote-CI ist davon getrennt zu bewerten.
+Die Runtime-Baseline `0.5.2-alpha.1` wurde im zugehörigen PR zusätzlich über den GitHub-Workflow **Runtime Core** erfolgreich geprüft.
+
+### Presentation
+
+```bash
+PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
+PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
+```
+
+Für Änderungen an der Presentation existiert zusätzlich `.github/workflows/presentation-core.yml`.
+
+### Verträge / Simulation
+
+```bash
+python3 tools/validate_action_contract.py
+python3 tools/simulate_characters/progression_simulator.py \
+  --runs 1000 --days 720 --seed 90409 \
+  --output reports/PROGRESSION_SIMULATION_0.4.1.json
+```
+
+Prüfungen werden risikobasiert ausgeführt; nicht jede Dokumentänderung löst unnötig alle Tests aus.
 
 ## Verbindliche Dokumente
 
-- [Character Forge](docs/CHARACTER_FORGE.md) und [Progression](docs/PROGRESSION_CONTRACT.md)
-- [Gameplay Actions](docs/GAMEPLAY_ACTION_CONTRACT.md)
-- [Character Core](docs/CHARACTER_CORE_0.5.md)
-- [Persistence](docs/PERSISTENCE_CONTRACT.md) und [Recovery](docs/RECOVERY_0.5.1.md)
-- [UI/UX Blueprint](docs/UI_UX_BLUEPRINT.md)
-- [Presentation-Vertrag 0.6](docs/PRESENTATION_CONTRACT_0.6.md)
-- [Datenmodell](docs/DATENMODELL.md)
+- [`docs/CHARACTER_FORGE.md`](docs/CHARACTER_FORGE.md)
+- [`docs/PROGRESSION_CONTRACT.md`](docs/PROGRESSION_CONTRACT.md)
+- [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md)
+- [`docs/CHARACTER_CORE_0.5.md`](docs/CHARACTER_CORE_0.5.md)
+- [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
+- [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
+- [`docs/UI_UX_BLUEPRINT.md`](docs/UI_UX_BLUEPRINT.md)
+- [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md)
+- [`docs/DATENMODELL.md`](docs/DATENMODELL.md)
 
-## Arbeitsweise
+## Entwicklungsregel
 
-Jede Iteration ist eine kleine geplante Änderungseinheit: Ziel und Abnahme festlegen, direkte Verträge lesen, minimal patchen, einmal gezielt validieren und den Diff vor dem Commit prüfen. Die verbindlichen Regeln stehen in [`AGENTS.md`](AGENTS.md).
+Eine Iteration bearbeitet eine klar begründete Zielstelle. Parallelimplementierungen derselben kanonischen Datei werden nicht weitergeführt. Relevante CI-Gates müssen vor einem Merge grün sein. Details stehen in [`AGENTS.md`](AGENTS.md).

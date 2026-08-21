@@ -1,134 +1,90 @@
 # TODO – BUNKERFREQUENZ
 
-## 0.4 – Foundation
+## Aktueller Stand
 
-- [x] Architekturvertrag
-- [x] Modulgrenzen
-- [x] Character-Datenmodell
-- [x] identische Startwerte
-- [x] Skill-Grundmodell
-- [x] 165 Trait-Namen + Effektvorlagen
-- [x] XP-/Level-Grundformel
-- [x] Resonanzmodell
-- [x] 11 Grundstorys
-- [x] Biografie-Regeln
-- [x] Autosave-/Undo-Grundvertrag
-- [x] Journal-/Snapshot-/Recovery-Grundvertrag
-- [x] Hybridzeit-Grundvertrag
-- [x] Sync-Grenzen
-- [x] Textauslagerung
-- [x] Pflicht-Manifeste
-- [x] Entwicklerübergabe-Regeln
+- **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
+- **Aktive Entwicklungsiteration:** `0.6 – Character Forge Presentation`
+- **Aktueller Fokus:** eine einzige belastbare Presentation-Schicht vor A4/A3-UI-Ausbau
 
-## 0.4.1 – Character Progression Contract
+## 0.6.0 – Repository-/Presentation-Reparatur
 
-- [x] 165 Traits über 15 gemeinsame numerische Effektvorlagen vollständig abgedeckt
-- [x] exakte Unlock- und Upgrade-Schwellen für fünf Trait-Stufen definiert
-- [x] Trait-Konflikte als begrenzte Soft-Konflikte definiert
-- [x] Trainings-Diminishing-Returns festgelegt
-- [x] Skill-XP-Kurve 10–100 definiert
-- [x] sechs Spezialisierungen samt Konsequenzen definiert
-- [x] kein harter Klassenzwang; Generalisten bleiben möglich
-- [x] deterministischen Progression-Simulator implementiert
-- [x] gezielte Unit-Tests für Manifestregeln, Determinismus und Balance-Gate
-- [x] Referenzsimulation 1.000 × 720 Tage mit Seed 90409 bestanden
-- [x] Simulationsbericht versioniert abgelegt
+- [x] beschädigte doppelte `character_projection.py` auf eine kanonische Implementierung zurückgeführt
+- [x] widersprüchlich zusammenkopierte Projection-Tests zu einem Vertragstest-Satz konsolidiert
+- [x] `presentation/__init__.py` auf eindeutige Exporte für Character- und Biografieprojektion repariert
+- [x] eigener zielgerichteter `Presentation Core`-CI-Workflow angelegt
+- [x] Release-Baseline und aktive Entwicklungsiteration in den Info-Dateien getrennt
+- [x] konkurrierende PR-Ideen in diese sequenzielle Roadmap überführt
+- [ ] Remote-CI für Reparaturbranch grün
+- [ ] Reparatur nach `main` mergen
 
-## 0.4.2 – Persistence Contract
+## 0.6.1 – Application-Grenze für Presentation
 
-- [x] 39 Journal-Eventtypen vollständig katalogisiert
-- [x] Snapshot-Trigger präzisiert
-- [x] Undo-/Kompensationsregeln je Ereignisgruppe definiert
-- [x] Crash-/Korruptionsmatrix definiert
-- [x] Save-/Journal-Schema v2 und Migration v1 → v2 vorbereitet
-- [x] Zeitanker-/Offline-Regeln konkretisiert
-- [x] 60-Sekunden-Autosave dirty-only und kritische Flush-Punkte festgelegt
+Zuerst nur lesende Fähigkeiten und eindeutige Schreibwege, noch kein Layout.
 
-## 0.4.3 – UI/UX Blueprint
+- [ ] `can_edit_profile`, `can_undo_profile`, `can_execute_action` ausschließlich aus der Application ableiten
+- [ ] Profile-Update, Profil-Undo und Action-Ausführung über **einen** Command-Dispatcher routen
+- [ ] Command-/Event-/Transaction-/Action-Instance-IDs validieren und unverändert an bestehende Services weitergeben
+- [ ] idempotente Wiederholung derselben UI-Aktion gezielt testen
+- [ ] Projection erhält bestätigte Capabilities, errät keine Rechte
 
-- [x] vier klar unterschiedliche Industrial-Brutalist-Layouts spezifiziert
-- [x] übersichtlichen gemeinsamen System-/UI-Blueprint als Projekt-Asset aufgenommen
-- [x] Character Overview
-- [x] Skills/Traits
-- [x] dynamische Biografie
-- [x] Ranking/Network
-- [x] Level-/Skill-/Trait-/Spezialisierungs-Animationen
-- [x] Kontrast-/Fokusregeln
-- [x] Tastatur, High-Contrast, Reduced-Motion und statische Fallbacks
-- [x] sichtbare UI-Texte ausgelagert
+## 0.6.2 – Lokaler Presentation-State + bestätigtes Feedback
 
-## 0.4.4 – Gameplay Action Contract
+- [ ] unveränderlichen lokalen Zustand für `overview`, `skills_traits`, `biography` anlegen
+- [ ] `view.select`, `biography.filter`, `feedback.dismiss` als reine lokale Transitionen implementieren
+- [ ] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzereignisse in bestätigtes UI-Feedback projizieren
+- [ ] Feedback-IDs deterministisch aus bestätigten Event-IDs ableiten
+- [ ] Reduced Motion als statische, nicht blockierende Darstellung absichern
 
-- [x] 20 spielbare Startaktionen katalogisiert
-- [x] Skill-XP- und Trait-Evidenz-Gewichte je Aktion exakt definiert
-- [x] Voraussetzungen, Dauer, Risiko, Kosten und Resolver-Pipeline
-- [x] Journal-/Undo-/Biografie-Zuordnung je Aktion
-- [x] deterministischer Zufallsvertrag ohne Systemzeit-Seed
-- [x] Schutzregel für reale Locations: legal/autorisiert oder fiktionalisiert
-- [x] Action-Contract-Validator + Testhülle
-- [x] maschinenlesbarer Vertragsbericht PASS
+## 0.6.3 – Gemeinsame Komponenten + A4 Ops Deck
 
-## 0.5 – Headless Character Core
+- [ ] acht gemeinsame Komponenten implementieren: `CharacterHeader`, `StatusSummary`, `SkillList`, `TraitList`, `SpecializationCard`, `BiographyTimeline`, `ProfileEditor`, `ProgressFeedback`
+- [ ] Komponenten erhalten nur ihren Projection-Block und lokalen Presentation-State
+- [ ] A4 Ops Deck als geführten Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel` zusammensetzen
+- [ ] maximal drei Primäraktionen, große Ziele, sichtbarer Fokus und High-Contrast prüfen
+- [ ] editierbare Namen, Alias, zusätzliche Spitznamen und Motto über den Command-Weg anbinden
 
-- [x] Python-Standardbibliothek ohne neue Runtime-Abhängigkeiten
-- [x] `CharacterState` mit 16 identischen Startskills
-- [x] Skill-XP, Skill-Level und Gesamtlevel implementiert
-- [x] Trait-Evidenz mit fünf Freischaltstufen implementiert
-- [x] sechs Spezialisierungen und XP-Konsequenzen implementiert
-- [x] Action Resolver deterministisch; Skills und Risiko beeinflussen Ergebnis
-- [x] Eingabe-Character wird bei Action Resolution nicht direkt mutiert
-- [x] Character Action Service trennt Domain und Persistenz
-- [x] Journal Schema v2 mit Pflichtmetadaten, globaler Sequenz und SHA-256-Kette
-- [x] Event-Katalogprüfung und idempotente Event-IDs
-- [x] Journal vor State-Write mit `fsync` dauerhaft schreiben
-- [x] State und Meta atomar schreiben
-- [x] Autosave-Regel exakt 60 Sekunden dirty-only abgebildet
-- [x] 14 gezielte Runtime-/Integrationstests bestanden
-- [x] 200 Action/Commit/Reload-Schritte als Stresstest bestanden
-- [x] gezielten GitHub-Actions-Workflow für Runtime-Code angelegt
+## 0.6.4 – A3 Cinematic Forge aus denselben Bausteinen
 
-## 0.5.1 – Recovery & Fault Injection
+- [ ] A3 verwendet exakt dieselbe Projection, Komponenten und Commands wie A4
+- [ ] Skillnetz, Traits, Spezialisierung, Biografie und Resonanz visuell stärker inszenieren
+- [ ] Level-/Skill-/Trait-/Resonanz-Up-Feedback anbinden
+- [ ] keine zweite Fachlogik und keinen zweiten Persistence-Weg einführen
+- [ ] Vertragstest A3↔A4 für Komponenten, Commands und Projection-Identität ergänzen
 
-- [x] Snapshot Writer und Snapshot-Index implementiert
-- [x] Replay aus Snapshot + Journal implementiert
-- [x] korrupten Journal-Tail automatisch quarantänisiert
-- [x] `RECOVERY_RECEIPT.json` implementiert
-- [x] Crashpunkte nach Journal Durable / State Applied / Meta Commit simuliert
-- [x] Recovery idempotent getestet
-- [x] State-Envelope mit Sequenz, Journal-Head und Prüfsumme eingeführt
-- [x] Legacy-State aus 0.5.0 weiterhin lesbar
-- [x] Runtime-Undo/Kompensation für editierbare Profilfelder Name/Alias/Motto implementiert
-- [x] Recovery aus beschädigtem State über Snapshot + nachfolgendes Journal getestet
-- [x] 21/21 gezielte Runtime-/Recovery-Tests lokal bestanden
+## 0.6.5 – Ranking / Network vorbereiten
 
-## 0.5.2 – Progression Effects & Resonance
+- [ ] Ranking-Projektion für beliebig viele Spieler definieren
+- [ ] Filter/Sortierung nach Level, Skills, Ruf, Events, Clubs und Resonanz vorbereiten
+- [ ] Network-Ansicht zunächst mit bestätigten synchronisierten Daten versorgen
+- [ ] Telegram/Sync weiterhin als eigene Infrastrukturphase behandeln
+- [ ] keine erfundenen Online-, Ranking- oder Presence-Daten anzeigen
 
-- [x] 15 Trait-Effektfamilien auf konkrete Action-Metriken anwenden
-- [x] positive/negative Stack-Caps zur Runtime hinzufügen
-- [x] Soft-Konflikte Planer↔Improvisierer und Detailmensch↔Opportunist berechnen
-- [x] Trait-Effekte deterministisch in Action Resolution einbinden
-- [x] Level 50 als Übergang in Resonanz statt Enddeckel implementieren
-- [x] Resonanz-XP/-Ränge journalisieren und testen
-- [x] Balance-Regression gegen 0.4.1-Simulator absichern
+## Danach
 
-## 0.6 – Character Forge Runtime
+### 0.7 – Spielbarer Character-Forge-Vertical-Slice
 
-- [x] Presentation-Schnitt festgelegt: Zustandsprojektion, UI-Aktionen und Textschlüssel zwischen Runtime-Kern und gemeinsamer A4/A3-Komponentenschicht spezifiziert
-- [x] Datenvertrag deckt Overview, Skills, Traits, Spezialisierung und Biografie ab, ohne UI-Direktzugriff auf Domain-Zustand
-- [x] reine Character-Projektion für Overview, Skills, Traits und Spezialisierung nach `docs/PRESENTATION_CONTRACT_0.6.md` angelegt
-- [x] deutsche Skill-, Trait-, Effekt-, Konsequenz-, Spezialisierungs- und Stufenkataloge gegen die vier Progressionsmanifeste abgesichert
-- [x] Sortierung, Fortschrittsgrenzen, unabhängige Ausgabewerte und alle ausgegebenen Textschlüssel gezielt getestet
-- [ ] A4 Ops Deck als normalen Hauptworkflow auf der gemeinsamen Presentation-Schicht implementieren
-- [ ] A3 Cinematic Forge als Charakter-/Entwicklungsansicht aus denselben Komponenten implementieren
-- [ ] editierbare Namen, Alias, zusätzliche Spitznamen und Motto anbinden
-- [ ] Skillnetz, Traits, Spezialisierung und dynamische Biografie darstellen
-- [ ] Level-/Skill-/Trait-Up-Feedback und Reduced-Motion-Fallbacks anbinden
-- [ ] Ranking-/Network-Ansicht vorbereiten, aber Sync weiterhin getrennt halten
+`Profil → Training/Aktion → Skill-/Trait-Fortschritt → Feedback → Biografie → Autosave → Undo → Reload`
 
-### Bewusst nicht Teil der nächsten Iteration
+### 0.8 – Event-/Wirtschafts-Integration
 
-- kein grafisches Framework und keine neue Abhängigkeit auswählen
-- keine weiteren Sprachen und keine allgemeine Lokalisierungsbibliothek einführen
-- keine Domain-, Persistence- oder Sync-Logik ändern
-- noch keinen Command-Adapter implementieren
-- keine A3-/A4-Parallelimplementierungen beginnen, bevor der gemeinsame Presentation-Vertrag abgenommen ist
+Eventplanung, dynamischer Equipmentmarkt, Clubbetrieb und Clubbewertung auf dem validierten Character-/Persistence-Kern.
+
+### 0.9 – Network / Telegram Sync
+
+Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemeinsame Ressourcen.
+
+## Abgeschlossene Meilensteine
+
+- [x] **0.4.0** Architekturvertrag, Character-Forge-Foundation, 11 Figuren und gleiche Startwerte
+- [x] **0.4.1** Trait Engine, Progression, Spezialisierungen und deterministischer Simulator
+- [x] **0.4.2** Persistence Contract, Autosave, Undo, Snapshot-/Recovery-Regeln
+- [x] **0.4.3** vier Industrial-Brutalist-UI/UX-Blueprints
+- [x] **0.4.4** 20 datengetriebene Gameplay Actions
+- [x] **0.5.0** Headless Character-/Action-/Persistence-Core
+- [x] **0.5.1** Snapshot-Replay, Recovery, Fault Injection und Profil-Undo
+- [x] **0.5.2** Trait-Auswirkungen, Soft-Konflikte und Open-End-Resonanz
+- [x] **0.6 Foundation** Presentation-Vertrag, deutsche Textkataloge, Character-/Biografieprojektion
+
+## PR-Regel
+
+Für dieselbe Zielstelle wird künftig nur **ein aktiver Implementierungs-PR** geführt. Alternative Ansätze werden nicht parallel gemergt; nützliche Aspekte werden zuerst in dieser Roadmap konsolidiert und danach in der vorgesehenen Reihenfolge umgesetzt.

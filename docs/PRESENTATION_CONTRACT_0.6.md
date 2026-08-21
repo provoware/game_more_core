@@ -1,152 +1,118 @@
 # Presentation-Vertrag 0.6 – Character Forge
 
-## Worum geht es?
+## Status
 
-Die Presentation ist die Schicht zwischen Spielkern und sichtbarer Oberfläche. Sie
-liefert fertig sortierte Anzeigedaten und nimmt Bedienwünsche entgegen. A4 Ops Deck
-und A3 Cinematic Forge verwenden **denselben** Vertrag und dieselben Komponenten.
+Die 0.6-Foundation besitzt bereits:
 
-Einfach gesagt:
+- eine schreibgeschützte Character-Projektion,
+- eine getrennte Biografieprojektion aus validierten Journal-Ereignissen,
+- deutsche Skill-/Trait-/Effekt-/Konsequenz-/Spezialisierungs-/Stufenkataloge,
+- gezielte Presentation-Tests und einen eigenen Remote-CI-Gate.
+
+Noch **nicht** Teil der kanonischen Baseline sind Application-Capabilities, Command-Dispatcher, lokaler Presentation-State, bestätigtes Progressionsfeedback, A4 Ops Deck und A3 Cinematic Forge. Diese Punkte werden gemäß `TODO.md` sequenziell umgesetzt.
+
+## Zweck
+
+Presentation ist die Schicht zwischen Spielkern und sichtbarer Oberfläche:
 
 ```text
-Spielkern → schreibgeschützte Projektion → A4 oder A3
-Spielkern ← Application-Command       ← Klick oder Tastatur
+Spielkern → schreibgeschützte Projection → A4 oder A3
+Spielkern ← Application-Command         ← Klick oder Tastatur
 ```
 
-Eine **Projektion** ist eine nur zum Anzeigen vorbereitete Sicht auf gespeicherte
-Daten. Ein **Command** ist ein klar benannter Auftrag an die Application-Schicht.
-Die UI verändert niemals selbst `CharacterState`, Journal oder Save-Dateien.
+Eine Projection bereitet Daten nur zur Anzeige auf. Ein Command ist ein klar benannter Auftrag an die Application-Schicht. Die UI verändert niemals selbst `CharacterState`, Journal oder Save-Dateien.
 
 ## Verbindliche Grenzen
 
-1. Die Projektion erhält einen geladenen `CharacterState` und Journal-Einträge als
-   Eingabe. Sie verändert beides nicht.
-2. Jeder sichtbare Text ist ein Schlüssel aus `content/<sprache>/`; technische IDs
-   werden nicht als sichtbare Namen benutzt.
-3. A3 und A4 dürfen Daten nur anders anordnen. Feldnamen, Commands und Komponenten
-   bleiben gleich.
-4. Profiländerungen gehen ausschließlich an `CharacterProfileService.update()`;
-   Undo geht an `undo_last_profile_update()`.
+1. Projection erhält geladenen `CharacterState` und Journal-Einträge, verändert beides aber nicht.
+2. Jeder sichtbare Text wird über Schlüssel aus `content/<sprache>/` aufgelöst.
+3. A3 und A4 dürfen Daten nur anders anordnen; Feldnamen, Commands und Komponenten bleiben gleich.
+4. Profiländerungen gehen ausschließlich an `CharacterProfileService.update()`; Undo an `undo_last_profile_update()`.
 5. Spielaktionen gehen ausschließlich an `CharacterActionService.execute()`.
-6. Die Biografie entsteht nur aus validierten Journal-Ereignissen. Die UI erfindet
-   oder speichert keine Chronik-Einträge.
-7. Animationen reagieren erst auf ein bestätigtes Ergebnis und blockieren keine
-   weitere Bedienung. Reduced Motion zeigt statisches Feedback.
-8. Ranking und Sync sind noch nicht angebunden. Platzhalter enthalten keine
-   erfundenen Netzwerkdaten.
+6. Biografie entsteht nur aus validierten Journal-Ereignissen.
+7. Feedback/Animation reagiert erst auf bestätigte Domain-Ereignisse und blockiert keine Bedienung.
+8. Ranking und Sync werden erst angebunden, wenn bestätigte Datenquellen existieren.
+9. Presentation liest keine Persistence-Interna, um Berechtigungen zu erraten; Capabilities werden von Application geliefert.
+10. Für dieselbe Projektion existiert genau eine kanonische Implementierung.
 
-## Datenvertrag der Projektion
+## Datenvertrag der Character-Projektion
 
-Die spätere Funktion `build_character_projection(character, journal_records,
-text_catalog)` liefert ein neues Dictionary in dieser Form. Listen sind bereits in
-Anzeigereihenfolge; fehlende optionale Werte sind `null` oder leere Listen.
+`build_character_projection(character, journal_records, text_catalog)` liefert ein neues Dictionary. Listen sind bereits in stabiler Anzeigereihenfolge; optionale Werte sind `null` oder leere Listen.
 
-| Block | Pflichtfelder | Herkunft und Regel |
+| Block | Pflichtfelder | Regel |
 |---|---|---|
-| `meta` | `projection_version`, `character_id` | Version ist `0.6`; ID bleibt technisch und unsichtbar. |
-| `overview` | `display_name`, `alias`, `additional_nicknames`, `motto`, `level`, `total_xp`, `resonance_xp`, `resonance_rank`, `energy`, `stress`, `reputation` | Kopien aus `CharacterState`; keine UI-Referenz auf das Domain-Objekt. |
-| `top_skills` | höchstens drei Einträge mit `skill_id`, `label_key`, `value`, `xp`, `trend` | Absteigend nach Wert, dann stabil nach `skill_id`; `trend` ist zunächst `null`. |
-| `skills` | 16 Einträge mit `skill_id`, `label_key`, `value`, `xp`, `xp_to_next`, `progress_percent`, `trend` | Berechnung nutzt `ProgressionRules`; Prozent liegt zwischen 0 und 100. |
-| `traits` | `trait_id`, `label_key`, `tier`, `evidence`, `next_tier`, `progress_percent`, `effect_key`, `consequence_key` | Nur bekannte Manifest-IDs; verdeckte Traits geben keine geheimen Prozentwerte aus. |
-| `specialization` | `specialization_id`, `label_key`, `stage`, `stage_label_key` oder `null` | Aus `CharacterState.specialization`; sichtbarer Name kommt aus Content. |
-| `biography` | `entry_id`, `event_id`, `category`, `title_key`, `body_key`, `placeholders`, `sequence` | Nur aus gültigen Journal-Ereignissen; aufsteigend nach `sequence`, bei Gleichstand `event_id`. |
-| `capabilities` | `can_edit_profile`, `can_undo_profile`, `can_execute_action` | Von der Application-Schicht geliefert; die UI errät Berechtigungen nicht. |
-| `feedback` | Liste aus `feedback_id`, `kind`, `title_key`, `detail_keys`, `reduced_motion` | Aus bestätigten Domain-Ereignissen, niemals aus einem bloßen Klick. |
+| `meta` | `projection_version`, `character_id` | Version `0.6`; ID bleibt technisch. |
+| `overview` | `display_name`, `alias`, `additional_nicknames`, `motto`, `level`, `total_xp`, `resonance_xp`, `resonance_rank`, `energy`, `stress`, `reputation` | Kopien aus Domain-State. |
+| `top_skills` | höchstens 3 × `skill_id`, `label_key`, `value`, `xp`, `trend` | Wert absteigend, danach stabile `skill_id`. |
+| `skills` | 16 × `skill_id`, `label_key`, `value`, `xp`, `xp_to_next`, `progress_percent`, `trend` | `ProgressionRules`; Prozent 0–100. |
+| `traits` | `trait_id`, `label_key`, `tier`, `evidence`, `next_tier`, `progress_percent`, `effect_key`, `consequence_key` | Nur bekannte Trait-Familien; gesperrte Traits verraten keine Evidenz/Prozentwerte. |
+| `specialization` | `specialization_id`, `label_key`, `stage`, `stage_label_key` oder `null` | aus Domain-State, sichtbarer Name aus Content. |
+| `biography` | `entry_id`, `event_id`, `category`, `title_key`, `body_key`, `placeholders`, `sequence` | nur validierte Biografie-Journalereignisse, sortiert nach Sequenz/Event-ID. |
+| `capabilities` | `can_edit_profile`, `can_undo_profile`, `can_execute_action` | bis 0.6.1 sicher `false`; danach von Application geliefert. |
+| `feedback` | `feedback_id`, `kind`, `title_key`, `detail_keys`, `reduced_motion` | bis 0.6.2 leer; danach nur aus bestätigten Events. |
 
-`label_key`, `title_key`, `body_key`, `effect_key` und `consequence_key` sind
-Textschlüssel. Die Oberfläche löst sie über den übergebenen `text_catalog` auf.
-Fehlt ein Schlüssel, zeigt die Entwicklungsansicht den Schlüssel deutlich an und
-schreibt keinen Ersatztext in die Spiellogik.
+### Textschlüssel
 
-## UI-Aktionen
+Skill-, Trait-, Effekt-, Konsequenz-, Spezialisierungs- und Stufenschlüssel müssen im übergebenen Katalog existieren. Fehlende Schlüssel sind ein Entwicklungsfehler und werden nicht durch sichtbare Texte im Code kaschiert.
 
-Die Oberfläche darf nur diese einfachen Wünsche an einen Adapter senden. Der
-Adapter prüft die Eingabe und ruft danach den zuständigen Application-Service auf.
+### Biografie
 
-| Command | Eingabe | Zuständiges Ziel | Bestätigtes Ergebnis |
-|---|---|---|---|
-| `profile.update` | `character_id`, Teilmenge aus `display_name`, `alias`, `additional_nicknames`, `motto`, plus eindeutige Command-/Event-/Transaktions-IDs | `CharacterProfileService.update()` | neue Projektion nach erfolgreichem Commit |
-| `profile.undo_last` | `character_id` und eindeutige Command-/Event-/Transaktions-IDs | `CharacterProfileService.undo_last_profile_update()` | neue Projektion oder verständlicher Fehler |
-| `action.execute` | `character_id`, `action_id`, `action_instance_id` und nötige Auswahl-IDs | `CharacterActionService.execute()` | neue Projektion und Feedback aus bestätigten Ereignissen |
-| `view.select` | `view_id` aus `overview`, `skills_traits`, `biography` | nur lokaler Presentation-Zustand | andere Ansicht; keine Domain-Änderung |
-| `biography.filter` | katalogisierte Kategorie oder `all` | nur lokale Projektion | gefilterte Kopie; kein Journal-Write |
-| `feedback.dismiss` | `feedback_id` | nur lokaler Presentation-Zustand | Hinweis verschwindet; Gameplay bleibt unverändert |
+Die Character-Projektion verwendet `build_biography_projection(...)` als einzige zuständige Biografieaufbereitung. Eine zweite Biografie-Implementierung innerhalb der Character-Projektion ist nicht zulässig.
 
-Freie sichtbare Namen sind niemals IDs. Jeder wiederholte Schreibauftrag besitzt
-dieselbe Command-/Event-ID, damit ein Doppelklick nicht doppelt gespeichert wird.
+## Geplante UI-Commands
+
+| Command | Eingabe | Ziel |
+|---|---|---|
+| `profile.update` | `character_id`, erlaubte Profilfelder, eindeutige IDs | `CharacterProfileService.update()` |
+| `profile.undo_last` | `character_id`, eindeutige IDs | `undo_last_profile_update()` |
+| `action.execute` | `character_id`, `action_id`, `action_instance_id`, Auswahlen | `CharacterActionService.execute()` |
+| `view.select` | `overview`, `skills_traits` oder `biography` | lokaler Presentation-State |
+| `biography.filter` | Kategorie oder `all` | lokaler Presentation-State |
+| `feedback.dismiss` | `feedback_id` | lokaler Presentation-State |
+
+Schreibbefehle erhalten stabile Command-/Event-/Transaction-IDs, damit wiederholte Klicks nicht doppelt persistiert werden.
 
 ## Gemeinsame Komponenten
 
-Beide Layouts bauen ausschließlich aus `CharacterHeader`, `StatusSummary`,
-`SkillList`, `TraitList`, `SpecializationCard`, `BiographyTimeline`,
-`ProfileEditor` und `ProgressFeedback`. A4 ordnet sie als geführten Hauptablauf an;
-A3 inszeniert dieselben Daten als Charakteransicht. Neue Fachlogik gehört nicht in
-eine Komponente.
+A3 und A4 verwenden dieselben acht Komponenten:
 
-## Schritt für Schritt: nächste Umsetzung für Einsteiger
+- `CharacterHeader`
+- `StatusSummary`
+- `SkillList`
+- `TraitList`
+- `SpecializationCard`
+- `BiographyTimeline`
+- `ProfileEditor`
+- `ProgressFeedback`
 
-Alle Befehle werden im Repository-Root ausgeführt. Eine Zeile mit `#` ist nur eine
-Erklärung und wird nicht benötigt.
+A4 ordnet sie als geführten Hauptablauf an. A3 inszeniert dieselben Daten stärker visuell. Neue Fachlogik gehört weder in A3 noch in A4.
 
-### 1. Repository öffnen und Ausgangslage prüfen
-
-```bash
-cd /workspace/game_more_core
-git status --short --branch
-```
-
-**Erwartung:** Die erste Zeile nennt den Branch. Vor neuen Änderungen sollte keine
-unbekannte Datei erscheinen. Vorhandene fremde Änderungen niemals löschen.
-
-### 2. Die vier direkten Verträge lesen
-
-```bash
-sed -n '1,220p' docs/PRESENTATION_CONTRACT_0.6.md
-sed -n '1,120p' docs/ARCHITEKTURVERTRAG.md
-sed -n '1,120p' docs/UI_UX_BLUEPRINT.md
-sed -n '1,140p' src/bunkerfrequenz/domain/character.py
-```
-
-**Tipp:** Erst Feldnamen nachschlagen, dann Code schreiben. So entstehen keine fast
-gleichen Namen wie `name` neben dem vorhandenen `display_name`.
-
-### 3. Genau eine kleine Folgeiteration planen
-
-Als nächster Patch wird nur die reine Projektionsfunktion samt gezieltem Unit-Test
-angelegt. Adapter, A4, A3 und grafisches Framework bleiben späteren Iterationen
-vorbehalten. Im Plan stehen Ziel, Abnahme, Dateien, Risiken und Nicht-Ziele.
-
-### 4. Kleine Zielprüfung ausführen
-
-Nach dem Patch werden nur Syntax und der neue Presentation-Test geprüft:
+## Abnahme der aktuellen Foundation
 
 ```bash
 PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
-PYTHONPATH=src python3 -m unittest tests.presentation.test_character_projection -v
+PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
 ```
 
-**Erwartung:** Beide Befehle enden ohne `FAILED` oder `ERROR`. Gibt es den Ordner
-oder Test noch nicht, ist das vor der Folgeiteration normal; dann nicht behaupten,
-die Prüfung sei gelaufen.
+Remote-Gate: `.github/workflows/presentation-core.yml`
 
-### 5. Änderung vor dem Commit ansehen
+Abnahmebedingungen:
 
-```bash
-git diff --check
-git diff -- src/bunkerfrequenz/presentation tests/presentation
-git status --short
-```
+- genau eine Character-Projection-Implementierung,
+- keine Mutation von Domain-/Journal-Eingaben,
+- alle ausgegebenen Progressions-Textschlüssel katalogisiert,
+- Progressionswerte begrenzt,
+- gesperrte Traits ohne versteckte Fortschrittswerte,
+- Biografie nur aus validierten Ereignissen,
+- Package-Exporte eindeutig,
+- Remote-Gate grün vor Merge.
 
-`git diff --check` findet unter anderem störende Leerzeichen. Der zweite Befehl
-zeigt nur den geplanten Scope. Erst danach wird mit einer eindeutigen Nachricht
-committet.
+## Nächste Umsetzung
 
-## Abnahme dieses Vertrags
+Siehe `TODO.md`. Die Reihenfolge ist verbindlich:
 
-- Overview, Skills, Traits, Spezialisierung und Biografie besitzen eindeutige
-  Projektionsfelder.
-- Profil- und Spieländerungen besitzen genau einen Application-Weg.
-- A3 und A4 teilen Datenvertrag und Komponenten.
-- Texte, IDs, Journal, Accessibility und Reduced Motion haben klare Grenzen.
-- Noch nicht vorhandener UI-Code, Frameworkwahl, Ranking und Sync bleiben bewusst
-  unverändert.
+1. Application-Capabilities + ein Command-Dispatcher,
+2. lokaler Presentation-State + bestätigtes Feedback,
+3. gemeinsame Komponenten + A4 Ops Deck,
+4. A3 Cinematic Forge auf denselben Bausteinen,
+5. Ranking/Network erst danach.
