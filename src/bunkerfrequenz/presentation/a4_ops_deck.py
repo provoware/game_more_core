@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from bunkerfrequenz.presentation.components import build_components
 from bunkerfrequenz.presentation.interaction_actions import (
@@ -10,6 +10,7 @@ from bunkerfrequenz.presentation.interaction_actions import (
     require_nonempty_text,
 )
 from bunkerfrequenz.presentation.state import PresentationState
+from bunkerfrequenz.presentation.text_catalog import require_text_keys
 
 
 _STEP_PRESENTATION = {
@@ -59,24 +60,6 @@ def _normalize_content_card(value: Any, field: str) -> dict[str, Any] | None:
         "icon_id": card.get("icon_id"),
         "tone": card.get("tone"),
     }
-
-
-def _iter_text_keys(value: Any) -> Iterable[str]:
-    if isinstance(value, Mapping):
-        for field, child in value.items():
-            if isinstance(field, str) and field.endswith("_key") and isinstance(child, str):
-                yield child
-            else:
-                yield from _iter_text_keys(child)
-    elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
-        for child in value:
-            yield from _iter_text_keys(child)
-
-
-def _require_text_keys(value: Any, text_catalog: Mapping[str, str]) -> None:
-    missing = sorted({key for key in _iter_text_keys(value) if key not in text_catalog})
-    if missing:
-        raise KeyError(f"Fehlende A4-Textschlüssel: {', '.join(missing)}")
 
 
 def build_a4_ops_deck(
@@ -201,5 +184,5 @@ def build_a4_ops_deck(
             "semantic_cues": ["text", "icon", "tone"],
         },
     }
-    _require_text_keys(deck, text_catalog)
+    require_text_keys(deck, text_catalog, context="A4")
     return deck
