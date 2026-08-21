@@ -1,13 +1,13 @@
 {
   "project": "BUNKERFREQUENZ",
-  "version": "0.5.0-alpha.1",
-  "status": "headless_character_action_persistence_core_validated",
-  "current_iteration": "0.5",
+  "version": "0.5.1-alpha.1",
+  "status": "recovery_snapshot_replay_fault_injection_validated",
+  "current_iteration": "0.5.1",
   "last_validated_release": null,
-  "validation_reference": "reports/RUNTIME_VALIDATION_0.5.0.json",
-  "next_iteration": "0.5.1",
-  "next_goal": "Recovery, Snapshot-Replay und Fault-Injection implementieren",
+  "validation_reference": "reports/RUNTIME_VALIDATION_0.5.1.json",
+  "next_iteration": "0.5.2",
+  "next_goal": "Trait-Effekte, Soft-Konflikte und Open-End-Resonanz im Runtime-Kern anwenden",
   "runtime_code": true,
   "developer_tool_code": true,
-  "updated_at": "2026-08-21T16:09:00+02:00"
+  "updated_at": "2026-08-21T16:45:00+02:00"
 }
