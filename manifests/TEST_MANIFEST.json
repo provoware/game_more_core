@@ -173,6 +173,21 @@
     "runtime_core_remote_gate",
     "presentation_core_remote_gate"
   ],
+  "presentation_0_7_1_checks": [
+    "action_selection_exactly_20_manifest_actions",
+    "action_selection_prerequisites_fail_closed",
+    "action_selection_resource_effects_explicitly_undefined",
+    "action_selection_no_partial_executable_command",
+    "action_command_builder_requires_command_id",
+    "action_command_builder_requires_action_instance_id",
+    "action_command_builder_requires_dynamic_selections_when_catalogued",
+    "action_command_builder_dispatches_unchanged_through_existing_dispatcher",
+    "a4_rechecks_current_execute_capability",
+    "a4_stale_enabled_selection_disabled_fail_closed",
+    "action_selection_inputs_detached",
+    "runtime_core_remote_gate",
+    "presentation_core_remote_gate"
+  ],
   "unit_test_commands": [
     "python3 -m unittest tests/simulation/test_progression_simulator.py",
     "python3 -m pytest tests/gameplay/test_action_contract.py",
