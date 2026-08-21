@@ -178,4 +178,6 @@ Die kanonische Arbeitsliste steht zusätzlich in [`TODO.md`](TODO.md).
 
 ## Entwicklungsprinzip
 
-Jede Änderung benötigt einen fachlichen Grund, eine klar ermittelte Zielstelle, eine möglichst kleine Änderung, passende Validierung sowie Aktualisierung von README/TODO und CHANGELOG. Prüfungen werden nur ausgeführt, wenn sie die geänderten Bereiche tatsächlich absichern.
+Jede Änderung wird als kleine, abgeschlossene Iteration geplant. Vor dem Patch stehen Ziel, Abnahme, konkrete Zielstellen, Patchgrund, Risiken und Nicht-Ziele fest. Nach allen Patches folgt genau eine gezielte Endvalidierung des tatsächlich betroffenen Stands.
+
+Für reproduzierbare Updates werden Befehle vom Repository-Root ausgeführt, Seeds und relevante Parameter festgehalten sowie lokale Ergebnisse klar von Remote-CI getrennt. Generierte Nachweise müssen ihren Quellstand und Erzeugungsweg nennen. Der verbindliche Ablauf und das Abschlussformat stehen in [`AGENTS.md`](AGENTS.md); die nächste prüfbare Arbeitseinheit steht in [`TODO.md`](TODO.md).

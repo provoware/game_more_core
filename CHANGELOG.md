@@ -15,6 +15,8 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Action Resolver bindet aktive, für die Aktion relevante Traits deterministisch ein.
 - Character-State-Schema, Progression-/Level-/Runtime-/Testmanifeste und Runtime-CI-Pfade auf 0.5.2 abgeglichen.
 - Projektversion auf `0.5.2-alpha.1`; README/TODO/Projektstatus auf den abgeschlossenen lokalen Stand gesetzt.
+- Arbeitsregeln um prüfbare Vorplanung, reproduzierbare Update-Nachweise und ein eindeutiges Iterationsende ergänzt.
+- Phase 0.6 mit dem gemeinsamen Presentation-Vertrag als kleinster nächster Arbeitseinheit konkretisiert, ohne Runtime-Status oder Version vorzeitig zu ändern.
 
 ### Validierung
 - `compileall`, 27 gezielte Runtime-/Recovery-Tests, Action-Vertragsprüfung und 0.4.1-Balance-Regression lokal bestanden.

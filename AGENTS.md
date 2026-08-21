@@ -6,16 +6,48 @@ Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Je
 
 ## Verbindlicher Workflow
 
-1. Anforderung und betroffene Module bestimmen.
-2. Bestehende Stelle vor Änderung lesen.
-3. Kleinste saubere Änderung wählen.
-4. Keine Parallelimplementierung erzeugen, wenn eine vorhandene Stelle erweitert werden kann.
-5. Nur die für die Änderung relevanten Prüfungen ausführen.
-6. Fehlerursache beheben, nicht Symptome verteilen.
-7. README/TODO bei Statusänderung aktualisieren.
-8. CHANGELOG bei fachlicher Änderung aktualisieren.
-9. Version nur erhöhen, wenn der Änderungsumfang dies rechtfertigt.
-10. Nach Änderung den tatsächlich betroffenen Stand validieren.
+Jede Iteration besteht aus genau einer geplanten Änderungseinheit. Vor dem ersten Patch wird ein Arbeitsplan festgehalten; ungeplante Nebenbefunde werden nicht mitbearbeitet.
+
+1. Anforderung, fachliches Ziel und Abnahmekriterium bestimmen.
+2. Betroffene Module, Dateien und konkrete Zeilen oder Blöcke ermitteln.
+3. Bestehende Zielstellen und ihre direkten Verträge vor der Änderung lesen.
+4. Patchgrund, Risiken, Abhängigkeiten und bewusste Nicht-Änderungen festhalten.
+5. Eine geordnete Schrittliste mit höchstens einem aktiven Schritt erstellen.
+6. Kleinste saubere Änderung an der vorhandenen Stelle umsetzen; keine Parallelimplementierung erzeugen.
+7. Nebenbefunde nur bei unmittelbarer Blockade beheben, sonst als nächste Iteration in `TODO.md` eintragen.
+8. Nach dem letzten Patch genau die betroffenen Ausgaben, Verträge und Tests validieren.
+9. README/TODO nur bei einer echten Status- oder Ablaufänderung aktualisieren.
+10. CHANGELOG bei fachlicher oder verbindlicher Prozessänderung aktualisieren.
+11. Version nur erhöhen, wenn der Änderungsumfang dies rechtfertigt.
+12. Diff, Arbeitsbaum und Änderungsprotokoll vor dem Commit gegen den Plan prüfen.
+
+## Pflichtangaben je Iteration
+
+Der Plan muss vor der Änderung knapp und prüfbar benennen:
+
+- **Ziel:** gewünschter fachlicher Zustand in einem Satz.
+- **Abnahme:** beobachtbares Ergebnis, das den Abschluss belegt.
+- **Scope:** betroffene Dateien sowie Zeilen, Funktionen oder Dokumentblöcke.
+- **Grund:** warum der Eingriff nötig ist und warum die gewählte Stelle zuständig ist.
+- **Risiken:** mögliche Regressionen, Daten- oder Vertragsfolgen.
+- **Nicht-Ziele:** bewusst unveränderte Bereiche.
+- **Schritte:** Analyse, Patch, einmalige Endvalidierung, Diff-Prüfung und Abschluss.
+
+Ändert sich der Scope während der Arbeit, wird der Plan vor einem weiteren Patch aktualisiert. Ohne neuen Befund wird keine Prüfung wiederholt.
+
+## Reproduzierbare Updates
+
+- Befehle werden vom Repository-Root ausgeführt und im Abschluss wörtlich dokumentiert.
+- Zufällige oder zeitabhängige Prüfungen verwenden einen festen Seed beziehungsweise einen dokumentierten Zeitanker.
+- Generierte Dateien nennen Quellstand, Parameter und Erzeugungsbefehl; volatile Daten werden nicht ohne fachlichen Grund versioniert.
+- Abnahmeberichte unterscheiden lokale Prüfung, Remote-CI und noch ausstehende Nachweise eindeutig.
+- Ein erfolgreicher Lauf wird nicht behauptet, wenn Abhängigkeiten, Netzwerk oder Umgebung ihn verhindert haben.
+- Prüfungsergebnisse müssen dem tatsächlich gepatchten Stand entstammen; nach der Endvalidierung folgt keine Inhaltsänderung ohne neue Validierung.
+- Commits enthalten nur den geplanten Scope und erhalten eine fachlich eindeutige Nachricht.
+
+## Iterationsabschluss
+
+Der Abschluss enthält ein kompaktes Änderungsprotokoll, die relevanten Prüfkommandos mit Ergebnis, bekannte Grenzen und genau zwei konstruktive Empfehlungen für die nächste Iteration. Offene Punkte werden als prüfbare Aufgaben in `TODO.md` formuliert.
 
 ## Architekturgrenzen
 
@@ -51,3 +83,5 @@ Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Je
 - keine hart codierten sichtbaren Texte in Spiellogik
 - keine neuen Abhängigkeiten ohne klaren Vorteil
 - keine alten Save-/Schema-Versionen still brechen
+- keine generierten Nachweise ohne dokumentierten Erzeugungsweg
+- keine Vermischung von lokal bestandener Prüfung und Remote-CI-Status
