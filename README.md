@@ -1,8 +1,8 @@
 # BUNKERFREQUENZ
 
-**Version:** `0.5.0-alpha.1`  
-**Phase:** 0.5 – Headless Character Core  
-**Status:** Erster Character-/Action-/Persistence-Laufzeitkern implementiert und gezielt validiert; grafische Game-UI, Telegram und Wirtschaft bleiben bewusst nachgelagert.
+**Version:** `0.5.1-alpha.1`  
+**Phase:** 0.5.1 – Recovery & Fault Injection  
+**Status:** Headless Character-/Action-/Persistence-Kern um Snapshot-Replay, Quarantäne, Recovery Receipt, Fault Injection und sicheren Profil-Undo erweitert; grafische Game-UI, Telegram und Wirtschaft bleiben bewusst nachgelagert.
 
 BUNKERFREQUENZ ist als modular erweiterbares Techno-/FreeTekno-Crew-RPG mit Charakterentwicklung, Eventmanagement, Club-/Bunker-Aufbau, Wirtschaft und späterer asynchroner Synchronisation geplant.
 
@@ -38,6 +38,7 @@ Siehe:
 - [`docs/UI_UX_BLUEPRINT.md`](docs/UI_UX_BLUEPRINT.md)
 - [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md)
 - [`docs/CHARACTER_CORE_0.5.md`](docs/CHARACTER_CORE_0.5.md)
+- [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
 - [`docs/DATENMODELL.md`](docs/DATENMODELL.md)
 - [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md)
 
@@ -120,6 +121,21 @@ Der erste Laufzeitkern verwendet ausschließlich die Python-Standardbibliothek:
 - idempotente Event-IDs; abweichende Doppelereignisse werden abgewiesen
 - 60-Sekunden-Autosave-Regel auf monotoner Laufzeitbasis
 
+## Recovery & Fault Injection 0.5.1
+
+Die 0.4.2-Recovery-Verträge sind jetzt als Laufzeit umgesetzt:
+
+- State-Envelope mit Sequenz, Journal-Head und SHA-256-Prüfsumme
+- Snapshot Writer + automatisch neu aufgebauter Snapshot-Index
+- Snapshot-Fälligkeit nach spätestens **50 bestätigten Events oder 300 Sekunden**
+- Recovery aus letztem gültigem State- oder Snapshot-Checkpoint plus Journal-Replay
+- beschädigter Journal-Tail wird vor Reparatur nach `recovery/quarantine/` verschoben
+- `recovery/RECOVERY_RECEIPT.json` dokumentiert die Wiederherstellung
+- definierte Fault-Injection-Punkte nach `JOURNAL_DURABLE`, `STATE_APPLIED` und `META_COMMITTED`
+- idempotente Recovery verhindert doppelte Skill-/Trait-Anwendung
+- editierbare Profilfelder Name/Alias/Motto besitzen einen sicheren Ein-Schritt-Undo über ein kompensierendes Journal-Ereignis
+- 0.5.0-States bleiben als Legacy-Checkpoint lesbar
+
 Gezielte Prüfung:
 
 ```bash
@@ -127,7 +143,7 @@ PYTHONPATH=src python3 -m compileall -q src
 PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
 ```
 
-Referenzstand: **14/14 Runtime-Tests PASS** und **200 Action/Commit/Reload-Schritte** ohne Journalfehler. Der Bericht liegt in [`reports/RUNTIME_VALIDATION_0.5.0.json`](reports/RUNTIME_VALIDATION_0.5.0.json).
+Lokaler Abnahmestand: **21/21 Runtime-/Recovery-Tests PASS**. Der versionierte Bericht liegt in [`reports/RUNTIME_VALIDATION_0.5.1.json`](reports/RUNTIME_VALIDATION_0.5.1.json).
 
 ## TODO – aktueller Entwicklungsstand
 
@@ -141,7 +157,9 @@ Referenzstand: **14/14 Runtime-Tests PASS** und **200 Action/Commit/Reload-Schri
 - [x] **0.4.3 UI/UX Blueprint:** vier Industrial-Brutalist-Entwürfe, Character Forge, Ranking und Animationen
 - [x] **0.4.4 Gameplay Action Contract:** 20 Aktionen mit Skill-/Trait-/Journal-Zuordnung
 - [x] **0.5 Headless Character Core:** Character State, Progression, Action Resolver und Persistence Kernel
-- [ ] **0.5.1 Recovery & Fault Injection:** Snapshot-Replay, Quarantäne, Crashpunkte und Recovery Receipt
+- [x] **0.5.1 Recovery & Fault Injection:** Snapshot-Replay, Quarantäne, Crashpunkte, Recovery Receipt und Profil-Undo
+- [ ] **0.5.2 Progression Effects & Resonance:** Trait-Effekte/Soft-Konflikte anwenden und Open-End-Resonanz implementieren
+- [ ] **0.6 Character Forge Runtime:** A4 Ops Deck + A3 Cinematic Forge auf den getesteten Kern setzen
 
 Die kanonische Arbeitsliste steht zusätzlich in [`TODO.md`](TODO.md).
 
