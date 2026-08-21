@@ -1,1 +1,16 @@
-{"schema_version":1,"version":"0.4.0-alpha.1","append_only":true,"undo_model":"compensating_event","hash_chain":true,"required_fields":["event_id","schema_version","event_type","timestamp_local","session_id","player_id","entity_type","entity_id","command_id","source","game_version","previous_event_hash","event_hash"],"optional_fields":["timestamp_confirmed","character_id","old_value","new_value","reason"]}
+{
+  "schema_version": 2,
+  "version": "0.4.2-alpha.1",
+  "append_only": true,
+  "canonical_order_key": ["sequence","event_id"],
+  "hash_chain": true,
+  "required_fields": ["event_id","schema_version","event_type","sequence","transaction_id","timestamp_local","session_id","player_id","entity_type","entity_id","command_id","source","game_version","payload","previous_event_hash","event_hash"],
+  "optional_fields": ["timestamp_confirmed","character_id","causation_id","correlation_id","old_value","new_value","reason","compensation_for","server_sequence"],
+  "event_types": ["character.profile_updated","character.skill_xp_gained","character.skill_level_up","character.trait_evidence_gained","character.trait_unlocked","character.trait_tier_up","character.specialization_changed","character.level_up","character.resonance_rank_up","character.biography_entry_added","training.started","training.completed","training.cancelled","mission.started","mission.progressed","mission.completed","mission.failed","inventory.item_acquired","inventory.item_removed","economy.transaction_posted","economy.transaction_compensated","club.created","club.updated","club.share_transaction","world.location_discovered","world.location_updated","event.planning_updated","event.started","event.incident_resolved","event.completed","sync.local_enqueued","sync.server_confirmed","sync.conflict_detected","sync.conflict_resolved","system.autosave_committed","system.snapshot_created","system.recovery_performed","system.migration_completed","time.anchor_confirmed"],
+  "undo_policy_groups": {
+    "reversible_local": ["character.profile_updated","event.planning_updated","training.started"],
+    "compensatable_if_preconditions_hold": ["inventory.item_acquired","inventory.item_removed","economy.transaction_posted"],
+    "not_user_undoable": ["character.skill_xp_gained","character.skill_level_up","character.trait_unlocked","character.trait_tier_up","character.level_up","character.resonance_rank_up","mission.completed","world.location_discovered","event.completed","sync.server_confirmed","system.recovery_performed","system.migration_completed"]
+  },
+  "compensation": {"event_type":"economy.transaction_compensated","must_reference_original":true,"must_be_idempotent":true}
+}

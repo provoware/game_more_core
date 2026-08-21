@@ -1,13 +1,3 @@
 {
-  "project": "BUNKERFREQUENZ",
-  "version": "0.4.1-alpha.1",
-  "status": "character_progression_contract_defined_and_simulated",
-  "current_iteration": "0.4.1",
-  "last_validated_release": null,
-  "validation_reference": "reports/PROGRESSION_SIMULATION_0.4.1.json",
-  "next_iteration": "0.4.2",
-  "next_goal": "Persistence Contract konkretisieren",
-  "runtime_code": false,
-  "developer_tool_code": true,
-  "updated_at": "2026-08-21T15:15:00+02:00"
+  "project":"BUNKERFREQUENZ","version":"0.4.2-alpha.1","status":"persistence_contract_defined","current_iteration":"0.4.2","last_validated_release":null,"validation_reference":"docs/PERSISTENCE_CONTRACT.md","next_iteration":"0.4.3","next_goal":"Character Forge UI/UX Blueprint mit vier Varianten","runtime_code":false,"developer_tool_code":true,"updated_at":"2026-08-21T15:42:00+02:00"
 }

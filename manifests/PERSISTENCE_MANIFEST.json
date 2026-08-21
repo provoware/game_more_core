@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "version": "0.4.2-alpha.1",
+  "canonical_state_model": "snapshot_plus_append_only_journal",
+  "autosave": {
+    "interval_seconds": 60,
+    "only_when_dirty": true,
+    "on_focus_loss": true,
+    "on_clean_exit": true,
+    "critical_event_flush": true,
+    "max_unsaved_seconds": 60
+  },
+  "transaction_states": [
+    "RECEIVED",
+    "VALIDATED",
+    "PREPARED",
+    "JOURNAL_DURABLE",
+    "STATE_APPLIED",
+    "COMMITTED",
+    "ABORTED",
+    "RECOVERY_REQUIRED"
+  ],
+  "commit_invariant": "An action is committed only after its journal record is durable and derived state application is idempotently confirmed.",
+  "idempotency": {
+    "key": "event_id",
+    "duplicate_event_behavior": "ignore_after_hash_and_payload_match",
+    "duplicate_mismatch_behavior": "quarantine_and_recovery_required"
+  },
+  "snapshot_policy": {
+    "max_minutes_since_last_snapshot": 5,
+    "max_committed_events_since_last_snapshot": 50,
+    "before_migration": true,
+    "before_critical_sync": true,
+    "before_major_economy_transaction": {
+      "absolute_amount": 1000,
+      "or_fraction_of_available_balance": 0.25
+    },
+    "before_schema_upgrade": true
+  },
+  "undo": {
+    "depth": 1,
+    "model": "compensating_event",
+    "requires_original_event_reference": true,
+    "never_delete_journal_history": true,
+    "server_confirmed_shared_transactions_require_domain_action": true
+  },
+  "recovery_order": [
+    "verify_meta",
+    "locate_latest_valid_snapshot",
+    "verify_journal_hash_chain_from_snapshot_head",
+    "replay_committed_events_idempotently",
+    "quarantine_invalid_tail",
+    "write_recovery_receipt",
+    "create_post_recovery_snapshot"
+  ],
+  "corruption_policy": {
+    "never_overwrite_last_known_good": true,
+    "quarantine_directory": "recovery/quarantine",
+    "recovery_receipt": "recovery/RECOVERY_RECEIPT.json"
+  }
+}
