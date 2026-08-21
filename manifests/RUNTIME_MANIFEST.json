@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "version": "0.5.0-alpha.1",
+  "runtime": "python_stdlib_headless",
+  "external_dependencies": [],
+  "modules": {
+    "character_state": "src/bunkerfrequenz/domain/character.py",
+    "progression": "src/bunkerfrequenz/domain/progression.py",
+    "action_resolver": "src/bunkerfrequenz/application/action_resolver.py",
+    "character_action_service": "src/bunkerfrequenz/application/character_action_service.py",
+    "persistence_kernel": "src/bunkerfrequenz/infrastructure/persistence.py"
+  },
+  "contracts": [
+    "manifests/PROGRESSION_MANIFEST.json",
+    "manifests/TRAIT_ENGINE_MANIFEST.json",
+    "manifests/ACTION_MANIFEST.json",
+    "manifests/JOURNAL_MANIFEST.json",
+    "manifests/PERSISTENCE_MANIFEST.json"
+  ],
+  "invariants": [
+    "all_characters_start_with_equal_skill_values",
+    "action_resolution_is_deterministic_for_equal_inputs",
+    "system_time_is_not_random_seed",
+    "actions_do_not_mutate_input_character_state",
+    "only_catalogued_journal_events_may_be_persisted_when_catalog_is_supplied",
+    "journal_is_durable_before_derived_state_write",
+    "duplicate_event_id_with_equal_payload_is_idempotent",
+    "duplicate_event_id_with_different_payload_is_rejected"
+  ],
+  "validation": {
+    "compile_command": "PYTHONPATH=src python3 -m compileall -q src",
+    "unit_command": "PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v",
+    "reference_report": "reports/RUNTIME_VALIDATION_0.5.0.json"
+  }
+}
