@@ -3,9 +3,9 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Aktive Entwicklungsiteration:** `0.7.1 – A4 Action-Auswahl`
-- **Voriteration:** `0.6.5 – Ranking / Network Foundation` (Implementierung lokal; Remote-Nachweise weiterhin ausstehend)
-- **Aktiver Entwicklungsbranch:** `work`
+- **Zuletzt abgeschlossene Feature-Iteration:** `0.7.1 – A4 Action-Auswahl`
+- **Nächster Feature-Schritt:** `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
+- **Aktiver Feature-PR:** keiner
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -30,85 +30,87 @@
 
 ## 0.6.2 – Lokaler Presentation-State + bestätigtes Feedback
 
-- [x] unveränderlichen lokalen Zustand für `overview`, `skills_traits`, `biography` angelegt
-- [x] `view.select`, `biography.filter`, `feedback.dismiss` als reine lokale Transitionen umgesetzt
-- [x] Biografie-Filter nutzt Kategorien aus `BIOGRAFIE_MANIFEST.json` statt einer zweiten Handliste
-- [x] bestätigte Journalrecords über Application-Leseabfrage `get_confirmed_events(...)` bereitgestellt
-- [x] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzereignisse in bestätigtes UI-Feedback projiziert
-- [x] Feedback-IDs deterministisch aus bestätigten Event-IDs abgeleitet
-- [x] nur katalogisierte bestätigte Journal-/Domain-Ereignisse als Feedback akzeptiert
-- [x] sichtbare Feedbacktexte nach `content/de/ui/feedback.json` ausgelagert
-- [x] Reduced Motion als statische, nicht blockierende Darstellungsoption abgesichert
-- [x] Character-Projektion übernimmt Feedback detached und validiert dessen Textschlüssel
-- [x] End-to-End `Command → Commit → Eventquery → Feedback → Projection` getestet
-- [x] idempotenter Replay erzeugt keine neuen Commit-IDs und kein doppeltes Feedback
+- [x] unveränderlichen Zustand für `overview`, `skills_traits`, `biography` angelegt
+- [x] lokale View-/Filter-/Dismiss-Transitionen ohne Persistenzwirkung umgesetzt
+- [x] Biografie-Filter nutzt `BIOGRAFIE_MANIFEST.json`
+- [x] bestätigte Journalrecords über Application-Abfrage bereitgestellt
+- [x] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzfeedback projiziert
+- [x] deterministische Feedback-IDs aus bestätigten Event-IDs
+- [x] sichtbare Feedbacktexte ausgelagert
+- [x] Reduced Motion fachlich zustandsneutral
+- [x] End-to-End `Command → Commit → Eventquery → Feedback → Projection`
+- [x] idempotenter Replay erzeugt kein doppeltes Feedback
 - [x] PR #26: Runtime Core `32511953788` + Presentation Core `32511953619` grün
 - [x] PR #26 gemergt (`5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a`)
 
 ## 0.6.3 – Gemeinsame Komponenten + A4 Ops Deck
 
-- [x] acht gemeinsame Komponenten implementiert: `CharacterHeader`, `StatusSummary`, `SkillList`, `TraitList`, `SpecializationCard`, `BiographyTimeline`, `ProfileEditor`, `ProgressFeedback`
+- [x] acht gemeinsame Komponenten implementiert
 - [x] Komponenten erhalten nur Projection-Blöcke und lokalen Presentation-State
-- [x] `ProfileEditor` nutzt ausschließlich den bestehenden zentralen Command-Dispatcher-Vertrag
+- [x] `ProfileEditor` nutzt ausschließlich den zentralen Command-Dispatcher-Vertrag
 - [x] `ProgressFeedback` nutzt bestätigte Feedback-Projektion und lokale Dismiss-/Reduced-Motion-Regeln
-- [x] A4 Ops Deck als Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel` umgesetzt
-- [x] maximal drei Primäraktionen; vierte Aktion wird abgewiesen statt still abgeschnitten
-- [x] 44-px-Ziele, 3-px-Fokus, High-Contrast und Farbe+Icon+Text aus Manifestvertrag eingebunden
-- [x] leere/fehlende optionale Bereiche bleiben leer statt Daten zu erfinden
-- [x] Namen, Alias, zusätzliche Spitznamen und Motto laufen über den bestätigten 0.6.1-Command-Weg
-- [x] A4 bleibt frameworkfrei und testbar
+- [x] A4 Ops Deck als Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel`
+- [x] maximal drei Primäraktionen; vierte Aktion wird abgewiesen
+- [x] 44-px-Ziele, 3-px-Fokus, High-Contrast und Farbe+Icon+Text aus Manifestvertrag
+- [x] leere optionale Bereiche erfinden keine Daten
+- [x] Profiländerungen laufen über den bestätigten Application-Weg
 - [x] PR #28: Runtime Core `32514970109` + Presentation Core `32514970398` grün
 - [x] PR #28 gemergt (`49603304960147c326953474174aafcff366dcd7`)
 
-## 0.6.4 – A3 Cinematic Forge aus denselben Bausteinen
+## 0.6.4 – A3 Cinematic Forge
 
 - [x] A3 verwendet dieselbe Projection und exakt dieselben acht Komponenten wie A4
 - [x] A3 übernimmt Primäraktionen direkt aus dem validierten A4-Interaktionsvertrag
-- [x] Character Stage, Live-Status, radiales Skill-/Trait-Netz, Context-/Profile-/Story-Drawer und Development Overlay definiert
-- [x] Level-, Skill-, Trait-Unlock-, Trait-Tier-, Spezialisierungs- und Resonanz-Up-Feedback an katalogisierte Animationen gebunden
-- [x] `anim.trait_tier_up` und `anim.resonance_up` mit statischen Fallbacks ergänzt
-- [x] Reduced Motion erzwingt statische Entwicklungskarten ohne Inhaltsverlust
-- [x] fehlende oder blockierende Animation fällt fail-soft auf statische Karte zurück
-- [x] Vertragstest A3↔A4 für Komponenten, Commands, Accessibility und Primäraktionslimit ergänzt
-- [x] sichtbare A3-Texte in `content/de/ui/character_forge.json` ausgelagert
-- [x] Runtime Core `32516833552` auf PR #29 grün
-- [x] Presentation Core `32516833514` auf PR #29 grün
+- [x] Character Stage, Live-Status, Skill-/Trait-Netz und Drawer definiert
+- [x] sechs Progressionsfeedbackarten an katalogisierte Animationen gebunden
+- [x] Reduced Motion und fail-soft statische Fallbacks
+- [x] Vertragstest A3↔A4 für Komponenten, Commands, Accessibility und Primäraktionslimit
+- [x] Runtime Core `32516833552` + Presentation Core `32516833514` auf PR #29 grün
 - [x] PR #29 gemergt (`53f0617ce0c00051c5fae481c43e4ff048dddf94`)
 
-## 0.6.5 – Ranking / Network vorbereiten
+## 0.6.5 – Ranking / Network Foundation
 
-**Aktiver Fokus.** Ranking nutzt bestätigte Character-Projections; Events/Clubs und Sync-Metadaten nur explizit serverbestätigt. Keine Online-/Presence-Erfindung.
-
-- [x] Ranking-Projektion für beliebig viele Spieler definiert
-- [x] Top 10 als Standard und `ALLE ANZEIGEN` für vollständige Liste vorgesehen
-- [x] Sortierung nach Level, Skills, Ruf, Events, Clubs und Resonanz implementiert
-- [x] Competition Ranking mit stabiler Gleichstandsregel implementiert
-- [x] Network-Ansicht verarbeitet Events/Clubs nur aus `server_confirmed_transaction`-Datensätzen
-- [x] fehlende Network-Metriken bleiben `null` und unranked statt als `0` zu erscheinen
+- [x] Ranking-Projektion für beliebig viele Spieler
+- [x] Top 10 als Standard und `ALLE ANZEIGEN`
+- [x] Sortierung nach Level, Skills, Ruf, Events, Clubs und Resonanz
+- [x] Competition Ranking mit stabiler Gleichstandsregel
+- [x] Events/Clubs nur aus `server_confirmed_transaction`-Datensätzen
+- [x] fehlende Network-Metriken bleiben `null` und unranked
 - [x] fehlende Sync-Daten werden `unknown` / `NICHT BESTÄTIGT`, ohne Presence abzuleiten
-- [x] Telegram/Sync weiterhin als eigene Infrastrukturphase behandelt
 - [x] falsche Autorität, unbekannte Metriken, doppelte IDs und Character-Mismatch fail-closed
 - [x] sichtbare Ranking-/Sync-Texte ausgelagert
-- [x] gezielte Ranking-/Network-Vertragstests angelegt
-- [ ] Runtime Core auf aktuellem 0.6.5-PR-Head grün
-- [ ] Presentation Core auf aktuellem 0.6.5-PR-Head grün
-- [ ] sauberen Diff prüfen und PR mergen
+- [x] Runtime Core `32517683276` + Presentation Core `32517683263` auf PR #30 grün
+- [x] PR #30 gemergt (`4090c3e2118e81d0927fbc7a5cfcdf48190631e9`)
 
-## Danach
-
-### 0.7 – Spielbarer Character-Forge-Vertical-Slice
+## 0.7 – Spielbarer Character-Forge-Vertical-Slice
 
 `Profil → Training/Aktion → Skill-/Trait-Fortschritt → Feedback → Biografie → Autosave → Undo → Reload`
 
-#### 0.7.1 – A4 Action-Auswahl
+### 0.7.1 – A4 Action-Auswahl
 
-- [x] alle 20 Manifest-Actions als eine kanonische A4-Auswahlliste projizieren
-- [x] Dauer, Voraussetzungen und gewichtete erwartete Skillwirkung anzeigen
+- [x] alle 20 Manifest-Actions als kanonische A4-Auswahlliste projiziert
+- [x] Dauer, Voraussetzungen und gewichtete erwartete Skillwirkung angezeigt
 - [x] nicht bestätigte Voraussetzungen sperren die Action fail-closed
-- [x] fehlende Energie-/Stresswerte ausdrücklich als nicht festgelegt markieren statt Werte zu erfinden
-- [ ] Energie-/Stresskosten fachlich je Action katalogisieren und im Resolver anwenden
-- [ ] vollständigen Vertical-Slice als Application-Ablauf mit Biografie, Autosave, Undo und Reload verbinden
-- [ ] gezielten Remote-Gate für den tatsächlich geprüften 0.7-Head nachweisen
+- [x] fehlende Energie-/Stresswerte ausdrücklich als nicht festgelegt markiert
+- [x] PR #31: Runtime Core `32519042006` + Presentation Core `32519041908` grün
+- [x] PR #31 gemergt (`888be18146197272578f4baa5516f78a894d9464`)
+- [x] Review-P1 behoben: Auswahl enthält kein scheinbar ausführbares Teil-Command mehr
+- [x] `build_action_execute_command(...)` erzeugt erst mit `command_id` und `action_instance_id` einen dispatcher-fertigen Command
+- [x] Review-P2 behoben: A4 prüft `can_execute_action` beim Zusammensetzen erneut und sperrt stale Auswahlzustände
+- [x] Regressionstests für Dispatcher-Kompatibilität und Capability-Entzug ergänzt
+
+### 0.7.2 – Ressourcenwirkung + vollständiger Ablauf
+
+- [ ] Energie-/Stresskosten fachlich je Action katalogisieren
+- [ ] Energie-/Stresswirkung im Resolver deterministisch anwenden
+- [ ] Training/Aktion → Progression → bestätigtes Feedback verbinden
+- [ ] Biografie-Eintrag aus bestätigten relevanten Ereignissen in den Ablauf integrieren
+- [ ] 60-Sekunden-Autosave und kritische Flush-Punkte im spielbaren Ablauf verwenden
+- [ ] Undo nur über bestehende kompensierende Regeln anbieten
+- [ ] Reload/Recovery im vollständigen Vertical-Slice testen
+- [ ] A4 und A3 auf denselben bestätigten Ergebniszustand zurückprojizieren
+
+## Später
 
 ### 0.8 – Event-/Wirtschafts-Integration
 
@@ -128,12 +130,14 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 - [x] **0.5.0** Headless Character-/Action-/Persistence-Core
 - [x] **0.5.1** Snapshot-Replay, Recovery, Fault Injection und Profil-Undo
 - [x] **0.5.2** Trait-Auswirkungen, Soft-Konflikte und Open-End-Resonanz
-- [x] **0.6 Foundation** Presentation-Vertrag, Textkataloge, Character-/Biografieprojektion und Repository-Reparatur
-- [x] **0.6.1** bestätigte Application-Capabilities + zentraler Command-Dispatcher
-- [x] **0.6.2** immutable lokaler Presentation-State + bestätigtes deterministisches Progressionsfeedback
+- [x] **0.6 Foundation** Presentation-Vertrag und Character-/Biografieprojektion
+- [x] **0.6.1** Application-Capabilities + zentraler Command-Dispatcher
+- [x] **0.6.2** lokaler Presentation-State + bestätigtes Progressionsfeedback
 - [x] **0.6.3** gemeinsame Komponenten + A4 Ops Deck
-- [x] **0.6.4** A3 Cinematic Forge auf gemeinsamem A4-Vertrag
+- [x] **0.6.4** A3 Cinematic Forge
+- [x] **0.6.5** Ranking / Network Foundation
+- [x] **0.7.1** A4 Action-Auswahl
 
 ## PR-Regel
 
-Für dieselbe Zielstelle wird nur **ein aktiver Implementierungs-PR** geführt. Alternative Ansätze werden nicht parallel gemergt; sinnvolle Aspekte werden zuerst hier konsolidiert und danach in der vorgesehenen Reihenfolge umgesetzt.
+Für dieselbe Zielstelle wird nur **ein aktiver Implementierungs-PR** geführt. Ein rotes relevantes CI-Gate blockiert den Merge; alte oder alternative Branches sind keine gültige Quelle für neue Merges.
