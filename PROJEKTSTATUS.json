@@ -2,21 +2,21 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.6.3",
-  "status": "confirmed_feedback_validated_shared_components_a4_next",
-  "current_focus": "shared_components_and_a4_ops_deck",
+  "active_iteration": "0.6.4",
+  "status": "a4_validated_cinematic_forge_in_progress",
+  "current_focus": "a3_cinematic_forge_shared_components_and_non_blocking_animation_cues",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
     "runtime_core": {
       "status": "success",
-      "pull_request": 26,
-      "workflow_run": 32511953788
+      "pull_request": 28,
+      "workflow_run": 32514970109
     },
     "presentation_core": {
       "status": "success",
-      "pull_request": 26,
-      "workflow_run": 32511953619
+      "pull_request": 28,
+      "workflow_run": 32514970398
     }
   },
   "presentation_application_boundary": {
@@ -42,17 +42,61 @@
     "reduced_motion": true,
     "persistent": false
   },
+  "presentation_shared_components_a4": {
+    "status": "validated_and_merged",
+    "pull_request": 28,
+    "merged_commit": "49603304960147c326953474174aafcff366dcd7",
+    "components": [
+      "CharacterHeader",
+      "StatusSummary",
+      "SkillList",
+      "TraitList",
+      "SpecializationCard",
+      "BiographyTimeline",
+      "ProfileEditor",
+      "ProgressFeedback"
+    ],
+    "layout": "A4_OPS_DECK",
+    "max_primary_actions": 3,
+    "commands_directly_dispatcher_ready": true
+  },
+  "presentation_cinematic_forge": {
+    "status": "implementation_in_progress_remote_validation_pending",
+    "layout": "A3_CINEMATIC_FORGE",
+    "shares_a4_components": true,
+    "shares_a4_command_normalizer": true,
+    "zones": [
+      "character_stage",
+      "skill_web",
+      "trait_orbit",
+      "specialization_focus",
+      "context_drawer",
+      "biography_rail",
+      "progress_overlay",
+      "action_dock"
+    ],
+    "animation_events": [
+      "level_up",
+      "skill_level_up",
+      "trait_unlocked",
+      "trait_tier_up",
+      "specialization_changed",
+      "resonance_rank_up"
+    ],
+    "animation_blocking_ms": 0,
+    "portrait_source": "not_yet_available_no_data_invented"
+  },
   "repository_audit": {
     "status": "closed",
     "repair_pull_request": 22,
     "merged_commit": "73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea",
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
-  "next_iteration": "0.6.3",
-  "next_goal": "Acht gemeinsame frameworkfreie Character-Forge-Komponenten und A4 Ops Deck auf der bestätigten Projection-/Command-/Feedback-Grenze implementieren",
+  "next_iteration": "0.6.4",
+  "next_goal": "A3 Cinematic Forge auf denselben acht Komponenten und Commands remote validieren und mergen",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T20:15:00+02:00"
+  "updated_at": "2026-08-21T20:55:00+02:00"
 }
