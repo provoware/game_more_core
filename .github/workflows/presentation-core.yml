@@ -17,6 +17,9 @@ on:
       - 'docs/PRESENTATION_CONTRACT_0.6.md'
       - '.github/workflows/presentation-core.yml'
 
+permissions:
+  contents: read
+
 jobs:
   presentation-core:
     runs-on: ubuntu-latest
@@ -25,6 +28,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Validate UI JSON catalogs
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          for path in sorted(Path('content/de/ui').glob('*.json')):
+              with path.open(encoding='utf-8') as handle:
+                  json.load(handle)
+              print(f'OK {path}')
+          PY
       - name: Compile presentation
         run: PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
       - name: Presentation tests
