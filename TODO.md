@@ -3,16 +3,16 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Zuletzt abgeschlossene Feature-Iteration:** `0.7.1 – A4 Action-Auswahl`
-- **Nächster Feature-Schritt:** `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
-- **Aktiver Feature-PR:** keiner; 0.7.2 ist nach diesem Safety-Receipt-Closeout freigegeben
+- **Zuletzt abgeschlossene Feature-Iteration:** `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
+- **Validierte 0.7.2-Referenz:** PR #41, Head `5f7ded400a5fca1ee25307797628ab2584de9812`
+- **Nächster Feature-Schritt:** `0.8 – Event-/Wirtschafts-Integration`
 
-## Repository Guard vor 0.7.2
+## Repository Guard
 
 - [x] `REPOSITORY_GUARD_MANIFEST.json` als kanonische Merge-/Health-Policy angelegt
 - [x] `tools/repository_health.py` ohne externe Abhängigkeiten implementiert
 - [x] `Repository Health` als eigener PR-/main-/Merge-Group-Gate angelegt
-- [x] Runtime Core und Presentation Core so umgestellt, dass sie bei jedem PR einen Required-Check-Status liefern
+- [x] Runtime Core und Presentation Core liefern bei jedem PR einen Required-Check-Status
 - [x] Guard prüft JSON, Python-Struktur/Compile, Konfliktmarker, Status-/Versionskonsistenz, öffentliche Exporte und kanonische Symbole
 - [x] Guard blockiert veraltete versionsgebundene Feature-Branches
 - [x] Workflow blockiert PR-Heads, die den aktuellen `main` nicht enthalten
@@ -20,12 +20,9 @@
 - [x] normale `/safe-merge`-PRs dürfen den Guard-/CI-Sicherheitsrand nicht selbst verändern
 - [x] Main Integrity prüft Merge-Provenienz nach Änderungen auf `main`
 - [x] Eventual-Consistency-Hotfix: Merge exakt einmal; ausschließlich die nachgelagerte Provenienz-Leseprüfung nutzt begrenzten Retry
-- [x] PR #35 Bootstrap: Runtime Core `32527116025`, Presentation Core `32527115999`, Repository Health `32527116022` grün
-- [x] PR #36 erster `/safe-merge`-Test tatsächlich gemergt; dabei GitHub-API-Race-Condition reproduziert und isoliert
-- [x] PR #37 Retry-Hotfix: Runtime Core `32527882811`, Presentation Core `32527882838`, Repository Health `32527882791` grün
-- [x] PR #38 zweiter End-to-End-Test: Runtime Core `32528078989`, Presentation Core `32528078992`, Repository Health `32528078926` grün
-- [x] PR #38 ausschließlich über `/safe-merge` gemergt; Bot bestätigte `SAFE MERGE PASS` und Main-Provenienz, Merge `e1155db2d2a7eaddd313127d89635a1a3dac3ce6`
-- [x] operativer sicherer Mergeweg damit End-to-End bestätigt; 0.7.2 darf danach fortgesetzt werden
+- [x] PR #38 End-to-End: Runtime Core `32528078989`, Presentation Core `32528078992`, Repository Health `32528078926`, `SAFE MERGE PASS`
+- [x] Safety Receipt PR #39: Runtime Core `32528915005`, Presentation Core `32528914997`, Repository Health `32528915004`, `SAFE MERGE PASS`
+- [x] Main-Integrity-Incident #40 für Direkt-Commit `fb96a489...` analysiert: Guard reagierte korrekt auf fehlende PR-Provenienz; Inhalt später in PR #41 erneut grün validiert; Incident geschlossen
 - [ ] Native GitHub-Branch-Protection/Ruleset zusätzlich aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist: `runtime-core`, `presentation-core`, `repository-health` verpflichtend + Branch aktuell + Conversation Resolution
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
@@ -115,27 +112,40 @@
 - [x] fehlende Energie-/Stresswerte ausdrücklich als nicht festgelegt markiert
 - [x] PR #31: Runtime Core `32519042006` + Presentation Core `32519041908` grün
 - [x] PR #31 gemergt (`888be18146197272578f4baa5516f78a894d9464`)
-- [x] Review-P1 behoben: Auswahl enthält kein scheinbar ausführbares Teil-Command mehr
+- [x] Review-P1: Auswahl enthält kein scheinbar ausführbares Teil-Command mehr
 - [x] `build_action_execute_command(...)` erzeugt erst mit `command_id` und `action_instance_id` einen dispatcher-fertigen Command
-- [x] Review-P2 behoben: A4 prüft `can_execute_action` beim Zusammensetzen erneut und sperrt stale Auswahlzustände
-- [x] Regressionstests für Dispatcher-Kompatibilität und Capability-Entzug ergänzt
+- [x] A4 prüft `can_execute_action` beim Zusammensetzen erneut und sperrt stale Auswahlzustände
 
 ### 0.7.2 – Ressourcenwirkung + vollständiger Ablauf
 
-- [ ] Energie-/Stresskosten fachlich je Action katalogisieren
-- [ ] Energie-/Stresswirkung im Resolver deterministisch anwenden
-- [ ] Training/Aktion → Progression → bestätigtes Feedback verbinden
-- [ ] Biografie-Eintrag aus bestätigten relevanten Ereignissen in den Ablauf integrieren
-- [ ] 60-Sekunden-Autosave und kritische Flush-Punkte im spielbaren Ablauf verwenden
-- [ ] Undo nur über bestehende kompensierende Regeln anbieten
-- [ ] Reload/Recovery im vollständigen Vertical-Slice testen
-- [ ] A4 und A3 auf denselben bestätigten Ergebniszustand zurückprojizieren
+- [x] Energie-/Stresswirkung fachlich für alle 20 Actions katalogisiert
+- [x] Energie-/Stresswirkung im Resolver deterministisch angewendet und auf `0–100` begrenzt
+- [x] `character.resources_changed` als katalogisiertes, replaybares Journal-Ereignis eingeführt
+- [x] Training/Aktion → Progression → bestätigtes Feedback verbunden
+- [x] Biografie-Eintrag aus bestätigten relevanten Actions deterministisch und atomar integriert
+- [x] 60-Sekunden-Autosave und Snapshot im Character-Forge-Session-Ablauf verwendet
+- [x] Undo nur über bestehende kompensierende Regeln angeboten; kein inkonsistentes pauschales Action-Undo
+- [x] Reload/Recovery inklusive Ressourcen-Replay im vollständigen Vertical-Slice getestet
+- [x] A4 und A3 auf denselben bestätigten Status-, Biografie- und Feedbackzustand zurückprojiziert
+- [x] Legacy-Testfixtures an den neuen Pflicht-Ressourcenvertrag angepasst, ohne Produktlogik aufzuweichen
+- [x] PR #41, Head `5f7ded400a5fca1ee25307797628ab2584de9812`: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406` grün
+- [x] PR #41 nach erfolgreicher Abnahme nach `main` übernommen (`a7544abd923787d20e174c9eced54f548753c801`)
+- [x] README visuell neu strukturiert und Einsteigerpfad verbessert
+- [x] eigene verständliche [`Spieleranleitung`](docs/SPIELERANLEITUNG.md) ergänzt
+
+## 0.8 – Nächster Schritt: Event-/Wirtschafts-Integration
+
+- [ ] Eventzustand als eigener Domain-/Application-Vertrag auf den bestätigten Character-Core setzen
+- [ ] Eventplanung mit Budget, Equipment, Ort, Acts, Crew und Sicherheitsvoraussetzungen verbinden
+- [ ] dynamischen Equipmentmarkt als spielinterne Wirtschaft definieren
+- [ ] Einkauf/Verkauf/Verbrauch über katalogisierte Economy-/Inventory-Events führen
+- [ ] Clubbetrieb und Clubbewertung aus bestätigten Ereignissen ableiten
+- [ ] Energie/Stress, Skills, Traits und Ruf mit Event-/Wirtschaftsfolgen verbinden
+- [ ] A4/A3 um bestätigte Event-/Economy-Projektionen erweitern, ohne Domain-State direkt zu schreiben
+- [ ] vollständigen Ablauf `Planung → Einkauf → Aufbau → Event → Abrechnung → Character-Folgen → Save/Recovery` testen
+- [ ] Spieleranleitung um Eventplanung und Wirtschaft erweitern
 
 ## Später
-
-### 0.8 – Event-/Wirtschafts-Integration
-
-Eventplanung, dynamischer Equipmentmarkt, Clubbetrieb und Clubbewertung auf dem validierten Character-/Persistence-Kern.
 
 ### 0.9 – Network / Telegram Sync
 
@@ -158,6 +168,7 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 - [x] **0.6.4** A3 Cinematic Forge
 - [x] **0.6.5** Ranking / Network Foundation
 - [x] **0.7.1** A4 Action-Auswahl
+- [x] **0.7.2** Ressourcenwirkung + kompletter Character-Forge-Vertical-Slice
 
 ## PR-Regel
 
