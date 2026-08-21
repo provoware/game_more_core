@@ -9,7 +9,7 @@
 <p>
   <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
   <img alt="Character Forge 0.7.2 validiert" src="https://img.shields.io/badge/Character_Forge-0.7.2_validiert-7dff00">
-  <img alt="Aktive Entwicklung 0.8.1 Event State" src="https://img.shields.io/badge/Aktive_Entwicklung-0.8.1_Event_State-f2c744">
+  <img alt="Event State 0.8.1 remote validiert" src="https://img.shields.io/badge/Event_State-0.8.1_remote_validiert-f2c744">
   <img alt="Runtime Python Standardbibliothek" src="https://img.shields.io/badge/Runtime-Python_Standardbibliothek-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -28,9 +28,9 @@
 | | Aktueller Stand |
 |---|---|
 | **Runtime-Baseline** | `0.5.2-alpha.1` |
-| **Letzte validierte Feature-Stufe** | `0.7.2 – kompletter Character-Forge-Vertical-Slice` |
-| **Aktive Iteration** | `0.8.1 – Event State Foundation` |
-| **0.8.1-Status** | Implementiert auf Feature-Branch; Remote-Abnahme über Runtime Core, Presentation Core und Repository Health ausstehend |
+| **Letzte remote validierte Feature-Stufe** | `0.8.1 – Event State Foundation` |
+| **0.8.1-Abnahme** | PR #48 · Head `79cc26bec0a7...` · Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` grün |
+| **Aktiver Abschluss** | finale Informationsänderungen erneut dreifach validieren, danach `/safe-merge` |
 | **Nächster Feature-Schritt** | `0.8.2 – Equipment & Economy` |
 | **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
 | **Event Foundation** | Ort, Budgetrahmen, Acts, Crew, Equipment-Readiness, Zeitfenster, Sicherheit, Phasen und Revision |
@@ -344,6 +344,7 @@ Fachliche Prüfungen bleiben risikobasiert. Pull Requests nach `main` benötigen
 - 0.7.2 / PR #41, validierter Head `5f7ded400a5f...`: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406`
 - 0.7.2 Closeout / PR #45: Runtime Core `32534969250`, Presentation Core `32534969199`, Repository Health `32534969209`; `SAFE MERGE PASS`
 - Integrity-Reparatur / PR #47: Runtime Core `32536504014`, Presentation Core `32536504089`, Repository Health `32536504068`; `SAFE MERGE PASS`
+- 0.8.1 / PR #48, initial validierter Head `79cc26bec0a7...`: Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303`
 
 Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 aus dem kanonischen Baum entfernt. Spätere direkte `main`-Änderungen wurden vom Main-Integrity-Guard erkannt und über validierte PRs bereinigt. Repository Guard und `/safe-merge` bleiben der vorgeschriebene normale Mergeweg.
 
