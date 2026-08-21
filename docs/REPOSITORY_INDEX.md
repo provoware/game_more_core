@@ -7,119 +7,114 @@ Dieser Index beantwortet: **Wo liegt was und welche Datei ist zuständig?**
 - Runtime-Baseline: `0.5.2-alpha.1`
 - aktive Entwicklung: `0.6.3 – gemeinsame Komponenten + A4 Ops Deck`
 
-## Einstieg
+Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben Iteration angepasst.
+
+## Einstieg im Wurzelverzeichnis
 
 | Pfad | Rolle |
 |---|---|
-| `README.md` | kompakter Projekteinstieg |
+| `README.md` | kompakter Projekteinstieg und Schnellzugriff |
 | `AGENTS.md` | verbindlicher Entwicklungs-, PR- und Merge-Ablauf |
 | `TODO.md` | kanonische offene Arbeit in Ausführungsreihenfolge |
 | `CHANGELOG.md` | fachliche Änderungshistorie |
 | `VERSION.json` | letzte versionierte Runtime-/Produkt-Baseline |
-| `PROJEKTMANIFEST.json` | zentrale Projektpfade |
-| `PROJEKTSTATUS.json` | aktive Iteration, Validierungsstand, nächstes Ziel |
+| `PROJEKTMANIFEST.json` | zentrale Pfade und Projektmetadaten |
+| `PROJEKTSTATUS.json` | aktive Iteration, Validierungsstand und nächstes Ziel |
 
-## Hauptordner
+## Ordnerübersicht
 
-| Ordner | Inhalt |
-|---|---|
-| `.github/workflows/` | `runtime-core.yml`, `presentation-core.yml` |
-| `content/de/` | lokalisierte sichtbare Inhalte |
-| `docs/` | Architektur-, Gameplay-, Persistence- und Presentation-Verträge |
-| `manifests/` | kanonische Kataloge und maschinenlesbare Regeln |
-| `reports/` | reproduzierbare Prüfnachweise |
-| `schemas/` | Datenstrukturverträge |
-| `src/bunkerfrequenz/` | Domain, Application, Infrastructure, Presentation |
-| `tests/` | Runtime-, Gameplay-, Simulation- und Presentation-Tests |
-| `tools/` | kleine ausführbare Entwicklerwerkzeuge |
+| Ordner | Inhalt | Einstieg |
+|---|---|---|
+| `.github/workflows/` | gezielte Remote-CI-Gates | `runtime-core.yml`, `presentation-core.yml` |
+| `content/` | lokalisierte sichtbare Inhalte | `content/de/` |
+| `docs/` | Fachverträge, Erklärungen und Navigation | `GAME_SCHEMA.md` |
+| `manifests/` | kanonische Kataloge und maschinenlesbare Regeln | `ARCHITEKTUR_MANIFEST.json` |
+| `reports/` | reproduzierbare Prüfnachweise | `RUNTIME_VALIDATION_0.5.2.json` |
+| `schemas/` | JSON-Strukturverträge | `character_state.schema.json` |
+| `src/` | headless Spielkern und Presentation | `src/bunkerfrequenz/` |
+| `tests/` | Vertrags-, Runtime-, Simulation- und Presentation-Tests | Unterordner nach Bereich |
+| `tools/` | kleine ausführbare Entwicklerwerkzeuge | `validate_action_contract.py` |
 
-## Codebereiche
-
-### Domain
-
-`src/bunkerfrequenz/domain/`
-
-- `character.py` – Character State
-- `progression.py` – Skills, Level, Traits, Spezialisierung, Resonanz
-- `trait_effects.py` – tatsächliche Trait-Wirkungen
-
-### Application
-
-`src/bunkerfrequenz/application/`
-
-| Datei | Zuständigkeit |
-|---|---|
-| `action_resolver.py` | deterministische fachliche Action-Auflösung |
-| `character_action_service.py` | Action-Commit über Persistence |
-| `profile_service.py` | Profiländerung und sicherer Profil-Undo |
-| `presentation_capabilities.py` | fail-closed UI-Capabilities |
-| `command_dispatcher.py` | einziger bestätigter UI-Schreibweg für Profil/Undo/Action |
-| `presentation_events.py` | detached Abfrage bereits bestätigter Journal-Event-IDs |
-| `recovery_service.py` | Character-Replay/Wiederherstellung |
-
-### Infrastructure
-
-`src/bunkerfrequenz/infrastructure/`
-
-- `persistence.py` – Journal, atomarer State, Snapshot, Recovery und Idempotenz
-
-### Presentation
-
-`src/bunkerfrequenz/presentation/`
-
-| Datei | Zuständigkeit |
-|---|---|
-| `character_projection.py` | kanonische schreibgeschützte Character-Projektion |
-| `biography_projection.py` | validierte Biografieprojektion |
-| `state.py` | immutable lokaler View-/Filter-/Dismiss-State |
-| `feedback.py` | deterministisches Feedback aus bestätigten Progressionsereignissen |
-| `__init__.py` | öffentliche Presentation-Exporte, keine Fachlogik |
-
-## Sichtbare Character-Forge-Texte
-
-`content/de/ui/`
-
-- `skills.json`
-- `traits.json`
-- `trait_effects.json`
-- `trait_consequences.json`
-- `specializations.json`
-- `stages.json`
-- `feedback.json` – Level-/Skill-/Trait-/Spezialisierungs-/Resonanzfeedback
-- `character_forge.json` – allgemeine UI-Begriffe
-
-## Zentrale Dokumente
+## Dokumentation
 
 | Datei | Thema |
 |---|---|
-| `docs/ARCHITEKTURVERTRAG.md` | Schichten und Invarianten |
-| `docs/CHARACTER_FORGE.md` | Figuren, Skills, Traits, Biografie |
-| `docs/PROGRESSION_CONTRACT.md` | XP, Level, Spezialisierung, Resonanz |
-| `docs/GAMEPLAY_ACTION_CONTRACT.md` | Actions und Progressionsevidenz |
-| `docs/PERSISTENCE_CONTRACT.md` | Save-/Journal-/Transaktionsregeln |
-| `docs/RECOVERY_0.5.1.md` | Recovery, Snapshot, Undo |
-| `docs/UI_UX_BLUEPRINT.md` | A1–A4 Designrichtung |
-| `docs/PRESENTATION_CONTRACT_0.6.md` | Projection, Application-Grenze, lokaler State, Feedback, spätere A4/A3-Komponenten |
-| `docs/ENTWICKLERHANDBUCH.md` | Entwicklerübernahme und Prüfstrategie |
-| `docs/REPOSITORY_AUDIT_2026-08-21.md` | Audit-/Reparaturnachweis |
+| `docs/GAME_SCHEMA.md` | Gesamtbild von Spiel, Daten und Ereignisfluss |
+| `docs/REPOSITORY_RULES.md` | Ablage, Informationshierarchie und PR-Lebenszyklus |
+| `docs/REPOSITORY_INDEX.md` | dieser Navigationsindex |
+| `docs/ARCHITEKTURVERTRAG.md` | Ebenen und unveränderliche Architekturregeln |
+| `docs/CHARACTER_FORGE.md` | Figuren, Skills, Traits und Biografie |
+| `docs/PROGRESSION_CONTRACT.md` | XP, Level, Spezialisierung und Resonanz |
+| `docs/GAMEPLAY_ACTION_CONTRACT.md` | Aufbau und Auflösung von Aktionen |
+| `docs/CHARACTER_CORE_0.5.md` | implementierter Runtime-Kern |
+| `docs/PERSISTENCE_CONTRACT.md` | Journal-, Save- und Transaktionsregeln |
+| `docs/RECOVERY_0.5.1.md` | Snapshot, Wiederherstellung und Undo |
+| `docs/UI_UX_BLUEPRINT.md` | A1–A4 Design-/UX-Richtung |
+| `docs/PRESENTATION_CONTRACT_0.6.md` | Projection, Capabilities, bestätigte Events, lokaler State, Feedback und A4/A3-Grenzen |
+| `docs/DATENMODELL.md` | fachliche Datenobjekte und Beziehungen |
+| `docs/ENTWICKLERHANDBUCH.md` | Übernahme, Prüfstrategie und Release-/PR-Ablauf |
+| `docs/REPOSITORY_AUDIT_2026-08-21.md` | Auditbefunde und Reparaturentscheidungen |
+| `docs/assets/` | visuelle Referenzen |
+
+## Codebereiche
+
+| Bereich | Verantwortung |
+|---|---|
+| `src/bunkerfrequenz/domain/` | Character State, Progression, Trait-Auswirkungen |
+| `src/bunkerfrequenz/application/` | Action-/Profil-/Recovery-Use-Cases, Presentation-Capabilities, Command-Dispatcher und bestätigte Eventabfrage |
+| `src/bunkerfrequenz/infrastructure/` | Journal, State, Snapshot, atomare Speicherung und Recovery |
+| `src/bunkerfrequenz/presentation/` | Character-/Biografieprojektion, immutable lokaler Presentation-State und bestätigtes Feedback; keine Domain-Writes |
+
+Wichtige neue 0.6.2-Dateien:
+
+- `src/bunkerfrequenz/application/presentation_events.py` – detached Abfrage bestätigter Journal-Event-IDs.
+- `src/bunkerfrequenz/presentation/state.py` – lokaler View-/Filter-/Dismiss-/Reduced-Motion-State.
+- `src/bunkerfrequenz/presentation/feedback.py` – deterministisches Progressionsfeedback.
+- `content/de/ui/feedback.json` – sichtbare Feedbacktexte.
+
+`__init__.py`-Dateien exportieren vorhandene Funktionen; sie dürfen keine zweite Fachimplementierung enthalten.
 
 ## Tests
 
 | Bereich | Zweck |
 |---|---|
-| `tests/runtime/` | Character, Action, Persistence, Recovery, Resonanz, Dispatcher, bestätigte Eventabfrage |
-| `tests/presentation/` | Projection, Biografie, Capabilities, lokaler State, Feedback und End-to-End-Feedbackpipeline |
+| `tests/runtime/` | Character, Action, Persistence, Recovery, Resonanz, Command-Dispatcher und bestätigte Eventabfrage |
+| `tests/presentation/` | Projection, Biografie, Textschlüssel, Capabilities, lokaler State, Feedback und End-to-End-Feedbackpipeline |
 | `tests/gameplay/` | Action-Vertrag |
-| `tests/simulation/` | Progressions-/Balance-Regression |
+| `tests/simulation/` | reproduzierbare Progressions-/Balance-Regression |
 
 ## Remote-CI
 
-- `runtime-core.yml`: Domain/Application/Infrastructure/Runtime-Gate.
-- `presentation-core.yml`: Presentation, zugehörige Application-Grenzdateien, UI-Textkataloge und Presentation-Tests.
+- `runtime-core.yml`: Runtime-/Domain-/Application-/Infrastructure-Gate.
+- `presentation-core.yml`: Presentation, zugehörige Application-Grenzdateien, Presentation-Tests und relevante UI-Textkataloge.
 
 Ein rotes für den Scope relevantes Gate blockiert den Merge.
 
-## Informationshierarchie
+## Maschinenlesbare Verträge
+
+### Manifeste
+
+- **Charakter/Entwicklung:** `CHARAKTER`, `SKILL`, `TRAIT`, `TRAIT_ENGINE`, `PROGRESSION`, `LEVEL`, `BIOGRAFIE`
+- **Aktionen/Laufzeit:** `ACTION`, `RUNTIME`, `JOURNAL`
+- **Speicherung/Zeit:** `PERSISTENCE`, `SAVEFORMAT`, `MIGRATION`, `ZEIT`, `SYNC`
+- **Darstellung/Text:** `UI`, `ANIMATION`, `TEXT`
+- **Projektsteuerung:** `ARCHITEKTUR`, `TEST`, `RELEASE`
+
+Alle liegen unter `manifests/`.
+
+### Schemas
+
+`schemas/` definiert Datenformen; Manifeste liefern die fachlichen Werte. Ein Schema ist keine zweite Balance- oder Storyquelle.
+
+## Inhalte, Tools und Berichte
+
+- `content/de/characters.json` und `level_titles.json` enthalten deutsche Spielinhalte.
+- `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel einschließlich `feedback.json`.
+- `tools/validate_action_contract.py` prüft den Action-Vertrag.
+- `tools/simulate_characters/progression_simulator.py` erzeugt reproduzierbare Balance-Läufe.
+- `reports/` enthält freigegebene Prüfnachweise; Berichte sind keine Runtime-Eingabe.
+
+## Verbindlichkeit bei Widersprüchen
 
 1. Fach-/Architekturvertrag
 2. Manifest/Schema
