@@ -5,7 +5,7 @@
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
 - **Aktive Entwicklungsiteration:** `0.6.4 – A3 Cinematic Forge`
 - **Abgeschlossen:** `0.6.3 – gemeinsame Komponenten + A4 Ops Deck`
-- **Aktiver Implementierungs-PR:** wird aus `presentation/0.6.4-a3-cinematic-forge-final` erstellt
+- **Aktiver Implementierungs-PR:** `#29 – 0.6.4 A3 Cinematic Forge`
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -62,8 +62,6 @@
 
 ## 0.6.4 – A3 Cinematic Forge aus denselben Bausteinen
 
-**Aktiver Fokus.** A3 darf nur visuell/strukturell anders komponieren; Components, Commands, Capabilities und Fachwerte bleiben identisch zu A4.
-
 - [x] A3 verwendet dieselbe Projection und exakt dieselben acht Komponenten wie A4
 - [x] A3 übernimmt Primäraktionen direkt aus dem validierten A4-Interaktionsvertrag
 - [x] Character Stage, Live-Status, radiales Skill-/Trait-Netz, Context-/Profile-/Story-Drawer und Development Overlay definiert
@@ -73,9 +71,9 @@
 - [x] fehlende oder blockierende Animation fällt fail-soft auf statische Karte zurück
 - [x] Vertragstest A3↔A4 für Komponenten, Commands, Accessibility und Primäraktionslimit ergänzt
 - [x] sichtbare A3-Texte in `content/de/ui/character_forge.json` ausgelagert
-- [ ] Runtime Core auf aktuellem 0.6.4-PR-Head grün
-- [ ] Presentation Core auf aktuellem 0.6.4-PR-Head grün
-- [ ] sauberen Diff prüfen und PR mergen
+- [x] Runtime Core `32516833552` auf PR #29 grün
+- [x] Presentation Core `32516833514` auf PR #29 grün
+- [ ] PR #29 mit geprüftem Head mergen
 
 ## 0.6.5 – Ranking / Network vorbereiten
 
