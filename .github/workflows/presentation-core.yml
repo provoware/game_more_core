@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'src/bunkerfrequenz/presentation/**'
+      - 'src/bunkerfrequenz/application/presentation_capabilities.py'
+      - 'src/bunkerfrequenz/application/command_dispatcher.py'
       - 'tests/presentation/**'
       - 'content/de/ui/**'
       - 'docs/PRESENTATION_CONTRACT_0.6.md'
@@ -12,6 +14,8 @@ on:
     branches: [main]
     paths:
       - 'src/bunkerfrequenz/presentation/**'
+      - 'src/bunkerfrequenz/application/presentation_capabilities.py'
+      - 'src/bunkerfrequenz/application/command_dispatcher.py'
       - 'tests/presentation/**'
       - 'content/de/ui/**'
       - 'docs/PRESENTATION_CONTRACT_0.6.md'
@@ -38,7 +42,11 @@ jobs:
                   json.load(handle)
               print(f'OK {path}')
           PY
-      - name: Compile presentation
-        run: PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
+      - name: Compile presentation boundary
+        run: |
+          PYTHONPATH=src python3 -m compileall -q \
+            src/bunkerfrequenz/presentation \
+            src/bunkerfrequenz/application/presentation_capabilities.py \
+            src/bunkerfrequenz/application/command_dispatcher.py
       - name: Presentation tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
