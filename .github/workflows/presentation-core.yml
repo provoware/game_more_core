@@ -1,0 +1,31 @@
+name: Presentation Core
+
+on:
+  pull_request:
+    paths:
+      - 'src/bunkerfrequenz/presentation/**'
+      - 'tests/presentation/**'
+      - 'content/de/ui/**'
+      - 'docs/PRESENTATION_CONTRACT_0.6.md'
+      - '.github/workflows/presentation-core.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/bunkerfrequenz/presentation/**'
+      - 'tests/presentation/**'
+      - 'content/de/ui/**'
+      - 'docs/PRESENTATION_CONTRACT_0.6.md'
+      - '.github/workflows/presentation-core.yml'
+
+jobs:
+  presentation-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile presentation
+        run: PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
+      - name: Presentation tests
+        run: PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
