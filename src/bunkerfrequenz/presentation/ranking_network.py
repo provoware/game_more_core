@@ -137,6 +137,14 @@ def _network_record(
     }
 
 
+def _metric_label_key(sort_by: str, skill_id: str | None) -> str:
+    if sort_by == "skill":
+        if skill_id is None:
+            raise ValueError("skill_id ist für Skill-Ranking erforderlich")
+        return f"{skill_id}.label"
+    return f"ui.ranking.metric.{sort_by}"
+
+
 def _selected_metric(entry: Mapping[str, Any], sort_by: str, skill_id: str | None) -> tuple[bool, int | None]:
     if sort_by == "level":
         return True, int(entry["level"])
@@ -171,11 +179,28 @@ def _competition_ranks(entries: list[dict[str, Any]]) -> None:
         previous_rank = rank
 
 
+def _require_text_catalog(projection: Mapping[str, Any], text_catalog: Mapping[str, str]) -> None:
+    required = {
+        projection["title_key"],
+        projection["network_title_key"],
+        projection["view"]["show_all_label_key"],
+        projection["view"]["unavailable_label_key"],
+        projection["sort"]["label_key"],
+    }
+    for entry in projection["entries"]:
+        required.add(entry["sync"]["label_key"])
+        required.add(entry["selected_metric"]["label_key"])
+    missing = sorted(key for key in required if key not in text_catalog)
+    if missing:
+        raise KeyError(f"Fehlende Ranking-/Network-Textschlüssel: {', '.join(missing)}")
+
+
 def build_ranking_network_projection(
     participants: Sequence[Mapping[str, Any]],
     confirmed_network_records: Sequence[Mapping[str, Any]],
     ranking_manifest: Mapping[str, Any],
     sync_manifest: Mapping[str, Any],
+    text_catalog: Mapping[str, str],
     *,
     sort_by: str = "level",
     skill_id: str | None = None,
@@ -224,6 +249,7 @@ def build_ranking_network_projection(
             + ", ".join(sorted(unknown_network_players))
         )
 
+    metric_label_key = _metric_label_key(sort_by, skill_id)
     entries: list[dict[str, Any]] = []
     for participant in normalized_participants:
         network = network_by_player.get(participant["player_id"])
@@ -238,6 +264,7 @@ def build_ranking_network_projection(
             "sync": {
                 "available": network is not None,
                 "status": network["sync_status"] if network is not None else "unknown",
+                "label_key": f"ui.sync.{network['sync_status'] if network is not None else 'unknown'}",
                 "version": network["version"] if network is not None else None,
             },
         }
@@ -245,8 +272,10 @@ def build_ranking_network_projection(
         entry["selected_metric"] = {
             "sort_by": sort_by,
             "skill_id": skill_id,
+            "label_key": metric_label_key,
             "available": available,
             "value": value,
+            "value_label_key": None if available else "ui.ranking.unavailable",
         }
         entries.append(entry)
 
@@ -268,11 +297,14 @@ def build_ranking_network_projection(
         "clubs": any("clubs" in entry["network_metrics"] for entry in entries),
     }
     visible_entries = entries if show_all else entries[:limit]
-    return {
+    projection = {
         "projection_version": "0.6.5",
+        "title_key": "ui.ranking.title",
+        "network_title_key": "ui.network.title",
         "sort": {
             "mode": sort_by,
             "skill_id": skill_id,
+            "label_key": metric_label_key,
             "ranking_style": ranking_manifest.get("ranking_style"),
         },
         "view": {
@@ -280,6 +312,8 @@ def build_ranking_network_projection(
             "top_limit": limit,
             "total_players": len(entries),
             "shown_players": len(visible_entries),
+            "show_all_label_key": "ui.ranking.show_all",
+            "unavailable_label_key": "ui.ranking.unavailable",
         },
         "metric_availability": availability,
         "entries": deepcopy(visible_entries),
@@ -289,3 +323,5 @@ def build_ranking_network_projection(
             "online_presence_inferred": False,
         },
     }
+    _require_text_catalog(projection, text_catalog)
+    return projection
