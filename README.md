@@ -2,11 +2,11 @@
 
 <p>
   <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
-  <img alt="Aktive Entwicklung 0.6.3 A4 Ops Deck" src="https://img.shields.io/badge/Aktive_Entwicklung-0.6.3_A4_Ops_Deck-7dff00">
+  <img alt="Aktive Entwicklung 0.6.3 Presentation" src="https://img.shields.io/badge/Aktive_Entwicklung-0.6.3_Presentation-7dff00">
   <img alt="Runtime Python Standardbibliothek" src="https://img.shields.io/badge/Runtime-Python_Standardbibliothek-00c2ff">
 </p>
 
-> **Techno-/FreeTekno-Crew-RPG:** Verhalten, Training, Entscheidungen und Krisen formen individuelle Charaktere. Der robuste Character-/Action-/Persistence-Kern und die bestätigte Presentation-Datenpipeline stehen; als Nächstes entsteht daraus der intuitive A4-Ops-Deck-Workflow.
+> **Techno-/FreeTekno-Crew-RPG:** Verhalten, Training, Entscheidungen und Krisen formen individuelle Charaktere. Der headless Character-/Action-/Persistence-Kern ist vorhanden; Character Forge, Wirtschaft und Synchronisation werden modular darauf aufgebaut.
 
 ![BUNKERFREQUENZ System- und Character-Forge-Blueprint](docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp)
 
@@ -17,13 +17,12 @@
 | letzte versionierte Runtime-Baseline | `0.5.2-alpha.1` |
 | aktive Entwicklungsiteration | `0.6.3 – gemeinsame Komponenten + A4 Ops Deck` |
 | Runtime | Character State, Actions, Traits, Resonanz, Journal, Snapshot, Recovery |
-| Application | bestätigte Capabilities, zentraler Schreibcommand-Dispatcher, bestätigte Eventabfrage |
-| Presentation | Character-/Biografieprojektion, lokaler immutable State, bestätigtes Progressionsfeedback |
-| grafische Spieloberfläche | noch kein Framework; A4-View-Model ist nächster Schritt |
+| Presentation | Character-/Biografieprojektion, bestätigte Capabilities/Commands, lokaler immutable State und bestätigtes Feedback |
+| grafische Spieloberfläche | noch nicht implementiert; A4 Ops Deck ist nächster Schritt |
 | Telegram/Sync | geplant, noch nicht implementiert |
 | Wirtschaft/Clubs | geplant, noch nicht implementiert |
 
-`VERSION.json` beschreibt weiterhin die letzte versionierte Runtime-Baseline. Die laufende 0.6-Presentation-Entwicklung wird bewusst separat in `PROJEKTSTATUS.json` und `TODO.md` geführt.
+**Wichtig:** `VERSION.json` beschreibt die letzte versionierte Runtime-Baseline. Die laufende nächste Entwicklungsiteration steht in `PROJEKTSTATUS.json` und `TODO.md`. Dadurch wird eine noch nicht abgeschlossene 0.6-Arbeit nicht fälschlich als neues Release ausgegeben.
 
 ## Schnellzugriff
 
@@ -32,11 +31,11 @@
 | aktueller Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
 | nächste Arbeitsschritte | [`TODO.md`](TODO.md) |
 | Architektur und Grenzen | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
-| Spiel-/Datenfluss | [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) |
-| Character-Forge-Presentation | [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md) |
+| Spiel-/Datenfluss verstehen | [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) |
+| 0.6 Presentation-Schnitt | [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md) |
 | Datei finden | [`docs/REPOSITORY_INDEX.md`](docs/REPOSITORY_INDEX.md) |
-| Entwicklungsregeln | [`AGENTS.md`](AGENTS.md) |
-| Entwicklerübernahme | [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md) |
+| Ablageregeln | [`docs/REPOSITORY_RULES.md`](docs/REPOSITORY_RULES.md) |
+| als Entwickler übernehmen | [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md) |
 | Änderungshistorie | [`CHANGELOG.md`](CHANGELOG.md) |
 
 ## Was bereits funktioniert
@@ -44,82 +43,74 @@
 ### Character / Progression
 
 - 11 Hauptfiguren mit identischer Startbasis und stabilen technischen IDs
-- editierbare Namen, Alias, zusätzliche Spitznamen und Motto
-- 16 Skills, 165 individuelle Trait-Namen über 15 Effektfamilien
-- Spezialisierungen mit Vorteilen und Konsequenzen
-- Level 1–50 plus offene Resonanzränge
+- editierbare Namen, Alias, zusätzliche Spitznamen und Motto im Domain-/Profilmodell
+- 16 Skills
+- 165 individuelle Trait-Namen über 15 gemeinsame Effektfamilien
+- Spezialisierungen mit Vor- und Nachteilen
+- Level 1–50 und anschließend offene Resonanzränge
 - deterministische Action Resolution
 
 ### Persistenz / Recovery
 
 - append-only Journal mit Sequenz und SHA-256-Kette
-- atomare Zustandsdateien und 60-Sekunden-Autosave-Vertrag
-- Snapshots, Journal-Replay und Quarantäne beschädigter Journal-Tails
+- atomare Zustandsdateien
+- 60-Sekunden-Autosave-Regel, dirty-only
+- Snapshots und Journal-Replay
+- Quarantäne beschädigter Journal-Tails
 - Recovery Receipt
 - sicherer kompensierender Ein-Schritt-Profil-Undo
 
-### Application-/Presentation-Grenze
+### Presentation-Foundation 0.6
 
-- Application liefert `can_edit_profile`, `can_undo_profile`, `can_execute_action` fail-closed
-- genau ein Dispatcher für `profile.update`, `profile.undo_last`, `action.execute`
-- idempotente Wiederholung verhindert Doppelbuchungen
-- Presentation liest Persistence nicht direkt
-- `get_confirmed_events(...)` liefert detached Records für bestätigte Commit-Event-IDs
+- gemeinsamer Presentation-Vertrag für A4 Ops Deck und A3 Cinematic Forge
+- schreibgeschützte Character-Projektion
+- getrennte Biografieprojektion aus validierten Journal-Ereignissen
+- bestätigte Application-Capabilities und ein zentraler Schreibcommand-Dispatcher
+- immutable lokaler Presentation-State für Ansicht, Filter, Feedback-Dismiss und Reduced Motion
+- bestätigte Eventabfrage über die Application-Grenze statt direktem Journalzugriff aus Presentation
+- deterministisches Feedback für Level-, Skill-, Trait-, Spezialisierungs- und Resonanzsprünge
+- sichtbare Feedbacktexte vollständig in `content/de/ui/feedback.json` ausgelagert
+- keine sichtbaren Texte in der Spiellogik
+- eigener zielgerichteter Presentation-CI-Gate
 
-### Presentation 0.6.2
-
-- immutable lokaler State für `overview`, `skills_traits`, `biography`
-- Biografie-Filter nutzt den kanonischen Manifest-Katalog
-- lokale `view.select`, `biography.filter`, `feedback.dismiss` ohne Save-/Journal-Wirkung
-- deterministische Feedback-IDs aus bestätigten Event-IDs
-- Feedback für Level-, Skill-, Trait-, Spezialisierungs- und Resonanzsprünge
-- alle sichtbaren Feedbacktexte ausgelagert unter `content/de/ui/feedback.json`
-- Reduced Motion verändert nur Darstellung, nicht Spielzustand
-- End-to-End-Pfad `Command → Commit → bestätigte Events → Feedback → Projection` getestet
-
-## Kanonischer Datenfluss
+## Datenfluss
 
 ```text
 Content + Manifeste
         │
         ▼
-Spielaktion ─► Domain/Action Resolver ─► Application Service
-                                      │
-                                      ▼
-                               Persistence Kernel
-                                │            │
-                                ▼            ▼
-                             Journal       Zustand
-                                │            │
-                                └─────┬──────┘
-                                      ▼
-                           bestätigte Application-Abfragen
-                              │                 │
-                              ▼                 ▼
-                         Capabilities      Eventrecords
-                              │                 │
-                              └───────┬─────────┘
-                                      ▼
-                          schreibgeschützte Projection
-                                      │
-                          lokaler Presentation-State
-                                      │
-                          bestätigtes Progressionsfeedback
-                                      │
-                       ┌──────────────┴──────────────┐
-                       ▼                             ▼
-                  A4 Ops Deck                A3 Cinematic Forge
-                  0.6.3 nächster Schritt      0.6.4 danach
+Spielaktion ──► deterministische Auflösung ──► Domain-Ereignisse
+                                                   │
+                                                   ▼
+                                       Persistence Kernel
+                                         │             │
+                                         ▼             ▼
+                                      Journal        Zustand
+                                         │             │
+                                         └──────┬──────┘
+                                                ▼
+                              Application-Capabilities / bestätigte Events
+                                                │
+                                                ▼
+                                   schreibgeschützte Projection
+                                                │
+                                     lokaler Presentation-State
+                                                │
+                                      ┌─────────┴─────────┐
+                                      ▼                   ▼
+                                 A4 Ops Deck      A3 Cinematic Forge
 ```
+
+A4 und A3 dürfen Daten später unterschiedlich anordnen, aber keine unterschiedlichen Fachregeln besitzen.
 
 ## Architekturgrenzen
 
 | Bereich | Verantwortung | Darf nicht |
 |---|---|---|
-| `domain` | Charakter, Progression, Traits | UI/Infrastruktur kennen |
-| `application` | Use Cases, Capabilities, Commands, bestätigte Abfragen | UI-Layout erzeugen oder Persistenz umgehen |
+| `domain` | Charakter, Progression, Traits | UI oder Infrastruktur kennen |
+| `application` | Use Cases, Capabilities, Commands und bestätigte Abfragen koordinieren | Persistenz umgehen |
 | `infrastructure` | Journal, Save, Snapshot, Recovery | sichtbare UI-Texte verwalten |
-| `presentation` | Anzeigeprojektionen und rein lokaler UI-State | Domain-/Save-Zustand direkt verändern |
+| `presentation` | schreibgeschützte Anzeigeprojektionen und rein lokalen UI-State | Domain-Zustand direkt verändern |
 | `content` | sichtbare/lokalisierte Texte | technische Regeln ersetzen |
 
 ## Gezielte Prüfungen
@@ -131,18 +122,16 @@ PYTHONPATH=src python3 -m compileall -q src
 PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
 ```
 
+Die Runtime-Baseline `0.5.2-alpha.1` wurde im zugehörigen PR zusätzlich über den GitHub-Workflow **Runtime Core** erfolgreich geprüft.
+
 ### Presentation
 
 ```bash
+PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
 PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
 ```
 
-Remote-Gates:
-
-- `.github/workflows/runtime-core.yml`
-- `.github/workflows/presentation-core.yml`
-
-0.6.2 wurde auf PR #26 mit Runtime Core `32511953788` und Presentation Core `32511953619` erfolgreich geprüft.
+Für Änderungen an der Presentation existiert zusätzlich `.github/workflows/presentation-core.yml`. 0.6.2 bestand auf PR #26 sowohl Runtime Core (`32511953788`) als auch Presentation Core (`32511953619`).
 
 ### Verträge / Simulation
 
@@ -153,8 +142,20 @@ python3 tools/simulate_characters/progression_simulator.py \
   --output reports/PROGRESSION_SIMULATION_0.4.1.json
 ```
 
-Prüfungen werden risikobasiert ausgeführt. Reine Status-/Dokumentänderungen lösen keine unnötigen Volltests aus.
+Prüfungen werden risikobasiert ausgeführt; nicht jede Dokumentänderung löst unnötig alle Tests aus.
+
+## Verbindliche Dokumente
+
+- [`docs/CHARACTER_FORGE.md`](docs/CHARACTER_FORGE.md)
+- [`docs/PROGRESSION_CONTRACT.md`](docs/PROGRESSION_CONTRACT.md)
+- [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md)
+- [`docs/CHARACTER_CORE_0.5.md`](docs/CHARACTER_CORE_0.5.md)
+- [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
+- [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
+- [`docs/UI_UX_BLUEPRINT.md`](docs/UI_UX_BLUEPRINT.md)
+- [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md)
+- [`docs/DATENMODELL.md`](docs/DATENMODELL.md)
 
 ## Entwicklungsregel
 
-Eine Iteration bearbeitet eine klar begründete Zielstelle. Für dieselbe kanonische Zielstelle existiert höchstens ein aktiver Implementierungs-PR. Relevante CI-Gates müssen vor Merge grün sein. Details: [`AGENTS.md`](AGENTS.md).
+Eine Iteration bearbeitet eine klar begründete Zielstelle. Parallelimplementierungen derselben kanonischen Datei werden nicht weitergeführt. Relevante CI-Gates müssen vor einem Merge grün sein. Details stehen in [`AGENTS.md`](AGENTS.md).
