@@ -1,0 +1,20 @@
+{
+  "project_id": "provoware.bunkerfrequenz",
+  "canonical_name": "BUNKERFREQUENZ",
+  "repository": "provoware/game_more_core",
+  "lineage_id": "e59052dd-e910-4405-9a06-1db621d818e7",
+  "version": "0.4.0-alpha.1",
+  "phase": "0.4",
+  "design_direction": "industrial_brutalist_variant_a",
+  "architecture_layers": [
+    "domain",
+    "application",
+    "infrastructure",
+    "presentation",
+    "content"
+  ],
+  "runtime_code_present": false,
+  "canonical_todo": "TODO.md",
+  "canonical_changelog": "CHANGELOG.md",
+  "architecture_doc": "docs/ARCHITEKTURVERTRAG.md"
+}

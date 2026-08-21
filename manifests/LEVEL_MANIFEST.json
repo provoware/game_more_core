@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "version": "0.4.0-alpha.1",
+  "level_formula": "120 * (L - 1)^1.62 + 80 * (L - 1)",
+  "max_numbered_level_before_resonance": 50,
+  "milestone_titles": {"1":"Kabelträger","3":"Bierkistenlogistiker","5":"Basspraktikant","8":"Frequenzlehrling","12":"Pegelbeobachter","17":"Nachtstrombeauftragter","23":"Betonstratege","31":"Ravearchitekt","39":"Bassalchemist","47":"Frequenzfürst","50":"Großmeister der unangemessenen Lautstärke"},
+  "resonance_titles": [{"rank":1,"title":"Verdächtig erfahren"},{"rank":2,"title":"Akustisch auffällig"},{"rank":3,"title":"Strukturell bedenklich"},{"rank":4,"title":"Szenetechnisch unvermeidbar"},{"rank":5,"title":"Amtlich nicht vorgesehen"},{"rank":6,"title":"Physikalisch fragwürdig"},{"rank":7,"title":"Betonhistorisch relevant"},{"rank":8,"title":"Frequenztechnisch unvernünftig"},{"rank":9,"title":"Legendenstatus"},{"rank":10,"title":"Mythos"}],
+  "post_r10": "open_ended"
+}

@@ -1,0 +1,11 @@
+{
+  "project": "BUNKERFREQUENZ",
+  "version": "0.4.0-alpha.1",
+  "status": "architecture_foundation_defined",
+  "current_iteration": "0.4.0",
+  "last_validated_release": null,
+  "next_iteration": "0.4.1",
+  "next_goal": "Trait-/Progression-Details vollständig spezifizieren",
+  "runtime_code": false,
+  "updated_at": "2026-08-21T15:04:00+02:00"
+}

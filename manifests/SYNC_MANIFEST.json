@@ -1,0 +1,1 @@
+{"schema_version":1,"version":"0.4.0-alpha.1","local_play_without_network":true,"transport_independent_core":true,"sync_payload_minimum":["entity_id","event_type","version","payload"],"shared_resource_authority":"server_confirmed_transaction","telegram_role":["identity_bridge","crew_link","notifications","mini_app_entry"],"telegram_is_primary_save_store":false}
