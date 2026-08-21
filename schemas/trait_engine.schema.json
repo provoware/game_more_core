@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/trait_engine.schema.json",
+  "title": "BUNKERFREQUENZ Trait Engine Manifest",
+  "type": "object",
+  "required": ["schema_version","version","source_trait_catalog","tier_rules","effect_templates","hard_exclusions"],
+  "properties": {
+    "schema_version": {"type":"integer","minimum":1},
+    "version": {"type":"string"},
+    "source_trait_catalog": {"type":"string"},
+    "catalog_expected_trait_count": {"const":165},
+    "tier_rules": {"type":"array","minItems":5,"maxItems":5},
+    "effect_templates": {"type":"array","minItems":15,"maxItems":15},
+    "soft_conflicts": {"type":"array"},
+    "hard_exclusions": {"type":"array"}
+  },
+  "additionalProperties": true
+}
