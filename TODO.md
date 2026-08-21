@@ -5,7 +5,7 @@
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
 - **Zuletzt abgeschlossene Feature-Iteration:** `0.7.1 – A4 Action-Auswahl`
 - **Nächster Feature-Schritt:** `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
-- **Aktiver Feature-PR:** keiner
+- **Aktiver Feature-PR:** keiner; 0.7.2 ist nach diesem Safety-Receipt-Closeout freigegeben
 
 ## Repository Guard vor 0.7.2
 
@@ -16,9 +16,17 @@
 - [x] Guard prüft JSON, Python-Struktur/Compile, Konfliktmarker, Status-/Versionskonsistenz, öffentliche Exporte und kanonische Symbole
 - [x] Guard blockiert veraltete versionsgebundene Feature-Branches
 - [x] Workflow blockiert PR-Heads, die den aktuellen `main` nicht enthalten
-- [x] erster Remote-Nachweis auf PR #34: Runtime Core `32522336221`, Presentation Core `32522336259`, Repository Health `32522336287` grün
-- [ ] GitHub-Branch-Protection/Ruleset für `main` extern aktivieren: `runtime-core`, `presentation-core`, `repository-health` verpflichtend + Branch aktuell + Conversation Resolution
-- [ ] erst danach 0.7.2-Gameplay fortsetzen
+- [x] `/safe-merge` prüft Berechtigung, aktuellen `main`, exakten PR-Head, drei grüne Kern-Gates und offene Review-Threads unmittelbar vor Merge
+- [x] normale `/safe-merge`-PRs dürfen den Guard-/CI-Sicherheitsrand nicht selbst verändern
+- [x] Main Integrity prüft Merge-Provenienz nach Änderungen auf `main`
+- [x] Eventual-Consistency-Hotfix: Merge exakt einmal; ausschließlich die nachgelagerte Provenienz-Leseprüfung nutzt begrenzten Retry
+- [x] PR #35 Bootstrap: Runtime Core `32527116025`, Presentation Core `32527115999`, Repository Health `32527116022` grün
+- [x] PR #36 erster `/safe-merge`-Test tatsächlich gemergt; dabei GitHub-API-Race-Condition reproduziert und isoliert
+- [x] PR #37 Retry-Hotfix: Runtime Core `32527882811`, Presentation Core `32527882838`, Repository Health `32527882791` grün
+- [x] PR #38 zweiter End-to-End-Test: Runtime Core `32528078989`, Presentation Core `32528078992`, Repository Health `32528078926` grün
+- [x] PR #38 ausschließlich über `/safe-merge` gemergt; Bot bestätigte `SAFE MERGE PASS` und Main-Provenienz, Merge `e1155db2d2a7eaddd313127d89635a1a3dac3ce6`
+- [x] operativer sicherer Mergeweg damit End-to-End bestätigt; 0.7.2 darf danach fortgesetzt werden
+- [ ] Native GitHub-Branch-Protection/Ruleset zusätzlich aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist: `runtime-core`, `presentation-core`, `repository-health` verpflichtend + Branch aktuell + Conversation Resolution
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -153,4 +161,4 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 
 ## PR-Regel
 
-Für dieselbe Zielstelle wird nur **ein aktiver Implementierungs-PR** geführt. Für `main` müssen `runtime-core`, `presentation-core` und `repository-health` vorhanden und grün sein. Ein veralteter Branch oder ein rotes/fehlendes Gate blockiert den Merge.
+Für dieselbe Zielstelle wird nur **ein aktiver Implementierungs-PR** geführt. Normale PRs nach `main` werden ausschließlich über `/safe-merge` übernommen. Dafür müssen `runtime-core`, `presentation-core` und `repository-health` auf exakt dem aktuellen PR-Head vorhanden und grün sein; der Branch muss aktuellen `main` enthalten und alle Review-Threads müssen gelöst sein. Änderungen an Guard-/CI-Sicherheitsdateien benötigen einen ausdrücklich auditierten Security-Bootstrap-PR. Native GitHub-Branch-Protection bleibt eine zusätzliche noch offene serverseitige Härtung.
