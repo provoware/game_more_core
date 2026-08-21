@@ -188,6 +188,37 @@
     "runtime_core_remote_gate",
     "presentation_core_remote_gate"
   ],
+  "vertical_slice_0_7_2_checks": [
+    "all_20_actions_have_resource_effects",
+    "resource_effects_require_energy_and_stress_integer_deltas",
+    "character_energy_stress_bounded_0_100",
+    "action_resolver_applies_resources_on_detached_state",
+    "resource_change_journaled_before_progression_events",
+    "resource_event_catalogued",
+    "resource_recovery_replay_restores_confirmed_values",
+    "resource_recovery_old_value_mismatch_rejected",
+    "action_biography_manifest_driven",
+    "biography_event_committed_atomically_with_action",
+    "session_autosave_due_at_60_seconds",
+    "autosave_creates_recovery_snapshot",
+    "profile_undo_uses_existing_compensation_contract",
+    "action_replay_idempotent",
+    "reload_preserves_resource_progression_state",
+    "a4_a3_share_confirmed_status_biography_feedback",
+    "legacy_test_fixtures_match_required_resource_contract",
+    "complete_vertical_slice_integration",
+    "runtime_core_remote_gate",
+    "presentation_core_remote_gate",
+    "repository_health_remote_gate"
+  ],
+  "vertical_slice_0_7_2_reference": {
+    "pull_request": 41,
+    "validated_head": "5f7ded400a5fca1ee25307797628ab2584de9812",
+    "merge_commit": "a7544abd923787d20e174c9eced54f548753c801",
+    "runtime_core_workflow_run": 32533954380,
+    "presentation_core_workflow_run": 32533954387,
+    "repository_health_workflow_run": 32533954406
+  },
   "repository_guard_checks": [
     "all_tracked_json_valid",
     "repository_python_compileall",

@@ -20,6 +20,7 @@
   "canonical_status": "PROJEKTSTATUS.json",
   "canonical_todo": "TODO.md",
   "canonical_changelog": "CHANGELOG.md",
+  "player_guide": "docs/SPIELERANLEITUNG.md",
   "repository_index": "docs/REPOSITORY_INDEX.md",
   "repository_rules": "docs/REPOSITORY_RULES.md",
   "architecture_doc": "docs/ARCHITEKTURVERTRAG.md",
@@ -53,6 +54,9 @@
   "runtime_validation_report": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "ci_workflows": {
     "runtime": ".github/workflows/runtime-core.yml",
-    "presentation": ".github/workflows/presentation-core.yml"
+    "presentation": ".github/workflows/presentation-core.yml",
+    "repository_health": ".github/workflows/repository-health.yml",
+    "safe_merge": ".github/workflows/safe-merge.yml",
+    "main_integrity": ".github/workflows/main-integrity.yml"
   }
 }

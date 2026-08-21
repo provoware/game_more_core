@@ -8,7 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
-  <img alt="Aktive Entwicklung 0.7.2" src="https://img.shields.io/badge/Aktive_Entwicklung-0.7.2-7dff00">
+  <img alt="Character Forge 0.7.2 validiert" src="https://img.shields.io/badge/Character_Forge-0.7.2_validiert-7dff00">
+  <img alt="Nächste Entwicklung 0.8" src="https://img.shields.io/badge/Nächste_Entwicklung-0.8_Event_%26_Wirtschaft-f2c744">
   <img alt="Runtime Python Standardbibliothek" src="https://img.shields.io/badge/Runtime-Python_Standardbibliothek-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -27,18 +28,17 @@
 | | Aktueller Stand |
 |---|---|
 | **Runtime-Baseline** | `0.5.2-alpha.1` |
-| **Letzte abgeschlossene Feature-Stufe** | `0.7.1 – A4 Action-Auswahl` |
-| **Aktive Entwicklung** | `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf` |
-| **0.7.2-Stand** | Implementiert auf Feature-Branch; Remote-Abnahme über drei Gates folgt |
-| **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf gemeinsamer Fachbasis |
-| **Persistenz** | Journal, 60-Sekunden-Autosave-Regel, Snapshot, Recovery, Undo |
-| **Repository-Sicherheit** | `/safe-merge` + Main Integrity End-to-End validiert |
-| **Native Branch Protection** | noch nicht serverseitig aktiviert; zusätzliche Härtung bleibt offen |
+| **Letzte abgeschlossene Feature-Stufe** | `0.7.2 – kompletter Character-Forge-Vertical-Slice` |
+| **0.7.2-Abnahme** | PR #41 · Head `5f7ded400a5f...` · Runtime, Presentation und Repository Health grün |
+| **Nächster Feature-Schritt** | `0.8 – Event-/Wirtschafts-Integration` |
+| **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
+| **Persistenz** | Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
+| **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
 | **Grafischer Renderer** | noch kein Qt/Web/Game-Engine-Framework fest verdrahtet |
 | **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert |
 
 > [!IMPORTANT]
-> `VERSION.json` bezeichnet die letzte **versionierte Runtime-Baseline**. Die laufende Entwicklungsphase wird getrennt in `PROJEKTSTATUS.json` und `TODO.md` geführt.
+> `VERSION.json` bezeichnet die letzte **versionierte Runtime-Baseline**. Feature-Meilensteine können weiter sein und werden getrennt in `PROJEKTSTATUS.json` und `TODO.md` geführt.
 
 ---
 
@@ -86,7 +86,7 @@ NEUE MÖGLICHKEITEN
 - deterministische Action Resolution
 - Skills, Traits, Spezialisierung
 - Level + Open-End-Resonanz
-- Energie und Stress im Character State
+- Energie und Stress `0–100`
 
 </td>
 <td valign="top" width="33%">
@@ -96,6 +96,7 @@ NEUE MÖGLICHKEITEN
 - append-only Journal
 - SHA-256-Hashkette
 - atomare State-Writes
+- 60-Sekunden-Autosave
 - Snapshots + Replay
 - Recovery Receipt
 - Quarantäne beschädigter Tails
@@ -110,9 +111,10 @@ NEUE MÖGLICHKEITEN
 - A4 Ops Deck
 - A3 Cinematic Forge
 - bestätigtes Progressionsfeedback
+- dynamische Biografie
 - Reduced-Motion-Fallback
 - Ranking / Network Foundation
-- 20 Manifest-Actions
+- 20 Manifest-Actions mit Ressourcenwirkung
 
 </td>
 </tr>
@@ -144,13 +146,13 @@ identische Projektion in A4 und A3
 
 ## 🧭 Einstieg ohne Vorwissen
 
-**Du willst nur verstehen, was dieses Projekt werden soll?**
+**Du willst das Spielprinzip verstehen, ohne den Code zu kennen?**
 
-1. Lies zuerst den Abschnitt **„Der Kern des Spiels“** oben.
-2. Öffne danach [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) für den Spiel-/Datenfluss.
-3. Sieh dir [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md) für den normalen Bedienablauf an.
-4. Für die stärker inszenierte Charakterentwicklung folgt [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md).
-5. Der aktuell nächste Entwicklungsstand steht kompakt in [`TODO.md`](TODO.md).
+1. Starte mit der [`Spieleranleitung`](docs/SPIELERANLEITUNG.md).
+2. Lies danach bei Bedarf [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) für den Spiel-/Datenfluss.
+3. [`A4 Ops Deck`](docs/A4_OPS_DECK_0.6.3.md) beschreibt den normalen Arbeitsablauf.
+4. [`A3 Cinematic Forge`](docs/A3_CINEMATIC_FORGE_0.6.4.md) zeigt die stärker inszenierte Charakterentwicklung.
+5. Der nächste Entwicklungsblock steht kompakt in [`TODO.md`](TODO.md).
 
 > [!NOTE]
 > Noch gibt es **keinen fertigen grafischen Client zum Anklicken**. Der Runtime-, Persistenz- und Presentation-Kern wird zuerst reproduzierbar abgesichert, bevor ein konkretes Qt-/Web-/Game-Engine-Frontend fest verdrahtet wird.
@@ -161,6 +163,7 @@ identische Projektion in A4 und A3
 
 | Ich suche … | Dann hier entlang |
 |---|---|
+| Spieler-Einstieg | [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md) |
 | aktuellen Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
 | nächste Aufgaben | [`TODO.md`](TODO.md) |
 | Architektur und Grenzen | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
@@ -290,8 +293,9 @@ Fachliche Prüfungen bleiben risikobasiert. Pull Requests nach `main` benötigen
 - Eventual-Consistency-Hotfix / PR #37: Runtime Core `32527882811`, Presentation Core `32527882838`, Repository Health `32527882791`
 - Safe-Merge-End-to-End / PR #38: Runtime Core `32528078989`, Presentation Core `32528078992`, Repository Health `32528078926`; `SAFE MERGE PASS`
 - Safety Receipt / PR #39: Runtime Core `32528915005`, Presentation Core `32528914997`, Repository Health `32528915004`; `SAFE MERGE PASS`
+- 0.7.2 / PR #41, validierter Head `5f7ded400a5f...`: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406`
 
-Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 aus dem kanonischen Baum entfernt. Repository Guard und `/safe-merge` sind die technische Folgemaßnahme gegen dieselbe Fehlerklasse.
+Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 aus dem kanonischen Baum entfernt. Der Main-Integrity-Incident zum späteren Direkt-Commit `fb96a489...` wurde analysiert: Der Guard reagierte korrekt auf fehlende PR-Provenienz; der AGENTS-Inhalt wurde anschließend im grünen PR #41 erneut validiert. Repository Guard und `/safe-merge` bleiben die vorgeschriebene Folgemaßnahme.
 
 </details>
 
