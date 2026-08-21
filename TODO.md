@@ -3,9 +3,11 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Zuletzt abgeschlossene Feature-Iteration:** `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
+- **Zuletzt validierte Feature-Iteration:** `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
 - **Validierte 0.7.2-Referenz:** PR #41, Head `5f7ded400a5fca1ee25307797628ab2584de9812`
-- **Nächster Feature-Schritt:** `0.8 – Event-/Wirtschafts-Integration`
+- **Aktive Feature-Iteration:** `0.8.1 – Event State Foundation`
+- **0.8.1-Status:** implementiert; Remote-Abnahme über drei Pflichtgates ausstehend
+- **Nächster Feature-Schritt nach 0.8.1:** `0.8.2 – Equipment & Economy`
 
 ## Repository Guard
 
@@ -23,6 +25,7 @@
 - [x] PR #38 End-to-End: Runtime Core `32528078989`, Presentation Core `32528078992`, Repository Health `32528078926`, `SAFE MERGE PASS`
 - [x] Safety Receipt PR #39: Runtime Core `32528915005`, Presentation Core `32528914997`, Repository Health `32528915004`, `SAFE MERGE PASS`
 - [x] Main-Integrity-Incident #40 für Direkt-Commit `fb96a489...` analysiert: Guard reagierte korrekt auf fehlende PR-Provenienz; Inhalt später in PR #41 erneut grün validiert; Incident geschlossen
+- [x] versehentlichen leeren `tmp`-Direktcommit über gezielten PR #47 entfernt; Runtime Core `32536504014`, Presentation Core `32536504089`, Repository Health `32536504068`, `SAFE MERGE PASS`
 - [ ] Native GitHub-Branch-Protection/Ruleset zusätzlich aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist: `runtime-core`, `presentation-core`, `repository-health` verpflichtend + Branch aktuell + Conversation Resolution
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
@@ -133,16 +136,51 @@
 - [x] README visuell neu strukturiert und Einsteigerpfad verbessert
 - [x] eigene verständliche [`Spieleranleitung`](docs/SPIELERANLEITUNG.md) ergänzt
 
-## 0.8 – Nächster Schritt: Event-/Wirtschafts-Integration
+## 0.8 – Event-/Wirtschafts-Integration
 
-- [ ] Eventzustand als eigener Domain-/Application-Vertrag auf den bestätigten Character-Core setzen
-- [ ] Eventplanung mit Budget, Equipment, Ort, Acts, Crew und Sicherheitsvoraussetzungen verbinden
-- [ ] dynamischen Equipmentmarkt als spielinterne Wirtschaft definieren
-- [ ] Einkauf/Verkauf/Verbrauch über katalogisierte Economy-/Inventory-Events führen
-- [ ] Clubbetrieb und Clubbewertung aus bestätigten Ereignissen ableiten
-- [ ] Energie/Stress, Skills, Traits und Ruf mit Event-/Wirtschaftsfolgen verbinden
-- [ ] A4/A3 um bestätigte Event-/Economy-Projektionen erweitern, ohne Domain-State direkt zu schreiben
-- [ ] vollständigen Ablauf `Planung → Einkauf → Aufbau → Event → Abrechnung → Character-Folgen → Save/Recovery` testen
+### 0.8.1 – Event State Foundation
+
+- [x] `EventState` als eigener Domain-State neben `CharacterState` implementiert
+- [x] Ort mit `location_id`, Anzeigename, Region und explizitem Zugangsstatus definiert
+- [x] Event-Budgetrahmen in Cent ohne vorgezogene Economy-Ledger-Logik definiert
+- [x] Acts, Crew und Equipment-Readiness als streng validierte eindeutige Listen definiert
+- [x] offset-aware Zeitfenster mit `end > start` validiert
+- [x] Sicherheitsstatus `unreviewed / cleared / restricted / blocked` definiert
+- [x] Phasenmaschine `draft → planning → procurement → transport → setup → soundcheck → live/crisis → teardown → settlement → completed` implementiert
+- [x] physische Phasen an Ort, Zugangsstatus, Zeitfenster und `safety_status=cleared` gebunden
+- [x] `event.created`, `event.planning_updated`, `event.phase_changed` journalfähig gemacht
+- [x] monotone Eventrevision und Stale-Write-Schutz implementiert
+- [x] identische Event-Commands idempotent; gleiche Command-ID mit anderem Inhalt fail-closed
+- [x] Character-/Profil-Commits so gehärtet, dass sie den `event`-State-Block nicht überschreiben
+- [x] Event-Commits erhalten bestehende `character`-Daten
+- [x] kombiniertes Character+Event-Recovery-Replay implementiert
+- [x] Fault-Injection-Test für durable Eventänderung vor State-Write angelegt
+- [x] Manifest-/Domain-Phasenabgleich als Regressionstest angelegt
+- [x] Vertrag, Schema, Runtime-Manifest, README und Repository-Navigation ergänzt
+- [ ] Runtime Core remote grün
+- [ ] Presentation Core remote grün
+- [ ] Repository Health remote grün
+- [ ] 0 offene Review-Threads
+- [ ] Merge ausschließlich über `/safe-merge` + `SAFE MERGE PASS`
+
+### 0.8.2 – Equipment & Economy
+
+- [ ] Equipment-Katalog und Inventarbesitz als getrennte Zustände definieren
+- [ ] dynamische Marktpreise datengetrieben und deterministisch modellieren
+- [ ] Kaufen, Verkaufen und Verbrauchen über katalogisierte Inventory-/Economy-Events führen
+- [ ] Budgetänderungen nur aus bestätigten Economy-Transaktionen ableiten
+- [ ] Kompensationsregeln für reversible Economy-Transaktionen konkretisieren
+- [ ] Event-Equipment-Anforderungen gegen bestätigten Besitz/Reservierung auflösen
+- [ ] Save/Recovery/Idempotenz für Economy und Inventar testen
+
+### 0.8.3 – Vollständiger Event-Loop
+
+- [ ] `Planung → Einkauf → Transport → Aufbau → Soundcheck → Event → Krise → Abbau → Abrechnung` als zusammenhängenden Ablauf implementieren
+- [ ] Phasenaktionen und Voraussetzungen an EventState anbinden
+- [ ] Krisen und Incident-Auflösung journalfähig machen
+- [ ] Abrechnung, Ruf- und Character-Folgen aus bestätigten Ergebnissen ableiten
+- [ ] A4/A3 um Event-/Economy-Projektionen erweitern, ohne Domain-State direkt zu schreiben
+- [ ] vollständigen Event-Loop inklusive Save/Recovery testen
 - [ ] Spieleranleitung um Eventplanung und Wirtschaft erweitern
 
 ## Später
