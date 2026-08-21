@@ -11,11 +11,12 @@ from bunkerfrequenz.infrastructure.persistence import FaultInjectedCrash, Journa
 
 ACTION = {
     "action_id":"action.soundcheck","category":"event","risk_profile":"medium",
+    "resource_effects":{"energy_delta":0,"stress_delta":0},
     "skill_weights":{"technik":0.5,"musik":0.3,"konzentration":0.2},
     "trait_evidence_weights":{"klangfokus":0.6,"detailmensch":0.4},"prerequisites":[]
 }
 ALLOWED = {
-    "character.profile_updated","character.skill_xp_gained","character.skill_level_up",
+    "character.profile_updated","character.resources_changed","character.skill_xp_gained","character.skill_level_up",
     "character.trait_evidence_gained","character.trait_unlocked","character.trait_tier_up",
     "character.specialization_changed","character.level_up","system.recovery_performed",
 }

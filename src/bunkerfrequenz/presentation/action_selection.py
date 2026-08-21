@@ -6,6 +6,7 @@ from typing import Any, Mapping, Sequence
 
 _SELECTION_FIELDS = frozenset({"selected_skill", "selected_trait_family"})
 _TEMPLATE_FIELDS = frozenset({"type", "character_id", "action_id"})
+_RESOURCE_FIELDS = frozenset({"energy_delta", "stress_delta"})
 
 
 def build_action_selection(
@@ -27,6 +28,7 @@ def build_action_selection(
         seen.add(action_id)
         prerequisites = _prerequisites(action.get("prerequisites", ()), status)
         duration = _duration(action.get("duration"))
+        resources = _resources(action.get("resource_effects"), action.get("cost_model"))
         result.append({
             "action_id": action_id,
             "label_key": f"{action_id}.label",
@@ -34,13 +36,7 @@ def build_action_selection(
             "enabled": can_execute_action and all(item["met"] for item in prerequisites),
             "prerequisites": prerequisites,
             "duration": duration,
-            "resources": {
-                "energy_delta": None,
-                "stress_delta": None,
-                "status": "not_defined",
-                "status_key": "ui.action.resources.not_defined",
-                "cost_model": action.get("cost_model"),
-            },
+            "resources": resources,
             "expected_skill_effects": _skill_effects(action.get("skill_weights")),
             "selection_requirements": [
                 field for field, weights_field in (
@@ -130,6 +126,25 @@ def _duration(value: Any) -> dict[str, Any]:
     if isinstance(minutes, bool) or not isinstance(minutes, int) or minutes < 0:
         raise ValueError("duration.minutes muss eine nicht-negative Ganzzahl sein")
     return {"mode": mode, "minutes": minutes}
+
+
+def _resources(value: Any, cost_model: Any) -> dict[str, Any]:
+    if not isinstance(value, Mapping) or set(value) != _RESOURCE_FIELDS:
+        raise ValueError("resource_effects benötigt exakt energy_delta und stress_delta")
+    energy_delta = value["energy_delta"]
+    stress_delta = value["stress_delta"]
+    if any(
+        isinstance(item, bool) or not isinstance(item, int) or not -100 <= item <= 100
+        for item in (energy_delta, stress_delta)
+    ):
+        raise ValueError("resource_effects benötigt Ganzzahlen zwischen -100 und 100")
+    return {
+        "energy_delta": energy_delta,
+        "stress_delta": stress_delta,
+        "status": "defined",
+        "status_key": "ui.action.resources.defined",
+        "cost_model": cost_model,
+    }
 
 
 def _skill_effects(value: Any) -> list[dict[str, Any]]:

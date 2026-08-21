@@ -21,6 +21,7 @@ from tests.presentation.test_a4_ops_deck import load_catalog, load_json, project
 ROOT = Path(__file__).resolve().parents[2]
 ALLOWED_EVENTS = {
     "character.profile_updated",
+    "character.resources_changed",
     "character.skill_xp_gained",
     "character.skill_level_up",
     "character.trait_evidence_gained",
@@ -63,10 +64,17 @@ class ActionSelectionTest(unittest.TestCase):
         self.assertTrue(all(item["enabled"] for item in projected))
         self.assertTrue(all(item["duration"]["minutes"] >= 0 for item in projected))
         self.assertTrue(all(item["expected_skill_effects"] for item in projected))
-        self.assertTrue(all(item["resources"]["status"] == "not_defined" for item in projected))
+        self.assertTrue(all(item["resources"]["status"] == "defined" for item in projected))
+        self.assertTrue(all(item["resources"]["status_key"] == "ui.action.resources.defined" for item in projected))
+        self.assertTrue(all(isinstance(item["resources"]["energy_delta"], int) for item in projected))
+        self.assertTrue(all(isinstance(item["resources"]["stress_delta"], int) for item in projected))
         self.assertTrue(all("command" not in item for item in projected))
         self.assertTrue(all(item["command_template"]["type"] == "action.execute" for item in projected))
         self.assertTrue(all(item["required_runtime_ids"] == ["command_id", "action_instance_id"] for item in projected))
+
+        run_event = next(item for item in projected if item["action_id"] == "action.run_event")
+        self.assertEqual(run_event["resources"]["energy_delta"], -28)
+        self.assertEqual(run_event["resources"]["stress_delta"], 18)
 
     def test_unconfirmed_prerequisite_disables_action(self):
         selection = build_action_selection(
@@ -154,6 +162,7 @@ class ActionSelectionTest(unittest.TestCase):
         self.assertEqual(result.status, "confirmed")
         self.assertIsNone(result.error_code)
         self.assertTrue(result.committed_event_ids)
+        self.assertEqual((result.confirmed_state.energy, result.confirmed_state.stress), (94, 3))
 
     def test_a4_rechecks_current_capability_and_disables_stale_enabled_selection(self):
         selection = build_action_selection(

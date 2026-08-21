@@ -13,12 +13,14 @@ ACTION = {
     "action_id": "action.soundcheck",
     "category": "event",
     "risk_profile": "medium",
+    "resource_effects": {"energy_delta": -6, "stress_delta": 3},
     "skill_weights": {"technik": 0.5, "musik": 0.3, "konzentration": 0.2},
     "trait_evidence_weights": {"klangfokus": 0.6, "detailmensch": 0.4},
     "prerequisites": [],
 }
 ALLOWED = {
     "character.profile_updated",
+    "character.resources_changed",
     "character.skill_xp_gained",
     "character.skill_level_up",
     "character.trait_evidence_gained",
@@ -145,8 +147,10 @@ class CommandDispatcherTest(unittest.TestCase):
         self.assertEqual(first.status, "confirmed")
         self.assertTrue(first.committed_event_ids)
         self.assertFalse(first.idempotent_replay)
+        self.assertEqual((first.confirmed_state.energy, first.confirmed_state.stress), (94, 3))
         self.assertTrue(second.idempotent_replay)
         self.assertEqual(second.committed_event_ids, ())
+        self.assertEqual((second.confirmed_state.energy, second.confirmed_state.stress), (94, 3))
         self.assertEqual(self.kernel.read_records()[0]["command_id"], "cmd-action")
 
     def test_rejects_untrusted_or_invalid_ui_parameters(self):

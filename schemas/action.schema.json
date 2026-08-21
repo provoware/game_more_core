@@ -1,1 +1,42 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"schemas/action.schema.json","type":"object","required":["action_id","category","duration","skill_weights","trait_evidence_weights","risk_profile","cost_model","journal_events","undo_policy","biography_importance_base"],"properties":{"action_id":{"type":"string","pattern":"^action\\."},"category":{"type":"string"},"duration":{"type":"object"},"skill_weights":{"type":"object","additionalProperties":{"type":"number","minimum":0,"maximum":1}},"trait_evidence_weights":{"type":"object","additionalProperties":{"type":"number","minimum":0,"maximum":1}},"risk_profile":{"type":"string"},"cost_model":{"type":"string"},"journal_events":{"type":"array","items":{"type":"string"},"minItems":1},"undo_policy":{"type":"string"},"biography_importance_base":{"type":"integer","minimum":0,"maximum":100},"prerequisites":{"type":"array","items":{"type":"string"}},"notes":{"type":"array","items":{"type":"string"}}},"additionalProperties":false}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/action.schema.json",
+  "type": "object",
+  "required": [
+    "action_id",
+    "category",
+    "duration",
+    "resource_effects",
+    "skill_weights",
+    "trait_evidence_weights",
+    "risk_profile",
+    "cost_model",
+    "journal_events",
+    "undo_policy",
+    "biography_importance_base"
+  ],
+  "properties": {
+    "action_id": {"type": "string", "pattern": "^action\\."},
+    "category": {"type": "string"},
+    "duration": {"type": "object"},
+    "resource_effects": {
+      "type": "object",
+      "required": ["energy_delta", "stress_delta"],
+      "properties": {
+        "energy_delta": {"type": "integer", "minimum": -100, "maximum": 100},
+        "stress_delta": {"type": "integer", "minimum": -100, "maximum": 100}
+      },
+      "additionalProperties": false
+    },
+    "skill_weights": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1}},
+    "trait_evidence_weights": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1}},
+    "risk_profile": {"type": "string"},
+    "cost_model": {"type": "string"},
+    "journal_events": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "undo_policy": {"type": "string"},
+    "biography_importance_base": {"type": "integer", "minimum": 0, "maximum": 100},
+    "prerequisites": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

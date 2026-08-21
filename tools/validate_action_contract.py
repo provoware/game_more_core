@@ -7,11 +7,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+RESOURCE_EVENT = "character.resources_changed"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Prüft Actions, Gewichte und Manifest-Referenzen.",
+        description="Prüft Actions, Gewichte, Ressourcen und Manifest-Referenzen.",
         epilog=(
             "Ampel: 🟢 bestanden, 🟡 nicht ausgeführt, 🔴 fehlgeschlagen. "
             "Der Befehl liest nur Manifeste und verändert keine Dateien."
@@ -39,6 +40,28 @@ def validate_weights(actions: list[dict]) -> None:
         )
         assert abs(sum(action["trait_evidence_weights"].values()) - 1.0) < 1e-9, (
             f"Trait-Gewichte != 1: {action_id}"
+        )
+
+
+def validate_resources(manifest: dict, actions: list[dict]) -> None:
+    contract = manifest["resource_contract"]
+    assert contract["event_type"] == RESOURCE_EVENT, "falscher Ressourcen-Journaltyp"
+    assert contract["energy_bounds"] == [0, 100], "Energiegrenzen müssen 0..100 sein"
+    assert contract["stress_bounds"] == [0, 100], "Stressgrenzen müssen 0..100 sein"
+    assert contract["overflow_policy"] == "clamp", "Ressourcen-Overflow muss clamp sein"
+    for action in actions:
+        action_id = action["action_id"]
+        effects = action["resource_effects"]
+        assert set(effects) == {"energy_delta", "stress_delta"}, (
+            f"Ressourcenfelder ungültig: {action_id}"
+        )
+        for field, value in effects.items():
+            assert isinstance(value, int) and not isinstance(value, bool), (
+                f"{field} muss Ganzzahl sein: {action_id}"
+            )
+            assert -100 <= value <= 100, f"{field} außerhalb -100..100: {action_id}"
+        assert RESOURCE_EVENT in action["journal_events"], (
+            f"Ressourcen-Journaltyp fehlt: {action_id}"
         )
 
 
@@ -78,15 +101,16 @@ def main() -> int:
     events = set(journal["event_types"])
 
     try:
-        run_checkpoint("Checkpoint 1/4: Action-Anzahl und IDs", validate_unique_ids, actions)
-        run_checkpoint("Checkpoint 2/4: Gewichte", validate_weights, actions)
-        run_checkpoint("Checkpoint 3/4: Manifest-Referenzen", validate_references, actions, skills, traits, events)
-        run_checkpoint("Checkpoint 4/4: Biografie-Grenzen", validate_biography_range, actions)
+        run_checkpoint("Checkpoint 1/5: Action-Anzahl und IDs", validate_unique_ids, actions)
+        run_checkpoint("Checkpoint 2/5: Gewichte", validate_weights, actions)
+        run_checkpoint("Checkpoint 3/5: Ressourcenvertrag", validate_resources, manifest, actions)
+        run_checkpoint("Checkpoint 4/5: Manifest-Referenzen", validate_references, actions, skills, traits, events)
+        run_checkpoint("Checkpoint 5/5: Biografie-Grenzen", validate_biography_range, actions)
     except (AssertionError, KeyError, TypeError) as error:
         print(f"🔴 ACTION_CONTRACT FAIL: {error}")
         return 1
 
-    print("🟢 ACTION_CONTRACT PASS: 20 Actions, Gewichte/Referenzen/Journaltypen gültig")
+    print("🟢 ACTION_CONTRACT PASS: 20 Actions, Ressourcen/Gewichte/Referenzen/Journaltypen gültig")
     return 0
 
 

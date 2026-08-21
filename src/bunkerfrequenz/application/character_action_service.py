@@ -1,7 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from copy import deepcopy
+from dataclasses import dataclass, replace
+from typing import Any, Mapping
 
+from bunkerfrequenz.application.action_biography import build_action_biography_event
 from bunkerfrequenz.application.action_resolver import ActionResolver, ResolvedAction
 from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceKernel
@@ -15,9 +18,16 @@ class ActionCommitResult:
 
 
 class CharacterActionService:
-    def __init__(self, resolver: ActionResolver, persistence: PersistenceKernel):
+    def __init__(
+        self,
+        resolver: ActionResolver,
+        persistence: PersistenceKernel,
+        *,
+        biography_policy: Mapping[str, Any] | None = None,
+    ):
         self.resolver = resolver
         self.persistence = persistence
+        self.biography_policy = deepcopy(dict(biography_policy)) if biography_policy is not None else None
 
     def execute(
         self,
@@ -36,12 +46,38 @@ class CharacterActionService:
             if persisted is None:
                 raise RuntimeError("Journal enthält Aktion, aber abgeleiteter Zustand fehlt")
             replay_state = CharacterState.from_dict(persisted["character"])
-            replay = ResolvedAction(action["action_id"], action_instance_id, "idempotent_replay", 1.0, 1.0, {}, (), replay_state)
+            replay = ResolvedAction(
+                action["action_id"],
+                action_instance_id,
+                "idempotent_replay",
+                1.0,
+                1.0,
+                {},
+                (),
+                replay_state,
+            )
             return ActionCommitResult(replay, (), True)
 
-        resolved = self.resolver.resolve(character, action, action_instance_id=action_instance_id, world_seed=world_seed, **resolver_kwargs)
+        resolved = self.resolver.resolve(
+            character,
+            action,
+            action_instance_id=action_instance_id,
+            world_seed=world_seed,
+            **resolver_kwargs,
+        )
+        biography_event = build_action_biography_event(action, resolved, self.biography_policy)
+        if biography_event is not None:
+            resolved = replace(
+                resolved,
+                journal_events=resolved.journal_events + (biography_event,),
+            )
+
         events = [
-            {"event_id": f"{action_instance_id}:{index:03d}", "event_type": event["event_type"], "payload": event["payload"]}
+            {
+                "event_id": f"{action_instance_id}:{index:03d}",
+                "event_type": event["event_type"],
+                "payload": event["payload"],
+            }
             for index, event in enumerate(resolved.journal_events, 1)
         ]
         receipt = self.persistence.commit(
