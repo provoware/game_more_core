@@ -1,1 +1,9 @@
-{"schema_version":1,"version":"0.4.0-alpha.1","default_mode":"hybrid","sources":["system_time","confirmed_online_time","monotonic_runtime","game_world_time"],"system_time_is_sole_authority":false,"offline_allowed":["bank_interest","running_costs","completed_training","preplanned_tasks","market_progress","passive_income"],"offline_forbidden":["irreversible_story_loss","permanent_character_damage","automatic_club_destruction","automatic_irreversible_mission_failure"]}
+{
+  "schema_version": 1,
+  "version": "0.4.2-alpha.1",
+  "default_mode": "hybrid",
+  "sources": ["system_time","confirmed_online_time","monotonic_runtime","game_world_time"],
+  "system_time_is_sole_authority": false,
+  "anchor_policy": {"prefer_confirmed_online_time_when_available":true,"persist_last_confirmed_time":true,"persist_monotonic_session_elapsed":true,"backward_system_jump_tolerance_seconds":120,"forward_system_jump_soft_limit_hours":12,"suspicious_jump_behavior":"freeze_passive_catchup_at_last_safe_anchor_until_reconciled"},
+  "offline_catchup": {"max_automatic_days_per_resume":7,"beyond_limit":"summarize_and_require_explicit_continue_for_additional_safe_batches","allowed":["bank_interest","running_costs","completed_training","preplanned_tasks","market_progress","passive_income"],"forbidden":["irreversible_story_loss","permanent_character_damage","automatic_club_destruction","automatic_irreversible_mission_failure"]}
+}

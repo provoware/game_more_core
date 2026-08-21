@@ -1,8 +1,8 @@
 {
   "product": "BUNKERFREQUENZ",
-  "version": "0.4.1-alpha.1",
-  "phase": "0.4.1",
-  "stage": "character-progression-contract",
+  "version": "0.4.4-alpha.1",
+  "phase": "0.4.4",
+  "stage": "gameplay-action-contract",
   "date": "2026-08-21",
   "lineage_id": "e59052dd-e910-4405-9a06-1db621d818e7",
   "schema_versions": {
@@ -10,8 +10,12 @@
     "trait": 1,
     "trait_engine": 1,
     "progression": 1,
-    "journal": 1,
-    "save": 1,
+    "journal": 2,
+    "save": 2,
+    "persistence": 1,
+    "ui": 1,
+    "animation": 1,
+    "action": 1,
     "manifest": 1
   }
 }

@@ -2,6 +2,50 @@
 
 Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
+## [0.4.4-alpha.1] – 2026-08-21
+
+### Hinzugefügt
+- `ACTION_MANIFEST.json` mit 20 datengetriebenen Startaktionen.
+- exakte Skill-XP- und Trait-Evidenz-Gewichte je Aktion.
+- deterministische Action-Resolver-Pipeline, Ergebnisstufen und Anti-Grind-Bezüge.
+- Action-Schema, Validator, Testhülle und `reports/CONTRACT_VALIDATION_0.4.4.json`.
+- Schutzregel für reale Locations: nur legal/autorisiert oder klar fiktionalisiert.
+
+### Geändert
+- README/TODO/Version/Projektstatus auf `0.4.4-alpha.1`.
+- `TEST_MANIFEST.json` um Persistence-, UI- und Action-Vertragsgates erweitert.
+
+### Validierung
+- exakt 20 eindeutige Action-IDs.
+- Skill- und Trait-Evidenz-Gewichte jeder Aktion summieren sich jeweils auf 1,0.
+- Journal-Referenzen liegen im 0.4.2-Katalog; Systemzeit ist kein Zufallsseed.
+- Vertragsbericht = PASS.
+
+## [0.4.3-alpha.1] – 2026-08-21
+
+### Hinzugefügt
+- UI/UX Blueprint mit A1 Control Room, A2 Compact Grid, A3 Cinematic Forge und A4 Ops Deck.
+- UI- und Animation-Manifeste, UI-Schema und ausgelagerte deutsche Character-Forge-Texte.
+
+### Validierung
+- exakt vier Layoutvarianten innerhalb derselben Designfamilie.
+- Farbe nie als alleinige Information; Tastatur, High-Contrast und Reduced-Motion vorgesehen.
+- Animationen blockieren keinen Game-State und besitzen statische Fallbacks.
+
+## [0.4.2-alpha.1] – 2026-08-21
+
+### Hinzugefügt
+- exakter Persistence Contract mit 39 Journal-Eventtypen, Transaktionszuständen und Commit-Invariante.
+- Save-/Journal-Schema v2, Snapshot-/Undo-/Crash-/Recovery-Regeln und Migration v1 → v2.
+- robuste Zeitanker- und Offline-Catch-up-Regeln.
+
+### Geändert
+- Autosave auf exakt 60 Sekunden, dirty-only und kritische Flush-Punkte konkretisiert.
+
+### Validierung
+- Eventtypen eindeutig; Snapshot-Schwellen numerisch fest.
+- Migration nicht destruktiv und mit Snapshot/Backup/Validierung/Rollback.
+
 ## [0.4.1-alpha.1] – 2026-08-21
 
 ### Hinzugefügt

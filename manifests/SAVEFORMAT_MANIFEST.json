@@ -1,1 +1,14 @@
-{"schema_version":1,"version":"0.4.0-alpha.1","autosave_interval_seconds":60,"sections":["meta","player","characters","crew","world","missions","clubs","economy","market","ranking","journal","snapshots","sync","recovery"],"atomic_write_required":true,"checksum_required":true,"snapshot_policy":{"minutes":5,"journal_events":50,"before_migration":true,"before_critical_sync":true,"before_major_economy_transaction":true}}
+{
+  "schema_version": 2,
+  "version": "0.4.2-alpha.1",
+  "autosave_interval_seconds": 60,
+  "dirty_write_only": true,
+  "sections": ["meta","player","characters","crew","world","missions","clubs","economy","market","ranking","journal","snapshots","sync","recovery"],
+  "atomic_write_required": true,
+  "checksum_algorithm": "sha256",
+  "write_pipeline": ["validate","serialize_to_temp","flush","fsync_temp","verify_checksum","atomic_replace","fsync_parent","journal_commit_marker"],
+  "snapshot_policy_ref": "manifests/PERSISTENCE_MANIFEST.json",
+  "journal_ref": "manifests/JOURNAL_MANIFEST.json",
+  "recovery_ref": "manifests/PERSISTENCE_MANIFEST.json",
+  "save_meta_required": ["save_id","schema_version","game_version","content_version","created_at","last_saved_at","last_confirmed_time","active_player","active_character","journal_head","snapshot_head","checksum"]
+}

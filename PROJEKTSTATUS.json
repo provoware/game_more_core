@@ -1,13 +1,13 @@
 {
   "project": "BUNKERFREQUENZ",
-  "version": "0.4.1-alpha.1",
-  "status": "character_progression_contract_defined_and_simulated",
-  "current_iteration": "0.4.1",
+  "version": "0.4.4-alpha.1",
+  "status": "foundation_contracts_0_4_complete",
+  "current_iteration": "0.4.4",
   "last_validated_release": null,
-  "validation_reference": "reports/PROGRESSION_SIMULATION_0.4.1.json",
-  "next_iteration": "0.4.2",
-  "next_goal": "Persistence Contract konkretisieren",
+  "validation_reference": "reports/CONTRACT_VALIDATION_0.4.4.json",
+  "next_iteration": "0.5",
+  "next_goal": "Headless Character Core + Action Resolver + Persistence Kernel implementieren",
   "runtime_code": false,
   "developer_tool_code": true,
-  "updated_at": "2026-08-21T15:15:00+02:00"
+  "updated_at": "2026-08-21T15:42:00+02:00"
 }

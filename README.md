@@ -1,8 +1,8 @@
 # BUNKERFREQUENZ
 
-**Version:** `0.4.1-alpha.1`  
-**Phase:** 0.4.1 – Character Progression Contract  
-**Status:** Character-Forge-Balancevertrag definiert und deterministisch simuliert; noch kein Spiel-Laufzeitcode
+**Version:** `0.4.4-alpha.1`  
+**Phase:** 0.4.4 – Gameplay Action Contract  
+**Status:** 0.4-Foundationverträge für Progression, Persistenz, UI/UX und Gameplay-Aktionen definiert; noch kein Spiel-Laufzeitcode
 
 BUNKERFREQUENZ ist als modular erweiterbares Techno-/FreeTekno-Crew-RPG mit Charakterentwicklung, Eventmanagement, Club-/Bunker-Aufbau, Wirtschaft und späterer asynchroner Synchronisation geplant.
 
@@ -28,6 +28,9 @@ Siehe:
 - [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md)
 - [`docs/CHARACTER_FORGE.md`](docs/CHARACTER_FORGE.md)
 - [`docs/PROGRESSION_CONTRACT.md`](docs/PROGRESSION_CONTRACT.md)
+- [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
+- [`docs/UI_UX_BLUEPRINT.md`](docs/UI_UX_BLUEPRINT.md)
+- [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md)
 - [`docs/DATENMODELL.md`](docs/DATENMODELL.md)
 - [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md)
 
@@ -72,6 +75,30 @@ python3 tools/simulate_characters/progression_simulator.py \
 
 Validierter Referenzlauf: **1.000 Charaktere × 720 Spieltage**, alle sechs Balance-Gates bestanden.
 
+## Persistence 0.4.2
+
+- 39 katalogisierte Journal-Eventtypen
+- Save-/Journal-Schema v2 mit Transaktions-ID, Sequenz und Payload
+- Autosave exakt alle 60 Sekunden, dirty-only plus kritische Flush-Punkte
+- ein sicherer Undo-Schritt über Kompensationsereignisse
+- Snapshot spätestens nach 5 Minuten oder 50 bestätigten Ereignissen
+- definierte Crash-/Korruptionsmatrix, Quarantäne, Recovery Receipt und Migration v1 → v2
+- Hybridzeit mit Zeitanker und begrenztem Offline-Catch-up
+
+## Character Forge UI/UX 0.4.3
+
+Vier Varianten innerhalb derselben Industrial-Brutalist-Komponenten:
+- **A1 Control Room** – Desktop-Gesamtübersicht
+- **A2 Compact Grid** – hohe Informationsdichte
+- **A3 Cinematic Forge** – Charakteridentität und Level-/Trait-Inszenierung
+- **A4 Ops Deck** – stärkste intuitive Workflow-Führung
+
+Gemeinsam: klare Kontrastsemantik, maximal drei Primäraktionen, ausgelagerte UI-Texte, Tastaturnavigation, High-Contrast, Reduced-Motion und nicht blockierende Animationen.
+
+## Gameplay Action Contract 0.4.4
+
+20 datengetriebene Startaktionen verbinden Handlung direkt mit Character Forge. Jede Aktion definiert Voraussetzungen, Dauer, Kostenmodell, Risiko, Skill-XP-Gewichte, Trait-Evidenz, Journal-Bundle, Undo-Regel und Biografie-Relevanz. Zufall ist seedbar und reproduzierbar; die Systemzeit ist kein Zufallsseed.
+
 ## TODO – aktueller Entwicklungsstand
 
 - [x] 0.4.0 Architekturvertrag und Character-Forge-Foundation
@@ -80,9 +107,10 @@ Validierter Referenzlauf: **1.000 Charaktere × 720 Spieltage**, alle sechs Bala
 - [x] **0.4.1 Konfliktregeln:** Soft-Konflikte ohne harte Klassenbindung
 - [x] **0.4.1 Progression Simulator:** deterministisch, Standardbibliothek, Balance-Gates
 - [x] **0.4.1 Referenzsimulation:** 1.000 × 720 Tage, Seed 90409
-- [ ] **0.4.2 Persistence Contract:** konkrete Transaktionszustände, Crash-Matrix, Migrationen und Recovery-Fälle
-- [ ] **0.4.3 UI/UX Blueprint:** vier Industrial-Brutalist-Entwürfe für Character Forge, Skills, Biografie und Ranking
-- [ ] 0.5 Character Core Implementation erst nach Abnahme der 0.4-Verträge
+- [x] **0.4.2 Persistence Contract:** Transaktionen, Autosave, Undo, Snapshots, Crash/Recovery und Migration
+- [x] **0.4.3 UI/UX Blueprint:** vier Industrial-Brutalist-Entwürfe, Character Forge, Ranking und Animationen
+- [x] **0.4.4 Gameplay Action Contract:** 20 Aktionen mit Skill-/Trait-/Journal-Zuordnung
+- [ ] **0.5 Character Core Implementation:** zuerst headless Character/Action/Persistence-Kern, danach UI-Anbindung
 
 Die kanonische Arbeitsliste steht zusätzlich in [`TODO.md`](TODO.md).
 

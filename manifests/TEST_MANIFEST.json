@@ -1,10 +1,16 @@
 {
   "schema_version": 1,
-  "version": "0.4.1-alpha.1",
+  "version": "0.4.4-alpha.1",
   "principle": "risk_based_targeted_validation",
   "foundation_required_checks": ["json_syntax","unique_ids","character_base_value_equality","trait_count_165","manifest_schema_consistency"],
   "progression_0_4_1_checks": ["trait_engine_template_count_15","trait_tier_thresholds_monotonic","specialization_rules_present","deterministic_simulator","generalist_not_forced_into_specialization","specialists_form_specialization","specialists_develop_deep_traits","generalist_remains_broad_not_deep","tier5_not_mass_unlocked","level_progression_not_capped"],
   "reference_simulation": {"runs":1000,"days":720,"seed":90409,"report":"reports/PROGRESSION_SIMULATION_0.4.1.json"},
-  "unit_test_command": "python3 -m unittest tests/simulation/test_progression_simulator.py",
-  "future_release_checks": ["unit","integration","save_load","undo","recovery","migration","time","sync"]
+  "persistence_0_4_2_checks": ["journal_event_types_unique","transaction_states_complete","autosave_60_seconds","snapshot_thresholds_defined","migration_non_destructive","recovery_order_defined"],
+  "ui_0_4_3_checks": ["exactly_four_variants","color_not_sole_information","reduced_motion_fallbacks","visible_text_externalized"],
+  "action_0_4_4_checks": ["action_count_20","action_ids_unique","skill_weights_sum_1","trait_weights_sum_1","journal_event_refs_valid","deterministic_seed_contract","real_location_access_guard"],
+  "unit_test_commands": [
+    "python3 -m unittest tests/simulation/test_progression_simulator.py",
+    "python3 -m pytest tests/gameplay/test_action_contract.py"
+  ],
+  "future_release_checks": ["unit","integration","save_load","undo","recovery","migration","time","sync","ui_smoke","action_resolution"]
 }

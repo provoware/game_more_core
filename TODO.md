@@ -36,22 +36,36 @@
 
 ## 0.4.2 – Persistence Contract
 
-- [ ] Journal-Eventtypen vollständig katalogisieren
-- [ ] Snapshot-Trigger präzisieren
-- [ ] Undo-/Kompensationsregeln je Eventtyp definieren
-- [ ] Crash-/Korruptionsmatrix definieren
-- [ ] Save-Migration v1 vorbereiten
-- [ ] Zeitanker-/Offline-Regeln konkretisieren
+- [x] 39 Journal-Eventtypen vollständig katalogisiert
+- [x] Snapshot-Trigger präzisiert
+- [x] Undo-/Kompensationsregeln je Ereignisgruppe definiert
+- [x] Crash-/Korruptionsmatrix definiert
+- [x] Save-/Journal-Schema v2 und Migration v1 → v2 vorbereitet
+- [x] Zeitanker-/Offline-Regeln konkretisiert
+- [x] 60-Sekunden-Autosave dirty-only und kritische Flush-Punkte festgelegt
 
 ## 0.4.3 – UI/UX Blueprint
 
-- [ ] vier klar unterschiedliche Industrial-Brutalist-Layouts auf einem Entwurfsbild
-- [ ] Character Overview
-- [ ] Skills/Traits
-- [ ] dynamische Biografie
-- [ ] Ranking/Network
-- [ ] Level-/Skill-Up-Animationen
-- [ ] Kontrast-/Fokusregeln
+- [x] vier klar unterschiedliche Industrial-Brutalist-Layouts spezifiziert; gemeinsames Entwurfsbild erzeugen
+- [x] Character Overview
+- [x] Skills/Traits
+- [x] dynamische Biografie
+- [x] Ranking/Network
+- [x] Level-/Skill-/Trait-/Spezialisierungs-Animationen
+- [x] Kontrast-/Fokusregeln
+- [x] Tastatur, High-Contrast, Reduced-Motion und statische Fallbacks
+- [x] sichtbare UI-Texte ausgelagert
+
+## 0.4.4 – Gameplay Action Contract
+
+- [x] 20 spielbare Startaktionen katalogisiert
+- [x] Skill-XP- und Trait-Evidenz-Gewichte je Aktion exakt definiert
+- [x] Voraussetzungen, Dauer, Risiko, Kosten und Resolver-Pipeline
+- [x] Journal-/Undo-/Biografie-Zuordnung je Aktion
+- [x] deterministischer Zufallsvertrag ohne Systemzeit-Seed
+- [x] Schutzregel für reale Locations: legal/autorisiert oder fiktionalisiert
+- [x] Action-Contract-Validator + Testhülle
+- [x] maschinenlesbarer Vertragsbericht PASS
 
 ## Danach
 

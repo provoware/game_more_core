@@ -1,1 +1,6 @@
-{"schema_version":1,"version":"0.4.0-alpha.1","migrations":[],"policy":"schema_change_requires_tested_migration_or_explicit_documented_break"}
+{
+  "schema_version": 1,
+  "version": "0.4.2-alpha.1",
+  "policy": {"never_migrate_in_place_without_backup":true,"snapshot_before_migration":true,"validate_before_and_after":true,"rollback_on_failure":true,"migration_receipt_required":true},
+  "paths": [{"migration_id":"save_v1_to_v2","from":{"save":1,"journal":1},"to":{"save":2,"journal":2},"operations":["add_transaction_id_to_events","add_sequence_to_events","wrap_event_values_in_payload_when_needed","preserve_original_event_ids_and_hash_evidence_in_migration_receipt","rebuild_hash_chain_for_migrated_copy"],"status":"contract_defined_not_runtime_implemented"}]
+}
