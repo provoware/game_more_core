@@ -115,6 +115,27 @@
     "runtime_core_remote_gate",
     "presentation_core_remote_gate"
   ],
+  "presentation_0_6_3_checks": [
+    "exactly_eight_shared_components",
+    "component_inputs_detached",
+    "biography_filter_applied_in_component_payload",
+    "feedback_dismiss_applied_in_component_payload",
+    "profile_editor_existing_dispatcher_contract_only",
+    "optional_sections_do_not_invent_data",
+    "reduced_motion_component_mode_only",
+    "a4_workflow_order_from_ui_manifest",
+    "a4_accessibility_values_from_ui_manifest",
+    "a4_max_three_primary_actions",
+    "a4_fourth_primary_action_rejected",
+    "a4_primary_commands_dispatcher_ready",
+    "a4_untrusted_command_fields_rejected",
+    "a4_capabilities_fail_closed",
+    "a4_visible_text_keys_catalogued",
+    "a4_inputs_detached",
+    "a4_profile_command_executes_through_existing_dispatcher",
+    "runtime_core_remote_gate",
+    "presentation_core_remote_gate"
+  ],
   "unit_test_commands": [
     "python3 -m unittest tests/simulation/test_progression_simulator.py",
     "python3 -m pytest tests/gameplay/test_action_contract.py",
