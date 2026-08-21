@@ -1,5 +1,17 @@
 # TODO – BUNKERFREQUENZ
 
+## 0.6 – A4 Ops Deck
+
+- [x] gemeinsame schreibgeschützte Character-Projektion implementieren
+- [x] lokalen Presentation-Zustand und acht gemeinsame Komponenten anbinden
+- [x] A4-Workflow in der Reihenfolge Ziel, Aktion, Ergebnis, Entwicklung, nächstes Ziel komponieren
+- [x] höchstens drei primäre Aktionen und aktuellen Hauptfokus absichern
+- [x] Profil, Undo und Spielaktionen ausschließlich über den Command-Adapter führen
+- [x] Zielgröße, Tastaturfokus, mehrfache semantische Hinweise und High Contrast abbilden
+- [x] gezielte A4-Presentation-Tests ergänzen
+- [ ] A3 in einer getrennten Iteration auf dieselbe Projektion und dieselben Komponenten setzen
+- [ ] Ranking-/Network-Daten erst nach einem eigenen Datenvertrag anbinden
+
 ## 0.4 – Foundation
 
 - [x] Architekturvertrag

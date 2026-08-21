@@ -5,6 +5,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ## Unveröffentlicht
 
 ### Hinzugefügt
+- A4 Ops Deck ist als headless Presentation-Modell auf der gemeinsamen Character-Projektion, lokalem Presentation-Zustand und den acht vereinbarten Komponenten umgesetzt.
+- Der Presentation-Command-Adapter führt Profil-, Undo- und Spielaktionen über die vorhandenen Application-Services und baut erst nach bestätigten Ergebnissen eine neue Projektion mit Feedback.
+- Gezielte A4-Tests sichern Workflow- und Tastaturreihenfolge, Fokusmodell, drei primäre Aktionen sowie den bestätigten Command-zu-Projektion-Weg.
 - Zusätzliche Spitznamen sind im Character-State serialisierbar und über den bestehenden Profilservice inklusive Undo und Recovery editierbar.
 - Ein Ordner-/Dateiindex, ein übergreifendes Spielschema und verbindliche Ablageregeln trennen Basistools, Dokumentation und maschinenlesbare Verträge.
 - Der Presentation-Vertrag 0.6 legt die gemeinsame, schreibgeschützte Character-Projektion, erlaubte UI-Commands, Textschlüsselgrenzen und Komponenten für A4 Ops Deck und A3 Cinematic Forge fest.
@@ -14,8 +17,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Der Action-Vertragsprüfer meldet vier gezielte Checkpoints per Ampel und erklärt Aufruf sowie Ampelbedeutung über `--help`.
 
 ### Bewusst offen
-- Die grafische Profilanbindung folgt weiterhin gemeinsam mit A4 Ops Deck und A3 Cinematic Forge in 0.6.
-- Die nächste kleine Iteration implementiert zunächst nur die Character-Projektion samt gezieltem Test; UI-Framework und Command-Adapter bleiben offen.
+- A3 sowie Ranking-, Network- und Sync-Daten bleiben ausdrücklich einer Folgeiteration vorbehalten.
+- Eine grafische Framework-Anbindung bleibt offen; A4 liegt zunächst als testbares headless Presentation-Modell vor.
+- Die nächste kleine Iteration kann A3 getrennt auf die nun vorhandene gemeinsame Projektion und die acht Komponenten setzen.
 
 ## [0.5.2-alpha.1] – 2026-08-21
 
