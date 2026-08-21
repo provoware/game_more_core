@@ -94,7 +94,11 @@
     "full_loop_pending": ["resource_effects", "biography", "autosave", "undo", "reload"]
   },
   "repository_repair": {
-    "status": "recovered",
+    "status": "recovered_and_remote_validated",
+    "repair_pull_request": 33,
+    "validated_implementation_head": "20173007845762147c68f024c6f537a9fe864643",
+    "runtime_core_workflow_run": 32521168502,
+    "presentation_core_workflow_run": 32521168460,
     "invalid_merge_pull_request": 32,
     "invalid_merge_commit": "5800d056ec961620ae4d577a2b55e2bc22ca5550",
     "invalid_runtime_core_run": 32519874996,
@@ -115,5 +119,5 @@
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T21:44:00+02:00"
+  "updated_at": "2026-08-21T21:58:00+02:00"
 }
