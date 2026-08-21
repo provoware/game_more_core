@@ -18,8 +18,8 @@ Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Je
 10. CHANGELOG bei fachlicher oder verbindlicher Prozessänderung aktualisieren.
 11. Version nur erhöhen, wenn eine neue freigegebene Entwicklungsstufe entsteht.
 12. Erst committen und mergen, wenn der geplante Scope und seine Nachweise zusammenpassen.
-13. eine sinnvolle hilfreiche optimierung pro iteration eines der bereiche : Hilfe im Tool, Gameplay oder Codequalität und Fehlerhandling.
-14. führe pro iteration eine erweiterungsidee oder späterer verbesserung anhängend in einer info datei. mit details und begründung.
+13. Pro Iteration eine sinnvolle, hilfreiche Optimierung in mindestens einem der Bereiche Hilfe im Tool, Gameplay, Codequalität oder Fehlerhandling prüfen und begründet umsetzen oder als Folgepunkt festhalten.
+14. Pro Iteration eine konkrete spätere Erweiterungs-/Verbesserungsidee mit Nutzen und Begründung in der zuständigen Info-Datei ergänzen.
 
 ## Pflichtangaben je Iteration
 
@@ -47,6 +47,11 @@ Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Je
 - Ein PR-Head muss den aktuellen `main` enthalten; veraltete Branch-Basen werden vor Merge aktualisiert oder rebased.
 - Versionsgebundene alte Feature-Branches unterhalb der aktiven Iteration sind keine gültige Merge-Quelle nach `main`.
 - `repository-health` schützt Struktur und Informationskonsistenz; fachliche Runtime-/Presentation-Gates bleiben zusätzlich verpflichtend.
+- **Normale PRs nach `main` werden nicht direkt über Merge-Button/API gemergt.** Nach grünen Gates wird als eigener PR-Kommentar exakt `/safe-merge` verwendet.
+- `/safe-merge` prüft Benutzerberechtigung, aktuellen `main`, exakten PR-Head, alle drei grünen Gates, Mergefähigkeit und ungelöste Review-Threads und validiert den erzeugten Merge-Commit erneut.
+- Agenten und Automationen dürfen für normale Feature-/Dokumentations-PRs keinen direkten `merge_pull_request`-Weg verwenden, wenn `/safe-merge` verfügbar ist.
+- Security-Bootstrap-PRs, die den Merge-Guard selbst verändern, sind absichtlich vom normalen `/safe-merge` ausgeschlossen. Sie benötigen einen expliziten Audit, alle drei grünen Gates und eine dokumentierte Bootstrap-Ausnahme.
+- Jeder normale Push/Merge nach `main` wird zusätzlich durch `Main Integrity` auf PR-/CI-Provenienz geprüft. Ein Fehler erzeugt einen blockierenden Integrity-Incident.
 - Zielpolicy für `main` ist in `manifests/REPOSITORY_GUARD_MANIFEST.json` und `docs/REPOSITORY_GUARD.md` definiert. Eine nicht technisch aktivierte GitHub-Branch-Regel darf nie als aktiv behauptet werden.
 
 ## Reproduzierbare Updates
@@ -124,3 +129,5 @@ Offene Punkte werden als prüfbare Aufgaben in `TODO.md` formuliert.
 - keine konkurrierenden Implementierungen derselben kanonischen Datei parallel mergen
 - keinen bekannten roten oder fehlenden Required-Check nach `main` übernehmen
 - keinen Repository-Guard durch alten Branch, Force-Ref oder ungeprüften Direktmerge umgehen
+- keinen normalen PR direkt mergen, solange `/safe-merge` verfügbar ist
+- keine direkten Feature-Pushes nach `main`
