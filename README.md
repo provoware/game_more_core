@@ -19,7 +19,7 @@
 | Datei finden | [Ordner- und Dateiindex](docs/REPOSITORY_INDEX.md) |
 | Tool oder Dokument richtig ablegen | [Repository-Regeln](docs/REPOSITORY_RULES.md) |
 | Architektur prüfen | [Architekturvertrag](docs/ARCHITEKTURVERTRAG.md) |
-| Weiterarbeiten | [Entwicklerhandbuch](docs/ENTWICKLERHANDBUCH.md) · [TODO](TODO.md) |
+| Weiterarbeiten | [Presentation-Vertrag 0.6](docs/PRESENTATION_CONTRACT_0.6.md) · [Entwicklerhandbuch](docs/ENTWICKLERHANDBUCH.md) · [TODO](TODO.md) |
 | Änderungen verfolgen | [Changelog](CHANGELOG.md) |
 
 ## Aktueller Stand
@@ -114,6 +114,7 @@ Lokaler Referenzstand: **27/27 Runtime-/Recovery-Tests bestanden**. Der versioni
 - [Character Core](docs/CHARACTER_CORE_0.5.md)
 - [Persistence](docs/PERSISTENCE_CONTRACT.md) und [Recovery](docs/RECOVERY_0.5.1.md)
 - [UI/UX Blueprint](docs/UI_UX_BLUEPRINT.md)
+- [Presentation-Vertrag 0.6](docs/PRESENTATION_CONTRACT_0.6.md)
 - [Datenmodell](docs/DATENMODELL.md)
 
 ## Arbeitsweise

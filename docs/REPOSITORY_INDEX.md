@@ -45,6 +45,7 @@ Dieser Index beantwortet: **Wo liegt was?** Er beschreibt den versionierten Stan
 | `docs/PERSISTENCE_CONTRACT.md` | Journal-, Save- und Transaktionsregeln |
 | `docs/RECOVERY_0.5.1.md` | Snapshot, Wiederherstellung und Undo |
 | `docs/UI_UX_BLUEPRINT.md` | spätere Character-Forge-Oberfläche |
+| `docs/PRESENTATION_CONTRACT_0.6.md` | gemeinsame Projektion, UI-Aktionen und Einsteigerablauf für A3/A4 |
 | `docs/DATENMODELL.md` | fachliche Datenobjekte und Beziehungen |
 | `docs/ENTWICKLERHANDBUCH.md` | Einstieg, Versionierung und Prüfstrategie |
 | `docs/assets/` | eingebundene visuelle Referenzen |

@@ -113,8 +113,10 @@
 
 ## 0.6 – Character Forge Runtime
 
-- [ ] **Nächste Iteration – Presentation-Schnitt festlegen:** Zustandsprojektion, UI-Aktionen und Textschlüssel zwischen Runtime-Kern und gemeinsamer A4/A3-Komponentenschicht spezifizieren
-- [ ] **Abnahme der nächsten Iteration:** dokumentierter Datenvertrag deckt Overview, Skills, Traits, Spezialisierung und Biografie ab, ohne UI-Direktzugriff auf Domain-Zustand
+- [x] Presentation-Schnitt festgelegt: Zustandsprojektion, UI-Aktionen und Textschlüssel zwischen Runtime-Kern und gemeinsamer A4/A3-Komponentenschicht spezifiziert
+- [x] Datenvertrag deckt Overview, Skills, Traits, Spezialisierung und Biografie ab, ohne UI-Direktzugriff auf Domain-Zustand
+- [ ] **Nächste Iteration – Character-Projektion implementieren:** reine Zustandsprojektion nach `docs/PRESENTATION_CONTRACT_0.6.md` samt gezieltem Unit-Test anlegen
+- [ ] **Abnahme der nächsten Iteration:** dieselbe Eingabe erzeugt dieselbe, vom Domain-Objekt unabhängige Projektion; Sortierung, Fortschrittsgrenzen und Textschlüssel sind gezielt getestet
 - [ ] A4 Ops Deck als normalen Hauptworkflow auf der gemeinsamen Presentation-Schicht implementieren
 - [ ] A3 Cinematic Forge als Charakter-/Entwicklungsansicht aus denselben Komponenten implementieren
 - [ ] editierbare Namen, Alias, zusätzliche Spitznamen und Motto anbinden
@@ -126,4 +128,5 @@
 
 - kein grafisches Framework und keine neue Abhängigkeit auswählen
 - keine Domain-, Persistence- oder Sync-Logik ändern
+- noch keinen Command-Adapter implementieren
 - keine A3-/A4-Parallelimplementierungen beginnen, bevor der gemeinsame Presentation-Vertrag abgenommen ist
