@@ -35,6 +35,23 @@ class RepositoryGuardManifestTest(unittest.TestCase):
         )
         self.assertEqual(set(safety["allowed_actor_permissions"]), {"admin", "maintain", "write"})
 
+    def test_safe_merge_protects_its_own_security_boundary(self):
+        safety = self.manifest["merge_safety"]
+        protected = set(safety["protected_guard_paths"])
+        self.assertTrue(
+            {
+                ".github/workflows/runtime-core.yml",
+                ".github/workflows/presentation-core.yml",
+                ".github/workflows/repository-health.yml",
+                ".github/workflows/safe-merge.yml",
+                ".github/workflows/main-integrity.yml",
+                "tools/repository_health.py",
+                "tools/github_merge_guard.py",
+                "manifests/REPOSITORY_GUARD_MANIFEST.json",
+                "tests/repository/",
+            }.issubset(protected)
+        )
+
     def test_safe_merge_workflow_uses_trusted_main_and_exact_command(self):
         safety = self.manifest["merge_safety"]
         text = (ROOT / safety["safe_merge_workflow"]).read_text(encoding="utf-8")
@@ -42,6 +59,8 @@ class RepositoryGuardManifestTest(unittest.TestCase):
         self.assertIn("github.event.comment.body == '/safe-merge'", text)
         self.assertIn("ref: main", text)
         self.assertIn("tools/github_merge_guard.py merge-pr", text)
+        self.assertIn("Block self-modifying guard changes", text)
+        self.assertIn("protected_guard_paths", text)
         self.assertIn("pull-requests: write", text)
         self.assertNotIn("pull_request_target:", text)
 
