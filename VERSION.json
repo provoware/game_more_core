@@ -1,12 +1,13 @@
 {
   "product": "BUNKERFREQUENZ",
-  "version": "0.4.4-alpha.1",
-  "phase": "0.4.4",
-  "stage": "gameplay-action-contract",
+  "version": "0.5.0-alpha.1",
+  "phase": "0.5",
+  "stage": "headless-character-core",
   "date": "2026-08-21",
   "lineage_id": "e59052dd-e910-4405-9a06-1db621d818e7",
   "schema_versions": {
     "character": 1,
+    "character_state": 1,
     "trait": 1,
     "trait_engine": 1,
     "progression": 1,
@@ -16,6 +17,7 @@
     "ui": 1,
     "animation": 1,
     "action": 1,
+    "runtime": 1,
     "manifest": 1
   }
 }

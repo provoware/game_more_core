@@ -2,6 +2,36 @@
 
 Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
+## [0.5.0-alpha.1] – 2026-08-21
+
+### Hinzugefügt
+- erster headless Runtime-Kern unter `src/bunkerfrequenz/` ohne externe Python-Abhängigkeiten.
+- `CharacterState` mit identischer Startbasis, Skills, Trait-Fortschritt und Spezialisierung.
+- deterministischer Action Resolver mit Skill-/Risiko-Einfluss und Trait-Evidenzquellen.
+- `CharacterActionService` als Application-Grenze zwischen Domain und Persistenz.
+- Persistence Kernel mit Journal Schema v2, monotone Sequenz, SHA-256-Kette, `fsync`, atomaren State-/Meta-Writes und Idempotenzprüfung.
+- `RUNTIME_MANIFEST.json`, `character_state.schema.json` und `CHARACTER_CORE_0.5.md`.
+- gezielte Runtime-/Integrationstests sowie GitHub-Actions-Workflow `runtime-core.yml`.
+- übersichtlichere visuelle Referenz `docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp`.
+- versionierter Runtime-Abnahmebericht `reports/RUNTIME_VALIDATION_0.5.0.json`.
+
+### Geändert
+- Projektversion auf `0.5.0-alpha.1`.
+- README, TODO, Projektstatus und Projektmanifest auf den ersten Runtime-Stand aktualisiert.
+- UI/UX Blueprint und UI-Manifest mit der kanonischen visuellen Referenz verknüpft.
+- Agentenregeln um Journal-Katalogtreue für Runtime-Events präzisiert.
+
+### Validierung
+- `compileall` für `src/` bestanden.
+- 14/14 gezielte Runtime-/Integrationstests bestanden.
+- 200 aufeinanderfolgende Action/Commit/Reload-Schritte ohne Journal- oder Zustandsfehler.
+- korrupter Journal-Tail wird zuverlässig erkannt.
+- gleiche Event-ID mit gleichem Inhalt ist idempotent; abweichender Inhalt wird abgelehnt.
+
+### Bewusst offen
+- automatische Recovery/Quarantäne nach erkanntem Fehler, Snapshot-Replay und Fault-Injection folgen in 0.5.1.
+- noch keine grafische Game-Runtime, Telegram- oder Wirtschaftsimplementierung.
+
 ## [0.4.4-alpha.1] – 2026-08-21
 
 ### Hinzugefügt

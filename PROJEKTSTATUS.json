@@ -1,13 +1,13 @@
 {
   "project": "BUNKERFREQUENZ",
-  "version": "0.4.4-alpha.1",
-  "status": "foundation_contracts_0_4_complete",
-  "current_iteration": "0.4.4",
+  "version": "0.5.0-alpha.1",
+  "status": "headless_character_action_persistence_core_validated",
+  "current_iteration": "0.5",
   "last_validated_release": null,
-  "validation_reference": "reports/CONTRACT_VALIDATION_0.4.4.json",
-  "next_iteration": "0.5",
-  "next_goal": "Headless Character Core + Action Resolver + Persistence Kernel implementieren",
-  "runtime_code": false,
+  "validation_reference": "reports/RUNTIME_VALIDATION_0.5.0.json",
+  "next_iteration": "0.5.1",
+  "next_goal": "Recovery, Snapshot-Replay und Fault-Injection implementieren",
+  "runtime_code": true,
   "developer_tool_code": true,
-  "updated_at": "2026-08-21T15:42:00+02:00"
+  "updated_at": "2026-08-21T16:09:00+02:00"
 }

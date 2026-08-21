@@ -1,10 +1,16 @@
 # BUNKERFREQUENZ
 
-**Version:** `0.4.4-alpha.1`  
-**Phase:** 0.4.4 – Gameplay Action Contract  
-**Status:** 0.4-Foundationverträge für Progression, Persistenz, UI/UX und Gameplay-Aktionen definiert; noch kein Spiel-Laufzeitcode
+**Version:** `0.5.0-alpha.1`  
+**Phase:** 0.5 – Headless Character Core  
+**Status:** Erster Character-/Action-/Persistence-Laufzeitkern implementiert und gezielt validiert; grafische Game-UI, Telegram und Wirtschaft bleiben bewusst nachgelagert.
 
 BUNKERFREQUENZ ist als modular erweiterbares Techno-/FreeTekno-Crew-RPG mit Charakterentwicklung, Eventmanagement, Club-/Bunker-Aufbau, Wirtschaft und späterer asynchroner Synchronisation geplant.
+
+## System-/UI-Blueprint
+
+![BUNKERFREQUENZ System- und Character-Forge-Blueprint](docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp)
+
+Der übersichtlichere Blueprint ist ab 0.5 die kanonische visuelle Referenz für Persistence, Character Forge und Gameplay Actions. Detailregeln bleiben weiterhin in den maschinenlesbaren Manifesten und den Fach-Dokumenten verbindlich.
 
 ## Verbindliche Kernentscheidungen
 
@@ -31,6 +37,7 @@ Siehe:
 - [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
 - [`docs/UI_UX_BLUEPRINT.md`](docs/UI_UX_BLUEPRINT.md)
 - [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md)
+- [`docs/CHARACTER_CORE_0.5.md`](docs/CHARACTER_CORE_0.5.md)
 - [`docs/DATENMODELL.md`](docs/DATENMODELL.md)
 - [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md)
 
@@ -99,6 +106,29 @@ Gemeinsam: klare Kontrastsemantik, maximal drei Primäraktionen, ausgelagerte UI
 
 20 datengetriebene Startaktionen verbinden Handlung direkt mit Character Forge. Jede Aktion definiert Voraussetzungen, Dauer, Kostenmodell, Risiko, Skill-XP-Gewichte, Trait-Evidenz, Journal-Bundle, Undo-Regel und Biografie-Relevanz. Zufall ist seedbar und reproduzierbar; die Systemzeit ist kein Zufallsseed.
 
+## Headless Character Core 0.5
+
+Der erste Laufzeitkern verwendet ausschließlich die Python-Standardbibliothek:
+
+- `CharacterState` mit identischer Startbasis und stabiler technischer ID
+- Skill-XP, Skill-Level, Gesamtlevel, Trait-Evidenz und Trait-Stufen
+- Spezialisierung ohne erzwungene Startklasse und mit XP-Konsequenzen
+- deterministischer `ActionResolver`, bei dem Skills und Risikoprofil das Ergebnis beeinflussen
+- `CharacterActionService` als Grenze zwischen Domain und Persistenz
+- Journal Schema v2 mit monotone Sequenz, SHA-256-Hashkette und Event-Katalogprüfung
+- `fsync` vor abgeleitetem State-Write sowie atomare State-/Meta-Dateien
+- idempotente Event-IDs; abweichende Doppelereignisse werden abgewiesen
+- 60-Sekunden-Autosave-Regel auf monotoner Laufzeitbasis
+
+Gezielte Prüfung:
+
+```bash
+PYTHONPATH=src python3 -m compileall -q src
+PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
+```
+
+Referenzstand: **14/14 Runtime-Tests PASS** und **200 Action/Commit/Reload-Schritte** ohne Journalfehler. Der Bericht liegt in [`reports/RUNTIME_VALIDATION_0.5.0.json`](reports/RUNTIME_VALIDATION_0.5.0.json).
+
 ## TODO – aktueller Entwicklungsstand
 
 - [x] 0.4.0 Architekturvertrag und Character-Forge-Foundation
@@ -110,7 +140,8 @@ Gemeinsam: klare Kontrastsemantik, maximal drei Primäraktionen, ausgelagerte UI
 - [x] **0.4.2 Persistence Contract:** Transaktionen, Autosave, Undo, Snapshots, Crash/Recovery und Migration
 - [x] **0.4.3 UI/UX Blueprint:** vier Industrial-Brutalist-Entwürfe, Character Forge, Ranking und Animationen
 - [x] **0.4.4 Gameplay Action Contract:** 20 Aktionen mit Skill-/Trait-/Journal-Zuordnung
-- [ ] **0.5 Character Core Implementation:** zuerst headless Character/Action/Persistence-Kern, danach UI-Anbindung
+- [x] **0.5 Headless Character Core:** Character State, Progression, Action Resolver und Persistence Kernel
+- [ ] **0.5.1 Recovery & Fault Injection:** Snapshot-Replay, Quarantäne, Crashpunkte und Recovery Receipt
 
 Die kanonische Arbeitsliste steht zusätzlich in [`TODO.md`](TODO.md).
 

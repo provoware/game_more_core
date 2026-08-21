@@ -3,6 +3,12 @@
 ## Designrichtung
 Verbindliche Basis bleibt **Industrial Brutalist – Variante A**: schwarzer Beton, Anthrazit, Stahl, Signalrot, klare technische Typografie, große Flächen und wenige, funktionale Akzentfarben.
 
+## Kanonische visuelle Übersicht
+
+![BUNKERFREQUENZ System- und Character-Forge-Blueprint](assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp)
+
+Die Übersicht dient als gemeinsame visuelle Referenz für Persistence, die vier Character-Forge-Varianten und den Gameplay Action Contract. Bei Widersprüchen gelten die Text- und Manifestverträge; die Grafik ist bewusst übersichtlich und nicht selbst die Datenquelle.
+
 ## Vier Entwurfsvarianten
 ### A1 – CONTROL ROOM
 Crew links, Charakter/3D-Portrait und zentrale Werte in der Mitte, aktueller Kontext rechts, Journal/Status unten. Beste Gesamtübersicht für Desktop.

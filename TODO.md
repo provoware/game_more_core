@@ -46,7 +46,8 @@
 
 ## 0.4.3 – UI/UX Blueprint
 
-- [x] vier klar unterschiedliche Industrial-Brutalist-Layouts spezifiziert; gemeinsames Entwurfsbild erzeugen
+- [x] vier klar unterschiedliche Industrial-Brutalist-Layouts spezifiziert
+- [x] übersichtlichen gemeinsamen System-/UI-Blueprint als Projekt-Asset aufgenommen
 - [x] Character Overview
 - [x] Skills/Traits
 - [x] dynamische Biografie
@@ -67,6 +68,33 @@
 - [x] Action-Contract-Validator + Testhülle
 - [x] maschinenlesbarer Vertragsbericht PASS
 
-## Danach
+## 0.5 – Headless Character Core
 
-- [ ] 0.5 Character Core Implementation
+- [x] Python-Standardbibliothek ohne neue Runtime-Abhängigkeiten
+- [x] `CharacterState` mit 16 identischen Startskills
+- [x] Skill-XP, Skill-Level und Gesamtlevel implementiert
+- [x] Trait-Evidenz mit fünf Freischaltstufen implementiert
+- [x] sechs Spezialisierungen und XP-Konsequenzen implementiert
+- [x] Action Resolver deterministisch; Skills und Risiko beeinflussen Ergebnis
+- [x] Eingabe-Character wird bei Action Resolution nicht direkt mutiert
+- [x] Character Action Service trennt Domain und Persistenz
+- [x] Journal Schema v2 mit Pflichtmetadaten, globaler Sequenz und SHA-256-Kette
+- [x] Event-Katalogprüfung und idempotente Event-IDs
+- [x] Journal vor State-Write mit `fsync` dauerhaft schreiben
+- [x] State und Meta atomar schreiben
+- [x] Autosave-Regel exakt 60 Sekunden dirty-only abgebildet
+- [x] 14 gezielte Runtime-/Integrationstests bestanden
+- [x] 200 Action/Commit/Reload-Schritte als Stresstest bestanden
+- [x] gezielten GitHub-Actions-Workflow für Runtime-Code angelegt
+
+## 0.5.1 – Recovery & Fault Injection
+
+- [ ] Snapshot Writer und Snapshot-Index implementieren
+- [ ] Replay aus Snapshot + Journal implementieren
+- [ ] korrupten Journal-Tail automatisch quarantänisieren
+- [ ] `RECOVERY_RECEIPT.json` schreiben
+- [ ] Crashpunkte zwischen Journal Durable / State Applied / Meta Commit simulieren
+- [ ] Recovery idempotent testen
+- [ ] Runtime-Undo/Kompensation für erlaubte Eventgruppen implementieren
+- [ ] vollständige Trait-Effektanwendung auf Action-Metriken ergänzen
+- [ ] Resonanzfortschritt nach Level 50 konkretisieren und implementieren

@@ -26,7 +26,9 @@ Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Je
 - Animationen dürfen Gameplay nie blockieren.
 - sichtbare Namen sind keine Identifikatoren.
 - bestehende Journal-Ereignisse werden nicht überschrieben.
-- Systemzeit ist keine alleinige Autorität.
+- Runtime-Code darf nur Journal-Eventtypen persistieren, die in `manifests/JOURNAL_MANIFEST.json` katalogisiert sind.
+- Domain-Aktionen liefern Ereignisse; dauerhafte Zustandsänderungen laufen über den Persistence Kernel.
+- Systemzeit ist keine alleinige Autorität und niemals Zufallsseed.
 
 ## Agentenrollen
 
