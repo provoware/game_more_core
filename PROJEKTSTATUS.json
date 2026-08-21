@@ -3,7 +3,7 @@
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
   "active_iteration": "0.7.2",
-  "status": "green_0_7_1_recovered_review_hardening_applied",
+  "status": "repository_recovered_0_7_1_review_hardened",
   "current_focus": "resource_effects_and_complete_character_forge_flow_next",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
@@ -94,7 +94,7 @@
     "full_loop_pending": ["resource_effects", "biography", "autosave", "undo", "reload"]
   },
   "repository_repair": {
-    "status": "repair_branch_prepared",
+    "status": "recovered",
     "invalid_merge_pull_request": 32,
     "invalid_merge_commit": "5800d056ec961620ae4d577a2b55e2bc22ca5550",
     "invalid_runtime_core_run": 32519874996,
