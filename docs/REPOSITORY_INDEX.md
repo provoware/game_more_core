@@ -1,41 +1,46 @@
 # Ordner- und Dateiindex
 
-## Zweck und Pflege
+## Zweck
 
-Dieser Index beantwortet: **Wo liegt was?** Er beschreibt den versionierten Stand `0.5.2-alpha.1`. Bei neuen oder entfernten öffentlichen Bereichen wird er in derselben Iteration angepasst; einzelne gleichartige Test- oder Runtime-Dateien werden über ihre Bereichstabelle erschlossen.
+Dieser Index beantwortet: **Wo liegt was und welche Datei ist zuständig?**
+
+- Runtime-Baseline: `0.5.2-alpha.1`
+- aktive Entwicklung: `0.6 – Character Forge Presentation`
+
+Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben Iteration angepasst.
 
 ## Einstieg im Wurzelverzeichnis
 
 | Pfad | Rolle |
 |---|---|
 | `README.md` | kompakter Projekteinstieg und Schnellzugriff |
-| `AGENTS.md` | verbindlicher Arbeitsablauf und Architekturgrenzen |
-| `TODO.md` | kanonische nächste Arbeitseinheiten |
-| `CHANGELOG.md` | fachliches Änderungsprotokoll |
-| `VERSION.json` | aktuelle Version |
+| `AGENTS.md` | verbindlicher Entwicklungs-, PR- und Merge-Ablauf |
+| `TODO.md` | kanonische offene Arbeit in Ausführungsreihenfolge |
+| `CHANGELOG.md` | fachliche Änderungshistorie |
+| `VERSION.json` | letzte versionierte Runtime-/Produkt-Baseline |
 | `PROJEKTMANIFEST.json` | zentrale Pfade und Projektmetadaten |
-| `PROJEKTSTATUS.json` | maschinenlesbarer Umsetzungsstand |
+| `PROJEKTSTATUS.json` | aktive Iteration, Validierungsstand und nächstes Ziel |
 
 ## Ordnerübersicht
 
 | Ordner | Inhalt | Einstieg |
 |---|---|---|
-| `.github/workflows/` | gezielte Remote-CI | `runtime-core.yml` |
-| `content/` | lokalisierte, sichtbare Inhalte | `content/de/` |
+| `.github/workflows/` | gezielte Remote-CI-Gates | `runtime-core.yml`, `presentation-core.yml` |
+| `content/` | lokalisierte sichtbare Inhalte | `content/de/` |
 | `docs/` | Fachverträge, Erklärungen und Navigation | `GAME_SCHEMA.md` |
-| `manifests/` | kanonische Kataloge und Regeln | `ARCHITEKTUR_MANIFEST.json` |
-| `reports/` | versionierte lokale Prüfnachweise | `RUNTIME_VALIDATION_0.5.2.json` |
+| `manifests/` | kanonische Kataloge und maschinenlesbare Regeln | `ARCHITEKTUR_MANIFEST.json` |
+| `reports/` | reproduzierbare Prüfnachweise | `RUNTIME_VALIDATION_0.5.2.json` |
 | `schemas/` | JSON-Strukturverträge | `character_state.schema.json` |
-| `src/` | headless Spiel-Runtime | `src/bunkerfrequenz/` |
-| `tests/` | Gameplay-, Runtime- und Simulationstests | Unterordner nach Prüfbereich |
-| `tools/` | ausschließlich ausführbare Basiswerkzeuge | `validate_action_contract.py` |
+| `src/` | headless Spielkern und Presentation | `src/bunkerfrequenz/` |
+| `tests/` | Vertrags-, Runtime-, Simulation- und Presentation-Tests | Unterordner nach Bereich |
+| `tools/` | kleine ausführbare Entwicklerwerkzeuge | `validate_action_contract.py` |
 
 ## Dokumentation
 
 | Datei | Thema |
 |---|---|
 | `docs/GAME_SCHEMA.md` | Gesamtbild von Spiel, Daten und Ereignisfluss |
-| `docs/REPOSITORY_RULES.md` | professionelle Trennung von Tool, Doku und Vertrag |
+| `docs/REPOSITORY_RULES.md` | Ablage, Informationshierarchie und PR-Lebenszyklus |
 | `docs/REPOSITORY_INDEX.md` | dieser Navigationsindex |
 | `docs/ARCHITEKTURVERTRAG.md` | Ebenen und unveränderliche Architekturregeln |
 | `docs/CHARACTER_FORGE.md` | Figuren, Skills, Traits und Biografie |
@@ -44,49 +49,70 @@ Dieser Index beantwortet: **Wo liegt was?** Er beschreibt den versionierten Stan
 | `docs/CHARACTER_CORE_0.5.md` | implementierter Runtime-Kern |
 | `docs/PERSISTENCE_CONTRACT.md` | Journal-, Save- und Transaktionsregeln |
 | `docs/RECOVERY_0.5.1.md` | Snapshot, Wiederherstellung und Undo |
-| `docs/UI_UX_BLUEPRINT.md` | spätere Character-Forge-Oberfläche |
-| `docs/PRESENTATION_CONTRACT_0.6.md` | gemeinsame Projektion, UI-Aktionen und Einsteigerablauf für A3/A4 |
+| `docs/UI_UX_BLUEPRINT.md` | A1–A4 Design-/UX-Richtung |
+| `docs/PRESENTATION_CONTRACT_0.6.md` | gemeinsame Projection, Commands und Komponenten für A4/A3 |
 | `docs/DATENMODELL.md` | fachliche Datenobjekte und Beziehungen |
-| `docs/ENTWICKLERHANDBUCH.md` | Einstieg, Versionierung und Prüfstrategie |
-| `docs/assets/` | eingebundene visuelle Referenzen |
+| `docs/ENTWICKLERHANDBUCH.md` | Übernahme, Prüfstrategie und Release-/PR-Ablauf |
+| `docs/REPOSITORY_AUDIT_2026-08-21.md` | Auditbefunde und Reparaturentscheidungen |
+| `docs/assets/` | visuelle Referenzen |
 
-## Runtime-Code
+## Codebereiche
 
-| Bereich | Dateien und Verantwortung |
+| Bereich | Verantwortung |
 |---|---|
-| `src/bunkerfrequenz/domain/` | `character.py`, `progression.py`, `trait_effects.py`: reines Charakter- und Fortschrittsmodell |
-| `src/bunkerfrequenz/application/` | Resolver sowie Action-, Profil- und Recovery-Services |
-| `src/bunkerfrequenz/infrastructure/` | `persistence.py`: Journal, State, Snapshot und atomare Speicherung |
+| `src/bunkerfrequenz/domain/` | Character State, Progression, Trait-Auswirkungen |
+| `src/bunkerfrequenz/application/` | Action-, Profil- und Recovery-Use-Cases |
+| `src/bunkerfrequenz/infrastructure/` | Journal, State, Snapshot, atomare Speicherung und Recovery |
+| `src/bunkerfrequenz/presentation/` | schreibgeschützte Character-/Biografieprojektionen; keine Domain-Writes |
 
-`__init__.py`-Dateien markieren Python-Pakete und enthalten keine parallelen Fachregeln.
+`__init__.py`-Dateien exportieren vorhandene Funktionen; sie dürfen keine zweite Fachimplementierung enthalten.
+
+## Tests
+
+| Bereich | Zweck |
+|---|---|
+| `tests/runtime/` | Character-, Action-, Persistence-, Recovery- und Resonanzkern |
+| `tests/presentation/` | Projection, Biografie, Textschlüssel und später A4/A3-Vertrag |
+| `tests/gameplay/` | Action-Vertrag |
+| `tests/simulation/` | reproduzierbare Progressions-/Balance-Regression |
+
+## Remote-CI
+
+- `runtime-core.yml`: Runtime-/Domain-/Application-/Infrastructure-Gate.
+- `presentation-core.yml`: Presentation, Presentation-Tests und relevante UI-Textkataloge.
+
+Ein rotes für den Scope relevantes Gate blockiert den Merge.
 
 ## Maschinenlesbare Verträge
 
 ### Manifeste
 
-- **Charakter und Entwicklung:** `CHARAKTER`, `SKILL`, `TRAIT`, `TRAIT_ENGINE`, `PROGRESSION`, `LEVEL`, `BIOGRAFIE`.
-- **Aktionen und Laufzeit:** `ACTION`, `RUNTIME`, `JOURNAL`.
-- **Speicherung und Zeit:** `PERSISTENCE`, `SAVEFORMAT`, `MIGRATION`, `ZEIT`, `SYNC`.
-- **Darstellung und Texte:** `UI`, `ANIMATION`, `TEXT`.
-- **Projektsteuerung:** `ARCHITEKTUR`, `TEST`, `RELEASE`.
+- **Charakter/Entwicklung:** `CHARAKTER`, `SKILL`, `TRAIT`, `TRAIT_ENGINE`, `PROGRESSION`, `LEVEL`, `BIOGRAFIE`
+- **Aktionen/Laufzeit:** `ACTION`, `RUNTIME`, `JOURNAL`
+- **Speicherung/Zeit:** `PERSISTENCE`, `SAVEFORMAT`, `MIGRATION`, `ZEIT`, `SYNC`
+- **Darstellung/Text:** `UI`, `ANIMATION`, `TEXT`
+- **Projektsteuerung:** `ARCHITEKTUR`, `TEST`, `RELEASE`
 
-Alle liegen als `manifests/<NAME>_MANIFEST.json` vor.
+Alle liegen unter `manifests/`.
 
 ### Schemas
 
-`schemas/` enthält Strukturverträge für Action, Character Definition, Character State, Journal, Persistence Transaction, Progression, Save, Trait, Trait Engine und UI. Ein Schema beschreibt Form und Typen; das zugehörige Manifest liefert die fachlichen Werte.
+`schemas/` definiert Datenformen; Manifeste liefern die fachlichen Werte. Ein Schema ist keine zweite Balance- oder Storyquelle.
 
-## Inhalte, Tests, Tools und Berichte
+## Inhalte, Tools und Berichte
 
-- `content/de/characters.json` und `level_titles.json` enthalten deutsche Spielinhalte; UI-Texte liegen unter `content/de/ui/`.
-- `tests/gameplay/` prüft den Action-Vertrag, `tests/runtime/` den Kern und `tests/simulation/` den Simulator.
-- `tools/validate_action_contract.py` ist der kleine Vertragsprüfer; `tools/simulate_characters/progression_simulator.py` ist das reproduzierbare Balance-Werkzeug.
-- `reports/` bewahrt freigegebene Ergebnisse der Vertrags-, Simulations- und Runtime-Prüfungen. Berichte sind Nachweise, keine Eingaben der Runtime.
+- `content/de/characters.json` und `level_titles.json` enthalten deutsche Spielinhalte.
+- `content/de/ui/` enthält sichtbare Character-Forge-Textschlüssel.
+- `tools/validate_action_contract.py` prüft den Action-Vertrag.
+- `tools/simulate_characters/progression_simulator.py` erzeugt reproduzierbare Balance-Läufe.
+- `reports/` enthält freigegebene Prüfnachweise; Berichte sind keine Runtime-Eingabe.
 
 ## Verbindlichkeit bei Widersprüchen
 
-1. `AGENTS.md` bestimmt den Arbeitsprozess.
-2. Fachverträge bestimmen Architektur und Verhalten.
-3. Manifeste und Schemas bestimmen katalogisierte Werte und Datenformen.
-4. Runtime und Tests setzen diese Verträge um und prüfen sie.
-5. README, Index und Spielschema erleichtern den Einstieg, erzeugen aber keine zweite Fachregel.
+1. Fach-/Architekturvertrag
+2. Manifest/Schema
+3. Runtime und Tests
+4. `PROJEKTSTATUS.json`
+5. `TODO.md`
+6. README/Index
+7. CHANGELOG-Historie
