@@ -2,20 +2,108 @@
   "schema_version": 1,
   "version": "0.5.2-alpha.1",
   "principle": "risk_based_targeted_validation",
-  "foundation_required_checks": ["json_syntax","unique_ids","character_base_value_equality","trait_count_165","manifest_schema_consistency"],
-  "progression_0_4_1_checks": ["trait_engine_template_count_15","trait_tier_thresholds_monotonic","specialization_rules_present","deterministic_simulator","generalist_not_forced_into_specialization","specialists_form_specialization","specialists_develop_deep_traits","generalist_remains_broad_not_deep","tier5_not_mass_unlocked","level_progression_not_capped"],
-  "reference_simulation": {"runs":1000,"days":720,"seed":90409,"report":"reports/PROGRESSION_SIMULATION_0.4.1.json"},
-  "persistence_0_4_2_checks": ["journal_event_types_unique","transaction_states_complete","autosave_60_seconds","snapshot_thresholds_defined","migration_non_destructive","recovery_order_defined"],
-  "ui_0_4_3_checks": ["exactly_four_variants","color_not_sole_information","reduced_motion_fallbacks","visible_text_externalized"],
-  "action_0_4_4_checks": ["action_count_20","action_ids_unique","skill_weights_sum_1","trait_weights_sum_1","journal_event_refs_valid","deterministic_seed_contract","real_location_access_guard"],
-  "runtime_0_5_checks": ["compileall","equal_start_values","deterministic_action_resolution","skill_competence_affects_outcome","trait_unlock_gate","no_forced_start_specialization","journal_hash_chain_reload","event_catalog_enforced","duplicate_idempotency","duplicate_mismatch_rejected","corrupt_tail_detected","autosave_60_seconds","action_commit_reload_integration"],
-  "runtime_0_5_2_checks": ["trait_effect_manifest_alignment","trait_effect_stack_caps","trait_soft_conflicts","trait_effects_in_action_resolution","resonance_xp_journaled","resonance_rank_open_ended","legacy_state_defaults"],
+  "foundation_required_checks": [
+    "json_syntax",
+    "unique_ids",
+    "character_base_value_equality",
+    "trait_count_165",
+    "manifest_schema_consistency"
+  ],
+  "progression_0_4_1_checks": [
+    "trait_engine_template_count_15",
+    "trait_tier_thresholds_monotonic",
+    "specialization_rules_present",
+    "deterministic_simulator",
+    "generalist_not_forced_into_specialization",
+    "specialists_form_specialization",
+    "specialists_develop_deep_traits",
+    "generalist_remains_broad_not_deep",
+    "tier5_not_mass_unlocked",
+    "level_progression_not_capped"
+  ],
+  "reference_simulation": {
+    "runs": 1000,
+    "days": 720,
+    "seed": 90409,
+    "report": "reports/PROGRESSION_SIMULATION_0.4.1.json"
+  },
+  "persistence_0_4_2_checks": [
+    "journal_event_types_unique",
+    "transaction_states_complete",
+    "autosave_60_seconds",
+    "snapshot_thresholds_defined",
+    "migration_non_destructive",
+    "recovery_order_defined"
+  ],
+  "ui_0_4_3_checks": [
+    "exactly_four_variants",
+    "color_not_sole_information",
+    "reduced_motion_fallbacks",
+    "visible_text_externalized"
+  ],
+  "action_0_4_4_checks": [
+    "action_count_20",
+    "action_ids_unique",
+    "skill_weights_sum_1",
+    "trait_weights_sum_1",
+    "journal_event_refs_valid",
+    "deterministic_seed_contract",
+    "real_location_access_guard"
+  ],
+  "runtime_0_5_checks": [
+    "compileall",
+    "equal_start_values",
+    "deterministic_action_resolution",
+    "skill_competence_affects_outcome",
+    "trait_unlock_gate",
+    "no_forced_start_specialization",
+    "journal_hash_chain_reload",
+    "event_catalog_enforced",
+    "duplicate_idempotency",
+    "duplicate_mismatch_rejected",
+    "corrupt_tail_detected",
+    "autosave_60_seconds",
+    "action_commit_reload_integration"
+  ],
+  "runtime_0_5_2_checks": [
+    "trait_effect_manifest_alignment",
+    "trait_effect_stack_caps",
+    "trait_soft_conflicts",
+    "trait_effects_in_action_resolution",
+    "resonance_xp_journaled",
+    "resonance_rank_open_ended",
+    "legacy_state_defaults"
+  ],
+  "presentation_0_6_checks": [
+    "presentation_compiles",
+    "projection_contract_single_implementation",
+    "projection_text_keys_catalogued",
+    "projection_values_detached",
+    "projection_progress_bounded",
+    "locked_trait_progress_hidden",
+    "biography_only_from_validated_events",
+    "presentation_package_exports_consistent"
+  ],
   "unit_test_commands": [
     "python3 -m unittest tests/simulation/test_progression_simulator.py",
     "python3 -m pytest tests/gameplay/test_action_contract.py",
-    "PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v"
+    "PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v",
+    "PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v"
   ],
   "runtime_ci_workflow": ".github/workflows/runtime-core.yml",
+  "presentation_ci_workflow": ".github/workflows/presentation-core.yml",
   "runtime_reference_report": "reports/RUNTIME_VALIDATION_0.5.2.json",
-  "future_release_checks": ["unit","integration","save_load","undo","recovery","migration","time","sync","ui_smoke","action_resolution","fault_injection"]
+  "future_release_checks": [
+    "unit",
+    "integration",
+    "save_load",
+    "undo",
+    "recovery",
+    "migration",
+    "time",
+    "sync",
+    "ui_smoke",
+    "action_resolution",
+    "fault_injection"
+  ]
 }
