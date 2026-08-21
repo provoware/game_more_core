@@ -1,0 +1,51 @@
+name: Main Integrity
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: main-integrity-main
+  cancel-in-progress: false
+
+jobs:
+  main-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact main commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate local repository structure
+        run: PYTHONPATH=src python3 tools/repository_health.py
+
+      - name: Verify merge provenance and exact green PR head
+        id: verify
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/github_merge_guard.py verify-main --sha "${{ github.sha }}"
+
+      - name: Record blocking integrity incident
+        if: failure() && steps.verify.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 tools/github_merge_guard.py incident \
+            --sha "${{ github.sha }}" \
+            --run-url "$RUN_URL" \
+            --reason "Main-Merge besitzt keine vollständig bestätigte PR-/CI-Provenienz"
