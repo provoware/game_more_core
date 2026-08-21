@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.5.0-alpha.1",
+  "version": "0.5.1-alpha.1",
   "runtime": "python_stdlib_headless",
   "external_dependencies": [],
   "modules": {
@@ -8,6 +8,8 @@
     "progression": "src/bunkerfrequenz/domain/progression.py",
     "action_resolver": "src/bunkerfrequenz/application/action_resolver.py",
     "character_action_service": "src/bunkerfrequenz/application/character_action_service.py",
+    "profile_service": "src/bunkerfrequenz/application/profile_service.py",
+    "recovery_service": "src/bunkerfrequenz/application/recovery_service.py",
     "persistence_kernel": "src/bunkerfrequenz/infrastructure/persistence.py"
   },
   "contracts": [
@@ -17,6 +19,17 @@
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/PERSISTENCE_MANIFEST.json"
   ],
+  "recovery": {
+    "state_envelope_version": 1,
+    "snapshot_schema_version": 1,
+    "recovery_receipt_schema_version": 1,
+    "snapshot_event_threshold": 50,
+    "snapshot_time_threshold_seconds": 300,
+    "fault_points": ["after_journal_durable", "after_state_applied", "after_meta_committed"],
+    "one_step_profile_undo": true,
+    "corrupt_tail_quarantine": true,
+    "snapshot_plus_journal_replay": true
+  },
   "invariants": [
     "all_characters_start_with_equal_skill_values",
     "action_resolution_is_deterministic_for_equal_inputs",
@@ -25,11 +38,14 @@
     "only_catalogued_journal_events_may_be_persisted_when_catalog_is_supplied",
     "journal_is_durable_before_derived_state_write",
     "duplicate_event_id_with_equal_payload_is_idempotent",
-    "duplicate_event_id_with_different_payload_is_rejected"
+    "duplicate_event_id_with_different_payload_is_rejected",
+    "recovery_replay_must_not_double_apply_derived_level_or_trait_events",
+    "corrupt_journal_tail_is_quarantined_before_repair",
+    "recovery_is_idempotent_after_a_recovered_checkpoint_is_committed"
   ],
   "validation": {
     "compile_command": "PYTHONPATH=src python3 -m compileall -q src",
     "unit_command": "PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v",
-    "reference_report": "reports/RUNTIME_VALIDATION_0.5.0.json"
+    "reference_report": "reports/RUNTIME_VALIDATION_0.5.1.json"
   }
 }

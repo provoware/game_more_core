@@ -2,6 +2,39 @@
 
 Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
+## [0.5.1-alpha.1] – 2026-08-21
+
+### Hinzugefügt
+- State-Envelope mit angewandter Journal-Sequenz, Journal-Head und SHA-256-Datenhash.
+- Snapshot Writer und aus gültigen Snapshot-Dateien rekonstruierbarer Snapshot-Index.
+- Recovery aus letztem gültigem State-/Snapshot-Checkpoint plus deterministischem Journal-Replay.
+- Quarantäne für beschädigte Journal-Tails und `RECOVERY_RECEIPT.json` als Wiederherstellungsnachweis.
+- Fault-Injection-Punkte nach `JOURNAL_DURABLE`, `STATE_APPLIED` und `META_COMMITTED`.
+- `CharacterRecoveryService` für idempotentes Character-Replay.
+- `CharacterProfileService` mit sicherem Ein-Schritt-Undo für Name/Alias/Motto über ein kompensierendes Journal-Ereignis.
+- `docs/RECOVERY_0.5.1.md` und `reports/RUNTIME_VALIDATION_0.5.1.json`.
+
+### Geändert
+- Projektversion auf `0.5.1-alpha.1`.
+- Runtime-Manifest um Recovery-, Snapshot- und Undo-Fähigkeiten ergänzt.
+- README/TODO/Projektstatus auf 0.5.1 und die getrennten Folgephasen 0.5.2/0.6 aktualisiert.
+- 0.5.0-State bleibt als Legacy-Checkpoint lesbar; keine destruktive Migration.
+
+### Validierung
+- `compileall` lokal bestanden.
+- 21/21 gezielte Runtime-/Recovery-Tests lokal bestanden.
+- Crash nach durablem Journal wird aus dem bestätigten Checkpoint rekonstruiert.
+- Crash nach State-Write wird ohne doppelte Progressionsanwendung korrigiert.
+- Crash nach vollständig geschriebenem Meta-Zustand benötigt keine unnötige Recovery.
+- beschädigter State wird aus Snapshot + nachfolgendem Journal wiederhergestellt.
+- korrupter Journal-Tail wird vor Reparatur quarantänisiert.
+- erneute Recovery auf gesundem Stand ist idempotent.
+
+### Bewusst offen
+- konkrete Laufzeitanwendung der 15 Trait-Effekte und Soft-Konflikte folgt in 0.5.2.
+- Open-End-Resonanz nach Level 50 folgt in 0.5.2.
+- grafische Character-Forge-Runtime folgt in 0.6.
+
 ## [0.5.0-alpha.1] – 2026-08-21
 
 ### Hinzugefügt

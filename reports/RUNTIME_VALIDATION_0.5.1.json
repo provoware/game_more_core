@@ -1,0 +1,32 @@
+{
+  "version": "0.5.1-alpha.1",
+  "validated_at": "2026-08-21T16:45:00+02:00",
+  "environment": "Python 3 standard library",
+  "local_checks": {
+    "compileall": true,
+    "runtime_tests_passed": 21,
+    "runtime_tests_failed": 0,
+    "snapshot_writer_and_index": true,
+    "snapshot_threshold_50_events": true,
+    "snapshot_threshold_300_seconds": true,
+    "journal_durable_crash_recovered": true,
+    "state_applied_crash_without_double_apply": true,
+    "meta_committed_crash_is_consistent": true,
+    "corrupt_journal_tail_quarantined": true,
+    "snapshot_plus_journal_replay": true,
+    "recovery_receipt_written": true,
+    "recovery_idempotent": true,
+    "profile_one_step_compensating_undo": true,
+    "legacy_0_5_0_state_readable": true
+  },
+  "remote_ci": {
+    "workflow": "Runtime Core",
+    "run_id": 32495689168,
+    "compile_runtime": "success",
+    "runtime_tests": "success",
+    "status": "success"
+  },
+  "validation_note": "Der erste Remote-Lauf deckte die fehlende GENESIS-State-Initialisierung vor der ersten Aktion auf. Die Ursache wurde an der bestehenden CharacterActionService-Grenze korrigiert; der unmittelbar folgende Runtime-CI lief vollständig erfolgreich.",
+  "passed_local": true,
+  "passed": true
+}

@@ -29,6 +29,7 @@ class CharacterActionService:
         journal_context: JournalContext,
         **resolver_kwargs,
     ) -> ActionCommitResult:
+        self.persistence.initialize_state({"character": character.to_dict()})
         first_event_id = f"{action_instance_id}:001"
         if self.persistence.has_event(first_event_id):
             persisted = self.persistence.load_state()

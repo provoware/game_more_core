@@ -3,8 +3,8 @@
   "canonical_name": "BUNKERFREQUENZ",
   "repository": "provoware/game_more_core",
   "lineage_id": "e59052dd-e910-4405-9a06-1db621d818e7",
-  "version": "0.5.0-alpha.1",
-  "phase": "0.5",
+  "version": "0.5.1-alpha.1",
+  "phase": "0.5.1",
   "design_direction": "industrial_brutalist_variant_a",
   "architecture_layers": [
     "domain",
@@ -40,6 +40,7 @@
   "action_manifest": "manifests/ACTION_MANIFEST.json",
   "contract_validation_report": "reports/CONTRACT_VALIDATION_0.4.4.json",
   "runtime_doc": "docs/CHARACTER_CORE_0.5.md",
+  "recovery_doc": "docs/RECOVERY_0.5.1.md",
   "runtime_manifest": "manifests/RUNTIME_MANIFEST.json",
-  "runtime_validation_report": "reports/RUNTIME_VALIDATION_0.5.0.json"
+  "runtime_validation_report": "reports/RUNTIME_VALIDATION_0.5.1.json"
 }
