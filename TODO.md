@@ -4,7 +4,8 @@
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
 - **Aktive Entwicklungsiteration:** `0.6 – Character Forge Presentation`
-- **Aktueller Fokus:** eine einzige belastbare Presentation-Schicht vor A4/A3-UI-Ausbau
+- **Aktueller Fokus:** `0.6.1 – Application-Grenze für Presentation`
+- **Offene PRs nach Audit:** `0`
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -14,8 +15,9 @@
 - [x] eigener zielgerichteter `Presentation Core`-CI-Workflow angelegt
 - [x] Release-Baseline und aktive Entwicklungsiteration in den Info-Dateien getrennt
 - [x] konkurrierende PR-Ideen in diese sequenzielle Roadmap überführt
-- [ ] Remote-CI für Reparaturbranch grün
-- [ ] Reparatur nach `main` mergen
+- [x] Runtime Core und Presentation Core auf Reparatur-Head grün
+- [x] Reparatur-PR #22 nach `main` gemergt
+- [x] konkurrierende Presentation-PRs #15–#21 mit Begründung geschlossen
 
 ## 0.6.1 – Application-Grenze für Presentation
 
@@ -83,7 +85,7 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 - [x] **0.5.0** Headless Character-/Action-/Persistence-Core
 - [x] **0.5.1** Snapshot-Replay, Recovery, Fault Injection und Profil-Undo
 - [x] **0.5.2** Trait-Auswirkungen, Soft-Konflikte und Open-End-Resonanz
-- [x] **0.6 Foundation** Presentation-Vertrag, deutsche Textkataloge, Character-/Biografieprojektion
+- [x] **0.6 Foundation** Presentation-Vertrag, deutsche Textkataloge, Character-/Biografieprojektion und Repository-Reparatur
 
 ## PR-Regel
 
