@@ -13,26 +13,33 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Skill-Fortschritt wird für negative/überlaufende XP defensiv begrenzt und zeigt am Skillmaximum keinen falschen Restbedarf.
 
 ### Hinzugefügt
-- Zielgerichteter GitHub-Workflow `Presentation Core` für Presentation-Code, Presentation-Tests und relevante UI-Textkataloge.
+- Zielgerichteter GitHub-Workflow `Presentation Core` für Presentation-Code, relevante Application-Grenzdateien, Presentation-Tests und UI-Textkataloge.
 - Repository-Audit `docs/REPOSITORY_AUDIT_2026-08-21.md` mit Ursache, Befunden, Reparatur- und PR-Konsolidierungsentscheidung.
 - Explizite Informationshierarchie und PR-/Merge-Disziplin in `AGENTS.md` und `docs/REPOSITORY_RULES.md`.
 - Sequenzielle 0.6-Roadmap für Application-Capabilities/Command-Dispatcher, lokalen Presentation-State/Feedback, A4, A3 und Ranking/Network.
+- `presentation_capabilities.py` als reine Application-Leseabfrage für `can_edit_profile`, `can_undo_profile` und `can_execute_action`.
+- `command_dispatcher.py` als einziger 0.6.1-Schreibweg für `profile.update`, `profile.undo_last` und `action.execute`.
+- gezielte Tests für Capability-Fail-Closed, defensive Projection-Copies, ID-Erhalt, Action-/Profil-Idempotenz und wiederholtes Undo.
 
 ### Geändert
-- README, Projektstatus und Projektmanifest trennen jetzt klar die versionierte Runtime-Baseline `0.5.2-alpha.1` von der aktiven Entwicklungsiteration `0.6`.
-- `TODO.md` wurde von parallelen Teilimplementierungen auf eine einzige ausführbare Reihenfolge reduziert.
-- Presentation-Vertrag, Repository-Index und Entwicklerhandbuch wurden auf die tatsächlich implementierte 0.6-Foundation und die neuen CI-/PR-Regeln abgeglichen.
-- `TEST_MANIFEST.json` katalogisiert die verbindlichen Presentation-Checks und den zugehörigen Remote-Workflow.
-- Der Runtime-Abnahmebericht 0.5.2 dokumentiert jetzt den tatsächlich erfolgreichen Remote-CI-Lauf von PR #6 statt weiterhin `pending_pull_request` zu behaupten.
+- README, Projektstatus und Projektmanifest trennen klar die versionierte Runtime-Baseline `0.5.2-alpha.1` von der aktiven 0.6-Entwicklung.
+- `TODO.md` führt nur noch eine sequenzielle Presentation-Implementierung statt paralleler Teilansätze.
+- Presentation-Vertrag, Repository-Index und Entwicklerhandbuch wurden auf die tatsächlich implementierte 0.6-Foundation und die CI-/PR-Regeln abgeglichen.
+- `TEST_MANIFEST.json` katalogisiert Presentation- und 0.6.1-Application-Grenzchecks.
+- Die Character-Projektion akzeptiert bestätigte Capabilities optional, begrenzt sie auf drei öffentliche Booleans und kopiert sie defensiv.
+- Der Dispatcher gibt bestätigten `CharacterState`, Commit-Event-IDs und Idempotenzstatus zurück; er erzeugt bewusst keine zweite Presentation-Projektion.
+- UI-Befehle dürfen keine Balanceparameter wie `base_xp` oder Evidenzquelle setzen.
 
-### Auditbefund
-- PR #14 wurde trotz fehlgeschlagenem relevanten Compile-Gate gemergt; dadurch enthielt `main` nicht kompilierbaren Presentation-Code.
-- Sieben gleichzeitig offene Presentation-PRs (#15–#21) bearbeiten überlappende Zielstellen und werden nach erfolgreicher Reparatur zugunsten der konsolidierten `TODO.md`-Reihenfolge geschlossen.
-- Die Produktversion wird durch diese Wartungs-/Auditreparatur nicht künstlich erhöht; `VERSION.json` bleibt bis zur nächsten abgenommenen Produktstufe auf `0.5.2-alpha.1`.
+### Auditabschluss
+- PR #14 war trotz fehlgeschlagenem relevantem Compile-Gate gemergt worden und hatte den Presentation-Schaden verursacht.
+- Reparatur-PR #22 bestand Runtime Core und Presentation Core und wurde nach `main` gemergt.
+- Die konkurrierenden Presentation-PRs #15–#21 wurden mit Begründung geschlossen; ihre sinnvollen Inhalte wurden in die kanonische TODO-Reihenfolge übernommen.
+- Die Produktversion wurde durch die Wartungs-/Presentation-Arbeit nicht künstlich erhöht; `VERSION.json` bleibt bis zur nächsten abgenommenen Produktstufe auf `0.5.2-alpha.1`.
 
 ### Validierung
-- Die Reparatur muss den gezielten `Runtime Core`- und `Presentation Core`-Remote-Gate bestehen, bevor sie nach `main` gemergt wird.
-- Nach dem Merge werden konkurrierende offene Presentation-PRs geschlossen; ihre fachlich sinnvollen Punkte bleiben als geordnete Folgeaufgaben erhalten.
+- Repository-Reparatur #22: Runtime Core `32505897397` = erfolgreich; Presentation Core `32505897399` = erfolgreich.
+- 0.6.1 PR #24: Runtime Core `32510846508` = erfolgreich; Presentation Core `32510846537` = erfolgreich.
+- PR #24 wurde mit geprüftem Head nach `main` gemergt (`25006d07d33199fea2db8208c192ca2f6fa1095d`).
 
 ## [0.5.2-alpha.1] – 2026-08-21
 
