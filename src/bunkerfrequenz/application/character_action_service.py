@@ -36,7 +36,7 @@ class CharacterActionService:
             if persisted is None:
                 raise RuntimeError("Journal enthält Aktion, aber abgeleiteter Zustand fehlt")
             replay_state = CharacterState.from_dict(persisted["character"])
-            replay = ResolvedAction(action["action_id"], action_instance_id, "idempotent_replay", 1.0, 1.0, (), replay_state)
+            replay = ResolvedAction(action["action_id"], action_instance_id, "idempotent_replay", 1.0, 1.0, {}, (), replay_state)
             return ActionCommitResult(replay, (), True)
 
         resolved = self.resolver.resolve(character, action, action_instance_id=action_instance_id, world_seed=world_seed, **resolver_kwargs)

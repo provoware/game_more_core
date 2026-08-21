@@ -1,0 +1,27 @@
+{
+  "version": "0.5.2-alpha.1",
+  "validated_at": "2026-08-21T00:00:00Z",
+  "environment": "Python 3 standard library",
+  "local_checks": {
+    "compileall": true,
+    "runtime_tests_passed": 27,
+    "runtime_tests_failed": 0,
+    "trait_effect_families": 15,
+    "trait_manifest_alignment": true,
+    "positive_stack_cap_pct": 35,
+    "negative_stack_cap_pct": -20,
+    "soft_conflicts": 2,
+    "deterministic_resolver_effects": true,
+    "resonance_xp_journaled": true,
+    "resonance_rank_journaled": true,
+    "resonance_open_ended": true,
+    "legacy_state_defaults": true,
+    "progression_simulator_regression": true
+  },
+  "remote_ci": {
+    "workflow": "Runtime Core",
+    "status": "pending_pull_request"
+  },
+  "passed_local": true,
+  "passed": false
+}

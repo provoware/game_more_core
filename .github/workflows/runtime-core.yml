@@ -6,6 +6,9 @@ on:
       - 'src/**'
       - 'tests/runtime/**'
       - 'manifests/RUNTIME_MANIFEST.json'
+      - 'manifests/TRAIT_ENGINE_MANIFEST.json'
+      - 'manifests/JOURNAL_MANIFEST.json'
+      - 'manifests/PROGRESSION_MANIFEST.json'
       - 'schemas/character_state.schema.json'
       - '.github/workflows/runtime-core.yml'
   push:
@@ -14,6 +17,9 @@ on:
       - 'src/**'
       - 'tests/runtime/**'
       - 'manifests/RUNTIME_MANIFEST.json'
+      - 'manifests/TRAIT_ENGINE_MANIFEST.json'
+      - 'manifests/JOURNAL_MANIFEST.json'
+      - 'manifests/PROGRESSION_MANIFEST.json'
       - 'schemas/character_state.schema.json'
       - '.github/workflows/runtime-core.yml'
 

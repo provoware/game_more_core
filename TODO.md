@@ -103,13 +103,13 @@
 
 ## 0.5.2 – Progression Effects & Resonance
 
-- [ ] 15 Trait-Effektfamilien auf konkrete Action-Metriken anwenden
-- [ ] positive/negative Stack-Caps zur Runtime hinzufügen
-- [ ] Soft-Konflikte Planer↔Improvisierer und Detailmensch↔Opportunist berechnen
-- [ ] Trait-Effekte deterministisch in Action Resolution einbinden
-- [ ] Level 50 als Übergang in Resonanz statt Enddeckel implementieren
-- [ ] Resonanz-XP/-Ränge journalisieren und testen
-- [ ] Balance-Regression gegen 0.4.1-Simulator absichern
+- [x] 15 Trait-Effektfamilien auf konkrete Action-Metriken anwenden
+- [x] positive/negative Stack-Caps zur Runtime hinzufügen
+- [x] Soft-Konflikte Planer↔Improvisierer und Detailmensch↔Opportunist berechnen
+- [x] Trait-Effekte deterministisch in Action Resolution einbinden
+- [x] Level 50 als Übergang in Resonanz statt Enddeckel implementieren
+- [x] Resonanz-XP/-Ränge journalisieren und testen
+- [x] Balance-Regression gegen 0.4.1-Simulator absichern
 
 ## 0.6 – Character Forge Runtime
 

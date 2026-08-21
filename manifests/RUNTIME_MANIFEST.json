@@ -1,11 +1,12 @@
 {
   "schema_version": 1,
-  "version": "0.5.1-alpha.1",
+  "version": "0.5.2-alpha.1",
   "runtime": "python_stdlib_headless",
   "external_dependencies": [],
   "modules": {
     "character_state": "src/bunkerfrequenz/domain/character.py",
     "progression": "src/bunkerfrequenz/domain/progression.py",
+    "trait_effects": "src/bunkerfrequenz/domain/trait_effects.py",
     "action_resolver": "src/bunkerfrequenz/application/action_resolver.py",
     "character_action_service": "src/bunkerfrequenz/application/character_action_service.py",
     "profile_service": "src/bunkerfrequenz/application/profile_service.py",
@@ -41,11 +42,14 @@
     "duplicate_event_id_with_different_payload_is_rejected",
     "recovery_replay_must_not_double_apply_derived_level_or_trait_events",
     "corrupt_journal_tail_is_quarantined_before_repair",
-    "recovery_is_idempotent_after_a_recovered_checkpoint_is_committed"
+    "recovery_is_idempotent_after_a_recovered_checkpoint_is_committed",
+    "trait_effects_match_the_trait_engine_manifest",
+    "trait_effects_are_capped_per_runtime_target",
+    "level_50_continues_as_open_ended_journaled_resonance"
   ],
   "validation": {
     "compile_command": "PYTHONPATH=src python3 -m compileall -q src",
     "unit_command": "PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v",
-    "reference_report": "reports/RUNTIME_VALIDATION_0.5.1.json"
+    "reference_report": "reports/RUNTIME_VALIDATION_0.5.2.json"
   }
 }

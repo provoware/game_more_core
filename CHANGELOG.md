@@ -2,6 +2,28 @@
 
 Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
+## [0.5.2-alpha.1] – 2026-08-21
+
+### Hinzugefügt
+- Runtime-Wirkung für alle 15 Trait-Familien auf Ergebnis, Qualität und passende Skill-XP.
+- positive/negative Caps und die beiden katalogisierten Soft-Konflikte.
+- persistierte Resonanz-XP und offene Resonanzränge nach Level 50.
+- Journaltyp `character.resonance_xp_gained` und Manifestabgleichstest für Trait-Regeln.
+- `reports/RUNTIME_VALIDATION_0.5.2.json` als lokale Diff-Abnahme; Remote-CI bleibt bis zum Pull Request ausdrücklich ausstehend.
+
+### Geändert
+- Action Resolver bindet aktive, für die Aktion relevante Traits deterministisch ein.
+- Character-State-Schema, Progression-/Level-/Runtime-/Testmanifeste und Runtime-CI-Pfade auf 0.5.2 abgeglichen.
+- Projektversion auf `0.5.2-alpha.1`; README/TODO/Projektstatus auf den abgeschlossenen lokalen Stand gesetzt.
+
+### Validierung
+- `compileall`, 27 gezielte Runtime-/Recovery-Tests, Action-Vertragsprüfung und 0.4.1-Balance-Regression lokal bestanden.
+- Remote-CI wird erst nach dem Commit über den Pull Request als grün bestätigt; kein lokaler Bericht behauptet vorzeitig einen Remote-Erfolg.
+
+### Bewusst offen
+- 0.6 setzt A4 Ops Deck und A3 Cinematic Forge auf den Runtime-Kern.
+- 0.6.1 führt die getrennte Presentation-Testschicht ein.
+
 ## [0.5.1-alpha.1] – 2026-08-21
 
 ### Hinzugefügt

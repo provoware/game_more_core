@@ -11,7 +11,7 @@ ACTION = {
     "skill_weights":{"technik":0.5,"musik":0.3,"konzentration":0.2},
     "trait_evidence_weights":{"klangfokus":0.6,"detailmensch":0.4},"prerequisites":[]
 }
-ALLOWED = {"character.skill_xp_gained","character.skill_level_up","character.trait_evidence_gained","character.trait_unlocked","character.trait_tier_up","character.specialization_changed","character.level_up"}
+ALLOWED = {"character.skill_xp_gained","character.skill_level_up","character.trait_evidence_gained","character.trait_unlocked","character.trait_tier_up","character.specialization_changed","character.level_up","character.resonance_xp_gained","character.resonance_rank_up"}
 CTX = JournalContext("2026-08-21T16:00:00+02:00", "s-1", "p-1", "character", "c-1", "cmd-1", "runtime", "0.5.0-alpha.1", "c-1")
 
 

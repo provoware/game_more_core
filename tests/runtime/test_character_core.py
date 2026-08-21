@@ -34,6 +34,23 @@ class CharacterCoreTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             state.validate()
 
+    def test_level_50_continues_as_journaled_open_resonance(self):
+        state = CharacterState("r", "R")
+        state.total_xp = ProgressionRules.total_xp_for_level(50) - 1
+        state.level = 49
+        events = apply_skill_xp(state, "technik", ProgressionRules.resonance_xp_per_rank * 2)
+        self.assertEqual(state.level, 50)
+        self.assertGreaterEqual(state.resonance_rank, 1)
+        self.assertTrue(any(event["event_type"] == "character.resonance_xp_gained" for event in events))
+        self.assertTrue(any(event["event_type"] == "character.resonance_rank_up" for event in events))
+
+    def test_legacy_state_loads_without_resonance_fields(self):
+        data = CharacterState("l", "Legacy").to_dict()
+        data.pop("resonance_xp")
+        data.pop("resonance_rank")
+        loaded = CharacterState.from_dict(data)
+        self.assertEqual((loaded.resonance_xp, loaded.resonance_rank), (0, 0))
+
 
 if __name__ == "__main__":
     unittest.main()

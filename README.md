@@ -1,8 +1,8 @@
 # BUNKERFREQUENZ
 
-**Version:** `0.5.1-alpha.1`  
-**Phase:** 0.5.1 – Recovery & Fault Injection  
-**Status:** Headless Character-/Action-/Persistence-Kern um Snapshot-Replay, Quarantäne, Recovery Receipt, Fault Injection und sicheren Profil-Undo erweitert; grafische Game-UI, Telegram und Wirtschaft bleiben bewusst nachgelagert.
+**Version:** `0.5.2-alpha.1`<br>
+**Phase:** 0.5.2 – Progression Effects & Resonance<br>
+**Status:** Alle 15 Trait-Familien wirken deterministisch im Action Resolver; Caps, Soft-Konflikte und journalisierte Open-End-Resonanz nach Level 50 sind im headless Kern angebunden. Grafische Game-UI, Telegram und Wirtschaft bleiben bewusst nachgelagert.
 
 BUNKERFREQUENZ ist als modular erweiterbares Techno-/FreeTekno-Crew-RPG mit Charakterentwicklung, Eventmanagement, Club-/Bunker-Aufbau, Wirtschaft und späterer asynchroner Synchronisation geplant.
 
@@ -143,7 +143,20 @@ PYTHONPATH=src python3 -m compileall -q src
 PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
 ```
 
-Lokaler Abnahmestand: **21/21 Runtime-/Recovery-Tests PASS**. Der versionierte Bericht liegt in [`reports/RUNTIME_VALIDATION_0.5.1.json`](reports/RUNTIME_VALIDATION_0.5.1.json).
+Lokaler 0.5.1-Abnahmestand: **21/21 Runtime-/Recovery-Tests PASS**. Der Bericht liegt in [`reports/RUNTIME_VALIDATION_0.5.1.json`](reports/RUNTIME_VALIDATION_0.5.1.json).
+
+## Progression Effects & Resonance 0.5.2
+
+- alle 15 Trait-Effektfamilien wirken an Ergebnis-, Qualitäts- oder Skill-XP-Metriken
+- positive und negative Modifikatoren sind pro Runtime-Ziel auf +35 % beziehungsweise -20 % begrenzt
+- die beiden Soft-Konflikte dämpfen nur positive Wirkungen und löschen keine Traits
+- Trait-Wirkung bleibt bei gleichen Resolver-Eingaben deterministisch
+- Level 50 bleibt der letzte nummerierte Level; weitere Gesamt-XP werden als Resonanz-XP geführt
+- je 5.000 Resonanz-XP entsteht ein Rang, auch jenseits von Rang 10
+- Resonanz-XP und Rangaufstiege werden als katalogisierte Journal-Ereignisse gespeichert
+- Runtime-Regeln werden automatisiert gegen das Trait-Engine-Manifest abgeglichen
+
+Lokaler Abnahmestand: **27/27 Runtime-/Recovery-Tests PASS**. Der Bericht liegt in [`reports/RUNTIME_VALIDATION_0.5.2.json`](reports/RUNTIME_VALIDATION_0.5.2.json).
 
 ## TODO – aktueller Entwicklungsstand
 
@@ -158,7 +171,7 @@ Lokaler Abnahmestand: **21/21 Runtime-/Recovery-Tests PASS**. Der versionierte B
 - [x] **0.4.4 Gameplay Action Contract:** 20 Aktionen mit Skill-/Trait-/Journal-Zuordnung
 - [x] **0.5 Headless Character Core:** Character State, Progression, Action Resolver und Persistence Kernel
 - [x] **0.5.1 Recovery & Fault Injection:** Snapshot-Replay, Quarantäne, Crashpunkte, Recovery Receipt und Profil-Undo
-- [ ] **0.5.2 Progression Effects & Resonance:** Trait-Effekte/Soft-Konflikte anwenden und Open-End-Resonanz implementieren
+- [x] **0.5.2 Progression Effects & Resonance:** Trait-Effekte/Soft-Konflikte anwenden und Open-End-Resonanz implementieren
 - [ ] **0.6 Character Forge Runtime:** A4 Ops Deck + A3 Cinematic Forge auf den getesteten Kern setzen
 
 Die kanonische Arbeitsliste steht zusätzlich in [`TODO.md`](TODO.md).

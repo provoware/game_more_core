@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.4.1-alpha.1",
+  "version": "0.5.2-alpha.1",
   "skill_value": {
     "min": 10,
     "max": 100,
@@ -14,6 +14,11 @@
     "total_character_xp_from_skill_xp_multiplier": 1.15
   },
   "level_formula": "120 * (L - 1)^1.62 + 80 * (L - 1)",
+  "resonance": {
+    "starts_after_level": 50,
+    "xp_per_rank": 5000,
+    "post_rank_10": "open_ended"
+  },
   "specialization_model": {
     "max_primary": 1,
     "secondary_allowed_from_level": 25,

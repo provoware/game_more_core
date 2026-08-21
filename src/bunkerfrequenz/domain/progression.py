@@ -7,6 +7,7 @@ class ProgressionRules:
     skill_min = 10
     skill_max = 100
     total_xp_from_skill_xp_multiplier = 1.15
+    resonance_xp_per_rank = 5000
     trait_tiers = (
         (1, 220.0, 3, 12, 1),
         (2, 480.0, 8, 25, 1),
@@ -54,11 +55,20 @@ def apply_skill_xp(state: CharacterState, skill_id: str, amount: int) -> list[di
 
     state.skills[skill_id] = current_value
     state.skill_xp[skill_id] = current_xp
+    old_resonance_xp = state.resonance_xp
     state.total_xp += round(amount * ProgressionRules.total_xp_from_skill_xp_multiplier)
     old_level = state.level
     state.level = level_for_total_xp(state.total_xp)
     if state.level != old_level:
         events.append({"event_type": "character.level_up", "payload": {"old": old_level, "new": state.level}})
+    level_50_xp = ProgressionRules.total_xp_for_level(50)
+    state.resonance_xp = max(0, state.total_xp - level_50_xp)
+    if state.resonance_xp > old_resonance_xp:
+        events.append({"event_type": "character.resonance_xp_gained", "payload": {"amount": state.resonance_xp - old_resonance_xp, "total": state.resonance_xp}})
+    old_rank = state.resonance_rank
+    state.resonance_rank = state.resonance_xp // ProgressionRules.resonance_xp_per_rank
+    if state.resonance_rank > old_rank:
+        events.append({"event_type": "character.resonance_rank_up", "payload": {"old": old_rank, "new": state.resonance_rank}})
     return events
 
 
