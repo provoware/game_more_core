@@ -32,6 +32,8 @@ class CharacterState:
     energy: int = 100
     stress: int = 0
     reputation: int = 0
+    resonance_xp: int = 0
+    resonance_rank: int = 0
 
     def validate(self) -> None:
         if not self.character_id:
@@ -40,7 +42,7 @@ class CharacterState:
             raise ValueError("Skill-Satz ist unvollständig oder enthält unbekannte Skills")
         if any(not 10 <= value <= 100 for value in self.skills.values()):
             raise ValueError("Skillwert außerhalb 10..100")
-        if self.level < 1 or self.total_xp < 0:
+        if self.level < 1 or self.total_xp < 0 or self.resonance_xp < 0 or self.resonance_rank < 0:
             raise ValueError("Ungültiger Fortschrittsstand")
 
     def to_dict(self) -> dict[str, Any]:
@@ -61,6 +63,8 @@ class CharacterState:
             "energy": self.energy,
             "stress": self.stress,
             "reputation": self.reputation,
+            "resonance_xp": self.resonance_xp,
+            "resonance_rank": self.resonance_rank,
         }
 
     @classmethod
@@ -81,6 +85,8 @@ class CharacterState:
             energy=int(data.get("energy", 100)),
             stress=int(data.get("stress", 0)),
             reputation=int(data.get("reputation", 0)),
+            resonance_xp=int(data.get("resonance_xp", 0)),
+            resonance_rank=int(data.get("resonance_rank", 0)),
         )
         state.validate()
         return state
