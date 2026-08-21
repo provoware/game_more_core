@@ -115,14 +115,13 @@
 
 - [x] Presentation-Schnitt festgelegt: Zustandsprojektion, UI-Aktionen und Textschlüssel zwischen Runtime-Kern und gemeinsamer A4/A3-Komponentenschicht spezifiziert
 - [x] Datenvertrag deckt Overview, Skills, Traits, Spezialisierung und Biografie ab, ohne UI-Direktzugriff auf Domain-Zustand
-- [ ] **Nächste Iteration – Character-Projektion implementieren:** reine Zustandsprojektion nach `docs/PRESENTATION_CONTRACT_0.6.md` samt gezieltem Unit-Test anlegen
-- [ ] **Abnahme der nächsten Iteration:** dieselbe Eingabe erzeugt dieselbe, vom Domain-Objekt unabhängige Projektion; Sortierung, Fortschrittsgrenzen und Textschlüssel sind gezielt getestet
-- [ ] A4 Ops Deck als normalen Hauptworkflow auf der gemeinsamen Presentation-Schicht implementieren
-- [ ] A3 Cinematic Forge als Charakter-/Entwicklungsansicht aus denselben Komponenten implementieren
+- [x] Character-Projektion nach `docs/PRESENTATION_CONTRACT_0.6.md` als gemeinsame, vom Domain-Objekt getrennte Anzeigequelle implementieren
+- [x] A4 Ops Deck als gemeinsame Referenzanordnung der Character-Komponenten beschreiben
+- [x] A3 Cinematic Forge als große Charakteransicht mit Skillnetz und Kontextbereich aus exakt denselben Komponenten implementieren
 - [ ] editierbare Namen, Alias, zusätzliche Spitznamen und Motto anbinden
-- [ ] Skillnetz, Traits, Spezialisierung und dynamische Biografie darstellen
-- [ ] Level-/Skill-/Trait-Up-Feedback und Reduced-Motion-Fallbacks anbinden
-- [ ] Ranking-/Network-Ansicht vorbereiten, aber Sync weiterhin getrennt halten
+- [x] Skillnetz, Traits, Spezialisierung und journalbasierte Biografie in der Projektion bereitstellen
+- [x] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzfeedback samt statischem Reduced-Motion-Fallback anbinden
+- [x] Ranking, Network und Sync als klar getrennte, nicht angebundene Leerzustände ausweisen
 
 ### Bewusst nicht Teil der nächsten Iteration
 

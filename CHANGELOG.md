@@ -5,6 +5,8 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ## Unveröffentlicht
 
 ### Hinzugefügt
+- A3 Cinematic Forge ordnet die gemeinsame Character-Projektion als große Charakterbühne, Skillnetz und Kontextbereich an; A3 und A4 besitzen identische Komponenten- und Command-Schnittstellen.
+- Gemeinsames Fortschrittsfeedback deckt Level, Skills, Traits, Spezialisierung und Resonanz ab, bleibt nicht blockierend und wird bei Reduced Motion statisch dargestellt.
 - Zusätzliche Spitznamen sind im Character-State serialisierbar und über den bestehenden Profilservice inklusive Undo und Recovery editierbar.
 - Ein Ordner-/Dateiindex, ein übergreifendes Spielschema und verbindliche Ablageregeln trennen Basistools, Dokumentation und maschinenlesbare Verträge.
 - Der Presentation-Vertrag 0.6 legt die gemeinsame, schreibgeschützte Character-Projektion, erlaubte UI-Commands, Textschlüsselgrenzen und Komponenten für A4 Ops Deck und A3 Cinematic Forge fest.
