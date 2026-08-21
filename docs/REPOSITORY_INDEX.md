@@ -5,7 +5,7 @@
 Dieser Index beantwortet: **Wo liegt was und welche Datei ist zuständig?**
 
 - Runtime-Baseline: `0.5.2-alpha.1`
-- aktive Entwicklung: `0.6 – Character Forge Presentation`
+- aktive Entwicklung: `0.6.2 – lokaler Presentation-State + bestätigtes Feedback`
 
 Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben Iteration angepasst.
 
@@ -50,7 +50,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `docs/PERSISTENCE_CONTRACT.md` | Journal-, Save- und Transaktionsregeln |
 | `docs/RECOVERY_0.5.1.md` | Snapshot, Wiederherstellung und Undo |
 | `docs/UI_UX_BLUEPRINT.md` | A1–A4 Design-/UX-Richtung |
-| `docs/PRESENTATION_CONTRACT_0.6.md` | gemeinsame Projection, Commands und Komponenten für A4/A3 |
+| `docs/PRESENTATION_CONTRACT_0.6.md` | Projection, Application-Capabilities, Schreibcommands und gemeinsame A4/A3-Grenzen |
 | `docs/DATENMODELL.md` | fachliche Datenobjekte und Beziehungen |
 | `docs/ENTWICKLERHANDBUCH.md` | Übernahme, Prüfstrategie und Release-/PR-Ablauf |
 | `docs/REPOSITORY_AUDIT_2026-08-21.md` | Auditbefunde und Reparaturentscheidungen |
@@ -61,7 +61,12 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | Bereich | Verantwortung |
 |---|---|
 | `src/bunkerfrequenz/domain/` | Character State, Progression, Trait-Auswirkungen |
-| `src/bunkerfrequenz/application/` | Action-, Profil- und Recovery-Use-Cases |
+| `src/bunkerfrequenz/application/action_resolver.py` | deterministische fachliche Action-Auflösung |
+| `src/bunkerfrequenz/application/character_action_service.py` | bestätigte Action-Commits über Persistence |
+| `src/bunkerfrequenz/application/profile_service.py` | Profiländerung und sicherer Profil-Undo |
+| `src/bunkerfrequenz/application/presentation_capabilities.py` | reine Application-Leseabfrage für drei öffentliche UI-Capabilities |
+| `src/bunkerfrequenz/application/command_dispatcher.py` | einziger 0.6.1-Schreibweg von UI-Commands zu bestehenden Application-Services |
+| `src/bunkerfrequenz/application/recovery_service.py` | Character-Replay und Wiederherstellung |
 | `src/bunkerfrequenz/infrastructure/` | Journal, State, Snapshot, atomare Speicherung und Recovery |
 | `src/bunkerfrequenz/presentation/` | schreibgeschützte Character-/Biografieprojektionen; keine Domain-Writes |
 
@@ -71,15 +76,15 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 
 | Bereich | Zweck |
 |---|---|
-| `tests/runtime/` | Character-, Action-, Persistence-, Recovery- und Resonanzkern |
-| `tests/presentation/` | Projection, Biografie, Textschlüssel und später A4/A3-Vertrag |
+| `tests/runtime/` | Character-, Action-, Persistence-, Recovery-, Resonanz- und Command-Dispatcher-Kern |
+| `tests/presentation/` | Projection, Biografie, Textschlüssel, Application-Capabilities und später A4/A3-Vertrag |
 | `tests/gameplay/` | Action-Vertrag |
 | `tests/simulation/` | reproduzierbare Progressions-/Balance-Regression |
 
 ## Remote-CI
 
 - `runtime-core.yml`: Runtime-/Domain-/Application-/Infrastructure-Gate.
-- `presentation-core.yml`: Presentation, Presentation-Tests und relevante UI-Textkataloge.
+- `presentation-core.yml`: Presentation plus die zwei kanonischen 0.6.1-Application-Grenzdateien und relevante UI-Textkataloge.
 
 Ein rotes für den Scope relevantes Gate blockiert den Merge.
 
