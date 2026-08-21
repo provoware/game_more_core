@@ -11,6 +11,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ### Geändert
 - Die README führt nun über eine kompakte, farblich markierte Projektübersicht zu Status, Architektur, Werkzeugen und verbindlichen Detaildokumenten.
+- Der Action-Vertragsprüfer meldet vier gezielte Checkpoints per Ampel und erklärt Aufruf sowie Ampelbedeutung über `--help`.
 
 ### Bewusst offen
 - Die grafische Profilanbindung folgt weiterhin gemeinsam mit A4 Ops Deck und A3 Cinematic Forge in 0.6.
