@@ -15,6 +15,16 @@ _FEEDBACK_ANIMATIONS = {
     "specialization_changed": "anim.specialization",
     "resonance_rank_up": "anim.resonance_up",
 }
+_CINEMATIC_LABEL_KEYS = (
+    "ui.cinematic.hero_stage",
+    "ui.cinematic.vital_ribbon",
+    "ui.cinematic.growth_web",
+    "ui.cinematic.context_drawer",
+    "ui.cinematic.profile_drawer",
+    "ui.cinematic.story_drawer",
+    "ui.cinematic.action_dock",
+    "ui.cinematic.development_overlay",
+)
 
 
 def _require_mapping(value: Any, field: str) -> Mapping[str, Any]:
@@ -47,6 +57,20 @@ def _animation_index(animation_manifest: Mapping[str, Any]) -> dict[str, dict[st
     return index
 
 
+def _safe_animation(spec: Mapping[str, Any] | None) -> bool:
+    if spec is None:
+        return False
+    duration_ms = spec.get("duration_ms")
+    max_blocking_ms = spec.get("max_blocking_ms")
+    return (
+        isinstance(duration_ms, int)
+        and not isinstance(duration_ms, bool)
+        and duration_ms >= 0
+        and max_blocking_ms == 0
+        and spec.get("skippable") is True
+    )
+
+
 def _cinematic_feedback(
     feedback: Sequence[Mapping[str, Any]],
     *,
@@ -63,9 +87,9 @@ def _cinematic_feedback(
         animation_id = _FEEDBACK_ANIMATIONS.get(kind)
         spec = animations.get(animation_id) if animation_id else None
         fallback = "static_feedback_card"
-        if spec is not None and isinstance(spec.get("fallback"), str):
+        if spec is not None and isinstance(spec.get("fallback"), str) and spec["fallback"]:
             fallback = spec["fallback"]
-        animated = spec is not None and not reduced_motion
+        animated = _safe_animation(spec) and not reduced_motion
         cues.append(
             {
                 "feedback_id": feedback_id,
@@ -73,7 +97,7 @@ def _cinematic_feedback(
                 "mode": "animated" if animated else "static",
                 "animation_id": animation_id if animated else None,
                 "fallback": fallback,
-                "duration_ms": int(spec.get("duration_ms", 0)) if animated else 0,
+                "duration_ms": int(spec["duration_ms"]) if animated else 0,
                 "max_blocking_ms": 0,
                 "skippable": True,
                 "input_blocked": False,
@@ -83,6 +107,12 @@ def _cinematic_feedback(
             }
         )
     return cues
+
+
+def _require_cinematic_texts(text_catalog: Mapping[str, str]) -> None:
+    missing = sorted(key for key in _CINEMATIC_LABEL_KEYS if key not in text_catalog)
+    if missing:
+        raise KeyError(f"Fehlende A3-Textschlüssel: {', '.join(missing)}")
 
 
 def build_a3_cinematic_forge(
@@ -95,6 +125,7 @@ def build_a3_cinematic_forge(
     workflow: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Compose A3 from the already validated A4 interaction/component contract."""
+    _require_cinematic_texts(text_catalog)
     a4 = build_a4_ops_deck(
         projection,
         state,
