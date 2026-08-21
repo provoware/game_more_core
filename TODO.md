@@ -89,12 +89,33 @@
 
 ## 0.5.1 – Recovery & Fault Injection
 
-- [ ] Snapshot Writer und Snapshot-Index implementieren
-- [ ] Replay aus Snapshot + Journal implementieren
-- [ ] korrupten Journal-Tail automatisch quarantänisieren
-- [ ] `RECOVERY_RECEIPT.json` schreiben
-- [ ] Crashpunkte zwischen Journal Durable / State Applied / Meta Commit simulieren
-- [ ] Recovery idempotent testen
-- [ ] Runtime-Undo/Kompensation für erlaubte Eventgruppen implementieren
-- [ ] vollständige Trait-Effektanwendung auf Action-Metriken ergänzen
-- [ ] Resonanzfortschritt nach Level 50 konkretisieren und implementieren
+- [x] Snapshot Writer und Snapshot-Index implementiert
+- [x] Replay aus Snapshot + Journal implementiert
+- [x] korrupten Journal-Tail automatisch quarantänisiert
+- [x] `RECOVERY_RECEIPT.json` implementiert
+- [x] Crashpunkte nach Journal Durable / State Applied / Meta Commit simuliert
+- [x] Recovery idempotent getestet
+- [x] State-Envelope mit Sequenz, Journal-Head und Prüfsumme eingeführt
+- [x] Legacy-State aus 0.5.0 weiterhin lesbar
+- [x] Runtime-Undo/Kompensation für editierbare Profilfelder Name/Alias/Motto implementiert
+- [x] Recovery aus beschädigtem State über Snapshot + nachfolgendes Journal getestet
+- [x] 21/21 gezielte Runtime-/Recovery-Tests lokal bestanden
+
+## 0.5.2 – Progression Effects & Resonance
+
+- [ ] 15 Trait-Effektfamilien auf konkrete Action-Metriken anwenden
+- [ ] positive/negative Stack-Caps zur Runtime hinzufügen
+- [ ] Soft-Konflikte Planer↔Improvisierer und Detailmensch↔Opportunist berechnen
+- [ ] Trait-Effekte deterministisch in Action Resolution einbinden
+- [ ] Level 50 als Übergang in Resonanz statt Enddeckel implementieren
+- [ ] Resonanz-XP/-Ränge journalisieren und testen
+- [ ] Balance-Regression gegen 0.4.1-Simulator absichern
+
+## 0.6 – Character Forge Runtime
+
+- [ ] A4 Ops Deck als normalen Hauptworkflow implementieren
+- [ ] A3 Cinematic Forge als Charakter-/Entwicklungsansicht implementieren
+- [ ] editierbare Namen, Alias, zusätzliche Spitznamen und Motto anbinden
+- [ ] Skillnetz, Traits, Spezialisierung und dynamische Biografie darstellen
+- [ ] Level-/Skill-/Trait-Up-Feedback und Reduced-Motion-Fallbacks anbinden
+- [ ] Ranking-/Network-Ansicht vorbereiten, aber Sync weiterhin getrennt halten
