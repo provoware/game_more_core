@@ -9,7 +9,7 @@
 <p>
   <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
   <img alt="Character Forge 0.7.2 validiert" src="https://img.shields.io/badge/Character_Forge-0.7.2_validiert-7dff00">
-  <img alt="Nächste Entwicklung 0.8" src="https://img.shields.io/badge/Nächste_Entwicklung-0.8_Event_%26_Wirtschaft-f2c744">
+  <img alt="Aktive Entwicklung 0.8.1 Event State" src="https://img.shields.io/badge/Aktive_Entwicklung-0.8.1_Event_State-f2c744">
   <img alt="Runtime Python Standardbibliothek" src="https://img.shields.io/badge/Runtime-Python_Standardbibliothek-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -28,10 +28,12 @@
 | | Aktueller Stand |
 |---|---|
 | **Runtime-Baseline** | `0.5.2-alpha.1` |
-| **Letzte abgeschlossene Feature-Stufe** | `0.7.2 – kompletter Character-Forge-Vertical-Slice` |
-| **0.7.2-Abnahme** | PR #41 · Head `5f7ded400a5f...` · Runtime, Presentation und Repository Health grün |
-| **Nächster Feature-Schritt** | `0.8 – Event-/Wirtschafts-Integration` |
+| **Letzte validierte Feature-Stufe** | `0.7.2 – kompletter Character-Forge-Vertical-Slice` |
+| **Aktive Iteration** | `0.8.1 – Event State Foundation` |
+| **0.8.1-Status** | Implementiert auf Feature-Branch; Remote-Abnahme über Runtime Core, Presentation Core und Repository Health ausstehend |
+| **Nächster Feature-Schritt** | `0.8.2 – Equipment & Economy` |
 | **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
+| **Event Foundation** | Ort, Budgetrahmen, Acts, Crew, Equipment-Readiness, Zeitfenster, Sicherheit, Phasen und Revision |
 | **Persistenz** | Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
 | **Grafischer Renderer** | noch kein Qt/Web/Game-Engine-Framework fest verdrahtet |
@@ -120,7 +122,7 @@ NEUE MÖGLICHKEITEN
 </tr>
 </table>
 
-### 0.7.2 verbindet erstmals den kompletten Ablauf
+### 0.7.2 verbindet den kompletten Character-Forge-Ablauf
 
 ```text
 Action
@@ -144,6 +146,50 @@ identische Projektion in A4 und A3
 
 ---
 
+## 🏗️ 0.8.1 – Event State Foundation
+
+0.8.1 setzt neben den Character-Zustand einen eigenen, journalfähigen `event`-Block. Character- und Eventdaten ersetzen sich beim Speichern nicht gegenseitig; Recovery kann beide Blöcke gemeinsam aus dem Journal rekonstruieren.
+
+| Eventbereich | Vertrag in 0.8.1 |
+|---|---|
+| **Ort** | technische ID, Anzeigename, Region und Zugangsstatus |
+| **Budget** | Event-Budgetrahmen in Cent; noch kein Zahlungsledger |
+| **Acts** | geplant / bestätigt / abgesagt |
+| **Crew** | Character-ID, Rolle und Verfügbarkeit |
+| **Equipment** | Anforderung und Readiness; Besitz/Markt folgt in 0.8.2 |
+| **Zeitfenster** | ISO-8601 mit UTC-Offset und Zeitzone |
+| **Sicherheit** | `unreviewed`, `cleared`, `restricted`, `blocked` |
+| **Revision** | monotone Revision; veraltete Schreibversuche werden abgewiesen |
+
+```text
+draft
+  ↓
+planning
+  ↓
+procurement
+  ↓
+transport
+  ↓
+setup
+  ↓
+soundcheck
+  ↓
+live ↔ crisis
+  ↓       ↓
+teardown ←
+  ↓
+settlement
+  ↓
+completed
+```
+
+> [!CAUTION]
+> Ab `transport` verlangt der Domain-Vertrag einen gesetzten Ort, verifizierten Zugangsstatus, ein gültiges Zeitfenster und `safety_status=cleared`. Aus einem real klingenden Ortsnamen wird niemals automatisch eine Berechtigung abgeleitet.
+
+Details: [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
+
+---
+
 ## 🧭 Einstieg ohne Vorwissen
 
 **Du willst das Spielprinzip verstehen, ohne den Code zu kennen?**
@@ -152,7 +198,8 @@ identische Projektion in A4 und A3
 2. Lies danach bei Bedarf [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) für den Spiel-/Datenfluss.
 3. [`A4 Ops Deck`](docs/A4_OPS_DECK_0.6.3.md) beschreibt den normalen Arbeitsablauf.
 4. [`A3 Cinematic Forge`](docs/A3_CINEMATIC_FORGE_0.6.4.md) zeigt die stärker inszenierte Charakterentwicklung.
-5. Der nächste Entwicklungsblock steht kompakt in [`TODO.md`](TODO.md).
+5. Für den neuen Eventzustand: [`Event State Foundation 0.8.1`](docs/EVENT_STATE_0.8.1.md).
+6. Der nächste Entwicklungsblock steht kompakt in [`TODO.md`](TODO.md).
 
 > [!NOTE]
 > Noch gibt es **keinen fertigen grafischen Client zum Anklicken**. Der Runtime-, Persistenz- und Presentation-Kern wird zuerst reproduzierbar abgesichert, bevor ein konkretes Qt-/Web-/Game-Engine-Frontend fest verdrahtet wird.
@@ -166,6 +213,7 @@ identische Projektion in A4 und A3
 | Spieler-Einstieg | [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md) |
 | aktuellen Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
 | nächste Aufgaben | [`TODO.md`](TODO.md) |
+| Event State 0.8.1 | [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md) |
 | Architektur und Grenzen | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
 | Spiel-/Datenfluss | [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) |
 | Character Forge | [`docs/CHARACTER_FORGE.md`](docs/CHARACTER_FORGE.md) |
@@ -185,9 +233,9 @@ identische Projektion in A4 und A3
 ## 🧩 Architektur in 30 Sekunden
 
 ```text
-Domain
+Domain: CharacterState + EventState
   ↓
-Application
+Application: Character-/Event-Services
   ↓
 Persistence / bestätigte Events
   ↓
@@ -203,8 +251,8 @@ PresentationState
 
 | Bereich | Verantwortung | Grenze |
 |---|---|---|
-| `domain` | Charakter, Progression, Traits | kennt keine UI/Infrastruktur |
-| `application` | Use Cases, Commands, Capabilities | umgeht Persistenz nicht |
+| `domain` | Charakter, Progression, Traits, Eventzustand | kennt keine UI/Infrastruktur |
+| `application` | Use Cases, Commands, Capabilities, State-Block-Koordination | umgeht Persistenz nicht |
 | `infrastructure` | Journal, Save, Snapshot, Recovery | verwaltet keine sichtbaren UI-Texte |
 | `presentation` | Projection, Komponenten, Inszenierung | schreibt Domain-/Save-State nicht direkt |
 | `content` | sichtbare/lokalisierte Texte | ersetzt keine technischen Regeln |
@@ -294,8 +342,10 @@ Fachliche Prüfungen bleiben risikobasiert. Pull Requests nach `main` benötigen
 - Safe-Merge-End-to-End / PR #38: Runtime Core `32528078989`, Presentation Core `32528078992`, Repository Health `32528078926`; `SAFE MERGE PASS`
 - Safety Receipt / PR #39: Runtime Core `32528915005`, Presentation Core `32528914997`, Repository Health `32528915004`; `SAFE MERGE PASS`
 - 0.7.2 / PR #41, validierter Head `5f7ded400a5f...`: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406`
+- 0.7.2 Closeout / PR #45: Runtime Core `32534969250`, Presentation Core `32534969199`, Repository Health `32534969209`; `SAFE MERGE PASS`
+- Integrity-Reparatur / PR #47: Runtime Core `32536504014`, Presentation Core `32536504089`, Repository Health `32536504068`; `SAFE MERGE PASS`
 
-Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 aus dem kanonischen Baum entfernt. Der Main-Integrity-Incident zum späteren Direkt-Commit `fb96a489...` wurde analysiert: Der Guard reagierte korrekt auf fehlende PR-Provenienz; der AGENTS-Inhalt wurde anschließend im grünen PR #41 erneut validiert. Repository Guard und `/safe-merge` bleiben die vorgeschriebene Folgemaßnahme.
+Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 aus dem kanonischen Baum entfernt. Spätere direkte `main`-Änderungen wurden vom Main-Integrity-Guard erkannt und über validierte PRs bereinigt. Repository Guard und `/safe-merge` bleiben der vorgeschriebene normale Mergeweg.
 
 </details>
 
@@ -306,6 +356,7 @@ Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Repa
 - [`docs/CHARACTER_FORGE.md`](docs/CHARACTER_FORGE.md)
 - [`docs/PROGRESSION_CONTRACT.md`](docs/PROGRESSION_CONTRACT.md)
 - [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md)
+- [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
 - [`docs/CHARACTER_CORE_0.5.md`](docs/CHARACTER_CORE_0.5.md)
 - [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
 - [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
