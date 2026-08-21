@@ -6,6 +6,10 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ### Hinzugefügt
 - Zusätzliche Spitznamen sind im Character-State serialisierbar und über den bestehenden Profilservice inklusive Undo und Recovery editierbar.
+- Ein Ordner-/Dateiindex, ein übergreifendes Spielschema und verbindliche Ablageregeln trennen Basistools, Dokumentation und maschinenlesbare Verträge.
+
+### Geändert
+- Die README führt nun über eine kompakte, farblich markierte Projektübersicht zu Status, Architektur, Werkzeugen und verbindlichen Detaildokumenten.
 
 ### Bewusst offen
 - Die grafische Profilanbindung folgt weiterhin gemeinsam mit A4 Ops Deck und A3 Cinematic Forge in 0.6.
