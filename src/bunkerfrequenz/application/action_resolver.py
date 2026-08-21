@@ -8,6 +8,7 @@ from typing import Callable
 
 from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.domain.progression import add_trait_evidence, apply_skill_xp, evaluate_specialization, specialization_xp_multiplier
+from bunkerfrequenz.domain.trait_effects import resolve_trait_modifiers
 
 
 @dataclass(frozen=True, slots=True)
@@ -17,6 +18,7 @@ class ResolvedAction:
     outcome: str
     quality_multiplier: float
     xp_multiplier: float
+    trait_modifiers: dict[str, float]
     journal_events: tuple[dict, ...]
     character_after: CharacterState
 
@@ -87,17 +89,20 @@ class ActionResolver:
         rng = _stable_random(world_seed, action_instance_id, server_sequence)
         competence = sum(character.skills[s] * w for s, w in skill_weights.items())
         competence_bonus = ((competence - 10.0) / 90.0) * 0.25
-        roll = min(0.999999, max(0.0, rng.random() + competence_bonus - RISK_PENALTY.get(action.get("risk_profile", "medium"), 0.04)))
+        trait_modifiers = resolve_trait_modifiers(character, action, tuple(skill_weights))
+        roll = min(0.999999, max(0.0, rng.random() + competence_bonus + trait_modifiers.outcome_pct / 100 - RISK_PENALTY.get(action.get("risk_profile", "medium"), 0.04)))
         outcome, quality, xp_mult = "success", 1.0, 1.0
         for limit, name, q, x in OUTCOMES:
             if roll < limit:
                 outcome, quality, xp_mult = name, q, x
                 break
+        quality = round(quality * (1 + trait_modifiers.quality_pct / 100), 6)
 
         state = deepcopy(character)
         generated: list[dict] = []
         for skill_id, weight in skill_weights.items():
-            amount = max(1, round(base_xp * weight * xp_mult * specialization_xp_multiplier(state, skill_id)))
+            trait_xp_multiplier = 1 + trait_modifiers.xp_pct_by_skill[skill_id] / 100
+            amount = max(1, round(base_xp * weight * xp_mult * specialization_xp_multiplier(state, skill_id) * trait_xp_multiplier))
             generated.append({"event_type": "character.skill_xp_gained", "payload": {"skill_id": skill_id, "amount": amount, "source_action": action["action_id"]}})
             generated.extend(apply_skill_xp(state, skill_id, amount))
 
@@ -114,5 +119,6 @@ class ActionResolver:
         return ResolvedAction(
             action_id=action["action_id"], action_instance_id=action_instance_id,
             outcome=outcome, quality_multiplier=quality, xp_multiplier=xp_mult,
+            trait_modifiers=trait_modifiers.metrics,
             journal_events=tuple(generated), character_after=state,
         )

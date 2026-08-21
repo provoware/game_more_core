@@ -23,6 +23,8 @@ class CharacterState:
     motto: str = ""
     level: int = 1
     total_xp: int = 0
+    resonance_xp: int = 0
+    resonance_rank: int = 0
     skills: dict[str, int] = field(default_factory=initial_skills)
     skill_xp: dict[str, int] = field(default_factory=dict)
     trait_evidence: dict[str, float] = field(default_factory=dict)
@@ -40,7 +42,7 @@ class CharacterState:
             raise ValueError("Skill-Satz ist unvollständig oder enthält unbekannte Skills")
         if any(not 10 <= value <= 100 for value in self.skills.values()):
             raise ValueError("Skillwert außerhalb 10..100")
-        if self.level < 1 or self.total_xp < 0:
+        if self.level < 1 or self.total_xp < 0 or self.resonance_xp < 0 or self.resonance_rank < 0:
             raise ValueError("Ungültiger Fortschrittsstand")
 
     def to_dict(self) -> dict[str, Any]:
@@ -52,6 +54,8 @@ class CharacterState:
             "motto": self.motto,
             "level": self.level,
             "total_xp": self.total_xp,
+            "resonance_xp": self.resonance_xp,
+            "resonance_rank": self.resonance_rank,
             "skills": dict(self.skills),
             "skill_xp": dict(self.skill_xp),
             "trait_evidence": dict(self.trait_evidence),
@@ -72,6 +76,8 @@ class CharacterState:
             motto=data.get("motto", ""),
             level=int(data.get("level", 1)),
             total_xp=int(data.get("total_xp", 0)),
+            resonance_xp=int(data.get("resonance_xp", 0)),
+            resonance_rank=int(data.get("resonance_rank", 0)),
             skills={k: int(v) for k, v in data.get("skills", initial_skills()).items()},
             skill_xp={k: int(v) for k, v in data.get("skill_xp", {}).items()},
             trait_evidence={k: float(v) for k, v in data.get("trait_evidence", {}).items()},

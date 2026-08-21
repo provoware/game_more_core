@@ -1,12 +1,12 @@
 {
   "project": "BUNKERFREQUENZ",
-  "version": "0.5.1-alpha.1",
-  "status": "recovery_snapshot_replay_fault_injection_validated",
-  "current_iteration": "0.5.1",
+  "version": "0.5.2-alpha.1",
+  "status": "progression_effects_resonance_locally_validated",
+  "current_iteration": "0.5.2",
   "last_validated_release": null,
-  "validation_reference": "reports/RUNTIME_VALIDATION_0.5.1.json",
-  "next_iteration": "0.5.2",
-  "next_goal": "Trait-Effekte, Soft-Konflikte und Open-End-Resonanz im Runtime-Kern anwenden",
+  "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
+  "next_iteration": "0.6",
+  "next_goal": "A4 Ops Deck und A3 Cinematic Forge als einen vollständigen Character-Workflow anbinden",
   "runtime_code": true,
   "developer_tool_code": true,
   "updated_at": "2026-08-21T16:45:00+02:00"
