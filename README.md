@@ -2,11 +2,11 @@
 
 <p>
   <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
-  <img alt="Aktive Entwicklung 0.6.3 Presentation" src="https://img.shields.io/badge/Aktive_Entwicklung-0.6.3_Presentation-7dff00">
+  <img alt="Aktive Entwicklung 0.6.4 Cinematic Forge" src="https://img.shields.io/badge/Aktive_Entwicklung-0.6.4_Cinematic_Forge-7dff00">
   <img alt="Runtime Python Standardbibliothek" src="https://img.shields.io/badge/Runtime-Python_Standardbibliothek-00c2ff">
 </p>
 
-> **Techno-/FreeTekno-Crew-RPG:** Verhalten, Training, Entscheidungen und Krisen formen individuelle Charaktere. Der headless Character-/Action-/Persistence-Kern ist vorhanden; Character Forge, Wirtschaft und Synchronisation werden modular darauf aufgebaut.
+> **Techno-/FreeTekno-Crew-RPG:** Verhalten, Training, Entscheidungen und Krisen formen individuelle Charaktere. Der robuste Runtime-Kern und der frameworkfreie Character-Forge-Unterbau stehen; A4 Ops Deck ist validiert, A3 Cinematic Forge wird auf exakt denselben Bausteinen umgesetzt.
 
 ![BUNKERFREQUENZ System- und Character-Forge-Blueprint](docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp)
 
@@ -15,14 +15,15 @@
 | Bereich | Stand |
 |---|---|
 | letzte versionierte Runtime-Baseline | `0.5.2-alpha.1` |
-| aktive Entwicklungsiteration | `0.6.3 – gemeinsame Komponenten + A4 Ops Deck` |
+| aktive Entwicklungsiteration | `0.6.4 – A3 Cinematic Forge` |
 | Runtime | Character State, Actions, Traits, Resonanz, Journal, Snapshot, Recovery |
-| Presentation | Character-/Biografieprojektion, bestätigte Capabilities/Commands, lokaler immutable State und bestätigtes Feedback |
-| grafische Spieloberfläche | noch nicht implementiert; A4 Ops Deck ist nächster Schritt |
+| A4 Ops Deck | validiert und gemergt in PR #28 |
+| A3 Cinematic Forge | gemeinsame Komponenten, Skillnetz/Traits/Animation-Cues in Arbeit |
+| grafischer Renderer | noch kein Qt/Web/Game-Engine-Framework fest verdrahtet |
 | Telegram/Sync | geplant, noch nicht implementiert |
 | Wirtschaft/Clubs | geplant, noch nicht implementiert |
 
-**Wichtig:** `VERSION.json` beschreibt die letzte versionierte Runtime-Baseline. Die laufende nächste Entwicklungsiteration steht in `PROJEKTSTATUS.json` und `TODO.md`. Dadurch wird eine noch nicht abgeschlossene 0.6-Arbeit nicht fälschlich als neues Release ausgegeben.
+**Wichtig:** `VERSION.json` beschreibt weiterhin die letzte versionierte Runtime-Baseline. Die 0.6.x-Presentation-Entwicklung wird getrennt in `PROJEKTSTATUS.json` und `TODO.md` geführt.
 
 ## Schnellzugriff
 
@@ -33,6 +34,7 @@
 | Architektur und Grenzen | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
 | Spiel-/Datenfluss verstehen | [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) |
 | 0.6 Presentation-Schnitt | [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md) |
+| A4 Ops Deck 0.6.3 | [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md) |
 | Datei finden | [`docs/REPOSITORY_INDEX.md`](docs/REPOSITORY_INDEX.md) |
 | Ablageregeln | [`docs/REPOSITORY_RULES.md`](docs/REPOSITORY_RULES.md) |
 | als Entwickler übernehmen | [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md) |
@@ -60,57 +62,49 @@
 - Recovery Receipt
 - sicherer kompensierender Ein-Schritt-Profil-Undo
 
-### Presentation-Foundation 0.6
+### Character Forge Presentation
 
-- gemeinsamer Presentation-Vertrag für A4 Ops Deck und A3 Cinematic Forge
-- schreibgeschützte Character-Projektion
-- getrennte Biografieprojektion aus validierten Journal-Ereignissen
-- bestätigte Application-Capabilities und ein zentraler Schreibcommand-Dispatcher
-- immutable lokaler Presentation-State für Ansicht, Filter, Feedback-Dismiss und Reduced Motion
-- bestätigte Eventabfrage über die Application-Grenze statt direktem Journalzugriff aus Presentation
-- deterministisches Feedback für Level-, Skill-, Trait-, Spezialisierungs- und Resonanzsprünge
-- sichtbare Feedbacktexte vollständig in `content/de/ui/feedback.json` ausgelagert
-- keine sichtbaren Texte in der Spiellogik
-- eigener zielgerichteter Presentation-CI-Gate
+- schreibgeschützte Character-/Biografieprojektion
+- bestätigte Capabilities und ein zentraler Schreibcommand-Dispatcher
+- immutable lokaler Presentation-State
+- bestätigtes deterministisches Progressionsfeedback
+- exakt acht gemeinsame frameworkfreie Komponenten
+- A4 Ops Deck als geführter Workflow
+- Primäraktionen direkt dispatcher-kompatibel
+- A3 Cinematic Forge verwendet dieselben Komponenten und denselben Action-Normalisierer
+- nicht blockierende Animation-Cues für Level, Skill, Trait, Spezialisierung und Resonanz
+- Reduced Motion ersetzt Bewegung durch statische Fallbacks
+- alle sichtbaren Texte aus `content/de/ui/`
 
-## Datenfluss
+## Gemeinsamer Datenfluss
 
 ```text
-Content + Manifeste
-        │
-        ▼
-Spielaktion ──► deterministische Auflösung ──► Domain-Ereignisse
-                                                   │
-                                                   ▼
-                                       Persistence Kernel
-                                         │             │
-                                         ▼             ▼
-                                      Journal        Zustand
-                                         │             │
-                                         └──────┬──────┘
-                                                ▼
-                              Application-Capabilities / bestätigte Events
-                                                │
-                                                ▼
-                                   schreibgeschützte Projection
-                                                │
-                                     lokaler Presentation-State
-                                                │
-                                      ┌─────────┴─────────┐
-                                      ▼                   ▼
-                                 A4 Ops Deck      A3 Cinematic Forge
+Domain / Persistence
+        ↓
+Application
+        ↓
+Character Projection + bestätigtes Feedback
+        ↓
+PresentationState
+        ↓
+8 gemeinsame Komponenten
+        ↓
+   ┌────┴────┐
+   ▼         ▼
+ A4 Ops    A3 Cinematic
+ Deck       Forge
 ```
 
-A4 und A3 dürfen Daten später unterschiedlich anordnen, aber keine unterschiedlichen Fachregeln besitzen.
+A3 und A4 dürfen Daten anders anordnen und inszenieren, aber keine unterschiedlichen Fachregeln, Commands oder Persistence-Wege besitzen.
 
 ## Architekturgrenzen
 
 | Bereich | Verantwortung | Darf nicht |
 |---|---|---|
 | `domain` | Charakter, Progression, Traits | UI oder Infrastruktur kennen |
-| `application` | Use Cases, Capabilities, Commands und bestätigte Abfragen koordinieren | Persistenz umgehen |
+| `application` | Use Cases, Capabilities, Commands und bestätigte Abfragen | Persistenz umgehen |
 | `infrastructure` | Journal, Save, Snapshot, Recovery | sichtbare UI-Texte verwalten |
-| `presentation` | schreibgeschützte Anzeigeprojektionen und rein lokalen UI-State | Domain-Zustand direkt verändern |
+| `presentation` | Projection, Komponenten, lokale Ansicht und Inszenierungs-Cues | Domain-/Save-Zustand direkt verändern |
 | `content` | sichtbare/lokalisierte Texte | technische Regeln ersetzen |
 
 ## Gezielte Prüfungen
@@ -122,16 +116,13 @@ PYTHONPATH=src python3 -m compileall -q src
 PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
 ```
 
-Die Runtime-Baseline `0.5.2-alpha.1` wurde im zugehörigen PR zusätzlich über den GitHub-Workflow **Runtime Core** erfolgreich geprüft.
-
 ### Presentation
 
 ```bash
-PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
 PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
 ```
 
-Für Änderungen an der Presentation existiert zusätzlich `.github/workflows/presentation-core.yml`. 0.6.2 bestand auf PR #26 sowohl Runtime Core (`32511953788`) als auch Presentation Core (`32511953619`).
+0.6.3 wurde auf PR #28 mit Runtime Core `32514970109` und Presentation Core `32514970398` erfolgreich geprüft.
 
 ### Verträge / Simulation
 
@@ -154,6 +145,7 @@ Prüfungen werden risikobasiert ausgeführt; nicht jede Dokumentänderung löst 
 - [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
 - [`docs/UI_UX_BLUEPRINT.md`](docs/UI_UX_BLUEPRINT.md)
 - [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md)
+- [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md)
 - [`docs/DATENMODELL.md`](docs/DATENMODELL.md)
 
 ## Entwicklungsregel

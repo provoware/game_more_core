@@ -30,18 +30,16 @@
 
 ## 0.6.2 – Lokaler Presentation-State + bestätigtes Feedback
 
-- [x] unveränderlichen lokalen Zustand für `overview`, `skills_traits`, `biography` angelegt
-- [x] `view.select`, `biography.filter`, `feedback.dismiss` als reine lokale Transitionen umgesetzt
-- [x] Biografie-Filter nutzt Kategorien aus `BIOGRAFIE_MANIFEST.json` statt einer zweiten Handliste
-- [x] bestätigte Journalrecords über Application-Leseabfrage `get_confirmed_events(...)` bereitgestellt
-- [x] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzereignisse in bestätigtes UI-Feedback projiziert
-- [x] Feedback-IDs deterministisch aus bestätigten Event-IDs abgeleitet
-- [x] nur katalogisierte bestätigte Journal-/Domain-Ereignisse als Feedback akzeptiert
-- [x] sichtbare Feedbacktexte nach `content/de/ui/feedback.json` ausgelagert
-- [x] Reduced Motion als statische, nicht blockierende Darstellungsoption abgesichert
-- [x] Character-Projektion übernimmt Feedback detached und validiert dessen Textschlüssel
-- [x] End-to-End `Command → Commit → Eventquery → Feedback → Projection` getestet
-- [x] idempotenter Replay erzeugt keine neuen Commit-IDs und kein doppeltes Feedback
+- [x] unveränderlichen Zustand für `overview`, `skills_traits`, `biography` angelegt
+- [x] lokale View-/Filter-/Dismiss-Transitionen ohne Persistenzwirkung umgesetzt
+- [x] Biografie-Filter nutzt `BIOGRAFIE_MANIFEST.json`
+- [x] bestätigte Journalrecords über Application-Abfrage bereitgestellt
+- [x] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzfeedback projiziert
+- [x] deterministische Feedback-IDs aus bestätigten Event-IDs
+- [x] sichtbare Feedbacktexte ausgelagert
+- [x] Reduced Motion fachlich zustandsneutral
+- [x] End-to-End `Command → Commit → Eventquery → Feedback → Projection`
+- [x] idempotenter Replay erzeugt kein doppeltes Feedback
 - [x] PR #26: Runtime Core `32511953788` + Presentation Core `32511953619` grün
 - [x] PR #26 gemergt (`5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a`)
 
