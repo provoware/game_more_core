@@ -9,6 +9,8 @@ START_SKILLS = (
     "improvisation", "verhandlung", "szenewissen", "risikoeinschaetzung",
     "konzentration", "belastbarkeit", "instinkt",
 )
+RESOURCE_MIN = 0
+RESOURCE_MAX = 100
 
 
 def initial_skills(value: int = 10) -> dict[str, int]:
@@ -49,6 +51,10 @@ class CharacterState:
             raise ValueError("Zusätzliche Spitznamen müssen nicht leere Texte sein")
         if self.level < 1 or self.total_xp < 0 or self.resonance_xp < 0 or self.resonance_rank < 0:
             raise ValueError("Ungültiger Fortschrittsstand")
+        if isinstance(self.energy, bool) or not isinstance(self.energy, int) or not RESOURCE_MIN <= self.energy <= RESOURCE_MAX:
+            raise ValueError("Energie außerhalb 0..100")
+        if isinstance(self.stress, bool) or not isinstance(self.stress, int) or not RESOURCE_MIN <= self.stress <= RESOURCE_MAX:
+            raise ValueError("Stress außerhalb 0..100")
 
     def to_dict(self) -> dict[str, Any]:
         self.validate()
