@@ -17,7 +17,7 @@
 | letzte versionierte Runtime-Baseline | `0.5.2-alpha.1` |
 | zuletzt abgeschlossene Feature-Iteration | `0.7.1 – A4 Action-Auswahl` |
 | nächster logischer Feature-Schritt | `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf` |
-| Repository Guard | implementiert und remote validiert; GitHub-Branch-Protection für `main` noch extern zu aktivieren |
+| Repository Guard | `/safe-merge` + Main Integrity End-to-End validiert; native GitHub-Branch-Protection bleibt zusätzliche offene Härtung |
 | Runtime | Character State, Actions, Traits, Resonanz, Journal, Snapshot, Recovery |
 | A4 Ops Deck | validiert; geführter Workflow + Action-Auswahl |
 | A3 Cinematic Forge | validiert; gleiche Komponenten/Commands wie A4 |
@@ -37,6 +37,7 @@
 | Architektur und Grenzen | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
 | Spiel-/Datenfluss verstehen | [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) |
 | Repository Guard / Branch-Policy | [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md) |
+| Safe-Merge-Bedienung | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
 | Presentation-Schnitt | [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md) |
 | A4 Ops Deck | [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md) |
 | A3 Cinematic Forge | [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md) |
@@ -90,8 +91,13 @@
 - versionsgebundene alte Feature-Branches werden gegen die aktive Iteration blockiert
 - PR-Heads müssen den aktuellen Base-Branch enthalten
 - `runtime-core`, `presentation-core` und `repository-health` liefern bei jedem Pull Request einen stabilen Check-Status
-- Zielpolicy für `main` ist maschinenlesbar in `manifests/REPOSITORY_GUARD_MANIFEST.json`
-- GitHub-Branch-Protection ist noch nicht technisch aktiviert, da die verbundene GitHub-Schnittstelle dafür keine sichere Schreibaktion bereitstellt
+- normale PRs werden über `/safe-merge` übernommen; dabei werden Berechtigung, exakter PR-Head, aktueller `main`, die drei grünen Gates und ungelöste Review-Threads unmittelbar vor Merge erneut geprüft
+- Guard-/CI-Sicherheitsdateien dürfen von normalen `/safe-merge`-PRs nicht selbst geändert werden
+- `Main Integrity` prüft die Provenienz von Änderungen auf `main`
+- GitHub-Eventual-Consistency wird nur bei der nachgelagerten Provenienz-Leseprüfung mit begrenztem Retry behandelt; der eigentliche Merge wird exakt einmal ausgeführt
+- PR #38 bestätigte den gesamten Ablauf End-to-End mit `SAFE MERGE PASS`; Merge-Commit `e1155db2d2a7eaddd313127d89635a1a3dac3ce6`
+- Zielpolicy bleibt maschinenlesbar in `manifests/REPOSITORY_GUARD_MANIFEST.json`
+- native GitHub-Branch-Protection ist weiterhin nicht technisch aktiviert, weil die verbundene Schnittstelle keinen sicheren Admin-Schreibweg bereitstellt; sie bleibt eine zusätzliche serverseitige Härtung
 
 ## Gemeinsamer Datenfluss
 
@@ -146,7 +152,8 @@ PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
 ### Repository Health
 
 ```bash
-PYTHONPATH=src python3 -m compileall -q src tools/repository_health.py
+PYTHONPATH=src python3 -m compileall -q src tools/repository_health.py tools/github_merge_guard.py tools/github_merge_guard_retry.py tests/repository
+PYTHONPATH=src:. python3 -m unittest discover -s tests/repository -v
 PYTHONPATH=src python3 tools/repository_health.py
 ```
 
@@ -156,9 +163,12 @@ PYTHONPATH=src python3 tools/repository_health.py
 - 0.6.4 / PR #29: Runtime Core `32516833552`, Presentation Core `32516833514`
 - 0.6.5 / PR #30: Runtime Core `32517683276`, Presentation Core `32517683263`
 - 0.7.1 / PR #31: Runtime Core `32519042006`, Presentation Core `32519041908`
-- Repository Guard / PR #34 erster Implementierungs-Head: Runtime Core `32522336221`, Presentation Core `32522336259`, Repository Health `32522336287`
+- Repository Guard / PR #34: Runtime Core `32522887448`, Presentation Core `32522887380`, Repository Health `32522887383`
+- Safe-Merge-Bootstrap / PR #35: Runtime Core `32527116025`, Presentation Core `32527115999`, Repository Health `32527116022`
+- Eventual-Consistency-Hotfix / PR #37: Runtime Core `32527882811`, Presentation Core `32527882838`, Repository Health `32527882791`
+- Safe-Merge-End-to-End / PR #38: Runtime Core `32528078989`, Presentation Core `32528078992`, Repository Health `32528078926`; Bot-Rückkanal `SAFE MERGE PASS`
 
-Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 vollständig aus dem kanonischen Baum entfernt. Der neue Repository Guard ist die technische Folgemaßnahme gegen dieselbe Fehlerklasse.
+Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 vollständig aus dem kanonischen Baum entfernt. Der Repository Guard und der validierte `/safe-merge`-Pfad sind die technische Folgemaßnahme gegen dieselbe Fehlerklasse.
 
 ### Verträge / Simulation
 
@@ -185,8 +195,9 @@ Fachliche Prüfungen bleiben risikobasiert. Für Pull Requests nach `main` liefe
 - [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md)
 - [`docs/RANKING_NETWORK_0.6.5.md`](docs/RANKING_NETWORK_0.6.5.md)
 - [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md)
+- [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md)
 - [`docs/DATENMODELL.md`](docs/DATENMODELL.md)
 
 ## Entwicklungsregel
 
-Eine Iteration bearbeitet eine klar begründete Zielstelle. Parallelimplementierungen derselben kanonischen Datei werden nicht weitergeführt. Für `main` müssen `runtime-core`, `presentation-core` und `repository-health` grün sein; der PR-Head muss den aktuellen Base-Stand enthalten. Details stehen in [`AGENTS.md`](AGENTS.md) und [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md).
+Eine Iteration bearbeitet eine klar begründete Zielstelle. Parallelimplementierungen derselben kanonischen Datei werden nicht weitergeführt. Normale PRs nach `main` werden über `/safe-merge` übernommen. Dafür müssen `runtime-core`, `presentation-core` und `repository-health` auf dem exakten PR-Head grün sein; der Branch muss den aktuellen `main` enthalten und alle Review-Threads müssen gelöst sein. Änderungen am Guard selbst benötigen einen ausdrücklich auditierten Security-Bootstrap-PR. Details stehen in [`AGENTS.md`](AGENTS.md), [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md) und [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md).

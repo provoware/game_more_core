@@ -7,6 +7,7 @@ Dieser Index beantwortet: **Wo liegt was und welche Datei ist zuständig?**
 - Runtime-Baseline: `0.5.2-alpha.1`
 - zuletzt abgeschlossene Feature-Iteration: `0.7.1 – A4 Action-Auswahl`
 - nächster Feature-Schritt: `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
+- Repository-Sicherheit: `/safe-merge` + Main Integrity End-to-End validiert
 
 Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben Iteration angepasst.
 
@@ -26,15 +27,15 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 
 | Ordner | Inhalt | Einstieg |
 |---|---|---|
-| `.github/workflows/` | stabile Remote-CI-/Merge-Gates | `runtime-core.yml`, `presentation-core.yml`, `repository-health.yml` |
+| `.github/workflows/` | stabile Remote-CI-/Merge-/Integritäts-Gates | `runtime-core.yml`, `presentation-core.yml`, `repository-health.yml`, `safe-merge.yml`, `main-integrity.yml` |
 | `content/` | lokalisierte sichtbare Inhalte | `content/de/` |
 | `docs/` | Fachverträge, Erklärungen und Navigation | `GAME_SCHEMA.md` |
 | `manifests/` | kanonische Kataloge und maschinenlesbare Regeln | `ARCHITEKTUR_MANIFEST.json` |
 | `reports/` | reproduzierbare Prüfnachweise | `RUNTIME_VALIDATION_0.5.2.json` |
 | `schemas/` | JSON-Strukturverträge | `character_state.schema.json` |
 | `src/` | headless Spielkern und Presentation | `src/bunkerfrequenz/` |
-| `tests/` | Vertrags-, Runtime-, Simulation- und Presentation-Tests | Unterordner nach Bereich |
-| `tools/` | kleine ausführbare Entwicklerwerkzeuge | `validate_action_contract.py`, `repository_health.py` |
+| `tests/` | Vertrags-, Runtime-, Simulation-, Presentation- und Repository-Tests | Unterordner nach Bereich |
+| `tools/` | kleine ausführbare Entwicklerwerkzeuge | `validate_action_contract.py`, `repository_health.py`, `github_merge_guard.py`, `github_merge_guard_retry.py` |
 
 ## Dokumentation
 
@@ -42,7 +43,8 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 |---|---|
 | `docs/GAME_SCHEMA.md` | Gesamtbild von Spiel, Daten und Ereignisfluss |
 | `docs/REPOSITORY_RULES.md` | Ablage, Informationshierarchie und PR-Lebenszyklus |
-| `docs/REPOSITORY_GUARD.md` | Merge-Guard, Repository Health und Zielpolicy für `main` |
+| `docs/REPOSITORY_GUARD.md` | Merge-Guard, Repository Health, `/safe-merge`, Main Integrity und Zielpolicy für `main` |
+| `docs/SAFE_MERGE.md` | laienfreundliche Bedienung und Fehlerbilder des validierten `/safe-merge`-Pfads |
 | `docs/REPOSITORY_INDEX.md` | dieser Navigationsindex |
 | `docs/ARCHITEKTURVERTRAG.md` | Ebenen und unveränderliche Architekturregeln |
 | `docs/CHARACTER_FORGE.md` | Figuren, Skills, Traits und Biografie |
@@ -88,6 +90,19 @@ Wichtige Presentation-Dateien:
 
 `__init__.py`-Dateien exportieren vorhandene Funktionen; sie dürfen keine zweite Fachimplementierung enthalten.
 
+## Repository-Sicherheit
+
+- `.github/workflows/repository-health.yml` – Repository-/Merge-Vertrag auf jedem PR und `main`.
+- `.github/workflows/safe-merge.yml` – autorisierter normaler Mergeweg über `/safe-merge`.
+- `.github/workflows/main-integrity.yml` – nachgelagerte Main-Provenienzprüfung.
+- `tools/repository_health.py` – Struktur-, Info-, Export- und Workflow-Prüfung.
+- `tools/github_merge_guard.py` – Kandidatenprüfung, exakt-einmal-Merge und Main-Provenienz.
+- `tools/github_merge_guard_retry.py` – begrenzter Retry ausschließlich für nachgelagerte GitHub-Provenienz-Leseabfragen.
+- `manifests/REPOSITORY_GUARD_MANIFEST.json` – kanonische Sicherheitsregeln und geschützte Guard-Pfade.
+- `tests/repository/` – Regressionen für Guard, Safe Merge und Eventual Consistency.
+
+Der validierte End-to-End-Nachweis ist PR #38 mit `SAFE MERGE PASS` und Merge `e1155db2d2a7eaddd313127d89635a1a3dac3ce6`.
+
 ## Tests
 
 | Bereich | Zweck |
@@ -96,7 +111,7 @@ Wichtige Presentation-Dateien:
 | `tests/presentation/` | Projection, A4/A3, Feedback, Ranking/Network, Action-Auswahl und Dispatcher-Kompatibilität |
 | `tests/gameplay/` | Action-Vertrag |
 | `tests/simulation/` | reproduzierbare Progressions-/Balance-Regression |
-| `tools/repository_health.py` | repositoryweite Struktur-/Info-/Export-/Merge-Guard-Prüfung |
+| `tests/repository/` | Merge-Guard, Safe-Merge-Vertrag, Retry und Repository-Security |
 
 Für 0.7.1 sind insbesondere `tests/presentation/test_action_selection.py` und `tests/presentation/test_a4_ops_deck.py` relevant.
 
@@ -105,8 +120,10 @@ Für 0.7.1 sind insbesondere `tests/presentation/test_action_selection.py` und `
 - `runtime-core.yml`: Runtime-/Domain-/Application-/Infrastructure-Gate; liefert bei jedem PR den Check `runtime-core`.
 - `presentation-core.yml`: Presentation und zugehörige Application-Grenze; liefert bei jedem PR den Check `presentation-core`.
 - `repository-health.yml`: Repository-/Merge-Guard; liefert bei jedem PR den Check `repository-health`.
+- `safe-merge.yml`: prüft normale Merge-Kandidaten unmittelbar vor Merge erneut und führt genau einen Merge-API-Aufruf aus.
+- `main-integrity.yml`: prüft Main-Merge-Provenienz und eröffnet bei Fehler einen Integritäts-Incident.
 
-Für `main` sollen alle drei Check-IDs als Required Checks gelten. Der PR-Head muss zusätzlich den aktuellen Base-Branch enthalten. Der versehentliche PR #32 ist der dokumentierte Negativfall, gegen den diese Schicht eingeführt wurde.
+Für normale PRs nach `main` gilt `/safe-merge`. Der PR-Head muss den aktuellen Base-Branch enthalten, alle drei Kern-Gates müssen grün und alle Review-Threads gelöst sein. Native GitHub-Branch-Protection bleibt eine zusätzliche noch offene serverseitige Härtung.
 
 ## Maschinenlesbare Verträge
 
@@ -131,6 +148,7 @@ Alle liegen unter `manifests/`.
 - `tools/validate_action_contract.py` prüft den Action-Vertrag.
 - `tools/simulate_characters/progression_simulator.py` erzeugt reproduzierbare Balance-Läufe.
 - `tools/repository_health.py` prüft den kanonischen Repository- und Merge-Vertrag aus `manifests/REPOSITORY_GUARD_MANIFEST.json`.
+- `tools/github_merge_guard.py` und `tools/github_merge_guard_retry.py` implementieren den validierten sicheren Mergeweg.
 - `reports/` enthält freigegebene Prüfnachweise; Berichte sind keine Runtime-Eingabe.
 
 ## Verbindlichkeit bei Widersprüchen

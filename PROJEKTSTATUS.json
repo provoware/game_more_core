@@ -3,8 +3,8 @@
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
   "active_iteration": "0.7.2",
-  "status": "repository_guard_remote_validated_branch_protection_pending",
-  "current_focus": "repository_guard_before_0_7_2_gameplay",
+  "status": "repository_safety_end_to_end_validated_0_7_2_released",
+  "current_focus": "0_7_2_resource_effects_and_character_forge_vertical_slice",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
@@ -25,14 +25,26 @@
     "status": "validated_and_merged",
     "pull_request": 24,
     "merged_commit": "25006d07d33199fea2db8208c192ca2f6fa1095d",
-    "capabilities": ["can_edit_profile", "can_undo_profile", "can_execute_action"],
-    "write_commands": ["profile.update", "profile.undo_last", "action.execute"]
+    "capabilities": [
+      "can_edit_profile",
+      "can_undo_profile",
+      "can_execute_action"
+    ],
+    "write_commands": [
+      "profile.update",
+      "profile.undo_last",
+      "action.execute"
+    ]
   },
   "presentation_local_state_feedback": {
     "status": "validated_and_merged",
     "pull_request": 26,
     "merged_commit": "5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a",
-    "local_commands": ["view.select", "biography.filter", "feedback.dismiss"],
+    "local_commands": [
+      "view.select",
+      "biography.filter",
+      "feedback.dismiss"
+    ],
     "feedback_events": [
       "character.level_up",
       "character.skill_level_up",
@@ -74,13 +86,23 @@
     "presentation_core_workflow_run": 32517683263,
     "default_top_limit": 10,
     "unbounded_player_source": true,
-    "sort_modes": ["level", "reputation", "resonance", "skill", "events", "clubs"],
-    "network_metrics_require_server_confirmation": ["events", "clubs"],
+    "sort_modes": [
+      "level",
+      "reputation",
+      "resonance",
+      "skill",
+      "events",
+      "clubs"
+    ],
+    "network_metrics_require_server_confirmation": [
+      "events",
+      "clubs"
+    ],
     "online_presence_inferred": false,
     "telegram_transport_implemented": false
   },
   "character_forge_vertical_slice": {
-    "status": "0.7.1_validated_and_merged_review_hardening_applied",
+    "status": "0.7.1_validated_and_merged_review_hardening_applied_0.7.2_released",
     "pull_request": 31,
     "merged_commit": "888be18146197272578f4baa5516f78a894d9464",
     "runtime_core_workflow_run": 32519042006,
@@ -90,8 +112,14 @@
     "prerequisites_fail_closed": true,
     "dispatcher_command_built_only_with_runtime_ids": true,
     "a4_rechecks_execute_capability": true,
-    "energy_stress_effects": "not_defined_in_action_contract",
-    "full_loop_pending": ["resource_effects", "biography", "autosave", "undo", "reload"]
+    "energy_stress_effects": "next_0.7.2_contract",
+    "full_loop_pending": [
+      "resource_effects",
+      "biography",
+      "autosave",
+      "undo",
+      "reload"
+    ]
   },
   "repository_repair": {
     "status": "recovered_and_remote_validated",
@@ -108,30 +136,59 @@
     "repair_branch": "maintenance/recover-green-0.7.1"
   },
   "repository_guard": {
-    "status": "implemented_remote_validated_branch_protection_activation_pending",
-    "pull_request": 34,
-    "validated_head": "4d4773f56fc11e1abc1ee391d2ce7415e0dfd4e1",
-    "runtime_core_workflow_run": 32522887448,
-    "presentation_core_workflow_run": 32522887380,
-    "repository_health_workflow_run": 32522887383,
-    "required_status_checks": ["runtime-core", "presentation-core", "repository-health"],
+    "status": "safe_merge_and_main_integrity_end_to_end_validated",
+    "foundation_pull_request": 34,
+    "safe_merge_bootstrap_pull_request": 35,
+    "first_safe_merge_smoke_pull_request": 36,
+    "eventual_consistency_hotfix_pull_request": 37,
+    "validated_safe_merge_pull_request": 38,
+    "validated_safe_merge_head": "c97d02b29a6d6de33c32bf7113179c65d9e3e2f4",
+    "validated_safe_merge_commit": "e1155db2d2a7eaddd313127d89635a1a3dac3ce6",
+    "runtime_core_workflow_run": 32528078989,
+    "presentation_core_workflow_run": 32528078992,
+    "repository_health_workflow_run": 32528078926,
+    "safe_merge_bot_result": "SAFE MERGE PASS",
+    "required_status_checks": [
+      "runtime-core",
+      "presentation-core",
+      "repository-health"
+    ],
     "requires_current_main_in_pr_head": true,
+    "requires_no_unresolved_review_threads": true,
     "stale_versioned_feature_branches_blocked": true,
+    "normal_safe_merge_self_modification_blocked": true,
+    "merge_api_call_exactly_once": true,
+    "post_merge_provenance_retry_seconds": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "main_integrity_enabled": true,
     "branch_protection_target_documented": true,
     "branch_protection_write_available_in_connector": false,
-    "branch_protection_state": "external_github_activation_pending"
+    "branch_protection_state": "native_server_side_activation_pending_optional_hardening"
   },
   "repository_audit": {
     "status": "closed",
     "repair_pull_request": 22,
     "merged_commit": "73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea",
-    "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
+    "closed_competing_prs": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ]
   },
   "next_iteration": "0.7.2",
-  "next_goal": "Nach aktivierter main-Branch-Protection Energie-/Stresswirkung katalogisieren und den vollständigen Character-Forge-Ablauf verbinden",
+  "next_goal": "Energie-/Stresswirkung der 20 Actions katalogisieren und den vollständigen Character-Forge-Ablauf Aktion → Progression → Feedback → Biografie → Autosave → Undo → Reload verbinden",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T22:19:00+02:00"
+  "updated_at": "2026-08-21T23:24:00+02:00"
 }

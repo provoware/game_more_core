@@ -5,6 +5,8 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ## Unveröffentlicht
 
 ### Behoben
+- `/safe-merge` behandelt GitHubs verzögerte Commit→PR-Zuordnung robust: Der Merge wird exakt einmal ausgeführt; nur die nachgelagerte Provenienz-Leseprüfung wird begrenzt nach `0/1/2/4/8` Sekunden wiederholt.
+- Der erste echte `/safe-merge`-Smoke-Test PR #36 wurde korrekt gemergt, meldete wegen GitHub-Eventual-Consistency aber zunächst fälschlich `SAFE MERGE BLOCKED`; PR #37 trennt jetzt sauber Vor-Merge-Blockade von bereits geschriebenem Merge mit noch nicht bestätigter Nachprüfung.
 - Der versehentliche Merge von PR #32 aus einem alten `0.6.4`-Branch wurde vollständig aus dem Repository-Baum zurückgenommen; wiederhergestellt wurde der letzte grüne Stand nach PR #31 (`888be18146197272578f4baa5516f78a894d9464`).
 - Der durch PR #32 eingeführte Syntaxfehler `unmatched ')'` in `a3_cinematic_forge.py` und die parallel zurückgebrachten Presentation-Helfer wurden entfernt.
 - Offener Review-P1 aus PR #31 behoben: Action-Auswahlkarten geben kein unvollständiges scheinbar ausführbares `action.execute`-Payload mehr aus. `build_action_execute_command(...)` ergänzt `command_id` und `action_instance_id` erst unmittelbar vor der Ausführung.
@@ -17,6 +19,11 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Skill-Fortschritt wird für negative/überlaufende XP defensiv begrenzt und zeigt am Skillmaximum keinen falschen Restbedarf.
 
 ### Hinzugefügt
+- `/safe-merge` als operativer normaler Mergeweg: Berechtigung, aktueller `main`, exakter PR-Head, drei grüne Kern-Gates und ungelöste Review-Threads werden unmittelbar vor Merge erneut geprüft.
+- `Main Integrity` als nachgelagerte Provenienzprüfung für Änderungen auf `main`; bei Fehler wird ein idempotenter `[MAIN-INTEGRITY]`-Incident erzeugt.
+- Schutz vor Selbständerung: normale `/safe-merge`-PRs dürfen die Guard-/CI-Sicherheitsdateien nicht selbst verändern; Security-Änderungen benötigen einen ausdrücklich auditierten Bootstrap-PR.
+- `tools/github_merge_guard.py` für Kandidatenprüfung, exakt-einmal-Merge und Main-Provenienz sowie `tools/github_merge_guard_retry.py` für begrenzte nachgelagerte GitHub-Lese-Retries.
+- End-to-End-Nachweis PR #38: drei grüne Gates, keine offenen Review-Threads, Merge ausschließlich über `/safe-merge`, Bot-Rückkanal `SAFE MERGE PASS`, Merge `e1155db2d2a7eaddd313127d89635a1a3dac3ce6`.
 - Repository Guard vor 0.7.2 mit `manifests/REPOSITORY_GUARD_MANIFEST.json`, `tools/repository_health.py`, `docs/REPOSITORY_GUARD.md` und dem neuen Workflow `Repository Health`.
 - `repository-health` prüft JSON, Python-Struktur/Compile, Git-Konfliktmarker, Informationskonsistenz, kanonische Presentation-Symbole, öffentliche Exporte und Required-Workflow-Verträge.
 - PR-Heads werden gegen den aktuellen Base-Branch geprüft; versionsgebundene alte Feature-Branches unterhalb der aktiven Iteration werden fail-closed abgewiesen.
@@ -38,9 +45,10 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - End-to-End-Test `Command → Commit → bestätigte Eventabfrage → Feedback → Character-Projektion`.
 
 ### Geändert
+- Normale PRs nach `main` werden nach erfolgreicher End-to-End-Abnahme ausschließlich über `/safe-merge` übernommen; native GitHub-Branch-Protection bleibt eine zusätzliche noch offene serverseitige Härtung.
 - `Runtime Core` und `Presentation Core` laufen künftig auf jedem Pull Request ohne PR-Pfadfilter, damit ihre Check-IDs zuverlässig als Required Checks konfiguriert werden können.
 - Zielpolicy für `main`: Pull Request erforderlich, Branch aktuell, Conversation Resolution, keine Force Pushes/Branch-Löschung sowie `runtime-core`, `presentation-core`, `repository-health` verpflichtend. Die GitHub-Aktivierung bleibt extern, weil die verbundene Schnittstelle Branch-Protection nicht sicher schreiben kann.
-- README, TODO, Projektstatus, Repository-Regeln, Repository-Index und Testmanifest auf den Repository-Guard vor 0.7.2 abgeglichen.
+- README, TODO, Projektstatus, Repository Guard, Repository-Index und Testmanifest auf den validierten `/safe-merge`-/Main-Integrity-Stand abgeglichen; 0.7.2 ist danach für Gameplay-Entwicklung freigegeben.
 - README, TODO, Projektstatus, Projektmanifest, Repository-Index und Testmanifest auf den tatsächlich validierten Stand bis 0.7.1 und den nächsten Schritt 0.7.2 abgeglichen.
 - `PROJEKTMANIFEST.json` führt die aktive Entwicklungsphase jetzt als `0.7` und referenziert das Ranking-/Network-Manifest.
 - `TEST_MANIFEST.json` katalogisiert die 0.7.1-Action-Auswahl- und Review-Regressionen.
@@ -62,6 +70,10 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Die Produktversion wurde durch Wartungs-/Presentation-Arbeit nicht künstlich erhöht; `VERSION.json` bleibt bis zur nächsten abgenommenen Produktstufe auf `0.5.2-alpha.1`.
 
 ### Validierung
+- Safe-Merge-Bootstrap / PR #35 Head `73b3594bdc015865364cf297b99e05bec7261649`: Runtime Core `32527116025` = erfolgreich; Presentation Core `32527115999` = erfolgreich; Repository Health `32527116022` = erfolgreich.
+- Erster `/safe-merge`-Smoke-Test / PR #36: Merge `8214187c441123a786ca6581c544d3bcdd745f3b` wurde tatsächlich geschrieben; GitHub-API-Race-Condition direkt danach reproduziert.
+- Eventual-Consistency-Hotfix / PR #37 Head `91cbe190247be0e40355bedaed2313eb6af517b8`: Runtime Core `32527882811` = erfolgreich; Presentation Core `32527882838` = erfolgreich; Repository Health `32527882791` = erfolgreich.
+- Zweiter `/safe-merge`-End-to-End-Test / PR #38 Head `c97d02b29a6d6de33c32bf7113179c65d9e3e2f4`: Runtime Core `32528078989` = erfolgreich; Presentation Core `32528078992` = erfolgreich; Repository Health `32528078926` = erfolgreich; Bot meldete `SAFE MERGE PASS`; Merge `e1155db2d2a7eaddd313127d89635a1a3dac3ce6`.
 - Repository Guard / PR #34 erster Implementierungs-Head `081c08f5ca1c660fb0d384879414142893571cb0`: Runtime Core `32522336221` = erfolgreich; Presentation Core `32522336259` = erfolgreich; Repository Health `32522336287` = erfolgreich.
 - Repository-Reparatur #22: Runtime Core `32505897397` = erfolgreich; Presentation Core `32505897399` = erfolgreich.
 - 0.6.1 PR #24: Runtime Core `32510846508` = erfolgreich; Presentation Core `32510846537` = erfolgreich.
