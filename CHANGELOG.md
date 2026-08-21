@@ -4,6 +4,22 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### 0.8.1 – Event State Foundation
+
+- `EventState` als eigener, streng validierter Domain-State mit Ort, Budgetrahmen, Acts, Crew, Equipment-Readiness, Zeitfenster, Sicherheitsstatus, Eventphase und monotoner Revision eingeführt.
+- Phasenmaschine `draft → planning → procurement → transport → setup → soundcheck → live/crisis → teardown → settlement → completed` mit begründeten Rück-/Abbruchwegen implementiert.
+- physische Eventphasen verlangen gesetzten Ort, explizit verifizierten Zugangsstatus, gültiges offset-aware Zeitfenster und `safety_status=cleared`.
+- neue Journaltypen `event.created` und `event.phase_changed` ergänzt; vorhandenes `event.planning_updated` als zustandsbildender Planungsweg konkretisiert. `event.started`, `event.incident_resolved` und `event.completed` bleiben für 0.8.3 reserviert.
+- `EventStateService` für Event-Erstellung, Planungsupdates, Phasenwechsel, Command-Idempotenz und Stale-Revision-Schutz ergänzt.
+- abgeleitete Save-Zustände werden blockweise aktualisiert: Character-/Profil-Commits erhalten `event`, Event-Commits erhalten `character` und weitere bestehende Blöcke.
+- `GameRecoveryService` kombiniert Character- und Event-Replay, ohne den bestehenden `PersistenceKernel` unnötig zu verändern.
+- Fault-Injection-Regression für einen bereits journal-durablen, aber noch nicht in den State geschriebenen Event-Commit ergänzt.
+- `EVENT_STATE_MANIFEST.json`, `event_state.schema.json` und `docs/EVENT_STATE_0.8.1.md` als maschinenlesbarer und menschlich lesbarer Vertrag ergänzt.
+- README, TODO, Projektstatus, Projektmanifest, Runtime-/Testmanifest und Repository-Index auf die aktive Iteration 0.8.1 abgeglichen; Runtime-Produktbaseline bleibt bewusst `0.5.2-alpha.1`.
+- 0.8.2 bleibt klar getrennt: Marktpreise, Inventarbesitz, Kaufen/Verkaufen/Verbrauchen und Economy-Ledger sind nicht Bestandteil von 0.8.1.
+- versehentlich angelegter leerer `tmp`-Direktcommit wurde vor Fortsetzung von 0.8.1 über PR #47 mit drei grünen Gates und `SAFE MERGE PASS` vollständig entfernt.
+- Remote-Abnahme von 0.8.1 über Runtime Core, Presentation Core und Repository Health steht noch aus.
+
 ### 0.7.2 – Character-Forge-Vertical-Slice
 
 - alle 20 Manifest-Actions besitzen verbindliche Energie-/Stresswirkungen; der Character State begrenzt beide Ressourcen auf `0–100`.
