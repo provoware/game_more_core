@@ -47,41 +47,43 @@ class RepositoryGuardManifestTest(unittest.TestCase):
                 ".github/workflows/main-integrity.yml",
                 "tools/repository_health.py",
                 "tools/github_merge_guard.py",
+                "tools/github_merge_guard_retry.py",
                 "manifests/REPOSITORY_GUARD_MANIFEST.json",
                 "tests/repository/",
             }.issubset(protected)
         )
 
-    def test_safe_merge_workflow_uses_trusted_main_and_exact_command(self):
+    def test_safe_merge_workflow_uses_trusted_main_and_retry_adapter(self):
         safety = self.manifest["merge_safety"]
         text = (ROOT / safety["safe_merge_workflow"]).read_text(encoding="utf-8")
         self.assertIn("issue_comment:", text)
         self.assertIn("github.event.comment.body == '/safe-merge'", text)
         self.assertIn("ref: main", text)
-        self.assertIn("tools/github_merge_guard.py merge-pr", text)
+        self.assertIn("tools/github_merge_guard_retry.py merge-pr", text)
         self.assertIn("Block self-modifying guard changes", text)
         self.assertIn("protected_guard_paths", text)
         self.assertIn("pull-requests: write", text)
         self.assertNotIn("pull_request_target:", text)
 
-    def test_main_integrity_workflow_checks_every_main_push(self):
+    def test_main_integrity_workflow_checks_every_main_push_with_retry(self):
         safety = self.manifest["merge_safety"]
         text = (ROOT / safety["main_integrity_workflow"]).read_text(encoding="utf-8")
         self.assertIn("push:", text)
         self.assertIn("branches: [main]", text)
         self.assertIn("tools/repository_health.py", text)
-        self.assertIn("tools/github_merge_guard.py verify-main", text)
+        self.assertIn("tools/github_merge_guard_retry.py verify-main", text)
         self.assertIn("tools/github_merge_guard.py incident", text)
         self.assertIn("issues: write", text)
 
-    def test_merge_guard_tool_is_standard_library_source(self):
+    def test_merge_guard_tools_are_standard_library_source(self):
         safety = self.manifest["merge_safety"]
-        path = ROOT / safety["merge_guard_tool"]
-        self.assertTrue(path.is_file())
-        text = path.read_text(encoding="utf-8")
-        for forbidden in ("requests", "httpx", "PyGithub"):
-            self.assertNotIn(f"import {forbidden}", text)
-            self.assertNotIn(f"from {forbidden}", text)
+        for key in ("merge_guard_tool", "merge_retry_tool"):
+            path = ROOT / safety[key]
+            self.assertTrue(path.is_file())
+            text = path.read_text(encoding="utf-8")
+            for forbidden in ("requests", "httpx", "PyGithub"):
+                self.assertNotIn(f"import {forbidden}", text)
+                self.assertNotIn(f"from {forbidden}", text)
 
 
 if __name__ == "__main__":
