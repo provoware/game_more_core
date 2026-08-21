@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Zuletzt validierte Feature-Iteration:** `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
-- **Validierte 0.7.2-Referenz:** PR #41, Head `5f7ded400a5fca1ee25307797628ab2584de9812`
-- **Aktive Feature-Iteration:** `0.8.1 – Event State Foundation`
-- **0.8.1-Status:** implementiert; Remote-Abnahme über drei Pflichtgates ausstehend
+- **Zuletzt remote validierte Feature-Iteration:** `0.8.1 – Event State Foundation`
+- **0.8.1-Referenz:** PR #48, Head `79cc26bec0a780322874ea6f3ced458e8ee72bd6`
+- **0.8.1-Remote-Abnahme:** Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` grün
+- **Aktiver Abschluss:** finale Informationsänderungen erneut durch drei Gates schicken, danach `/safe-merge`
 - **Nächster Feature-Schritt nach 0.8.1:** `0.8.2 – Equipment & Economy`
 
 ## Repository Guard
@@ -154,12 +154,13 @@
 - [x] Character-/Profil-Commits so gehärtet, dass sie den `event`-State-Block nicht überschreiben
 - [x] Event-Commits erhalten bestehende `character`-Daten
 - [x] kombiniertes Character+Event-Recovery-Replay implementiert
-- [x] Fault-Injection-Test für durable Eventänderung vor State-Write angelegt
-- [x] Manifest-/Domain-Phasenabgleich als Regressionstest angelegt
+- [x] Fault-Injection-Test für durable Eventänderung vor State-Write angelegt und remote bestanden
+- [x] Manifest-/Domain-Phasenabgleich als Regressionstest angelegt und remote bestanden
 - [x] Vertrag, Schema, Runtime-Manifest, README und Repository-Navigation ergänzt
-- [ ] Runtime Core remote grün
-- [ ] Presentation Core remote grün
-- [ ] Repository Health remote grün
+- [x] Runtime Core `32537531324` auf Head `79cc26bec0a780322874ea6f3ced458e8ee72bd6` grün
+- [x] Presentation Core `32537531305` auf demselben Head grün
+- [x] Repository Health `32537531303` auf demselben Head grün
+- [ ] finale Informationsänderungen auf dem neuen PR-Head erneut dreifach grün
 - [ ] 0 offene Review-Threads
 - [ ] Merge ausschließlich über `/safe-merge` + `SAFE MERGE PASS`
 
