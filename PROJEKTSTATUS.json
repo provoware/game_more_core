@@ -3,8 +3,8 @@
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
   "active_iteration": "0.7.2",
-  "status": "repository_recovered_0_7_1_review_hardened",
-  "current_focus": "resource_effects_and_complete_character_forge_flow_next",
+  "status": "repository_guard_remote_validated_branch_protection_pending",
+  "current_focus": "repository_guard_before_0_7_2_gameplay",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "remote_validation": {
@@ -107,6 +107,20 @@
     "restored_green_tree_commit": "888be18146197272578f4baa5516f78a894d9464",
     "repair_branch": "maintenance/recover-green-0.7.1"
   },
+  "repository_guard": {
+    "status": "implemented_remote_validated_branch_protection_activation_pending",
+    "pull_request": 34,
+    "validated_head": "4d4773f56fc11e1abc1ee391d2ce7415e0dfd4e1",
+    "runtime_core_workflow_run": 32522887448,
+    "presentation_core_workflow_run": 32522887380,
+    "repository_health_workflow_run": 32522887383,
+    "required_status_checks": ["runtime-core", "presentation-core", "repository-health"],
+    "requires_current_main_in_pr_head": true,
+    "stale_versioned_feature_branches_blocked": true,
+    "branch_protection_target_documented": true,
+    "branch_protection_write_available_in_connector": false,
+    "branch_protection_state": "external_github_activation_pending"
+  },
   "repository_audit": {
     "status": "closed",
     "repair_pull_request": 22,
@@ -114,10 +128,10 @@
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
   "next_iteration": "0.7.2",
-  "next_goal": "Energie-/Stresswirkung katalogisieren und den vollständigen Character-Forge-Ablauf mit Biografie, Autosave, Undo und Reload verbinden",
+  "next_goal": "Nach aktivierter main-Branch-Protection Energie-/Stresswirkung katalogisieren und den vollständigen Character-Forge-Ablauf verbinden",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-21T21:58:00+02:00"
+  "updated_at": "2026-08-21T22:19:00+02:00"
 }

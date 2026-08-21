@@ -7,6 +7,19 @@
 - **Nächster Feature-Schritt:** `0.7.2 – Ressourcenwirkung + vollständiger Character-Forge-Ablauf`
 - **Aktiver Feature-PR:** keiner
 
+## Repository Guard vor 0.7.2
+
+- [x] `REPOSITORY_GUARD_MANIFEST.json` als kanonische Merge-/Health-Policy angelegt
+- [x] `tools/repository_health.py` ohne externe Abhängigkeiten implementiert
+- [x] `Repository Health` als eigener PR-/main-/Merge-Group-Gate angelegt
+- [x] Runtime Core und Presentation Core so umgestellt, dass sie bei jedem PR einen Required-Check-Status liefern
+- [x] Guard prüft JSON, Python-Struktur/Compile, Konfliktmarker, Status-/Versionskonsistenz, öffentliche Exporte und kanonische Symbole
+- [x] Guard blockiert veraltete versionsgebundene Feature-Branches
+- [x] Workflow blockiert PR-Heads, die den aktuellen `main` nicht enthalten
+- [x] erster Remote-Nachweis auf PR #34: Runtime Core `32522336221`, Presentation Core `32522336259`, Repository Health `32522336287` grün
+- [ ] GitHub-Branch-Protection/Ruleset für `main` extern aktivieren: `runtime-core`, `presentation-core`, `repository-health` verpflichtend + Branch aktuell + Conversation Resolution
+- [ ] erst danach 0.7.2-Gameplay fortsetzen
+
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
 - [x] beschädigte doppelte `character_projection.py` auf eine kanonische Implementierung zurückgeführt
@@ -140,4 +153,4 @@ Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemein
 
 ## PR-Regel
 
-Für dieselbe Zielstelle wird nur **ein aktiver Implementierungs-PR** geführt. Ein rotes relevantes CI-Gate blockiert den Merge; alte oder alternative Branches sind keine gültige Quelle für neue Merges.
+Für dieselbe Zielstelle wird nur **ein aktiver Implementierungs-PR** geführt. Für `main` müssen `runtime-core`, `presentation-core` und `repository-health` vorhanden und grün sein. Ein veralteter Branch oder ein rotes/fehlendes Gate blockiert den Merge.

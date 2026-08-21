@@ -1,0 +1,53 @@
+name: Repository Health
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repository-health-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Require current base branch
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags origin "$BASE_REF"
+          if ! git merge-base --is-ancestor "origin/$BASE_REF" HEAD; then
+            echo "::error::PR-Branch enthält den aktuellen Stand von $BASE_REF nicht. Branch zuerst aktualisieren/rebasen."
+            exit 1
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile repository Python
+        run: PYTHONPATH=src python3 -m compileall -q src tools/repository_health.py
+
+      - name: Validate repository health contract
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          PYTHONPATH=src python3 tools/repository_health.py \
+            --head-ref "$HEAD_REF" \
+            --base-ref "$BASE_REF"

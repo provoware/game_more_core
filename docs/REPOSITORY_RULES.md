@@ -26,7 +26,7 @@ Diese Regeln halten das Repository klein, eindeutig und übernehmbar. Jede Infor
 - `README.md` = Einstieg und Navigation; keine zweite Spezifikation.
 - Fachverträge/Manifeste/Schemas = verbindliche technische Wahrheit für ihren Bereich.
 
-Eine laufende 0.6-Iteration darf deshalb bei `VERSION.json = 0.5.2-alpha.1` stehen, solange 0.6 noch keine eigene freigegebene Baseline ist.
+Eine laufende spätere Entwicklungsiteration darf bei einer älteren freigegebenen `VERSION.json`-Baseline stehen, solange die neue Stufe noch keine eigene freigegebene Produktbaseline ist.
 
 ## Was als Basistool gilt
 
@@ -58,13 +58,52 @@ Bei konkurrierenden Ansätzen:
 
 ### Merge-Gate
 
-Ein PR wird nicht gemergt, wenn ein für seinen Scope relevantes CI-Gate rot ist. Lokale Tests dürfen ein bekanntes rotes Remote-Gate nicht überstimmen. Der geprüfte Head-SHA muss zur Merge-Entscheidung passen.
+Für Pull Requests nach `main` sind drei stabile Check-IDs vorgesehen:
+
+- `runtime-core`
+- `presentation-core`
+- `repository-health`
+
+Alle drei müssen vorhanden und grün sein. Ein fehlender Check wird nicht als neutral behandelt. Lokale Tests dürfen einen roten oder fehlenden Remote-Gate nicht überstimmen. Der geprüfte Head-SHA muss zur Merge-Entscheidung passen.
+
+Der PR-Head muss außerdem den aktuellen `main` enthalten. Ein veralteter Branch wird vor dem Merge aktualisiert oder rebased. Alte versionsgebundene Feature-Branches unterhalb der aktiven Entwicklungsiteration sind keine gültige Merge-Quelle.
+
+Die maschinenlesbare Zielpolicy steht in `manifests/REPOSITORY_GUARD_MANIFEST.json`; technische Hintergründe und GitHub-Aktivierung stehen in `docs/REPOSITORY_GUARD.md`.
 
 ## CI-Zuständigkeit
 
-- `.github/workflows/runtime-core.yml` schützt Runtime-/Domain-/Application-/Infrastructure-Änderungen.
+- `.github/workflows/runtime-core.yml` schützt Runtime-/Domain-/Application-/Infrastructure-Verhalten.
 - `.github/workflows/presentation-core.yml` schützt die Character-Forge-Presentation, ihre Tests und UI-Textkataloge.
-- Weitere Workflows werden erst eingeführt, wenn ein neuer Bereich einen eigenen wiederkehrenden Gate tatsächlich benötigt.
+- `.github/workflows/repository-health.yml` schützt Repository-Struktur, Informationskonsistenz, Branch-Aktualität, kanonische Symbole und öffentliche Exporte.
+
+Alle drei Workflows laufen auf jedem Pull Request, damit ihre Check-IDs zuverlässig als Required Checks verwendet werden können. Der Repository-Health-Check ersetzt keine Fachtests.
+
+## Repository Health
+
+`tools/repository_health.py` nutzt nur die Python-Standardbibliothek und prüft unter anderem:
+
+- JSON-Syntax aller getrackten JSON-Dateien,
+- echte Git-Konfliktmarker,
+- Python-Struktur und öffentliche Exporte,
+- eindeutige kanonische Presentation-Symbole,
+- Versions-/Status-/Phasen-Konsistenz,
+- Pflichtworkflows ohne PR-Pfadfilter,
+- alte versionsgebundene Feature-Branches gegen die aktive Iteration.
+
+Der GitHub-Workflow prüft zusätzlich, dass der PR-Head den aktuellen Base-Branch enthält.
+
+## Branch Protection
+
+Zielzustand für `main`:
+
+- Pull Request erforderlich,
+- Branch vor Merge aktuell,
+- offene Review-Konversationen aufgelöst,
+- `runtime-core`, `presentation-core`, `repository-health` als Required Checks,
+- Force Pushes aus,
+- Branch-Löschen aus.
+
+Die Repository-Regel darf nur als aktiv dokumentiert werden, wenn GitHub sie tatsächlich aktiviert hat. Die aktuell verbundene GitHub-Schnittstelle besitzt keine sichere Schreibaktion für Branch-Protection/Rulesets; deshalb bleibt die Aktivierung ein explizit dokumentierter externer GitHub-Schritt.
 
 ## Was Dokumentation leisten muss
 
@@ -95,6 +134,7 @@ Im Zweifel wird zuerst die bestehende zuständige Stelle gesucht.
 |---|---|---|
 | `tools/validate_action_contract.py` | Action-Gewichte und Referenzen prüfen | Action-, Skill-, Trait- und Journal-Manifeste |
 | `tools/simulate_characters/progression_simulator.py` | Progression deterministisch simulieren | Progression- und Trait-Engine-Manifeste |
+| `tools/repository_health.py` | Merge-/Repository-Konsistenz fail-closed prüfen | `REPOSITORY_GUARD_MANIFEST.json` + kanonische Info-/Codequellen |
 
 ## Änderungsregel
 

@@ -26,7 +26,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 
 | Ordner | Inhalt | Einstieg |
 |---|---|---|
-| `.github/workflows/` | gezielte Remote-CI-Gates | `runtime-core.yml`, `presentation-core.yml` |
+| `.github/workflows/` | stabile Remote-CI-/Merge-Gates | `runtime-core.yml`, `presentation-core.yml`, `repository-health.yml` |
 | `content/` | lokalisierte sichtbare Inhalte | `content/de/` |
 | `docs/` | Fachverträge, Erklärungen und Navigation | `GAME_SCHEMA.md` |
 | `manifests/` | kanonische Kataloge und maschinenlesbare Regeln | `ARCHITEKTUR_MANIFEST.json` |
@@ -34,7 +34,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `schemas/` | JSON-Strukturverträge | `character_state.schema.json` |
 | `src/` | headless Spielkern und Presentation | `src/bunkerfrequenz/` |
 | `tests/` | Vertrags-, Runtime-, Simulation- und Presentation-Tests | Unterordner nach Bereich |
-| `tools/` | kleine ausführbare Entwicklerwerkzeuge | `validate_action_contract.py` |
+| `tools/` | kleine ausführbare Entwicklerwerkzeuge | `validate_action_contract.py`, `repository_health.py` |
 
 ## Dokumentation
 
@@ -42,6 +42,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 |---|---|
 | `docs/GAME_SCHEMA.md` | Gesamtbild von Spiel, Daten und Ereignisfluss |
 | `docs/REPOSITORY_RULES.md` | Ablage, Informationshierarchie und PR-Lebenszyklus |
+| `docs/REPOSITORY_GUARD.md` | Merge-Guard, Repository Health und Zielpolicy für `main` |
 | `docs/REPOSITORY_INDEX.md` | dieser Navigationsindex |
 | `docs/ARCHITEKTURVERTRAG.md` | Ebenen und unveränderliche Architekturregeln |
 | `docs/CHARACTER_FORGE.md` | Figuren, Skills, Traits und Biografie |
@@ -95,15 +96,17 @@ Wichtige Presentation-Dateien:
 | `tests/presentation/` | Projection, A4/A3, Feedback, Ranking/Network, Action-Auswahl und Dispatcher-Kompatibilität |
 | `tests/gameplay/` | Action-Vertrag |
 | `tests/simulation/` | reproduzierbare Progressions-/Balance-Regression |
+| `tools/repository_health.py` | repositoryweite Struktur-/Info-/Export-/Merge-Guard-Prüfung |
 
 Für 0.7.1 sind insbesondere `tests/presentation/test_action_selection.py` und `tests/presentation/test_a4_ops_deck.py` relevant.
 
 ## Remote-CI
 
-- `runtime-core.yml`: Runtime-/Domain-/Application-/Infrastructure-Gate.
-- `presentation-core.yml`: Presentation, zugehörige Application-Grenzdateien, Presentation-Tests und relevante UI-Textkataloge.
+- `runtime-core.yml`: Runtime-/Domain-/Application-/Infrastructure-Gate; liefert bei jedem PR den Check `runtime-core`.
+- `presentation-core.yml`: Presentation und zugehörige Application-Grenze; liefert bei jedem PR den Check `presentation-core`.
+- `repository-health.yml`: Repository-/Merge-Guard; liefert bei jedem PR den Check `repository-health`.
 
-Ein rotes für den Scope relevantes Gate blockiert den Merge. Der versehentliche PR #32 ist ein dokumentierter Negativfall und keine gültige Entwicklungsbasis.
+Für `main` sollen alle drei Check-IDs als Required Checks gelten. Der PR-Head muss zusätzlich den aktuellen Base-Branch enthalten. Der versehentliche PR #32 ist der dokumentierte Negativfall, gegen den diese Schicht eingeführt wurde.
 
 ## Maschinenlesbare Verträge
 
@@ -113,7 +116,7 @@ Ein rotes für den Scope relevantes Gate blockiert den Merge. Der versehentliche
 - **Aktionen/Laufzeit:** `ACTION`, `RUNTIME`, `JOURNAL`
 - **Speicherung/Zeit:** `PERSISTENCE`, `SAVEFORMAT`, `MIGRATION`, `ZEIT`, `SYNC`
 - **Darstellung/Text:** `UI`, `ANIMATION`, `TEXT`, `RANKING_NETWORK`
-- **Projektsteuerung:** `ARCHITEKTUR`, `TEST`, `RELEASE`
+- **Projektsteuerung:** `ARCHITEKTUR`, `TEST`, `RELEASE`, `REPOSITORY_GUARD`
 
 Alle liegen unter `manifests/`.
 
@@ -127,6 +130,7 @@ Alle liegen unter `manifests/`.
 - `content/de/ui/` enthält alle sichtbaren Character-Forge-/Action-/Feedbacktexte.
 - `tools/validate_action_contract.py` prüft den Action-Vertrag.
 - `tools/simulate_characters/progression_simulator.py` erzeugt reproduzierbare Balance-Läufe.
+- `tools/repository_health.py` prüft den kanonischen Repository- und Merge-Vertrag aus `manifests/REPOSITORY_GUARD_MANIFEST.json`.
 - `reports/` enthält freigegebene Prüfnachweise; Berichte sind keine Runtime-Eingabe.
 
 ## Verbindlichkeit bei Widersprüchen

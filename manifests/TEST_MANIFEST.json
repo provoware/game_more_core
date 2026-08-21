@@ -188,14 +188,33 @@
     "runtime_core_remote_gate",
     "presentation_core_remote_gate"
   ],
+  "repository_guard_checks": [
+    "all_tracked_json_valid",
+    "repository_python_compileall",
+    "git_conflict_markers_absent",
+    "version_status_manifest_consistent",
+    "active_iteration_present_in_readme_and_todo",
+    "canonical_presentation_symbols_unique",
+    "single_all_definition_per_package_init",
+    "public_exports_resolve",
+    "required_workflows_exist",
+    "required_workflows_no_pr_path_filters",
+    "versioned_stale_feature_branch_rejected",
+    "pr_head_contains_current_base",
+    "runtime_core_required_status_available",
+    "presentation_core_required_status_available",
+    "repository_health_required_status_available"
+  ],
   "unit_test_commands": [
     "python3 -m unittest tests/simulation/test_progression_simulator.py",
     "python3 -m pytest tests/gameplay/test_action_contract.py",
     "PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v",
-    "PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v"
+    "PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v",
+    "PYTHONPATH=src python3 tools/repository_health.py"
   ],
   "runtime_ci_workflow": ".github/workflows/runtime-core.yml",
   "presentation_ci_workflow": ".github/workflows/presentation-core.yml",
+  "repository_health_ci_workflow": ".github/workflows/repository-health.yml",
   "runtime_reference_report": "reports/RUNTIME_VALIDATION_0.5.2.json",
   "future_release_checks": [
     "unit",
