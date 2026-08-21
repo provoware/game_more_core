@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "version": "0.4.1-alpha.1",
+  "source_trait_catalog": "manifests/TRAIT_MANIFEST.json",
+  "catalog_expected_trait_count": 165,
+  "design_goal": "emergent_character_development_without_hard_classes",
+  "tier_names": ["neigung", "gewohnheit", "charakterzug", "markenzeichen", "legendenmerkmal"],
+  "tier_rules": [
+    {"tier": 1, "name": "neigung", "min_evidence": 220, "min_character_level": 3, "min_qualifying_events": 12, "min_distinct_sources": 1},
+    {"tier": 2, "name": "gewohnheit", "min_evidence": 480, "min_character_level": 8, "min_qualifying_events": 25, "min_distinct_sources": 1},
+    {"tier": 3, "name": "charakterzug", "min_evidence": 850, "min_character_level": 15, "min_qualifying_events": 45, "min_distinct_sources": 2},
+    {"tier": 4, "name": "markenzeichen", "min_evidence": 1300, "min_character_level": 25, "min_qualifying_events": 70, "min_distinct_sources": 2},
+    {"tier": 5, "name": "legendenmerkmal", "min_evidence": 1900, "min_character_level": 40, "min_qualifying_events": 110, "min_distinct_sources": 3}
+  ],
+  "evidence_sources": {"training": 0.35, "practice": 1.0, "crisis": 1.25, "team": 1.1, "discovery": 1.1, "success": 0.9, "failure": 0.7},
+  "same_day_repetition_factors": [1.0, 0.85, 0.65, 0.5],
+  "same_day_repetition_after_index": 3,
+  "effect_stack_caps": {"positive_pct": 35, "negative_pct": -20},
+  "effect_templates": [
+    {"effect_template_id":"trait_template.krisenfest","positive":{"metric":"crisis_success_chance_pct","tier_values":[3,5,8,12,16]},"tradeoff":{"metric":"routine_xp_pct","tier_values":[-1,-2,-3,-4,-5]}},
+    {"effect_template_id":"trait_template.vernetzer","positive":{"metric":"contact_quality_pct","tier_values":[3,6,9,13,18]},"tradeoff":{"metric":"solo_xp_pct","tier_values":[-1,-2,-3,-4,-6]}},
+    {"effect_template_id":"trait_template.klangfokus","positive":{"metric":"audio_xp_pct","tier_values":[4,7,10,14,18]},"tradeoff":{"metric":"logistics_xp_pct","tier_values":[-1,-2,-3,-4,-6]}},
+    {"effect_template_id":"trait_template.stromfokus","positive":{"metric":"electrical_xp_pct","tier_values":[4,7,10,14,18]},"tradeoff":{"metric":"creativity_xp_pct","tier_values":[-1,-2,-3,-4,-6]}},
+    {"effect_template_id":"trait_template.planer","positive":{"metric":"reliability_pct","tier_values":[3,6,9,13,18]},"tradeoff":{"metric":"improvisation_xp_pct","tier_values":[-1,-2,-3,-4,-6]}},
+    {"effect_template_id":"trait_template.scout","positive":{"metric":"discovery_chance_pct","tier_values":[3,6,9,13,18]},"tradeoff":{"metric":"administration_speed_pct","tier_values":[-1,-2,-3,-4,-6]}},
+    {"effect_template_id":"trait_template.improvisierer","positive":{"metric":"alternative_solution_chance_pct","tier_values":[4,7,10,15,20]},"tradeoff":{"metric":"standardization_efficiency_pct","tier_values":[-1,-2,-3,-5,-7]}},
+    {"effect_template_id":"trait_template.verhandler","positive":{"metric":"negotiation_effect_pct","tier_values":[2,4,7,10,14]},"tradeoff":{"metric":"handwork_xp_pct","tier_values":[-1,-2,-3,-4,-6]}},
+    {"effect_template_id":"trait_template.nachtmensch","positive":{"metric":"night_performance_pct","tier_values":[3,6,10,14,18]},"tradeoff":{"metric":"early_day_performance_pct","tier_values":[-2,-3,-5,-7,-9]}},
+    {"effect_template_id":"trait_template.ausdauer","positive":{"metric":"fatigue_resistance_pct","tier_values":[3,6,10,14,18]},"tradeoff":{"metric":"recovery_speed_pct","tier_values":[-1,-2,-3,-4,-6]}},
+    {"effect_template_id":"trait_template.kreativer","positive":{"metric":"design_quality_pct","tier_values":[3,6,10,15,20]},"tradeoff":{"metric":"routine_reliability_pct","tier_values":[-1,-2,-3,-5,-7]}},
+    {"effect_template_id":"trait_template.risikospieler","positive":{"metric":"high_risk_reward_pct","tier_values":[4,8,12,18,25]},"tradeoff":{"metric":"consequence_severity_pct","tier_values":[2,4,6,9,12]}},
+    {"effect_template_id":"trait_template.detailmensch","positive":{"metric":"error_detection_pct","tier_values":[4,8,12,17,22]},"tradeoff":{"metric":"action_speed_pct","tier_values":[-1,-2,-4,-6,-8]}},
+    {"effect_template_id":"trait_template.crew_anker","positive":{"metric":"team_synergy_pct","tier_values":[3,6,10,14,18]},"tradeoff":{"metric":"solo_xp_pct","tier_values":[-1,-2,-3,-4,-6]}},
+    {"effect_template_id":"trait_template.opportunist","positive":{"metric":"rare_find_chance_pct","tier_values":[2,4,7,10,15]},"tradeoff":{"metric":"planning_predictability_pct","tier_values":[-1,-2,-3,-5,-7]}}
+  ],
+  "soft_conflicts": [
+    {"templates":["trait_template.planer","trait_template.improvisierer"],"activation_min_tier":3,"positive_effect_multiplier":0.85,"reason":"Starke Standardisierung und starke spontane Improvisation dürfen koexistieren, sollen sich aber nicht vollständig addieren."},
+    {"templates":["trait_template.detailmensch","trait_template.opportunist"],"activation_min_tier":4,"positive_effect_multiplier":0.9,"reason":"Extremer Detailfokus und extreme Gelegenheitsnutzung erzeugen einen moderaten Zielkonflikt."}
+  ],
+  "hard_exclusions": [],
+  "rules": [
+    "Traits sind nie beim Start aktiv.",
+    "Training allein liefert nur 35 Prozent der normalen Trait-Evidenz.",
+    "Fehlschläge dürfen Entwicklung auslösen, aber schwächer als erfolgreiche Praxis.",
+    "Kein Trait darf durch einen einzelnen Zufallsfund direkt mehrere Stufen überspringen.",
+    "Soft-Konflikte reduzieren nur positive Effekte; freigeschaltete Traits werden nicht gelöscht.",
+    "Gesamte positive bzw. negative Prozentmodifikatoren werden pro Zielwert gekappt."
+  ]
+}

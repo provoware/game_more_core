@@ -1,11 +1,13 @@
 {
   "project": "BUNKERFREQUENZ",
-  "version": "0.4.0-alpha.1",
-  "status": "architecture_foundation_defined",
-  "current_iteration": "0.4.0",
+  "version": "0.4.1-alpha.1",
+  "status": "character_progression_contract_defined_and_simulated",
+  "current_iteration": "0.4.1",
   "last_validated_release": null,
-  "next_iteration": "0.4.1",
-  "next_goal": "Trait-/Progression-Details vollständig spezifizieren",
+  "validation_reference": "reports/PROGRESSION_SIMULATION_0.4.1.json",
+  "next_iteration": "0.4.2",
+  "next_goal": "Persistence Contract konkretisieren",
   "runtime_code": false,
-  "updated_at": "2026-08-21T15:04:00+02:00"
+  "developer_tool_code": true,
+  "updated_at": "2026-08-21T15:15:00+02:00"
 }

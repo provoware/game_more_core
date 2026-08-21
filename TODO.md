@@ -22,12 +22,17 @@
 
 ## 0.4.1 – Character Progression Contract
 
-- [ ] 165 Traits mit numerischen Effekten vollständig ausformulieren
-- [ ] exakte Unlock- und Upgrade-Schwellen definieren
-- [ ] Trait-Konflikte und gegenseitige Ausschlüsse definieren
-- [ ] Trainings-Diminishing-Returns festlegen
-- [ ] Skill-Spezialisierungen samt Konsequenzen definieren
-- [ ] automatisierbare Character-Balance-Simulation spezifizieren
+- [x] 165 Traits über 15 gemeinsame numerische Effektvorlagen vollständig abgedeckt
+- [x] exakte Unlock- und Upgrade-Schwellen für fünf Trait-Stufen definiert
+- [x] Trait-Konflikte als begrenzte Soft-Konflikte definiert
+- [x] Trainings-Diminishing-Returns festgelegt
+- [x] Skill-XP-Kurve 10–100 definiert
+- [x] sechs Spezialisierungen samt Konsequenzen definiert
+- [x] kein harter Klassenzwang; Generalisten bleiben möglich
+- [x] deterministischen Progression-Simulator implementiert
+- [x] gezielte Unit-Tests für Manifestregeln, Determinismus und Balance-Gate
+- [x] Referenzsimulation 1.000 × 720 Tage mit Seed 90409 bestanden
+- [x] Simulationsbericht versioniert abgelegt
 
 ## 0.4.2 – Persistence Contract
 

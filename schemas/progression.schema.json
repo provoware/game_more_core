@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/progression.schema.json",
+  "title": "BUNKERFREQUENZ Progression Manifest",
+  "type": "object",
+  "required": ["schema_version","version","skill_value","action_xp","specialization_model"],
+  "properties": {
+    "schema_version": {"type":"integer","minimum":1},
+    "version": {"type":"string"},
+    "skill_value": {"type":"object","required":["min","max","xp_to_next_expression"]},
+    "action_xp": {"type":"object","required":["base_range","training_daily_effectiveness","total_character_xp_from_skill_xp_multiplier"]},
+    "specialization_model": {"type":"object","required":["stages","specializations"]}
+  },
+  "additionalProperties": true
+}

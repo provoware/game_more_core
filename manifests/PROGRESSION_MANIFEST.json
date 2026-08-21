@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "version": "0.4.1-alpha.1",
+  "skill_value": {
+    "min": 10,
+    "max": 100,
+    "xp_to_next_expression": "round(70 + 5.5 * max(0, value - 10)^1.28)"
+  },
+  "action_xp": {
+    "base_range": [12, 24],
+    "source_multipliers": {"practice": 1.0, "crisis": 1.2, "team": 1.05, "discovery": 1.1, "success": 0.95, "failure": 0.75},
+    "training_daily_effectiveness": [1.0, 0.85, 0.65, 0.4],
+    "training_after_session_index": 3,
+    "total_character_xp_from_skill_xp_multiplier": 1.15
+  },
+  "level_formula": "120 * (L - 1)^1.62 + 80 * (L - 1)",
+  "specialization_model": {
+    "max_primary": 1,
+    "secondary_allowed_from_level": 25,
+    "secondary_score_distance_pct": 10,
+    "secondary_effect_multiplier": 0.6,
+    "switch_inertia_game_days": 30,
+    "stages": [
+      {"stage":"tendenz","min_level":10,"min_focus_average":18,"min_advantage_over_all_average":2,"focus_xp_bonus_pct":2,"outside_xp_penalty_pct":0},
+      {"stage":"profil","min_level":18,"min_focus_average":26,"min_advantage_over_all_average":4,"focus_xp_bonus_pct":5,"outside_xp_penalty_pct":-1},
+      {"stage":"identitaet","min_level":30,"min_focus_average":36,"min_advantage_over_all_average":6,"focus_xp_bonus_pct":8,"outside_xp_penalty_pct":-3},
+      {"stage":"meisterschaft","min_level":42,"min_focus_average":50,"min_advantage_over_all_average":8,"focus_xp_bonus_pct":12,"outside_xp_penalty_pct":-5}
+    ],
+    "specializations": [
+      {"specialization_id":"spec.klangarchitektur","name":"Klangarchitektur","focus_skills":["technik","musik","konzentration"]},
+      {"specialization_id":"spec.einsatzleitung","name":"Einsatzleitung","focus_skills":["organisation","logistik","risikoeinschaetzung","kommunikation"]},
+      {"specialization_id":"spec.szenenetzwerk","name":"Szenenetzwerk","focus_skills":["kommunikation","menschenkenntnis","verhandlung","szenewissen"]},
+      {"specialization_id":"spec.spurensuche","name":"Spurensuche","focus_skills":["orientierung","instinkt","risikoeinschaetzung"]},
+      {"specialization_id":"spec.impro_werkstatt","name":"Impro-Werkstatt","focus_skills":["handwerk","improvisation","kreativitaet","technik"]},
+      {"specialization_id":"spec.crew_stabilitaet","name":"Crew-Stabilität","focus_skills":["belastbarkeit","menschenkenntnis","kommunikation","konzentration"]}
+    ]
+  },
+  "balance_invariants": [
+    "Alle Figuren starten gleich.",
+    "Generalisten dürfen viele flache Traits entwickeln, Spezialisten wenige tiefere.",
+    "Training darf Praxis nicht vollständig ersetzen.",
+    "Spezialisierung entsteht nur durch deutlichen und anhaltenden Skill-Vorsprung.",
+    "Es gibt keine harte irreversible Klassenwahl."
+  ]
+}

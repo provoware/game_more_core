@@ -1,86 +1,54 @@
-# Character Forge 0.4
+# Character Forge 0.4.1
 
 ## Grundsatz
 
 Alle 11 Hauptfiguren starten spielmechanisch gleich. Narrativer Kontext darf Verhalten anregen, aber keine Fähigkeit festlegen.
 
-## Startwerte
-
-Alle 16 Kernwerte starten bei `10`, Level bei `1`, Gesamt-XP bei `0`, Energie bei `100`, Stress und Ruf bei `0`.
-
-Kernwerte:
-`technik`, `musik`, `organisation`, `kreativitaet`, `kommunikation`, `menschenkenntnis`, `orientierung`, `handwerk`, `logistik`, `improvisation`, `verhandlung`, `szenewissen`, `risikoeinschaetzung`, `konzentration`, `belastbarkeit`, `instinkt`.
-
 ## Entwicklung
 
-Charaktere entwickeln sich durch:
-- Handlung
-- Training
-- Praxis
-- Krisen
-- Teamarbeit
-- Entdeckungen
-- Erfolge und Fehlschläge
+Charaktere entwickeln sich durch Handlung, Training, Praxis, Krisen, Teamarbeit, Entdeckungen sowie Erfolge und Fehlschläge. Grundstorys geben keine Startboni.
 
-## XP-Grundformel
+## Skill-Fortschritt
 
-```text
-Skill-XP =
-Basis-XP
-× Schwierigkeit
-× Qualität
-× Neuheit
-× Praxisfaktor
-× Erschöpfungsfaktor
-× Wiederholungsfaktor
-```
+Der Skillbereich reicht von 10 bis 100. Die verbindliche Skill-XP-Formel und Wertebereiche liegen in `manifests/SKILL_MANIFEST.json` und `manifests/PROGRESSION_MANIFEST.json`.
 
-Grundbereiche:
-- Basis-XP: 4–40
-- Schwierigkeit: 0,80–1,50
-- Qualität: 0,75–1,35
-- Neuheit: 0,55–1,15
-- Praxis: 0,90–1,25
-- Erschöpfung: 0,60–1,00
-- Wiederholung: 0,40–1,00
+## Training
 
-Trainingswirkung pro Tag als Ausgangspunkt: 100 %, 85 %, 65 %, danach 40 %.
+Training steigert Skills regulär, prägt Traits aber schwächer als echte Praxis. Trait-Evidenzfaktor Training: `0,35`.
 
-## Gesamtlevel
-
-Ausgangsformel:
-
-```text
-Gesamt-XP(L) = 120 × (L - 1)^1,62 + 80 × (L - 1)
-```
-
-Nach Level 50 beginnt ein offenes Resonanzsystem.
+Trainingswirkung pro Tag: 100 %, 85 %, 65 %, danach 40 %.
 
 ## Traits
 
-Es existieren 15 gemeinsame Effektvorlagen und 165 individuelle Trait-Namen. Alle Traits starten gesperrt.
+Der bestehende Katalog umfasst 165 individuelle Trait-Namen in `manifests/TRAIT_MANIFEST.json`. Die numerische Engine liegt getrennt in `manifests/TRAIT_ENGINE_MANIFEST.json`.
 
 Trait-Stufen:
-1. Neigung
-2. Gewohnheit
-3. Charakterzug
-4. Markenzeichen
-5. Legendenmerkmal
+1. Neigung – Evidenz 220, Level 3, 12 Ereignisse
+2. Gewohnheit – Evidenz 480, Level 8, 25 Ereignisse
+3. Charakterzug – Evidenz 850, Level 15, 45 Ereignisse, mindestens zwei Quellen
+4. Markenzeichen – Evidenz 1300, Level 25, 70 Ereignisse, mindestens zwei Quellen
+5. Legendenmerkmal – Evidenz 1900, Level 40, 110 Ereignisse, mindestens drei Quellen
 
-Numerische Effekte und exakte Unlock-Schwellen gehören bewusst in Iteration 0.4.1 und werden nicht vorzeitig erfunden.
+## Trait-Evidenz
 
-## Biografie
+- Training: 0,35
+- Praxis: 1,00
+- Krise: 1,25
+- Teamarbeit: 1,10
+- Entdeckung: 1,10
+- Erfolg: 0,90
+- Fehlschlag: 0,70
 
-Nur bedeutsame validierte Journal-Ereignisse werden Biografie-Kandidaten:
-- erstes Mal
-- großer Erfolg/Fehlschlag
-- Levelmeilenstein
-- Trait/Spezialisierung
-- Beziehung
-- bedeutender Fund
-- Event/Club
-- Wirtschaft
-- persönliche Mission
-- seltenes Zufallsereignis
+## Konflikte
 
-Freitext aus ungesicherten Zuständen wird vermieden. Biografie entsteht aus Textschlüsseln und validierten Ereignisdaten.
+0.4.1 verwendet bewusst keine harten Trait-Ausschlüsse. Nur zwei Soft-Konflikte sind begründet:
+- Planer ↔ Improvisierer ab Stufe 3: positive Wirkung beider Seiten × 0,85
+- Detailmensch ↔ Opportunist ab Stufe 4: positive Wirkung beider Seiten × 0,90
+
+## Spezialisierungen
+
+Spezialisierungen werden aus dauerhaftem Skill-Vorsprung berechnet: Klangarchitektur, Einsatzleitung, Szenenetzwerk, Spurensuche, Impro-Werkstatt und Crew-Stabilität. Stufen: Tendenz, Profil, Identität, Meisterschaft. Generalisten bleiben ausdrücklich möglich.
+
+## Balance-Nachweis
+
+`tools/simulate_characters/progression_simulator.py` simuliert die Regeln reproduzierbar. Referenz: 1.000 Charaktere, 720 Spieltage, Seed 90409, sechs Balance-Gates bestanden. Bericht: `reports/PROGRESSION_SIMULATION_0.4.1.json`.

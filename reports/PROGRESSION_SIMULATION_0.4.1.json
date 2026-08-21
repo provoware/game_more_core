@@ -1,0 +1,32 @@
+{
+  "version": "0.4.1-alpha.1",
+  "overall": {
+    "runs": 1000,
+    "days": 720,
+    "seed": 90409,
+    "mean_level": 42.712,
+    "min_level": 41,
+    "max_level": 44,
+    "mean_active_traits": 5.573,
+    "mean_tier3_plus": 3.428,
+    "mean_tier5": 0.642
+  },
+  "groups": {
+    "generalist": {"runs":143,"mean_level":42.706,"mean_active_traits":15.0,"mean_tier3_plus":0.0,"mean_tier5":0.0,"specialization_rate":0.0},
+    "audio": {"runs":143,"mean_level":42.636,"mean_active_traits":4.0,"mean_tier3_plus":4.0,"mean_tier5":0.741,"specialization_rate":1.0},
+    "organisation": {"runs":143,"mean_level":42.664,"mean_active_traits":4.0,"mean_tier3_plus":4.0,"mean_tier5":0.699,"specialization_rate":1.0},
+    "netzwerk": {"runs":143,"mean_level":42.706,"mean_active_traits":4.0,"mean_tier3_plus":4.0,"mean_tier5":0.769,"specialization_rate":1.0},
+    "erkundung": {"runs":143,"mean_level":42.769,"mean_active_traits":4.0,"mean_tier3_plus":4.0,"mean_tier5":0.776,"specialization_rate":1.0},
+    "impro": {"runs":143,"mean_level":42.818,"mean_active_traits":4.0,"mean_tier3_plus":4.0,"mean_tier5":0.734,"specialization_rate":1.0},
+    "stabilitaet": {"runs":142,"mean_level":42.683,"mean_active_traits":4.0,"mean_tier3_plus":4.0,"mean_tier5":0.775,"specialization_rate":1.0}
+  },
+  "checks": {
+    "generalist_has_no_forced_specialization": true,
+    "specialists_form_specialization": true,
+    "specialists_develop_deep_traits": true,
+    "generalist_stays_broad_not_deep": true,
+    "tier5_not_mass_unlocked": true,
+    "level_progression_not_capped": true
+  },
+  "passed": true
+}
