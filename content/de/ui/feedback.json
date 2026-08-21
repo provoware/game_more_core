@@ -1,0 +1,14 @@
+{
+  "feedback.character.level_up.title": "LEVEL-UP",
+  "feedback.character.level_up.detail": "Level {old} → {new}. Nächste Stufe, gleicher Beton.",
+  "feedback.character.skill_level_up.title": "SKILL GESTIEGEN",
+  "feedback.character.skill_level_up.detail": "{old} → {new}. Training und Praxis zahlen sich aus.",
+  "feedback.character.trait_unlocked.title": "NEUER CHARAKTERZUG",
+  "feedback.character.trait_unlocked.detail": "Stufe {new_tier} freigeschaltet. Verhalten wird Profil.",
+  "feedback.character.trait_tier_up.title": "TRAIT-UP",
+  "feedback.character.trait_tier_up.detail": "Stufe {old_tier} → {new_tier}. Der Charakter wird deutlicher.",
+  "feedback.character.specialization_changed.title": "SPEZIALISIERUNG VERSCHOBEN",
+  "feedback.character.specialization_changed.detail": "Dein Spielverhalten hat das Profil neu ausgerichtet.",
+  "feedback.character.resonance_rank_up.title": "RESONANZ-UP",
+  "feedback.character.resonance_rank_up.detail": "Rang {old} → {new}. Kein Endlevel in Sicht."
+}
