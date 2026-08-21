@@ -1,18 +1,36 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any, Mapping, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 from bunkerfrequenz.presentation.components import build_components
-from bunkerfrequenz.presentation.interaction_actions import (
-    normalize_primary_actions,
-    require_mapping,
-    require_nonempty_text,
-)
 from bunkerfrequenz.presentation.state import PresentationState
-from bunkerfrequenz.presentation.text_catalog import require_text_keys
 
 
+_DISPATCH_ROUTE = "application.command_dispatcher.dispatch_command"
+_PROFILE_CHANGE_FIELDS = frozenset({"display_name", "alias", "additional_nicknames", "motto"})
+_COMMAND_REQUIREMENTS = {
+    "profile.update": ("character_id", "command_id", "event_id", "transaction_id", "changes"),
+    "profile.undo_last": ("character_id", "command_id", "event_id", "transaction_id"),
+    "action.execute": ("character_id", "command_id", "action_id", "action_instance_id"),
+}
+_COMMAND_ALLOWED_FIELDS = {
+    "profile.update": frozenset({
+        "type", "character_id", "command_id", "event_id", "transaction_id", "changes"
+    }),
+    "profile.undo_last": frozenset({
+        "type", "character_id", "command_id", "event_id", "transaction_id"
+    }),
+    "action.execute": frozenset({
+        "type", "character_id", "command_id", "action_id", "action_instance_id",
+        "selected_skill", "selected_trait_family"
+    }),
+}
+_COMMAND_CAPABILITIES = {
+    "profile.update": "can_edit_profile",
+    "profile.undo_last": "can_undo_profile",
+    "action.execute": "can_execute_action",
+}
 _STEP_PRESENTATION = {
     "current_goal": ("target", "primary"),
     "next_action": ("play", "attention"),
@@ -25,6 +43,18 @@ _VIEW_COMPONENTS = {
     "skills_traits": ("SkillList", "TraitList", "SpecializationCard"),
     "biography": ("BiographyTimeline",),
 }
+
+
+def _require_mapping(value: Any, field: str) -> Mapping[str, Any]:
+    if not isinstance(value, Mapping):
+        raise ValueError(f"{field} muss ein Mapping sein")
+    return value
+
+
+def _require_nonempty_text(value: Any, field: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{field} muss ein nicht-leerer Text sein")
+    return value
 
 
 def _a4_variant(ui_manifest: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -40,19 +70,19 @@ def _a4_variant(ui_manifest: Mapping[str, Any]) -> Mapping[str, Any]:
 def _normalize_content_card(value: Any, field: str) -> dict[str, Any] | None:
     if value is None:
         return None
-    card = require_mapping(value, field)
+    card = _require_mapping(value, field)
     allowed = {"title_key", "detail_key", "placeholders", "status", "icon_id", "tone"}
     unknown = set(card) - allowed
     if unknown:
         raise ValueError(f"{field} enthält unbekannte Felder: {', '.join(sorted(unknown))}")
-    title_key = require_nonempty_text(card.get("title_key"), f"{field}.title_key")
+    title_key = _require_nonempty_text(card.get("title_key"), f"{field}.title_key")
     detail_key = card.get("detail_key")
     if detail_key is not None:
-        require_nonempty_text(detail_key, f"{field}.detail_key")
+        _require_nonempty_text(detail_key, f"{field}.detail_key")
     placeholders = card.get("placeholders", {})
     if not isinstance(placeholders, Mapping):
         raise ValueError(f"{field}.placeholders muss ein Mapping sein")
-    return {
+    normalized = {
         "title_key": title_key,
         "detail_key": detail_key,
         "placeholders": deepcopy(dict(placeholders)),
@@ -60,6 +90,119 @@ def _normalize_content_card(value: Any, field: str) -> dict[str, Any] | None:
         "icon_id": card.get("icon_id"),
         "tone": card.get("tone"),
     }
+    return normalized
+
+
+def _validate_dispatcher_command(command_map: Mapping[str, Any], action_id: str, character_id: str) -> str:
+    command_type = command_map.get("type")
+    if command_type not in _COMMAND_REQUIREMENTS:
+        raise ValueError(f"Primäraktion {action_id} hat unbekannten Schreibcommand")
+
+    unknown = set(command_map) - _COMMAND_ALLOWED_FIELDS[command_type]
+    if unknown:
+        raise ValueError(
+            f"Primäraktion {action_id} enthält nicht freigegebene Command-Felder: "
+            f"{', '.join(sorted(unknown))}"
+        )
+    missing = [field for field in _COMMAND_REQUIREMENTS[command_type] if field not in command_map]
+    if missing:
+        raise ValueError(
+            f"Primäraktion {action_id} ist nicht dispatcher-fertig: {', '.join(missing)} fehlt"
+        )
+
+    if command_map.get("character_id") != character_id:
+        raise ValueError(f"Primäraktion {action_id} gehört zu einem anderen Character")
+    for field in _COMMAND_REQUIREMENTS[command_type]:
+        if field == "changes":
+            continue
+        _require_nonempty_text(command_map.get(field), f"Primäraktion {action_id}.command.{field}")
+
+    if command_type == "profile.update":
+        changes = command_map.get("changes")
+        if not isinstance(changes, Mapping) or not changes:
+            raise ValueError(f"Primäraktion {action_id}.changes muss ein nicht-leeres Mapping sein")
+        unknown_changes = set(changes) - _PROFILE_CHANGE_FIELDS
+        if unknown_changes:
+            raise ValueError(
+                f"Primäraktion {action_id} enthält nicht editierbare Profilfelder: "
+                f"{', '.join(sorted(unknown_changes))}"
+            )
+    elif command_type == "action.execute":
+        for field in ("selected_skill", "selected_trait_family"):
+            if field in command_map:
+                _require_nonempty_text(
+                    command_map[field],
+                    f"Primäraktion {action_id}.command.{field}",
+                )
+    return command_type
+
+
+def _normalize_primary_action(
+    value: Any,
+    *,
+    order: int,
+    character_id: str,
+    capabilities: Mapping[str, Any],
+    minimum_target_px: int,
+    focus_ring_px: int,
+) -> dict[str, Any]:
+    action = _require_mapping(value, f"primary_actions[{order - 1}]")
+    allowed_action_fields = {"action_id", "label_key", "icon_id", "tone", "enabled", "command"}
+    unknown_action_fields = set(action) - allowed_action_fields
+    if unknown_action_fields:
+        raise ValueError(
+            "Primäraktion enthält unbekannte Felder: "
+            + ", ".join(sorted(unknown_action_fields))
+        )
+
+    action_id = _require_nonempty_text(action.get("action_id"), "Primäraktion.action_id")
+    label_key = _require_nonempty_text(action.get("label_key"), f"Primäraktion {action_id}.label_key")
+    icon_id = _require_nonempty_text(action.get("icon_id"), f"Primäraktion {action_id}.icon_id")
+    tone = _require_nonempty_text(action.get("tone", "primary"), f"Primäraktion {action_id}.tone")
+    enabled = action.get("enabled", True)
+    if not isinstance(enabled, bool):
+        raise ValueError(f"Primäraktion {action_id}.enabled muss bool sein")
+
+    command_map = _require_mapping(action.get("command"), f"Primäraktion {action_id}.command")
+    command_type = _validate_dispatcher_command(command_map, action_id, character_id)
+
+    capability = _COMMAND_CAPABILITIES[command_type]
+    if enabled and not bool(capabilities.get(capability, False)):
+        raise ValueError(f"Primäraktion {action_id} ist laut bestätigter Capability nicht verfügbar")
+
+    return {
+        "action_id": action_id,
+        "label_key": label_key,
+        "aria_label_key": label_key,
+        "icon_id": icon_id,
+        "tone": tone,
+        "enabled": enabled,
+        "keyboard_order": order,
+        "target_px": minimum_target_px,
+        "focus_ring_px": focus_ring_px,
+        "dispatch": {
+            "route": _DISPATCH_ROUTE,
+            "command": deepcopy(dict(command_map)),
+        },
+    }
+
+
+def _iter_text_keys(value: Any) -> Iterable[str]:
+    if isinstance(value, Mapping):
+        for field, child in value.items():
+            if isinstance(field, str) and field.endswith("_key") and isinstance(child, str):
+                yield child
+            else:
+                yield from _iter_text_keys(child)
+    elif isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
+        for child in value:
+            yield from _iter_text_keys(child)
+
+
+def _require_text_keys(value: Any, text_catalog: Mapping[str, str]) -> None:
+    missing = sorted({key for key in _iter_text_keys(value) if key not in text_catalog})
+    if missing:
+        raise KeyError(f"Fehlende A4-Textschlüssel: {', '.join(missing)}")
 
 
 def build_a4_ops_deck(
@@ -73,9 +216,9 @@ def build_a4_ops_deck(
 ) -> dict[str, Any]:
     """Compose the A4 Ops Deck from shared components without adding gameplay state."""
     variant = _a4_variant(ui_manifest)
-    focus_model = require_mapping(ui_manifest.get("focus_model"), "UI focus_model")
-    accessibility = require_mapping(ui_manifest.get("accessibility"), "UI accessibility")
-    contrast = require_mapping(ui_manifest.get("contrast"), "UI contrast")
+    focus_model = _require_mapping(ui_manifest.get("focus_model"), "UI focus_model")
+    accessibility = _require_mapping(ui_manifest.get("accessibility"), "UI accessibility")
+    contrast = _require_mapping(ui_manifest.get("contrast"), "UI contrast")
 
     workflow_order = tuple(focus_model.get("workflow", ()))
     if not workflow_order or any(step not in _STEP_PRESENTATION for step in workflow_order):
@@ -97,17 +240,6 @@ def build_a4_ops_deck(
             f"A4-Workflow enthält unbekannte Felder: {', '.join(sorted(unknown_workflow_fields))}"
         )
 
-    meta = require_mapping(projection.get("meta"), "Projection meta")
-    character_id = require_nonempty_text(meta.get("character_id"), "Projection character_id")
-    capabilities = require_mapping(projection.get("capabilities", {}), "Projection capabilities")
-    primary_actions = normalize_primary_actions(
-        source_workflow.get("primary_actions", ()),
-        character_id=character_id,
-        capabilities=capabilities,
-        max_primary_actions=max_primary_actions,
-        minimum_target_px=minimum_target_px,
-        focus_ring_px=focus_ring_px,
-    )
     raw_actions = source_workflow.get("primary_actions", ())
     if not isinstance(raw_actions, Sequence) or isinstance(raw_actions, (str, bytes)):
         raise ValueError("primary_actions muss eine Sequenz sein")
@@ -213,5 +345,5 @@ def build_a4_ops_deck(
             "semantic_cues": ["text", "icon", "tone"],
         },
     }
-    require_text_keys(deck, text_catalog, context="A4")
+    _require_text_keys(deck, text_catalog)
     return deck
