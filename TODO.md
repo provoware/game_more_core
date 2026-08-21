@@ -115,6 +115,7 @@
 
 - [x] Presentation-Schnitt festgelegt: Zustandsprojektion, UI-Aktionen und Textschlüssel zwischen Runtime-Kern und gemeinsamer A4/A3-Komponentenschicht spezifiziert
 - [x] Datenvertrag deckt Overview, Skills, Traits, Spezialisierung und Biografie ab, ohne UI-Direktzugriff auf Domain-Zustand
+- [x] acht frameworkfreie Komponentenmodelle mit lokaler Ansicht, sichtbaren fehlenden Textschlüsseln und alleiniger Command-Erzeugung im ProfileEditor angelegt
 - [ ] **Nächste Iteration – Character-Projektion implementieren:** reine Zustandsprojektion nach `docs/PRESENTATION_CONTRACT_0.6.md` samt gezieltem Unit-Test anlegen
 - [ ] **Abnahme der nächsten Iteration:** dieselbe Eingabe erzeugt dieselbe, vom Domain-Objekt unabhängige Projektion; Sortierung, Fortschrittsgrenzen und Textschlüssel sind gezielt getestet
 - [ ] A4 Ops Deck als normalen Hauptworkflow auf der gemeinsamen Presentation-Schicht implementieren

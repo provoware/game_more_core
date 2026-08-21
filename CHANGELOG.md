@@ -5,6 +5,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 ## Unveröffentlicht
 
 ### Hinzugefügt
+- Acht frameworkfreie Character-Komponentenmodelle lesen getrennte Projektionsblöcke und lokalen Presentation-Zustand; nur der ProfileEditor erzeugt Änderungs-Commands über den zentralen Adapter.
 - Zusätzliche Spitznamen sind im Character-State serialisierbar und über den bestehenden Profilservice inklusive Undo und Recovery editierbar.
 - Ein Ordner-/Dateiindex, ein übergreifendes Spielschema und verbindliche Ablageregeln trennen Basistools, Dokumentation und maschinenlesbare Verträge.
 - Der Presentation-Vertrag 0.6 legt die gemeinsame, schreibgeschützte Character-Projektion, erlaubte UI-Commands, Textschlüsselgrenzen und Komponenten für A4 Ops Deck und A3 Cinematic Forge fest.
@@ -14,8 +15,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Der Action-Vertragsprüfer meldet vier gezielte Checkpoints per Ampel und erklärt Aufruf sowie Ampelbedeutung über `--help`.
 
 ### Bewusst offen
+- Die reine Character-Projektion, grafische Layouts sowie Progressions- und Journal-Logik bleiben außerhalb der Komponenten und folgen getrennt.
 - Die grafische Profilanbindung folgt weiterhin gemeinsam mit A4 Ops Deck und A3 Cinematic Forge in 0.6.
-- Die nächste kleine Iteration implementiert zunächst nur die Character-Projektion samt gezieltem Test; UI-Framework und Command-Adapter bleiben offen.
+- Die nächste kleine Iteration implementiert zunächst nur die Character-Projektion samt gezieltem Test; ein UI-Framework bleibt offen.
 
 ## [0.5.2-alpha.1] – 2026-08-21
 
