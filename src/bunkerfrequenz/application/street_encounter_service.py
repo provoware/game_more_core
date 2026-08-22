@@ -16,6 +16,7 @@ _POLARITIES = frozenset({"neutral", "positive", "negative"})
 
 @dataclass(frozen=True, slots=True)
 class StreetEncounterResult:
+    approach_id: str
     encounter_id: str
     polarity: str
     title_key: str
@@ -38,7 +39,22 @@ def _require_int(value: Any, field: str) -> int:
     return value
 
 
-def _validate_manifest(manifest: Mapping[str, Any]) -> tuple[str, int, tuple[dict[str, Any], ...]]:
+def _require_sequence(value: Any, field: str) -> Sequence[Any]:
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+        raise ValueError(f"{field} muss eine Liste sein")
+    return value
+
+
+def _validate_manifest(
+    manifest: Mapping[str, Any],
+) -> tuple[
+    str,
+    int,
+    tuple[dict[str, Any], ...],
+    str,
+    dict[str, dict[str, Any]],
+    frozenset[str],
+]:
     version = _require_text(manifest.get("version"), "STREET_ENCOUNTER_MANIFEST.version")
     selection = manifest.get("selection")
     policy = manifest.get("policy")
@@ -112,7 +128,76 @@ def _validate_manifest(manifest: Mapping[str, Any]) -> tuple[str, int, tuple[dic
         raise ValueError("Street-Positivanteil widerspricht policy")
     if totals["positive"] <= totals["negative"]:
         raise ValueError("Street-Katalog muss überwiegend positive Begegnungen besitzen")
-    return version, weight_total, tuple(normalized)
+
+    approach_policy = manifest.get("approach_policy")
+    if not isinstance(approach_policy, Mapping):
+        raise ValueError("Street-Manifest benötigt approach_policy")
+    if approach_policy.get("player_choice") is not True:
+        raise ValueError("Street-Ansatz muss eine bewusste Spielerwahl sein")
+    if approach_policy.get("approach_changes_only_selection_weights") is not True:
+        raise ValueError("Street-Ansatz darf nur Auswahlgewichte ändern")
+    if approach_policy.get("effects_remain_encounter_authority") is not True:
+        raise ValueError("Encounter muss Effekt-Autorität bleiben")
+    if approach_policy.get("system_time_as_authority") is not False:
+        raise ValueError("Systemzeit darf keine Street-Ansatz-Autorität sein")
+    default_approach_id = _require_text(
+        approach_policy.get("default_approach_id"),
+        "approach_policy.default_approach_id",
+    )
+    compatible_versions = frozenset(
+        _require_text(item, "approach_policy.compatible_replay_versions[]")
+        for item in _require_sequence(
+            approach_policy.get("compatible_replay_versions", ()),
+            "approach_policy.compatible_replay_versions",
+        )
+    )
+    if version in compatible_versions:
+        raise ValueError("Aktuelle Street-Version darf nicht zugleich Legacy-Replay-Version sein")
+
+    approaches_raw = _require_sequence(manifest.get("approaches"), "approaches")
+    if not approaches_raw:
+        raise ValueError("Street-Manifest benötigt mindestens einen Ansatz")
+    approaches: dict[str, dict[str, Any]] = {}
+    for raw in approaches_raw:
+        if not isinstance(raw, Mapping):
+            raise ValueError("Street-Ansatz muss ein Mapping sein")
+        approach_id = _require_text(raw.get("approach_id"), "approach.approach_id")
+        if approach_id in approaches:
+            raise ValueError(f"Doppelter Street-Ansatz: {approach_id}")
+        weights = raw.get("weights")
+        if not isinstance(weights, Mapping) or set(weights) != ids:
+            raise ValueError(f"{approach_id}.weights muss exakt alle Street-Begegnungen enthalten")
+        normalized_weights = {
+            encounter_id: _require_int(weights[encounter_id], f"{approach_id}.weights.{encounter_id}")
+            for encounter_id in sorted(ids)
+        }
+        if any(value < 0 for value in normalized_weights.values()):
+            raise ValueError(f"{approach_id}.weights darf keine negativen Werte enthalten")
+        if sum(normalized_weights.values()) != weight_total:
+            raise ValueError(f"{approach_id}.weights muss exakt {weight_total} ergeben")
+        if not any(normalized_weights.values()):
+            raise ValueError(f"{approach_id}.weights darf nicht leer wirksam sein")
+        approaches[approach_id] = {
+            "approach_id": approach_id,
+            "label_key": _require_text(raw.get("label_key"), f"{approach_id}.label_key"),
+            "description_key": _require_text(raw.get("description_key"), f"{approach_id}.description_key"),
+            "weights": normalized_weights,
+        }
+
+    if default_approach_id not in approaches:
+        raise ValueError("default_approach_id ist nicht katalogisiert")
+    base_weights = {item["encounter_id"]: item["weight"] for item in normalized}
+    if approaches[default_approach_id]["weights"] != base_weights:
+        raise ValueError("Standard-Ansatz muss die bisherige Street-Verteilung unverändert erhalten")
+
+    return (
+        version,
+        weight_total,
+        tuple(normalized),
+        default_approach_id,
+        approaches,
+        compatible_versions,
+    )
 
 
 def _stable_bucket(world_seed: str, walk_instance_id: str, server_sequence: int | None, total: int) -> int:
@@ -121,10 +206,14 @@ def _stable_bucket(world_seed: str, walk_instance_id: str, server_sequence: int 
     return int.from_bytes(digest[:8], "big") % total
 
 
-def _select(encounters: Sequence[Mapping[str, Any]], bucket: int) -> Mapping[str, Any]:
+def _select(
+    encounters: Sequence[Mapping[str, Any]],
+    weights: Mapping[str, int],
+    bucket: int,
+) -> Mapping[str, Any]:
     cursor = 0
     for encounter in encounters:
-        cursor += int(encounter["weight"])
+        cursor += int(weights[str(encounter["encounter_id"])])
         if bucket < cursor:
             return encounter
     raise RuntimeError("Street-Auswahl liegt außerhalb des Gewichtskatalogs")
@@ -137,7 +226,14 @@ def _clamp_resource(value: int) -> int:
 class StreetEncounterService:
     def __init__(self, persistence: PersistenceKernel, manifest: Mapping[str, Any]) -> None:
         self.persistence = persistence
-        self.contract_version, self.weight_total, self.encounters = _validate_manifest(manifest)
+        (
+            self.contract_version,
+            self.weight_total,
+            self.encounters,
+            self.default_approach_id,
+            self.approaches,
+            self.compatible_replay_versions,
+        ) = _validate_manifest(manifest)
 
     def walk(
         self,
@@ -146,20 +242,32 @@ class StreetEncounterService:
         walk_instance_id: str,
         world_seed: str,
         journal_context: JournalContext,
+        approach_id: str | None = None,
         server_sequence: int | None = None,
     ) -> StreetEncounterResult:
         character.validate()
         walk_instance_id = _require_text(walk_instance_id, "walk_instance_id")
         world_seed = _require_text(world_seed, "world_seed")
+        selected_approach_id = self.default_approach_id if approach_id is None else _require_text(
+            approach_id,
+            "approach_id",
+        )
+        approach = self.approaches.get(selected_approach_id)
+        if approach is None:
+            raise ValueError(f"Unbekannter Street-Ansatz: {selected_approach_id}")
         if journal_context.entity_type != "character" or journal_context.entity_id != character.character_id:
             raise ValueError("Street-Walk benötigt den bestätigten Character-Kontext")
 
         first_event_id = f"{walk_instance_id}:001"
         if self.persistence.has_event(first_event_id):
-            return self._replay_result(character, first_event_id)
+            return self._replay_result(
+                character,
+                first_event_id,
+                expected_approach_id=selected_approach_id,
+            )
 
         bucket = _stable_bucket(world_seed, walk_instance_id, server_sequence, self.weight_total)
-        selected = _select(self.encounters, bucket)
+        selected = _select(self.encounters, approach["weights"], bucket)
         state = deepcopy(character)
         requested = dict(selected["effects"])
 
@@ -183,6 +291,7 @@ class StreetEncounterService:
             "event_type": "street.encounter_resolved",
             "payload": {
                 "walk_instance_id": walk_instance_id,
+                "approach_id": selected_approach_id,
                 "encounter_id": selected["encounter_id"],
                 "polarity": selected["polarity"],
                 "title_key": selected["title_key"],
@@ -195,7 +304,7 @@ class StreetEncounterService:
             generated.append({
                 "event_type": "character.resources_changed",
                 "payload": {
-                    "source_action": f"street.walk:{selected['encounter_id']}",
+                    "source_action": f"street.walk:{selected_approach_id}:{selected['encounter_id']}",
                     "energy": {
                         "old": old_energy,
                         "delta": applied["energy_delta"],
@@ -215,7 +324,7 @@ class StreetEncounterService:
                     "old": old_reputation,
                     "delta": applied["reputation_delta"],
                     "new": new_reputation,
-                    "reason": f"street.encounter:{selected['encounter_id']}",
+                    "reason": f"street.encounter:{selected_approach_id}:{selected['encounter_id']}",
                 },
             })
 
@@ -234,6 +343,7 @@ class StreetEncounterService:
             context=journal_context,
         )
         return StreetEncounterResult(
+            approach_id=selected_approach_id,
             encounter_id=str(selected["encounter_id"]),
             polarity=str(selected["polarity"]),
             title_key=str(selected["title_key"]),
@@ -244,7 +354,13 @@ class StreetEncounterService:
             idempotent_replay=False,
         )
 
-    def _replay_result(self, fallback: CharacterState, first_event_id: str) -> StreetEncounterResult:
+    def _replay_result(
+        self,
+        fallback: CharacterState,
+        first_event_id: str,
+        *,
+        expected_approach_id: str,
+    ) -> StreetEncounterResult:
         record = next(
             (item for item in self.persistence.read_records() if item.get("event_id") == first_event_id),
             None,
@@ -254,14 +370,22 @@ class StreetEncounterService:
         payload = record.get("payload")
         if not isinstance(payload, Mapping):
             raise PersistenceError("Street-Replay besitzt keinen gültigen Payload")
-        if payload.get("contract_version") != self.contract_version:
-            raise PersistenceError("Street-Replay verwendet einen anderen Vertragsstand")
+        record_version = payload.get("contract_version")
+        if record_version == self.contract_version:
+            persisted_approach_id = _require_text(payload.get("approach_id"), "replay.approach_id")
+        elif record_version in self.compatible_replay_versions:
+            persisted_approach_id = self.default_approach_id
+        else:
+            raise PersistenceError("Street-Replay verwendet einen inkompatiblen Vertragsstand")
+        if persisted_approach_id != expected_approach_id:
+            raise PersistenceError("Street-Replay wurde mit einem anderen Ansatz angefordert")
         persisted = self.persistence.load_state()
         state = fallback if persisted is None or not isinstance(persisted.get("character"), dict) else CharacterState.from_dict(persisted["character"])
         effects = payload.get("effects")
         if not isinstance(effects, Mapping) or set(effects) != _EFFECT_FIELDS:
             raise PersistenceError("Street-Replay besitzt ungültige Effekte")
         return StreetEncounterResult(
+            approach_id=persisted_approach_id,
             encounter_id=_require_text(payload.get("encounter_id"), "replay.encounter_id"),
             polarity=_require_text(payload.get("polarity"), "replay.polarity"),
             title_key=_require_text(payload.get("title_key"), "replay.title_key"),
