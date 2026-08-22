@@ -1,23 +1,27 @@
 {
   "report": "SETTLEMENT_VALIDATION_0.8.3-C",
-  "status": "INITIAL_PRODUCT_HEAD_GREEN_FINAL_HEAD_PENDING",
+  "status": "REMOTE_VALIDATED_AND_SAFE_MERGED",
   "repository": "provoware/game_more_core",
   "pull_request": 65,
   "contract_version": "0.8.3-c1",
-  "validated_product_head": "41b5ea7b294540b7f3a07ea9594906143e4afbe1",
+  "validated_head": "ccfb145547b241a179bd0135d34a7470d690821c",
+  "merge_commit": "5ae811333878ae67947417ccb72e791caafe4ba9",
   "validation": {
     "runtime_core": {
-      "run_id": 32565066147,
+      "run_id": 32568683844,
       "conclusion": "success"
     },
     "presentation_core": {
-      "run_id": 32565066165,
+      "run_id": 32568683898,
       "conclusion": "success"
     },
     "repository_health": {
-      "run_id": 32565066135,
+      "run_id": 32568683863,
       "conclusion": "success"
-    }
+    },
+    "review_threads_unresolved": 0,
+    "safe_merge": "PASS",
+    "main_provenance_confirmed": true
   },
   "scenario": [
     "character_and_event_initialized",
@@ -29,8 +33,8 @@
     "setup",
     "soundcheck",
     "live",
-    "incident_opened",
-    "incident_resolved",
+    "optional_incident_opened",
+    "optional_incident_resolved",
     "teardown",
     "settlement",
     "consequences_committed",
@@ -39,12 +43,19 @@
   ],
   "asserted_invariants": [
     "settlement_uses_confirmed_pending_incident_effects",
+    "crisis_free_event_can_complete_with_empty_incident_state",
     "budget_change_recorded_in_economy_ledger",
     "settlement_does_not_advance_market_tick",
-    "negative_final_budget_rejected",
+    "negative_final_budget_rejected_without_partial_commit",
     "stress_clamped_0_100",
-    "reputation_replay_validates_old_delta_new",
+    "legacy_signed_reputation_remains_loadable",
+    "new_settlement_reputation_normalized_to_floor_zero",
+    "reputation_replay_uses_same_floor_rule",
+    "settlement_receipt_budget_delta_matches_confirmed_effect",
+    "settlement_receipt_stress_delta_matches_confirmed_effect",
+    "settlement_receipt_reputation_delta_matches_confirmed_effect",
     "character_must_be_event_crew",
+    "biography_record_bound_to_confirmed_character",
     "incident_history_preserved",
     "pending_settlement_consumed_once",
     "generic_event_service_cannot_directly_complete",
@@ -62,5 +73,16 @@
     "connected_game_client",
     "network_sync"
   ],
-  "final_head_validation_required": true
+  "post_merge_repository_hygiene": {
+    "accidental_empty_marker_commit_detected": true,
+    "repair_pull_request": 67,
+    "repair_head": "bef7836c4571ac3b07122b9efb3080ac10536cc4",
+    "repair_merge_commit": "057b5131dfd5bfaf1c26ddd0a3e862fb52c0675f",
+    "runtime_core_run": 32568910870,
+    "presentation_core_run": 32568910892,
+    "repository_health_run": 32568910865,
+    "safe_merge": "PASS",
+    "product_tree_changed_by_repair": false
+  },
+  "final_head_validation_required": false
 }
