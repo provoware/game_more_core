@@ -105,7 +105,7 @@ class PropertyUpgradeServiceTests(unittest.TestCase):
             self.assertEqual(result.economy.ledger[-1]["unit_price_cents"], expected_cost)
             self.assertEqual(
                 result.economy.ledger[-1]["item_id"],
-                f"property_upgrade:signalwerk:stage:{level}",
+                f"property_upgrade:signalwerk:stage:L{level}",
             )
         state = self.kernel.load_state()
         stage = state["property_upgrades"]["properties"]["signalwerk"]["upgrades"]["stage"]
