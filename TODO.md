@@ -2,13 +2,14 @@
 
 ## Aktueller Stand
 
-- **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
+- **Versionierte Runtime-Baseline:** `0.8.4-alpha.1`
 - **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery`
 - **0.8.4-Abnahme:** PR #69 · Head `3d61e9d6385a0b79069132df24d655fef42b0451` · Runtime Core `32575062624` · Presentation Core `32575062602` · Repository Health `32575062620` · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
+- **Release-Abnahme:** PR #72 · Head `7fe1a39c6b69ec819fefe064a48d1647a5fa7c93` · Runtime Core `32576362896` · Presentation Core `32576362890` · Repository Health `32576362810` · Release Acceptance `32576362827` · `SAFE MERGE PASS` · Merge `72bb3024272797b27632a96559ae8abb665fff8a`
 - **Recovery-Härtung:** der vollständige A4-Smoke deckte einen fehlenden-State-Randfall auf; ein Snapshot am Journal-Head darf einen fehlenden `state/current.json` nicht mehr fälschlich als `healthy` deklarieren. Der zentrale Recovery-Kern stellt den State nun korrekt aus dem gültigen Snapshot wieder her und besitzt dafür eine Regression.
-- **Nächster Pflichtblock:** **Release-Abnahme** des lokalen Alpha aus frischem Checkout; erst danach Produktversion und reproduzierbares Release-Artefakt festlegen
-- **Fortschritt zum ersten spielbaren Alpha-Release:** `98 %` (Planungswert; Fachloop, schreibender A4-Client und vollständiger Save/Restart/Recovery-Smoke remote validiert; Release-/Klickstart-Abnahme noch offen)
-- **Aktueller Release-Blocker:** frischer Checkout + Klickstart + verständliche Fehlerpfade + Release-Evidence → anschließend Version und reproduzierbares Paket
+- **Nächster Pflichtblock:** Release-Paket `0.8.4-alpha.1` byte-reproduzierbar bauen, SHA-256 erzeugen, entpacktes Paket smoke-testen und finalen Release-Head remote validieren
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `99 %` (Planungswert; Fachloop, A4-Client, Release-Abnahme und erster Paket-Smoke grün; finaler Release-Head/Merge noch offen)
+- **Aktueller Release-Blocker:** finaler PR-#73-Head muss Runtime, Presentation, Repository Health, Release Acceptance und Release Package gemeinsam grün bestehen und anschließend per `/safe-merge` übernommen werden
 
 ## Release-Ziel
 
@@ -136,19 +137,21 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 - [x] `SAFE MERGE PASS` + Main-Provenienz bestätigen
 - [x] Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
 
-## Release-Abnahme – erstes lokales Alpha ⏭️
+## Release-Abnahme – erstes lokales Alpha ✅
 
-- [ ] frischen Checkout ohne vorhandenen Save als reale Release-Ausgangslage prüfen
-- [ ] Klickstart/Ein-Befehl-Start des A4-Clients auf unterstütztem Ubuntu/Kubuntu prüfen
-- [ ] automatisches Browseröffnen, `--no-browser` und freien Port über `--port 0` abnehmen
-- [ ] verständliche Startfehler für fehlende Dateien, belegten Port und nicht beschreibbaren Save-Pfad prüfen
-- [ ] First Run im Browser von einer leeren Umgebung bis `completed` manuell gegen den automatisierten Smoke abgleichen
-- [ ] Save schließen, Prozess neu starten und identischen bestätigten Zustand prüfen
-- [ ] kontrollierten Recovery-Fall im Release-Szenario auslösen und Recovery-Receipt prüfen
-- [ ] Release-Evidence mit Quell-Commit, Tree, Python-Version, Gate-Runs, Smoke-Ergebnis und Paket-Hash erzeugen
-- [ ] erst nach vollständig grüner Release-Abnahme die nächste Produktversion in `VERSION.json` festlegen
-- [ ] Release Notes und reproduzierbares ZIP/Artefakt einschließlich SHA-256 erzeugen
+- [x] frischen Checkout ohne vorhandenen Save als reale Release-Ausgangslage automatisch prüfen
+- [x] Klickstart/Ein-Befehl-Start des A4-Clients als echten Launcherprozess prüfen
+- [x] `--no-browser` und freie Portwahl über `--port 0` abnehmen
+- [x] verständliche Startfehler für fehlende Dateien, belegten Port und unbrauchbaren Save-Pfad prüfen
+- [x] vollständigen First-Run/Gameplay-Pfad bis `completed` gegen den automatisierten Smoke abgleichen
+- [x] Save/Neustart und identischen bestätigten Zustand prüfen
+- [x] kontrollierten Recovery-Fall einschließlich fehlendem State-Checkpoint regressionsprüfen
+- [x] Release-Acceptance-Evidence mit Quell-Head und Gate-Runs erzeugen
+- [x] Release-Abnahme PR #72 per `/safe-merge` übernehmen
+- [x] erst danach Produktversion `0.8.4-alpha.1` festlegen
+- [ ] finalen reproduzierbaren ZIP-/SHA-256-Artefaktlauf auf dem Release-Head bestätigen
 - [ ] erzeugtes Paket in frischem Zielordner erneut starten und Kernpfad smoke-testen
+- [ ] finalen Release-PR #73 mit allen fünf Gates grün per `/safe-merge` übernehmen
 
 ---
 
