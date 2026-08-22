@@ -1,0 +1,29 @@
+name: Release Acceptance
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-acceptance:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify checkout is clean of save state
+        run: |
+          test ! -e .local-save
+          test ! -e state/current.json
+          test ! -e journal/events.jsonl
+      - name: Compile launcher and runtime
+        run: PYTHONPATH=src python3 -m compileall -q src tools/start_a4_game_client.py tests/release
+      - name: Fresh-checkout launcher acceptance
+        run: PYTHONPATH=src python3 -m unittest discover -s tests/release -v
+      - name: Full gameplay restart recovery smoke
+        run: PYTHONPATH=src python3 -m unittest tests.runtime.test_a4_first_run_smoke -v

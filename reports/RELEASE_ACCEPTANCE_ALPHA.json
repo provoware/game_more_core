@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "status": "remote_validated_pending_merge",
+  "scope": "first_local_alpha_release_acceptance_before_versioning",
+  "source_base_main": "08f0b87c6d66af3963f9b9db3a59a2626bd43684",
+  "validated_head": "e619737e3ff70968004ba206d6edcd88a2d4e30f",
+  "pull_request": 72,
+  "python": "3.12",
+  "runs": {
+    "runtime_core": 32576331799,
+    "presentation_core": 32576331772,
+    "repository_health": 32576331793,
+    "release_acceptance": 32576331891
+  },
+  "release_acceptance_checks": {
+    "fresh_checkout_without_save_state": true,
+    "launcher_real_subprocess": true,
+    "localhost_only_health_endpoint": true,
+    "automatic_free_port": true,
+    "no_browser_mode": true,
+    "clean_process_stop": true,
+    "occupied_port_beginner_error": true,
+    "unusable_save_path_beginner_error": true,
+    "missing_required_file_error": true,
+    "full_first_run_event_equipment_optional_crisis_settlement_restart_recovery_smoke": true
+  },
+  "version_bumped": false,
+  "release_artifact_created": false,
+  "reason_no_version_or_artifact": "AGENTS workflow requires release acceptance before selecting the next product version and producing the reproducible release artifact.",
+  "next_step": "revalidate final evidence head, safe-merge PR 72, then choose product version and build reproducible package from the merged accepted source"
+}
