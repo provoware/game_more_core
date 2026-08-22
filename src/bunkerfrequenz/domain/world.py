@@ -2,11 +2,15 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass, field
+import re
 from typing import Any, Mapping
 
 _METRICS = ("heat", "prestige", "police_pressure", "scene_activity")
 _HOUSING = frozenset({"independent", "guest", "homeless"})
 _XOXO_MARKS = frozenset({"", "X", "O"})
+_TRUST_VIOLATIONS = frozenset({"deception", "betrayal", "fraud"})
+_BOOKING_RE = re.compile(r"^BF-([0-9]{6})$")
+_XOXO_LINES = ((0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6))
 
 
 def _text(value: Any, name: str) -> str:
@@ -38,6 +42,47 @@ def _default_minigames() -> dict[str, Any]:
     }
 
 
+def _winner(board: list[str], mark: str) -> bool:
+    return any(board[a] == board[b] == board[c] == mark for a, b, c in _XOXO_LINES)
+
+
+def _validate_xoxo(xoxo: Mapping[str, Any]) -> None:
+    if set(xoxo) != {"board", "status", "round", "wins", "losses", "draws"}:
+        raise ValueError("XOXO-State besitzt falsche Felder")
+    board = xoxo["board"]
+    if not isinstance(board, list) or len(board) != 9 or any(mark not in _XOXO_MARKS for mark in board):
+        raise ValueError("XOXO-Board ist ungültig")
+    status = xoxo["status"]
+    if status not in {"ready", "playing", "won", "lost", "draw"}:
+        raise ValueError("XOXO-Status unbekannt")
+    for key in ("round", "wins", "losses", "draws"):
+        _int(xoxo[key], f"xoxo.{key}")
+
+    x_count = board.count("X")
+    o_count = board.count("O")
+    if x_count < o_count or x_count > o_count + 1:
+        raise ValueError("XOXO-Board besitzt unmögliche Zuganzahl")
+    x_won = _winner(board, "X")
+    o_won = _winner(board, "O")
+    if x_won and o_won:
+        raise ValueError("XOXO-Board besitzt zwei Gewinner")
+    if x_won and x_count != o_count + 1:
+        raise ValueError("XOXO-X-Sieg besitzt falsche Zuganzahl")
+    if o_won and x_count != o_count:
+        raise ValueError("XOXO-O-Sieg besitzt falsche Zuganzahl")
+
+    if status == "ready" and any(board):
+        raise ValueError("XOXO ready benötigt leeres Board")
+    if status == "playing" and (x_won or o_won or all(board)):
+        raise ValueError("XOXO playing widerspricht dem Board")
+    if status == "won" and not x_won:
+        raise ValueError("XOXO won benötigt X-Sieg")
+    if status == "lost" and not o_won:
+        raise ValueError("XOXO lost benötigt O-Sieg")
+    if status == "draw" and (x_won or o_won or not all(board)):
+        raise ValueError("XOXO draw benötigt volles Board ohne Gewinner")
+
+
 @dataclass(slots=True)
 class WorldState:
     world_id: str = "living_city"
@@ -64,16 +109,24 @@ class WorldState:
             raise ValueError("World-State besitzt ungültige Objektblöcke")
 
         booking_ids: list[str] = []
+        booking_numbers: list[int] = []
         for character_id, player in self.players.items():
             _text(character_id, "players.character_id")
             if set(player) != {"booking_id", "display_name", "intro_acknowledged"}:
                 raise ValueError("Player-Registry besitzt ungültige Felder")
-            booking_ids.append(_text(player["booking_id"], "booking_id"))
+            booking_id = _text(player["booking_id"], "booking_id")
+            match = _BOOKING_RE.fullmatch(booking_id)
+            if match is None:
+                raise ValueError("Einbuchungs-ID besitzt ungültiges Format")
+            booking_ids.append(booking_id)
+            booking_numbers.append(int(match.group(1)))
             _text(player["display_name"], "display_name")
             if not isinstance(player["intro_acknowledged"], bool):
                 raise ValueError("intro_acknowledged muss bool sein")
         if len(booking_ids) != len(set(booking_ids)):
             raise ValueError("Einbuchungs-ID wurde doppelt vergeben")
+        if booking_numbers and self.next_booking_number <= max(booking_numbers):
+            raise ValueError("next_booking_number darf keine bereits vergebene Einbuchungs-ID wieder erreichbar machen")
 
         player_ids = set(self.players)
         if set(self.positions) != player_ids or set(self.housing) != player_ids:
@@ -104,6 +157,11 @@ class WorldState:
                 non_independent += 1
         if player_ids and non_independent != 1:
             raise ValueError("Wohnungsregel verlangt exakt eine Person ohne unabhängiges Zuhause")
+        for character_id, home in self.housing.items():
+            if home["status"] == "guest":
+                host = home["host_character_id"]
+                if self.housing[host]["status"] != "independent":
+                    raise ValueError(f"Gast {character_id} benötigt Host mit unabhängigem Zuhause")
 
         for city_id, districts in self.districts.items():
             _text(city_id, "districts.city_id")
@@ -129,7 +187,8 @@ class WorldState:
             if pair in seen_pairs:
                 raise ValueError("Doppelter gerichteter Trust-Block")
             seen_pairs.add(pair)
-            _text(block["violation_type"], "violation_type")
+            if block["violation_type"] not in _TRUST_VIOLATIONS:
+                raise ValueError("Trust-Block besitzt unbekannte Verstoßart")
             _int(block["remaining_cycles"], "remaining_cycles", minimum=1, maximum=1000)
 
         for character_id, titles in self.honors.items():
@@ -164,10 +223,17 @@ class WorldState:
                 raise ValueError("Party-Check besitzt ungültige Felder")
             if not isinstance(check["triggered"], bool) or not isinstance(check["resolved"], bool):
                 raise ValueError("Party-Check Flags müssen bool sein")
-            if check["choice_id"] is not None:
-                _text(check["choice_id"], "choice_id")
-            if check["resolved"] and check["triggered"] and check["choice_id"] is None:
-                raise ValueError("Aufgelöste Begegnung benötigt choice_id")
+            choice = check["choice_id"]
+            if choice is not None:
+                _text(choice, "choice_id")
+            if not check["triggered"]:
+                if not check["resolved"] or choice is not None:
+                    raise ValueError("Nicht ausgelöste Begegnung muss abgeschlossen und ohne choice_id sein")
+            elif check["resolved"]:
+                if choice is None:
+                    raise ValueError("Aufgelöste Begegnung benötigt choice_id")
+            elif choice is not None:
+                raise ValueError("Offene Begegnung darf noch keine choice_id besitzen")
 
         for character_id, reads in self.storefront_reads.items():
             if character_id not in player_ids or not isinstance(reads, list):
@@ -183,15 +249,9 @@ class WorldState:
             _int(games["poker_score"], "poker_score")
             _int(games["slot_score"], "slot_score")
             xoxo = games["xoxo"]
-            if set(xoxo) != {"board", "status", "round", "wins", "losses", "draws"}:
-                raise ValueError("XOXO-State besitzt falsche Felder")
-            board = xoxo["board"]
-            if not isinstance(board, list) or len(board) != 9 or any(mark not in _XOXO_MARKS for mark in board):
-                raise ValueError("XOXO-Board ist ungültig")
-            if xoxo["status"] not in {"ready", "playing", "won", "lost", "draw"}:
-                raise ValueError("XOXO-Status unbekannt")
-            for key in ("round", "wins", "losses", "draws"):
-                _int(xoxo[key], f"xoxo.{key}")
+            if not isinstance(xoxo, Mapping):
+                raise ValueError("XOXO-State muss Objekt sein")
+            _validate_xoxo(xoxo)
 
         if len(self.applied_settlements) != len(set(self.applied_settlements)):
             raise ValueError("Settlement wurde mehrfach als District-Folge registriert")
