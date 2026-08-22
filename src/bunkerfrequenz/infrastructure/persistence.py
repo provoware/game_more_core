@@ -457,10 +457,14 @@ class PersistenceKernel:
             meta_ok = bool(meta and int(meta.get("last_sequence", -1)) == valid_sequence and meta.get("journal_head_hash") == valid_head)
         except PersistenceError:
             meta_ok = False
-        state_at_head = int(checkpoint["sequence"]) == valid_sequence and checkpoint["head_hash"] == valid_head
+        state_at_head = bool(
+            state_checkpoint
+            and int(state_checkpoint["sequence"]) == valid_sequence
+            and state_checkpoint["head_hash"] == valid_head
+        )
         if scan.error is None and state_at_head and meta_ok:
             self._accept_scan(scan)
-            return RecoveryReceipt("healthy", None, checkpoint["kind"], int(checkpoint["sequence"]), 0, None, valid_sequence, valid_head, checkpoint.get("snapshot_id"))
+            return RecoveryReceipt("healthy", None, state_checkpoint["kind"], int(state_checkpoint["sequence"]), 0, None, valid_sequence, valid_head, state_checkpoint.get("snapshot_id"))
 
         quarantine_path = None
         if scan.invalid_tail:
