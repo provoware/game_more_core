@@ -1,1 +1,34 @@
-{"schema_version":1,"version":"0.5.2-alpha.1","release_type":"runtime_baseline","runtime_artifact":false,"status":"validated_runtime_baseline_no_release_artifact","supported_schema_versions":{"character":[1],"trait":[1],"journal":[2],"save":[2]}}
+{
+  "schema_version": 1,
+  "version": "0.8.4-alpha.1",
+  "release_type": "first_playable_local_alpha",
+  "runtime_artifact": true,
+  "status": "release_candidate_validation_pending",
+  "supported_schema_versions": {
+    "character": [1],
+    "trait": [1],
+    "journal": [2],
+    "save": [2]
+  },
+  "acceptance": {
+    "pull_request": 72,
+    "validated_head": "7fe1a39c6b69ec819fefe064a48d1647a5fa7c93",
+    "merged_commit": "72bb3024272797b27632a96559ae8abb665fff8a",
+    "runtime_core_workflow_run": 32576362896,
+    "presentation_core_workflow_run": 32576362890,
+    "repository_health_workflow_run": 32576362810,
+    "release_acceptance_workflow_run": 32576362827,
+    "safe_merge_pass": true
+  },
+  "artifact": {
+    "format": "zip",
+    "builder": "tools/build_release.py",
+    "package_root": "BUNKERFREQUENZ-0.8.4-alpha.1",
+    "sha256_sidecar": true,
+    "reproducible_byte_for_byte": true,
+    "package_smoke_required": true,
+    "contains_git_metadata": false,
+    "contains_ci_configuration": false,
+    "contains_tests": false
+  }
+}
