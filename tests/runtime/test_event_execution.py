@@ -9,7 +9,7 @@ from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceKernel
 
 
-ALLOWED = {"event.created", "event.phase_changed"}
+ALLOWED = {"event.created", "event.planning_updated", "event.phase_changed"}
 
 
 def context(command_id: str) -> JournalContext:
@@ -131,6 +131,38 @@ class EventExecutionTests(unittest.TestCase):
             ("confirmed_act", "confirmed_crew", "positive_budget"),
         )
 
+    def test_execute_uses_authoritative_persisted_gate_state(self):
+        planning = self.execution.execute(
+            self.event,
+            "begin_planning",
+            context=context("to-planning"),
+        ).event
+        blocked = self.state_service.update_planning(
+            planning,
+            {
+                "acts": [{"act_id": "act-1", "display_name": "Act 1", "status": "planned"}],
+                "crew": [{"character_id": "crew-1", "role": "tech", "status": "assigned"}],
+                "budget_cents": 0,
+            },
+            context=context("block-planning"),
+        ).event
+
+        caller_copy = EventState.from_dict(blocked.to_dict())
+        caller_copy.acts[0]["status"] = "confirmed"
+        caller_copy.crew[0]["status"] = "confirmed"
+        caller_copy.budget_cents = 100_000
+
+        with self.assertRaises(ValueError) as caught:
+            self.execution.execute(
+                caller_copy,
+                "begin_procurement",
+                context=context("invalid-procurement"),
+            )
+        self.assertIn("confirmed_act", str(caught.exception))
+        self.assertIn("confirmed_crew", str(caught.exception))
+        self.assertIn("positive_budget", str(caught.exception))
+        self.assertEqual(self.kernel.load_state()["event"]["phase"], "planning")
+
     def test_wrong_phase_is_visible_and_execution_fails_closed(self):
         availability = self.execution.availability(self.event, "start_transport")
         self.assertFalse(availability.enabled)
@@ -138,14 +170,14 @@ class EventExecutionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.execution.execute(self.event, "start_transport", context=context("bad-phase"))
 
-    def test_repeating_same_command_is_idempotent(self):
+    def test_repeating_same_command_with_current_state_is_idempotent(self):
         first = self.execution.execute(
             self.event,
             "begin_planning",
             context=context("same-command"),
         )
         replay = self.execution.execute(
-            self.event,
+            first.event,
             "begin_planning",
             context=context("same-command"),
         )
