@@ -34,18 +34,36 @@
     "ledger": {
       "type": "array",
       "items": {
-        "type": "object",
-        "required": ["transaction_id", "kind", "item_id", "quantity", "unit_price_cents", "budget_delta_cents", "compensates"],
-        "properties": {
-          "transaction_id": {"type": "string", "minLength": 1},
-          "kind": {"enum": ["buy", "sell", "consume", "reserve", "release"]},
-          "item_id": {"type": "string", "minLength": 1},
-          "quantity": {"type": "integer", "minimum": 1},
-          "unit_price_cents": {"type": "integer", "minimum": 1},
-          "budget_delta_cents": {"type": "integer"},
-          "compensates": {"type": ["string", "null"]}
-        },
-        "additionalProperties": false
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["transaction_id", "kind", "item_id", "quantity", "unit_price_cents", "budget_delta_cents", "compensates"],
+            "properties": {
+              "transaction_id": {"type": "string", "minLength": 1},
+              "kind": {"enum": ["buy", "sell", "consume", "reserve", "release"]},
+              "item_id": {"type": "string", "minLength": 1, "not": {"const": "__event_settlement__"}},
+              "quantity": {"type": "integer", "minimum": 1},
+              "unit_price_cents": {"type": "integer", "minimum": 1},
+              "budget_delta_cents": {"type": "integer"},
+              "compensates": {"type": ["string", "null"]}
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": ["transaction_id", "kind", "item_id", "quantity", "unit_price_cents", "budget_delta_cents", "compensates"],
+            "properties": {
+              "transaction_id": {"type": "string", "minLength": 1},
+              "kind": {"const": "settlement"},
+              "item_id": {"const": "__event_settlement__"},
+              "quantity": {"const": 1},
+              "unit_price_cents": {"const": 0},
+              "budget_delta_cents": {"type": "integer"},
+              "compensates": {"type": "null"}
+            },
+            "additionalProperties": false
+          }
+        ]
       }
     },
     "market_tick": {"type": "integer", "minimum": 0},
