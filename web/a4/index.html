@@ -1,32 +1,69 @@
 <!doctype html>
-<html lang="de" data-client="A4_WRITING_ALPHA">
+<html lang="de" data-client="A4_CONTROL_DECK">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>BUNKERFREQUENZ – A4 Game Client</title>
+  <title>BUNKERFREQUENZ – Control Deck</title>
   <link rel="stylesheet" href="styles.css">
   <script src="map_pro.js" defer></script>
+  <script src="ui_prefs.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#workspace">Zum Spielbereich</a>
+
   <header class="masthead">
-    <div>
-      <p class="eyebrow">BUNKERFREQUENZ // A4 OPS DECK</p>
+    <div class="brand-lockup">
+      <p class="eyebrow">BUNKERFREQUENZ // CONTROL DECK 2.0</p>
       <h1>BETON. BASS. BERLIN.</h1>
-      <p class="subline">Lokaler Alpha-Client · bestätigte Runtime statt Browser-Spielregeln</p>
+      <p class="subline">Lokales Crew-RPG · bestätigte Runtime · Entscheidungen statt Browser-Tricks</p>
     </div>
     <div class="status-stack">
       <output id="connection-status" class="badge" role="status" aria-live="polite">VERBINDE …</output>
       <span id="phase-badge" class="badge secondary">NOCH KEIN EVENT</span>
+      <button id="ui-options-toggle" type="button" class="utility-button" aria-expanded="false" aria-controls="ui-options-panel">ANSICHT</button>
     </div>
   </header>
 
+  <section class="ops-hud" aria-label="Aktueller Spielstatus">
+    <div class="hud-brand"><span>OPS</span><strong>LIVE STATUS</strong></div>
+    <div class="hud-metric"><span>Phase</span><strong id="hud-phase">–</strong></div>
+    <div class="hud-metric"><span>Budget</span><strong id="hud-budget">–</strong></div>
+    <div class="hud-metric"><span>Energie</span><strong id="hud-energy">–</strong></div>
+    <div class="hud-metric"><span>Stress</span><strong id="hud-stress">–</strong></div>
+    <div class="hud-metric"><span>Ruf</span><strong id="hud-reputation">–</strong></div>
+    <div class="hud-metric"><span>Eigentum</span><strong id="hud-property">–</strong></div>
+  </section>
+
+  <nav class="quick-nav" aria-label="Schnellnavigation">
+    <a href="#street-panel">STRASSE</a>
+    <a href="#map-pro-panel">MAP</a>
+    <a href="#property-panel">PROPERTY</a>
+    <a href="#hall-panel">HALL</a>
+    <a href="#event-panel">EVENT</a>
+    <a href="#economy-panel">EQUIPMENT</a>
+    <a href="#save-panel">SAVE</a>
+  </nav>
+
+  <aside id="ui-options-panel" class="ui-options-panel hidden" aria-labelledby="ui-options-title">
+    <div class="panel-head">
+      <div><p class="eyebrow">LOCAL UI // KEIN GAMEPLAY-STATE</p><h2 id="ui-options-title">Ansicht anpassen</h2></div>
+      <button id="ui-options-close" type="button" class="utility-button">SCHLIESSEN</button>
+    </div>
+    <p>Diese Einstellungen verändern ausschließlich die Darstellung auf diesem Browser. Spielstand, Werte und Regeln bleiben unverändert.</p>
+    <div class="ui-option-grid">
+      <label class="ui-option"><input type="checkbox" data-ui-pref="compact"><span><strong>Kompakt</strong><small>Weniger Abstände, mehr Information auf einmal.</small></span></label>
+      <label class="ui-option"><input type="checkbox" data-ui-pref="highContrast"><span><strong>Hoher Kontrast</strong><small>Härtere Linien und deutlichere Statusflächen.</small></span></label>
+      <label class="ui-option"><input type="checkbox" data-ui-pref="largeText"><span><strong>Große Schrift</strong><small>Größere Basisdarstellung für bessere Lesbarkeit.</small></span></label>
+    </div>
+    <button id="ui-prefs-reset" type="button">STANDARD WIEDERHERSTELLEN</button>
+  </aside>
+
   <main id="workspace" class="workspace">
-    <section id="first-run" class="panel hidden" aria-labelledby="first-run-title">
+    <section id="first-run" class="panel hero-panel hidden" aria-labelledby="first-run-title">
       <div class="panel-head"><div><p class="eyebrow">01 // FIRST RUN</p><h2 id="first-run-title">Neues lokales Spiel</h2></div></div>
-      <p>Der erste Alpha-Start legt einen lokalen GENESIS-Character, ein vorbereitetes Event und den Equipment-Katalog an. Danach werden alle Spieländerungen über die vorhandenen Application-Services bestätigt.</p>
+      <p>Der erste Alpha-Start legt einen lokalen GENESIS-Character, ein vorbereitetes Event und den Equipment-Katalog an. Danach laufen alle Spieländerungen durch die vorhandenen Application-Services.</p>
       <div class="form-grid">
         <label>Dein Crew-/Charaktername<input id="character-name" value="Meine Crew"></label>
         <label>Eventname<input id="event-name" value="Erste Bunkerfrequenz"></label>
@@ -55,10 +92,17 @@
       <button id="save-profile" class="primary">PROFIL SPEICHERN</button>
     </section>
 
-    <section id="street-panel" class="panel hidden" aria-labelledby="street-title">
-      <div class="panel-head"><div><p class="eyebrow">03 // STRASSE</p><h2 id="street-title">Kleine Straßenrunde</h2></div></div>
-      <p>Geh eine Runde durch die Stadt. Meistens passiert etwas Nettes, manchmal gar nichts und gelegentlich erwischt dich einfach das Pech.</p>
-      <button id="street-walk" class="primary">STRASSENRUNDE</button>
+    <section id="street-panel" class="panel feature-panel hidden" aria-labelledby="street-title">
+      <div class="panel-head">
+        <div><p class="eyebrow">03 // STRASSE</p><h2 id="street-title">Wie gehst du heute raus?</h2></div>
+        <div class="decision-badge">SPIELERWAHL</div>
+      </div>
+      <p>Wähle deinen Ansatz. Er verändert nur die Wahrscheinlichkeit katalogisierter Begegnungen – niemals deren bestätigte Effekte und garantiert kein bestimmtes Ergebnis.</p>
+      <div id="street-approaches" class="street-approach-grid" role="radiogroup" aria-label="Ansatz für die Straßenrunde"></div>
+      <div class="street-action-row">
+        <button id="street-walk" class="primary">RUNDE STARTEN</button>
+        <span id="street-selected-hint" class="selection-hint">Ansatz: –</span>
+      </div>
       <div id="street-result" class="notice street-result" aria-live="polite">Noch keine Runde gelaufen.</div>
     </section>
 
@@ -121,7 +165,7 @@
       </div>
       <p>Übernommene Berlin-Ops-Orte können über ihre katalogisierten Slots bis Level 3 ausgebaut werden. Kaufpreis, Ziellevel und Ausbaukosten kommen ausschließlich aus der Runtime; der Browser sendet nur Location- und Ausbau-ID.</p>
       <div id="property-list" class="equipment-list" aria-live="polite"></div>
-      <div class="notice">Ausbauten verändern bestätigte Standortwerte und damit den vorhandenen Map-Score/Tier. Verkauf, Miete und Rendite bleiben weiterhin außerhalb von 0.8.6.</div>
+      <div class="notice">Ausbauten verändern bestätigte Standortwerte und damit den vorhandenen Map-Score/Tier. Verkauf, Miete und Rendite bleiben weiterhin außerhalb dieses Slices.</div>
     </section>
 
     <section id="hall-panel" class="panel hidden" aria-labelledby="hall-title">
@@ -146,7 +190,7 @@
         </div>
         <div id="hall-season-status" class="notice" aria-live="polite">Noch kein bestätigter Saisonzyklus.</div>
         <div id="hall-season-title-status" class="hall-season-title-status" aria-live="polite"></div>
-        <p class="hall-season-policy">Systemzeit allein bestimmt niemals eine Saison. Ein lokaler Zyklus entsteht erst aus bestätigter Spielweltzeit; endgültige Titel benötigen einen bestätigten geschlossenen Zyklus und echte bestätigte Konkurrenz.</p>
+        <p class="hall-season-policy">Systemzeit allein bestimmt niemals eine Saison. Endgültige Titel benötigen einen bestätigten geschlossenen Zyklus und echte bestätigte Konkurrenz.</p>
       </div>
 
       <div id="hall-ranking" class="equipment-list" aria-live="polite"></div>
@@ -173,8 +217,12 @@
       <div id="equipment-list" class="equipment-list"></div>
     </section>
 
-    <section id="incident-panel" class="panel hidden" aria-labelledby="incident-title">
-      <div class="panel-head"><div><p class="eyebrow">10 // CRISIS</p><h2 id="incident-title">Krise</h2></div></div>
+    <section id="incident-panel" class="panel feature-panel hidden" aria-labelledby="incident-title">
+      <div class="panel-head">
+        <div><p class="eyebrow">10 // CRISIS</p><h2 id="incident-title">Krise entscheiden</h2></div>
+        <div class="decision-badge danger-badge">FOLGEN SICHTBAR</div>
+      </div>
+      <p>Antworten zeigen vor dem Klick die katalogisierten Auswirkungen. Der Browser berechnet keine Folgen selbst.</p>
       <div id="incident-content"></div>
     </section>
 
@@ -183,7 +231,7 @@
       <div id="settlement-content"></div>
     </section>
 
-    <section class="panel compact" aria-labelledby="save-title">
+    <section id="save-panel" class="panel compact" aria-labelledby="save-title">
       <div class="panel-head">
         <div><p class="eyebrow">SAVE // RECOVERY</p><h2 id="save-title">Spielstand</h2></div>
         <button id="checkpoint">CHECKPOINT SPEICHERN</button>
@@ -191,12 +239,12 @@
       <p>Jeder bestätigte Command wird sofort journalisiert. Der manuelle Checkpoint legt zusätzlich einen Snapshot an.</p>
     </section>
 
-    <section class="panel compact diagnostics" aria-labelledby="log-title">
+    <section id="log-panel" class="panel compact diagnostics" aria-labelledby="log-title">
       <div class="panel-head"><div><p class="eyebrow">TRANSPARENT</p><h2 id="log-title">Client-Protokoll</h2></div></div>
       <pre id="log" tabindex="0">Start …</pre>
     </section>
   </main>
 
-  <footer>Schreibender A4 Alpha-Client · localhost-only · Berlin Ops Map PRO read-only · keine Domain-Regeln im Browser</footer>
+  <footer>Control Deck 2.0 · localhost-only · UI-Optionen lokal · Map read-only · keine Domain-Regeln im Browser</footer>
 </body>
 </html>
