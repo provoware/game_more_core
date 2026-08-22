@@ -50,6 +50,10 @@ function signed(value) {
   return value > 0 ? `+${value}` : String(value);
 }
 
+function displayId(value) {
+  return String(value || "").replaceAll("_", " ").toUpperCase();
+}
+
 async function request(path, options = {}) {
   if (state.busy) throw new Error("Eine Aktion läuft bereits.");
   state.busy = true;
@@ -128,7 +132,7 @@ function renderDistricts(districts) {
     row.className = "equipment-row";
     const info = document.createElement("div");
     const title = document.createElement("strong");
-    title.textContent = district.district_id.replaceAll("_", " ").toUpperCase();
+    title.textContent = displayId(district.district_id);
     const detail = document.createElement("span");
     const metrics = district.metrics || {};
     detail.textContent = `Heat ${metrics.heat ?? "–"} · Prestige ${metrics.prestige ?? "–"} · Polizeidruck ${metrics.police_pressure ?? "–"} · Szene ${metrics.scene_activity ?? "–"}`;
@@ -140,6 +144,38 @@ function renderDistricts(districts) {
   $("district-last-change").textContent = change
     ? `Letzte bestätigte Änderung: ${change.district_id} · ${change.source_type} · Heat ${signed(change.deltas?.heat)} · Prestige ${signed(change.deltas?.prestige)} · Polizeidruck ${signed(change.deltas?.police_pressure)} · Szene ${signed(change.deltas?.scene_activity)}`
     : districts.persisted ? "Persistierter District-State ohne neue Änderung." : "Noch keine persistente Bezirksänderung – angezeigt werden die Startwerte.";
+}
+
+function renderProperties(properties) {
+  const host = $("property-list");
+  host.replaceChildren();
+  if (!properties) return;
+  $("property-owned-count").textContent = `${properties.owned_count || 0} / ${properties.purchasable_count || 0}`;
+  for (const property of properties.entries || []) {
+    const row = document.createElement("article");
+    row.className = "equipment-row";
+    const info = document.createElement("div");
+    const title = document.createElement("strong");
+    title.textContent = `${displayId(property.location_id)}${property.owned ? " · EIGENTUM" : ""}`;
+    const detail = document.createElement("span");
+    detail.textContent = `${displayId(property.district_id)} · ${money(property.purchase_price_cents)} · ${property.upgrade_slots?.length || 0} spätere Ausbau-Slots`;
+    info.append(title, detail);
+    row.append(info);
+    if (!property.owned) {
+      const actions = document.createElement("div");
+      actions.className = "inline-actions";
+      const buy = document.createElement("button");
+      buy.textContent = "ÜBERNEHMEN";
+      buy.addEventListener("click", () => sendCommand({
+        type: "property.purchase",
+        command_id: commandId("property-purchase"),
+        location_id: property.location_id
+      }));
+      actions.append(buy);
+      row.append(actions);
+    }
+    host.append(row);
+  }
 }
 
 function renderHall(hall) {
@@ -186,6 +222,7 @@ function render() {
   setHidden("profile-panel", !p.character);
   setHidden("street-panel", !p.character);
   setHidden("district-panel", !p.districts);
+  setHidden("property-panel", !p.properties);
   setHidden("hall-panel", !p.hall_of_tribute);
   setHidden("event-panel", !event);
   setHidden("economy-panel", !p.economy);
@@ -194,6 +231,7 @@ function render() {
 
   renderProfile(p.character);
   renderDistricts(p.districts);
+  renderProperties(p.properties);
   renderHall(p.hall_of_tribute);
   $("phase-badge").textContent = event ? event.phase.toUpperCase() : "NOCH KEIN EVENT";
   if (!event) return;
