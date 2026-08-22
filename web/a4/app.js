@@ -116,7 +116,7 @@ function renderStreetEncounter(encounter) {
   heading.textContent = `${POLARITY_LABELS[encounter.polarity] || "RUNDE"} // ${encounter.title || encounter.encounter_id}`;
   const body = document.createElement("p");
   body.textContent = encounter.body || "";
-  const effects = document.createElement("span", "street-effects");
+  const effects = document.createElement("span");
   effects.className = "street-effects";
   effects.textContent = `Energie ${signed(encounter.effects?.energy_delta)} · Stress ${signed(encounter.effects?.stress_delta)} · Ruf ${signed(encounter.effects?.reputation_delta)}`;
   host.append(heading, body, effects);
