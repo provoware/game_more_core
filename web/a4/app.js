@@ -1,7 +1,13 @@
 "use strict";
 
 const $ = (id) => document.getElementById(id);
-const state = { projection: null, busy: false, hallMode: "reputation", hallCycleType: "weekly" };
+const state = {
+  projection: null,
+  busy: false,
+  hallMode: "reputation",
+  hallCycleType: "weekly",
+  streetApproach: "balanced"
+};
 
 const ACTION_LABELS = {
   begin_planning: "PLANUNG BEGINNEN",
@@ -31,6 +37,13 @@ const POLARITY_LABELS = { positive: "GLÜCK", negative: "PECH", neutral: "RUHIG"
 const HALL_MODE_LABELS = { reputation: "RUF", level: "LEVEL", resonance: "RESONANZ" };
 const HALL_CYCLE_LABELS = { weekly: "WOCHE", monthly: "MONAT" };
 const MOVEMENT_SYMBOLS = { up: "↑", down: "↓", same: "→", new: "★", unranked: "–" };
+const EFFECT_LABELS = {
+  budget_delta_cents: "Budget",
+  reputation_delta: "Ruf",
+  crew_stress_delta: "Crew-Stress",
+  stability_delta: "Stabilität",
+  heat_delta: "Heat"
+};
 
 function commandId(prefix) {
   const suffix = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -49,6 +62,11 @@ function money(cents) {
 function signed(value) {
   if (!value) return "0";
   return value > 0 ? `+${value}` : String(value);
+}
+
+function signedMoney(cents) {
+  if (!cents) return money(0);
+  return `${cents > 0 ? "+" : "−"}${money(Math.abs(cents))}`;
 }
 
 function displayId(value) {
@@ -92,6 +110,17 @@ function setInputIfIdle(id, value) {
   if (document.activeElement !== input) input.value = value ?? "";
 }
 
+function renderHud(p) {
+  const event = p.event;
+  const character = p.character;
+  $("hud-phase").textContent = event ? displayId(event.phase) : "–";
+  $("hud-budget").textContent = event ? money(event.budget_cents) : "–";
+  $("hud-energy").textContent = character ? String(character.energy) : "–";
+  $("hud-stress").textContent = character ? String(character.stress) : "–";
+  $("hud-reputation").textContent = character ? String(character.reputation) : "–";
+  $("hud-property").textContent = p.properties ? String(p.properties.owned_count || 0) : "–";
+}
+
 function renderProfile(character) {
   if (!character) return;
   setInputIfIdle("profile-display-name", character.display_name);
@@ -105,6 +134,41 @@ function renderProfile(character) {
   $("profile-id").textContent = character.character_id;
 }
 
+function renderStreetApproaches(approaches) {
+  const host = $("street-approaches");
+  host.replaceChildren();
+  const available = Array.isArray(approaches) ? approaches : [];
+  if (!available.length) {
+    $("street-selected-hint").textContent = "Ansatz: Standard";
+    return;
+  }
+  if (!available.some((item) => item.approach_id === state.streetApproach)) {
+    state.streetApproach = available.find((item) => item.selected_by_default)?.approach_id || available[0].approach_id;
+  }
+  const selected = available.find((item) => item.approach_id === state.streetApproach);
+  $("street-selected-hint").textContent = `Ansatz: ${selected?.label || displayId(state.streetApproach)}`;
+
+  for (const approach of available) {
+    const button = document.createElement("button");
+    const active = approach.approach_id === state.streetApproach;
+    button.type = "button";
+    button.className = `street-approach-card${active ? " is-selected" : ""}`;
+    button.setAttribute("role", "radio");
+    button.setAttribute("aria-checked", String(active));
+    button.dataset.approachId = approach.approach_id;
+    const label = document.createElement("strong");
+    label.textContent = approach.label;
+    const description = document.createElement("span");
+    description.textContent = approach.description;
+    button.append(label, description);
+    button.addEventListener("click", () => {
+      state.streetApproach = approach.approach_id;
+      renderStreetApproaches(state.projection?.street_approaches);
+    });
+    host.append(button);
+  }
+}
+
 function renderStreetEncounter(encounter) {
   const host = $("street-result");
   host.replaceChildren();
@@ -113,14 +177,19 @@ function renderStreetEncounter(encounter) {
     return;
   }
   host.dataset.polarity = encounter.polarity || "neutral";
+  const approach = (state.projection?.street_approaches || []).find(
+    (item) => item.approach_id === encounter.approach_id
+  );
   const heading = document.createElement("strong");
   heading.textContent = `${POLARITY_LABELS[encounter.polarity] || "RUNDE"} // ${encounter.title || encounter.encounter_id}`;
+  const approachLine = document.createElement("small");
+  approachLine.textContent = `Ansatz: ${approach?.label || displayId(encounter.approach_id || "balanced")}`;
   const body = document.createElement("p");
   body.textContent = encounter.body || "";
   const effects = document.createElement("span");
   effects.className = "street-effects";
   effects.textContent = `Energie ${signed(encounter.effects?.energy_delta)} · Stress ${signed(encounter.effects?.stress_delta)} · Ruf ${signed(encounter.effects?.reputation_delta)}`;
-  host.append(heading, body, effects);
+  host.append(heading, approachLine, body, effects);
 }
 
 function renderDistricts(districts) {
@@ -314,7 +383,9 @@ function render() {
   setHidden("incident-panel", !event || !["live", "crisis"].includes(event.phase));
   setHidden("settlement-panel", !event || !["settlement", "completed"].includes(event.phase));
 
+  renderHud(p);
   renderProfile(p.character);
+  renderStreetApproaches(p.street_approaches);
   renderDistricts(p.districts);
   window.BunkerMapPro?.render(p.berlin_ops_map);
   renderProperties(p.properties, p.property_upgrades);
@@ -379,24 +450,51 @@ function renderEconomy(economy) {
   }
 }
 
+function incidentEffectText(effects) {
+  const items = [];
+  for (const [key, value] of Object.entries(effects || {})) {
+    if (!(key in EFFECT_LABELS)) continue;
+    const formatted = key === "budget_delta_cents" ? signedMoney(value) : signed(value);
+    items.push(`${EFFECT_LABELS[key]} ${formatted}`);
+  }
+  return items.length ? items.join(" · ") : "Keine katalogisierte direkte Änderung";
+}
+
 function renderIncidents(p) {
   const host = $("incident-content");
   host.replaceChildren();
   const active = p.incidents?.active;
   if (active) {
     const title = document.createElement("p");
-    title.textContent = `Aktiv: ${active.incident_type} · Severity ${active.severity}`;
+    title.className = "crisis-active-line";
+    title.textContent = `Aktiv: ${displayId(active.incident_type)} · Severity ${active.severity}`;
     host.append(title);
     const spec = (p.incident_catalog || []).find((item) => item.incident_type === active.incident_type);
     const responses = spec?.responses || [];
     const actions = document.createElement("div");
-    actions.className = "action-grid";
+    actions.className = "incident-choice-grid";
     for (const responseId of active.response_ids || []) {
       const response = responses.find((item) => item.response_id === responseId);
+      const card = document.createElement("article");
+      card.className = "incident-choice";
+      const heading = document.createElement("strong");
+      heading.textContent = displayId(responseId);
+      const target = document.createElement("span");
+      target.className = "incident-target";
+      target.textContent = `Danach: ${displayId(response?.target_phase || "unbekannt")}`;
+      const preview = document.createElement("p");
+      preview.className = "effect-preview";
+      preview.textContent = incidentEffectText(response?.effects);
       const button = document.createElement("button");
-      button.textContent = `${responseId} → ${response?.target_phase || "?"}`;
-      button.addEventListener("click", () => sendCommand({ type: "incident.resolve", command_id: commandId("incident-resolve"), response_id: responseId }));
-      actions.append(button);
+      button.className = "primary";
+      button.textContent = "DIESE ANTWORT WÄHLEN";
+      button.addEventListener("click", () => sendCommand({
+        type: "incident.resolve",
+        command_id: commandId("incident-resolve"),
+        response_id: responseId
+      }));
+      card.append(heading, target, preview, button);
+      actions.append(card);
     }
     host.append(actions);
     return;
@@ -406,13 +504,13 @@ function renderIncidents(p) {
     return;
   }
   const intro = document.createElement("p");
-  intro.textContent = "Optional: Für den Smoke-Pfad kann während LIVE eine Krise ausgelöst werden.";
+  intro.textContent = "Optionaler Test-/Gameplay-Pfad: Während LIVE kann eine katalogisierte Krise ausgelöst werden.";
   host.append(intro);
   const actions = document.createElement("div");
-  actions.className = "action-grid";
+  actions.className = "incident-trigger-grid";
   for (const incident of p.incident_catalog || []) {
     const button = document.createElement("button");
-    button.textContent = `${incident.incident_type} · S${incident.base_severity}`;
+    button.textContent = `${displayId(incident.incident_type)} · S${incident.base_severity}`;
     button.addEventListener("click", () => sendCommand({ type: "incident.open", command_id: commandId("incident-open"), incident_type: incident.incident_type, severity: incident.base_severity }));
     actions.append(button);
   }
@@ -480,7 +578,12 @@ $("save-profile").addEventListener("click", () => {
   });
 });
 
-$("street-walk").addEventListener("click", () => sendCommand({ type: "street.walk", command_id: commandId("street-walk") }));
+$("street-walk").addEventListener("click", () => sendCommand({
+  type: "street.walk",
+  command_id: commandId("street-walk"),
+  approach_id: state.streetApproach
+}));
+
 for (const mode of ["reputation", "level", "resonance"]) {
   $(`hall-mode-${mode}`).addEventListener("click", () => {
     state.hallMode = mode;
@@ -494,6 +597,15 @@ for (const cycleType of ["weekly", "monthly"]) {
   });
 }
 
+function setOptionsOpen(open) {
+  setHidden("ui-options-panel", !open);
+  $("ui-options-toggle").setAttribute("aria-expanded", String(open));
+}
+$("ui-options-toggle").addEventListener("click", () => {
+  setOptionsOpen($("ui-options-toggle").getAttribute("aria-expanded") !== "true");
+});
+$("ui-options-close").addEventListener("click", () => setOptionsOpen(false));
+
 $("checkpoint").addEventListener("click", async () => {
   try {
     const payload = await request("/api/checkpoint", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ request: "manual_checkpoint" }) });
@@ -503,4 +615,5 @@ $("checkpoint").addEventListener("click", async () => {
   }
 });
 
+window.BunkerUIPrefs?.init();
 refresh();
