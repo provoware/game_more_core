@@ -4,6 +4,10 @@
 
 Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Es gibt jetzt eine anklickbare HTML-Ansicht zum Prüfen des Designs. Sie ist noch kein fertiger Game-Client: Die getestete Spiellogik bleibt getrennt und die Ansicht verändert keine Spielstände.
 
+**Woran erkenne ich den Release-Stand?** Aktuell kannst du die Oberfläche ansehen und ihre Diagnose prüfen, aber noch keinen vollständigen Eventablauf darin spielen. Das erste spielbare Alpha ist erreicht, wenn du ohne Codewissen eine Crew wählen, ein Event planen, Equipment beschaffen, das Event abschließen und den gespeicherten Stand nach einem Neustart wieder laden kannst. Bis dahin ist die HTML-Ansicht ausdrücklich ein Prototyp.
+
+Die Ansicht wird erst dann mit Schreibfunktionen verbunden, wenn der vollständige Eventablauf geprüft ist. Dadurch bleibt sie eine einfache Bedienoberfläche und baut keine zweite, abweichende Spiellogik auf.
+
 ## 0. HTML-Ansicht starten – ohne Vorwissen
 
 1. Öffne ein Terminal im Projektordner.

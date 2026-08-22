@@ -8,6 +8,16 @@
 - **0.8.1-Remote-Abnahme:** Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` grün
 - **Aktiver Abschluss:** finale Informationsänderungen erneut durch drei Gates schicken, danach `/safe-merge`
 - **Nächster Feature-Schritt nach 0.8.1:** `0.8.2 – Equipment & Economy`
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `70 %` (Planungswert; Release-Gate noch nicht erfüllt)
+- **Aktueller Release-Blocker:** kein mit der Runtime verbundener Client und noch kein vollständiger Event-/Economy-Loop
+
+## Release-Ziel und Abnahme
+
+**Ziel:** Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy und den vollständigen Event-Loop über bestätigte Journal-Ereignisse mit einer bedienbaren Oberfläche.
+
+**Abnahme:** Aus einem frischen Checkout lässt sich der dokumentierte Startweg ausführen; eine Person ohne Codewissen kann ein Event planen, Equipment beschaffen, das Event samt Krise abschließen, das Ergebnis speichern und nach Neustart identisch wiederherstellen.
+
+**Bewusste Nicht-Ziele des ersten lokalen Alpha-Releases:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb und native GitHub-Branch-Protection. Diese Punkte dürfen den lokalen Spielkern nicht verzögern.
 
 ## Repository Guard
 
@@ -26,7 +36,6 @@
 - [x] Safety Receipt PR #39: Runtime Core `32528915005`, Presentation Core `32528914997`, Repository Health `32528915004`, `SAFE MERGE PASS`
 - [x] Main-Integrity-Incident #40 für Direkt-Commit `fb96a489...` analysiert: Guard reagierte korrekt auf fehlende PR-Provenienz; Inhalt später in PR #41 erneut grün validiert; Incident geschlossen
 - [x] versehentlichen leeren `tmp`-Direktcommit über gezielten PR #47 entfernt; Runtime Core `32536504014`, Presentation Core `32536504089`, Repository Health `32536504068`, `SAFE MERGE PASS`
-- [ ] Native GitHub-Branch-Protection/Ruleset zusätzlich aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist: `runtime-core`, `presentation-core`, `repository-health` verpflichtend + Branch aktuell + Conversation Resolution
 
 ## 0.6.0 – Repository-/Presentation-Reparatur
 
@@ -136,7 +145,9 @@
 - [x] README visuell neu strukturiert und Einsteigerpfad verbessert
 - [x] eigene verständliche [`Spieleranleitung`](docs/SPIELERANLEITUNG.md) ergänzt
 
-## 0.8 – Event-/Wirtschafts-Integration
+## P0 – Pflichtpfad zum ersten spielbaren Alpha-Release
+
+Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele Featurearbeit in dieser Reihenfolge abgeschlossen. Ein späteres Paket beginnt erst, wenn der exakte Head des vorherigen Pakets lokal geprüft, remote durch `runtime-core`, `presentation-core` und `repository-health` bestätigt und regelkonform übernommen wurde. Bis zum formalen Abschluss von 0.8.1 bleibt jede 0.8.2-Implementierung gesperrt.
 
 ### 0.8.1 – Event State Foundation
 
@@ -166,6 +177,8 @@
 
 ### 0.8.2 – Equipment & Economy
 
+**Abnahmeeinheit:** Katalog, Besitz, Reservierung, Transaktion und Recovery bilden einen gemeinsamen Vertical Slice (durchgängiger Funktionsschnitt). Kein Bestandteil wird allein als fertige Economy-Stufe freigegeben.
+
 - [ ] Equipment-Katalog und Inventarbesitz als getrennte Zustände definieren
 - [ ] dynamische Marktpreise datengetrieben und deterministisch modellieren
 - [ ] Kaufen, Verkaufen und Verbrauchen über katalogisierte Inventory-/Economy-Events führen
@@ -173,6 +186,7 @@
 - [ ] Kompensationsregeln für reversible Economy-Transaktionen konkretisieren
 - [ ] Event-Equipment-Anforderungen gegen bestätigten Besitz/Reservierung auflösen
 - [ ] Save/Recovery/Idempotenz für Economy und Inventar testen
+- [ ] gesamten Economy-Vertical-Slice auf demselben Head lokal und mit allen drei Remote-Gates abnehmen
 
 ### 0.8.3 – Vollständiger Event-Loop
 
@@ -184,6 +198,22 @@
 - [ ] vollständigen Event-Loop inklusive Save/Recovery testen
 - [ ] Spieleranleitung um Eventplanung und Wirtschaft erweitern
 
+### Release-Kandidat – spielbarer lokaler Client
+
+- [ ] vor Client-Arbeit den vollständigen 0.8.3-Event-Loop auf demselben Head lokal und mit allen drei Remote-Gates bestätigen
+- [ ] erst danach A4 als kleinsten schreibenden Client an den bestehenden Command-Dispatcher anbinden; keine zweite Domain- oder Persistenzlogik im Client
+- [ ] laiengerechten Ersteinstieg `Crew wählen → Event planen → Equipment beschaffen → Event abschließen → Ergebnis prüfen` bereitstellen
+- [ ] Start aus frischem Checkout mit einem dokumentierten Befehl und ohne manuelle Datenreparatur nachweisen
+- [ ] deterministischen Smoke-Test `neues Spiel → Event-Loop → Save → Neustart → Recovery` mit festem Seed ergänzen
+- [ ] verständliche Fehlermeldungen für ungültige Eingaben, gesperrte Phasen und fehlgeschlagene Wiederherstellung anzeigen
+- [ ] Release-Checkliste auf exaktem Head abnehmen: Runtime Core, Presentation Core, Repository Health, 0 offene Review-Threads
+- [ ] erst nach grüner Abnahme Version, Release Notes und reproduzierbares Release-Artefakt festlegen
+
+## P1 – Härtung nach dem lokalen Alpha
+
+- [ ] Native GitHub-Branch-Protection/Ruleset aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist: `runtime-core`, `presentation-core`, `repository-health` verpflichtend + Branch aktuell + Conversation Resolution
+- [ ] 0.9 Network / Telegram Sync als eigenen Server-/Transportvertrag planen; gemeinsame Ressourcen bleiben bis zur Serverbestätigung unbekannt
+
 ## Später
 
 - [ ] Kanonisches Blueprint-WebP aus der dokumentierten Originalquelle reproduzierbar neu exportieren und die überwiegend transparente aktuelle Datei erst nach visueller Abnahme ersetzen; Nutzen: vollständige Pixelreferenz statt formal ladbarer, aber visuell unbrauchbarer Fläche.
@@ -191,10 +221,8 @@
 - [ ] Für den HTML-Blueprint einen automatisierten visuellen Kontrast- und Viewport-Nachweis bei 390, 900 und 1440 Pixeln ergänzen; Nutzen: die neue Blickführung bleibt bei späteren UI-Erweiterungen lesbar und regressionssicher.
 - [ ] Recovery-Berichte um eine maschinenlesbare Fehlerkategorie ergänzen, damit eine spätere Oberfläche beschädigtes JSON, fehlende Felder und falsche Datentypen verständlich unterscheiden kann, ohne Fehlermeldungstext auszuwerten.
 - [ ] Recovery-Receipt um die Anzahl übersprungener Snapshot-Kandidaten ergänzen, damit Support und spätere Oberfläche einen erfolgreichen Rückfall auf einen älteren Checkpoint sichtbar machen können, ohne ungültige Inhalte offenzulegen.
-
-### 0.9 – Network / Telegram Sync
-
-Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemeinsame Ressourcen.
+- [ ] Einen geführten Fünf-Minuten-First-Run mit anonymem lokalem Abschlussbeleg ergänzen; Nutzen: Der Release kann nicht nur technisch starten, sondern wird auch ohne Vorwissen überprüfbar verstanden.
+- [ ] Einen maschinenlesbaren Economy-Replay-Abnahmebeleg mit festem Seed definieren; Nutzen: Katalog, Besitz, Reservierung, Transaktion und Recovery bleiben bei späteren Erweiterungen als zusammenhängender Slice nachweisbar.
 
 ## Abgeschlossene Meilensteine
 

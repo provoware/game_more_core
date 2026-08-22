@@ -4,6 +4,13 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Release-Planung
+
+- README und TODO trennen den verpflichtenden Pfad zum ersten lokal spielbaren Alpha von nachgelagerter Härtung und späterem Netzwerkbetrieb.
+- prüfbare Release-Abnahme für Runtime-Client, Ersteinstieg, vollständigen Event-/Economy-Loop sowie Save/Recovery aus einem frischen Checkout ergänzt; eine Versionsanhebung erfolgt weiterhin erst nach grüner Abnahme.
+- Spieleranleitung erklärt laiengerecht, woran der aktuelle Prototyp und das spätere spielbare Alpha zu unterscheiden sind.
+- 0.8.1 sperrt neue Featurearbeit bis zur formalen Remote-Abnahme; 0.8.2 wird nur als gemeinsamer Economy-Vertical-Slice abgenommen und der schreibende A4-Client beginnt erst nach bestätigtem 0.8.3.
+
 ### HTML-Blueprint-Auswertung
 
 - grafische Hierarchie des statischen Blueprints mit Control-Room-Orientierung, stärkerem Referenzrahmen, gerichteter Workflow-Linie, klarer Variantenstaffelung und ruhiger responsiver Anordnung verbessert; Reduced Motion, Tastaturfokus und der schreibgeschützte Modus bleiben erhalten.

@@ -32,6 +32,7 @@
 | **0.8.1-Abnahme** | PR #48 · Head `79cc26bec0a7...` · Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` grün |
 | **Aktiver Abschluss** | finale Informationsänderungen erneut dreifach validieren, danach `/safe-merge` |
 | **Nächster Feature-Schritt** | `0.8.2 – Equipment & Economy` |
+| **Weg zum ersten spielbaren Release** | `0.8.1 abschließen → 0.8.2 Economy → 0.8.3 Event-Loop → Release-Kandidat` |
 | **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
 | **Event Foundation** | Ort, Budgetrahmen, Acts, Crew, Equipment-Readiness, Zeitfenster, Sicherheit, Phasen und Revision |
 | **Persistenz** | Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
@@ -41,6 +42,21 @@
 
 > [!IMPORTANT]
 > `VERSION.json` bezeichnet die letzte **versionierte Runtime-Baseline**. Feature-Meilensteine können weiter sein und werden getrennt in `PROJEKTSTATUS.json` und `TODO.md` geführt.
+
+---
+
+## 🚦 Was bis zum Release noch fehlt
+
+Der aktuelle Stand ist eine validierte Spiellogik mit statischer, schreibgeschützter HTML-Auswertung – noch kein auslieferbarer Game-Client. Für das erste **spielbare Alpha-Release** sind vier Schritte verpflichtend:
+
+1. **0.8.1 ausschließlich formal abschließen:** Den aktuellen Dokumentations-Head mit `runtime-core`, `presentation-core` und `repository-health` remote bestätigen und ausschließlich über `/safe-merge` übernehmen. Vorher beginnt keine neue Feature-Implementierung.
+2. **0.8.2 Equipment & Economy als einen Vertical Slice abnehmen:** Katalog, Besitz, Reservierung, Transaktionen und Recovery werden zusammen umgesetzt und bestätigt; es gibt keine fachliche Teilfreigabe.
+3. **0.8.3 vollständiger Event-Loop:** Planung bis Abrechnung einschließlich Krisen, Folgen und A4/A3-Projektionen durchgängig spielbar machen.
+4. **Release-Kandidat abnehmen:** Erst nach bestätigtem 0.8.3 den schreibenden A4-Client an die Runtime anbinden, dann Ersteinstieg, Start aus frischem Checkout und Save/Recovery-Smoke-Test nachweisen; danach erst Version und Release-Artefakt festlegen.
+
+**Nicht blockierend für das erste lokale Alpha-Release:** Telegram-/Netzwerk-Sync und native GitHub-Branch-Protection. Beides bleibt wichtig, ist aber kein Bestandteil des lokalen Spielkerns.
+
+Die prüfbaren Arbeitspakete und ihre Reihenfolge stehen in [`TODO.md`](TODO.md#p0--pflichtpfad-zum-ersten-spielbaren-alpha-release).
 
 ---
 
