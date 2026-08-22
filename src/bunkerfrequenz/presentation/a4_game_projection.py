@@ -12,6 +12,7 @@ from bunkerfrequenz.domain.settlement import SettlementState
 from bunkerfrequenz.presentation.district_projection import build_living_district_projection
 from bunkerfrequenz.presentation.hall_of_tribute import build_hall_of_tribute_projection
 from bunkerfrequenz.presentation.property_projection import build_property_projection
+from bunkerfrequenz.presentation.property_upgrade_projection import build_property_upgrade_projection
 
 
 def _incident_catalog_projection(catalog: Mapping[str, Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -43,6 +44,7 @@ def build_a4_game_projection(
     district_manifest: Mapping[str, Any] | None = None,
     city_map_manifest: Mapping[str, Any] | None = None,
     property_manifest: Mapping[str, Any] | None = None,
+    property_upgrade_manifest: Mapping[str, Any] | None = None,
     hall_manifest: Mapping[str, Any] | None = None,
     ranking_manifest: Mapping[str, Any] | None = None,
     sync_manifest: Mapping[str, Any] | None = None,
@@ -56,17 +58,22 @@ def build_a4_game_projection(
         raise ValueError("district_manifest und city_map_manifest müssen gemeinsam gesetzt werden")
     if property_manifest is not None and city_map_manifest is None:
         raise ValueError("property_manifest benötigt city_map_manifest")
+    if property_upgrade_manifest is not None and (property_manifest is None or city_map_manifest is None):
+        raise ValueError("property_upgrade_manifest benötigt Property- und City-Map-Vertrag")
     hall_parts = (hall_manifest, ranking_manifest, sync_manifest, ranking_text_catalog, city_map_manifest)
     if any(part is not None for part in hall_parts[:4]) and not all(part is not None for part in hall_parts):
         raise ValueError("Hall of Tribute benötigt Hall-, Ranking-, Sync-, Text- und City-Map-Vertrag")
 
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.6-a1",
+        "view_model_version": "0.8.6-b1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
-            for key in ("character", "event", "economy", "incidents", "settlement", "districts", "properties")
+            for key in (
+                "character", "event", "economy", "incidents", "settlement", "districts",
+                "properties", "property_upgrades",
+            )
         },
         "character": None,
         "event": None,
@@ -75,6 +82,7 @@ def build_a4_game_projection(
         "settlement": None,
         "districts": None,
         "properties": None,
+        "property_upgrades": None,
         "hall_of_tribute": None,
         "incident_catalog": _incident_catalog_projection(incident_catalog),
     }
@@ -154,6 +162,7 @@ def build_a4_game_projection(
         projection["settlement"] = settlement.to_dict()
 
     owned_property_ids: frozenset[str] = frozenset()
+    property_projection: dict[str, Any] | None = None
     if property_manifest is not None and city_map_manifest is not None:
         raw_properties = raw.get("properties")
         if raw_properties is not None and not isinstance(raw_properties, Mapping):
@@ -166,6 +175,20 @@ def build_a4_game_projection(
         projection["properties"] = property_projection
         owned_property_ids = frozenset(property_projection["owned_location_ids"])
 
+    location_value_overrides: Mapping[str, Mapping[str, int]] | None = None
+    if property_upgrade_manifest is not None and city_map_manifest is not None and property_projection is not None:
+        raw_upgrades = raw.get("property_upgrades")
+        if raw_upgrades is not None and not isinstance(raw_upgrades, Mapping):
+            raise ValueError("Persistierter Property-Upgrade-State muss ein Mapping sein")
+        upgrade_projection = build_property_upgrade_projection(
+            raw_upgrades,
+            upgrade_manifest=property_upgrade_manifest,
+            city_map_manifest=city_map_manifest,
+            property_projection=property_projection,
+        )
+        projection["property_upgrades"] = upgrade_projection
+        location_value_overrides = upgrade_projection["effective_values_by_location"]
+
     if district_manifest is not None and city_map_manifest is not None:
         raw_districts = raw.get("districts")
         if raw_districts is not None and not isinstance(raw_districts, Mapping):
@@ -175,6 +198,7 @@ def build_a4_game_projection(
             district_manifest=district_manifest,
             city_map_manifest=city_map_manifest,
             owned_property_ids=owned_property_ids,
+            location_value_overrides=location_value_overrides,
         )
 
     if hall_manifest is not None:

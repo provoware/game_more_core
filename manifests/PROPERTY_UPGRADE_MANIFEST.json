@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "version": "0.8.6-b1",
+  "state_block": "property_upgrades",
+  "property_manifest_version": "0.8.6-a1",
+  "city_map_manifest_version": "0.8.3-b2-foundation",
+  "max_level": 3,
+  "level_cost_multipliers_bps": [10000, 15000, 22500],
+  "cost_base": "confirmed_property_purchase_price_cents",
+  "cost_formula": "max(1, purchase_price_cents * cost_bps * level_multiplier_bps // 10000 // 10000)",
+  "purchase": {
+    "command_type": "property.upgrade",
+    "journal_event_type": "world.property_upgraded",
+    "economy_event_type": "economy.transaction_posted",
+    "economy_ledger_kind": "property_upgrade",
+    "economy_item_prefix": "property_upgrade:",
+    "quantity": 1,
+    "client_cost_authority": false,
+    "client_level_authority": false,
+    "requires_owned_property": true,
+    "requires_catalogued_slot": true,
+    "requires_nonnegative_event_budget_after_purchase": true,
+    "atomic_with_economy": true,
+    "market_tick_changes": false,
+    "compensatable": false
+  },
+  "value_keys": ["prestige", "audience_pull", "risk", "underground_factor", "utility"],
+  "catalog": {
+    "soundproofing": {
+      "cost_bps": 800,
+      "value_delta_per_level": {"prestige": 0, "audience_pull": 0, "risk": -5, "underground_factor": 0, "utility": 2}
+    },
+    "power": {
+      "cost_bps": 700,
+      "value_delta_per_level": {"prestige": 0, "audience_pull": 0, "risk": -1, "underground_factor": 0, "utility": 6}
+    },
+    "escape_routes": {
+      "cost_bps": 600,
+      "value_delta_per_level": {"prestige": 0, "audience_pull": 0, "risk": -6, "underground_factor": 0, "utility": 2}
+    },
+    "decor": {
+      "cost_bps": 500,
+      "value_delta_per_level": {"prestige": 4, "audience_pull": 3, "risk": 0, "underground_factor": 0, "utility": 0}
+    },
+    "stage": {
+      "cost_bps": 900,
+      "value_delta_per_level": {"prestige": 4, "audience_pull": 5, "risk": 0, "underground_factor": 0, "utility": 1}
+    },
+    "bar": {
+      "cost_bps": 700,
+      "value_delta_per_level": {"prestige": 0, "audience_pull": 4, "risk": 1, "underground_factor": 0, "utility": 2}
+    },
+    "storage": {
+      "cost_bps": 450,
+      "value_delta_per_level": {"prestige": 0, "audience_pull": 0, "risk": 0, "underground_factor": 0, "utility": 5}
+    },
+    "security": {
+      "cost_bps": 650,
+      "value_delta_per_level": {"prestige": 0, "audience_pull": 0, "risk": -5, "underground_factor": 0, "utility": 2}
+    },
+    "studio": {
+      "cost_bps": 1000,
+      "value_delta_per_level": {"prestige": 3, "audience_pull": 0, "risk": 0, "underground_factor": 2, "utility": 5}
+    },
+    "office": {
+      "cost_bps": 750,
+      "value_delta_per_level": {"prestige": 2, "audience_pull": 0, "risk": 0, "underground_factor": 0, "utility": 6}
+    }
+  },
+  "projection": {
+    "location_value_bounds": [0, 100],
+    "map_score_uses_confirmed_upgraded_values": true,
+    "gameplay_event_rules_changed": false
+  },
+  "recovery": {
+    "payload_contains_full_confirmed_state": true,
+    "upgrade_command_idempotent": true,
+    "combined_game_recovery": true
+  }
+}

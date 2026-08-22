@@ -11,6 +11,7 @@ from bunkerfrequenz.application.event_state_service import EventStateService
 from bunkerfrequenz.application.incident_service import IncidentService
 from bunkerfrequenz.application.profile_service import CharacterProfileService
 from bunkerfrequenz.application.property_service import PropertyService
+from bunkerfrequenz.application.property_upgrade_service import PropertyUpgradeService
 from bunkerfrequenz.application.settlement_service import SettlementService
 from bunkerfrequenz.application.street_encounter_service import StreetEncounterService
 from bunkerfrequenz.domain.character import CharacterState
@@ -28,6 +29,7 @@ _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "economy.initialize": frozenset({"type", "command_id", "economy"}),
     "economy.transact": frozenset({"type", "command_id", "kind", "item_id", "quantity"}),
     "property.purchase": frozenset({"type", "command_id", "location_id"}),
+    "property.upgrade": frozenset({"type", "command_id", "location_id", "upgrade_id"}),
     "incident.open": frozenset({"type", "command_id", "incident_type", "severity"}),
     "incident.resolve": frozenset({"type", "command_id", "response_id"}),
     "settlement.complete": frozenset({"type", "command_id"}),
@@ -51,9 +53,9 @@ class GameClientSession:
     """Thin write adapter for the local A4 client.
 
     It owns no gameplay rules. Persistent commands are delegated to canonical
-    Profile/Street/Event/Economy/Property/Incident/Settlement/District services.
-    District metrics, property prices, owners and budget deltas are never
-    accepted directly from the client.
+    Profile/Street/Event/Economy/Property/Upgrade/Incident/Settlement/District services.
+    District metrics, property prices, upgrade costs/levels, owners and budget
+    deltas are never accepted directly from the client.
     """
 
     def __init__(
@@ -67,6 +69,7 @@ class GameClientSession:
         district_manifest: Mapping[str, Any] | None = None,
         city_map_manifest: Mapping[str, Any] | None = None,
         property_manifest: Mapping[str, Any] | None = None,
+        property_upgrade_manifest: Mapping[str, Any] | None = None,
     ) -> None:
         if not incident_catalog:
             raise ValueError("incident_catalog darf nicht leer sein")
@@ -78,6 +81,8 @@ class GameClientSession:
             raise ValueError("district_manifest und city_map_manifest müssen gemeinsam gesetzt werden")
         if property_manifest is not None and city_map_manifest is None:
             raise ValueError("property_manifest benötigt city_map_manifest")
+        if property_upgrade_manifest is not None and (property_manifest is None or city_map_manifest is None):
+            raise ValueError("property_upgrade_manifest benötigt Property- und City-Map-Vertrag")
         self.persistence = persistence
         self.profile = CharacterProfileService(persistence)
         self.street = StreetEncounterService(persistence, street_manifest) if street_manifest is not None else None
@@ -90,6 +95,18 @@ class GameClientSession:
         self.property = (
             PropertyService(persistence, property_manifest, city_map_manifest)
             if property_manifest is not None and city_map_manifest is not None
+            else None
+        )
+        self.property_upgrade = (
+            PropertyUpgradeService(
+                persistence,
+                property_upgrade_manifest,
+                property_manifest,
+                city_map_manifest,
+            )
+            if property_upgrade_manifest is not None
+            and property_manifest is not None
+            and city_map_manifest is not None
             else None
         )
         self.event_state = EventStateService(persistence)
@@ -219,6 +236,33 @@ class GameClientSession:
                     result.committed_event_ids,
                     result.idempotent_replay,
                     metadata={"property": deepcopy(ownership)} if ownership is not None else None,
+                )
+
+            if command_type == "property.upgrade":
+                if self.property_upgrade is None:
+                    return self._rejected("property_upgrade_not_configured")
+                location_id = command.get("location_id")
+                upgrade_id = command.get("upgrade_id")
+                if not isinstance(location_id, str) or not location_id.strip():
+                    return self._rejected("invalid_location_id")
+                if not isinstance(upgrade_id, str) or not upgrade_id.strip():
+                    return self._rejected("invalid_upgrade_id")
+                result = self.property_upgrade.upgrade(
+                    location_id.strip(),
+                    upgrade_id.strip(),
+                    context=context,
+                )
+                return self._confirmed(
+                    result.committed_event_ids,
+                    result.idempotent_replay,
+                    metadata={
+                        "property_upgrade": {
+                            "location_id": result.location_id,
+                            "upgrade_id": result.upgrade_id,
+                            "level": result.new_level,
+                            "cost_cents": result.upgrade_cost_cents,
+                        }
+                    },
                 )
 
             if command_type == "incident.open":

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.6-a1",
+  "version": "0.8.6-b1",
   "append_only": true,
   "canonical_order_key": ["sequence", "event_id"],
   "hash_chain": true,
@@ -47,6 +47,7 @@
     "world.location_updated",
     "world.district_effect_applied",
     "world.property_purchased",
+    "world.property_upgraded",
     "event.created",
     "event.planning_updated",
     "event.phase_changed",
@@ -82,6 +83,7 @@
       "street.encounter_resolved",
       "world.district_effect_applied",
       "world.property_purchased",
+      "world.property_upgraded",
       "mission.completed",
       "world.location_discovered",
       "event.created",

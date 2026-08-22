@@ -3,7 +3,7 @@
   "version": "0.8.6-a1",
   "state_block": "properties",
   "city_map_manifest_version": "0.8.3-b2-foundation",
-  "economy_manifest_version": "0.8.6-a1",
+  "economy_manifest_version": "0.8.6-b1",
   "purchase": {
     "command_type": "property.purchase",
     "journal_event_type": "world.property_purchased",

@@ -47,6 +47,7 @@ REQUIRED = (
     "manifests/DISTRICT_STATE_MANIFEST.json",
     "manifests/CITY_MAP_MANIFEST.json",
     "manifests/PROPERTY_MANIFEST.json",
+    "manifests/PROPERTY_UPGRADE_MANIFEST.json",
     "manifests/HALL_OF_TRIBUTE_MANIFEST.json",
     "manifests/RANKING_NETWORK_MANIFEST.json",
     "manifests/SYNC_MANIFEST.json",
@@ -113,6 +114,7 @@ class A4ClientRuntime:
         self.district_manifest = _load_json(ROOT / "manifests" / "DISTRICT_STATE_MANIFEST.json")
         self.city_map_manifest = _load_json(ROOT / "manifests" / "CITY_MAP_MANIFEST.json")
         self.property_manifest = _load_json(ROOT / "manifests" / "PROPERTY_MANIFEST.json")
+        self.property_upgrade_manifest = _load_json(ROOT / "manifests" / "PROPERTY_UPGRADE_MANIFEST.json")
         self.hall_manifest = _load_json(ROOT / "manifests" / "HALL_OF_TRIBUTE_MANIFEST.json")
         self.ranking_manifest = _load_json(ROOT / "manifests" / "RANKING_NETWORK_MANIFEST.json")
         self.sync_manifest = _load_json(ROOT / "manifests" / "SYNC_MANIFEST.json")
@@ -129,7 +131,7 @@ class A4ClientRuntime:
         allowed = set(journal_manifest.get("event_types", ()))
         if not allowed:
             raise SystemExit("START FEHLGESCHLAGEN – JOURNAL_MANIFEST besitzt keine Eventtypen")
-        self.game_version = str(journal_manifest.get("version", "0.8.6-a1"))
+        self.game_version = str(journal_manifest.get("version", "0.8.6-b1"))
         self.incident_catalog = build_incident_catalog(incident_manifest)
         self.session_id = f"a4-{uuid.uuid4()}"
         self.save_dir = _prepare_save_dir(save_dir)
@@ -172,6 +174,7 @@ class A4ClientRuntime:
             district_manifest=self.district_manifest,
             city_map_manifest=self.city_map_manifest,
             property_manifest=self.property_manifest,
+            property_upgrade_manifest=self.property_upgrade_manifest,
         )
         self.starter = _load_json(ROOT / "web" / "a4" / "starter.json")
         self.lock = threading.RLock()
@@ -184,6 +187,7 @@ class A4ClientRuntime:
                 district_manifest=self.district_manifest,
                 city_map_manifest=self.city_map_manifest,
                 property_manifest=self.property_manifest,
+                property_upgrade_manifest=self.property_upgrade_manifest,
                 hall_manifest=self.hall_manifest,
                 ranking_manifest=self.ranking_manifest,
                 sync_manifest=self.sync_manifest,
@@ -340,7 +344,7 @@ class A4ClientRuntime:
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.6-a1"
+    server_version = "BunkerfrequenzA4/0.8.6-b1"
 
     @property
     def runtime(self) -> A4ClientRuntime:

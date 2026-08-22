@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any
+from typing import Any, Mapping
 
 
 _VALUE_KEYS = ("prestige", "audience_pull", "risk", "underground_factor", "utility")
@@ -44,6 +44,7 @@ def build_city_map_projection(
     *,
     owned_property_ids: set[str] | frozenset[str] = frozenset(),
     district_metrics: dict[str, dict[str, int]] | None = None,
+    location_value_overrides: Mapping[str, Mapping[str, int]] | None = None,
 ) -> dict[str, Any]:
     if manifest.get("version") != "0.8.3-b2-foundation":
         raise ValueError("CITY_MAP_MANIFEST besitzt unerwartete Version")
@@ -95,6 +96,10 @@ def build_city_map_projection(
     if unknown_districts:
         raise ValueError("district_metrics enthält unbekannte District-ID")
 
+    value_overrides = location_value_overrides or {}
+    if not isinstance(value_overrides, Mapping):
+        raise ValueError("location_value_overrides muss ein Mapping sein")
+
     location_ids: set[str] = set()
     purchasable_ids: set[str] = set()
     location_projection = []
@@ -114,9 +119,15 @@ def build_city_map_projection(
             value = position[key]
             if not isinstance(value, (int, float)) or not 0 <= value <= 100:
                 raise ValueError("Location-Position liegt außerhalb der Kartenfläche")
-        values = location.get("values")
-        if not isinstance(values, dict) or set(values) != set(_VALUE_KEYS):
+        base_values = location.get("values")
+        if not isinstance(base_values, dict) or set(base_values) != set(_VALUE_KEYS):
             raise ValueError("Location-Werte sind unvollständig")
+        values = dict(base_values)
+        if location_id in value_overrides:
+            override_values = value_overrides[location_id]
+            if not isinstance(override_values, Mapping) or set(override_values) != set(_VALUE_KEYS):
+                raise ValueError("Location-Wertoverride muss exakt die fünf kanonischen Werte besitzen")
+            values = {key: _bounded_int(override_values[key], f"location.{location_id}.{key}") for key in _VALUE_KEYS}
         score = _score(values)
         purchasable = location.get("purchasable") is True
         purchase_price = location.get("purchase_price_cents")
@@ -153,6 +164,9 @@ def build_city_map_projection(
     invalid_owned = set(owned_property_ids) - purchasable_ids
     if invalid_owned:
         raise ValueError("owned_property_ids enthält unbekannte oder nicht kaufbare Location")
+    unknown_value_overrides = set(value_overrides) - location_ids
+    if unknown_value_overrides:
+        raise ValueError("location_value_overrides enthält unbekannte Location-ID")
 
     ranked = sorted(location_projection, key=lambda item: (-item["score"], item["location_id"]))
     rank_by_id = {item["location_id"]: index + 1 for index, item in enumerate(ranked)}
