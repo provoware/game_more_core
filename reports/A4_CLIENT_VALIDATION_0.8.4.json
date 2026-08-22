@@ -1,0 +1,92 @@
+{
+  "report": "A4_CLIENT_VALIDATION_0.8.4",
+  "status": "PRODUCT_HEAD_GREEN_FINAL_HEAD_PENDING",
+  "repository": "provoware/game_more_core",
+  "pull_request": 69,
+  "iteration": "0.8.4",
+  "client_contract": "0.8.4-a1",
+  "validated_product_head": "d914a94804f5e79bb751fba03e98f6bd49bb35ac",
+  "validation": {
+    "runtime_core": {
+      "run_id": 32574175146,
+      "conclusion": "success"
+    },
+    "presentation_core": {
+      "run_id": 32574175165,
+      "conclusion": "success"
+    },
+    "repository_health": {
+      "run_id": 32574175129,
+      "conclusion": "success"
+    }
+  },
+  "first_failed_product_head": {
+    "head": "7650922d0474706e02c29367e541c6d2b4ae76fb",
+    "runtime_core_run": 32574040009,
+    "failure": "snapshot_at_journal_head_could_report_healthy_while_current_state_was_missing",
+    "resolution": "healthy now requires a real state checkpoint at the journal head; a snapshot-only checkpoint triggers canonical recovery"
+  },
+  "scenario": [
+    "new_game",
+    "genesis_character",
+    "event_created",
+    "economy_initialized",
+    "planning",
+    "procurement",
+    "equipment_bought",
+    "equipment_reserved",
+    "transport",
+    "setup",
+    "soundcheck",
+    "live",
+    "optional_incident_opened",
+    "incident_resolved",
+    "teardown",
+    "settlement",
+    "event_completed",
+    "snapshot_created",
+    "normal_restart_same_confirmed_state",
+    "current_state_removed",
+    "startup_recovery_from_snapshot_and_journal",
+    "same_confirmed_state_after_recovery",
+    "second_normal_restart_same_confirmed_state"
+  ],
+  "asserted_invariants": [
+    "browser_contains_no_event_economy_incident_or_settlement_resolution_logic",
+    "event_action_availability_comes_from_EventExecutionService",
+    "client_writes_delegate_to_existing_application_services",
+    "unexpected_command_fields_rejected_before_write",
+    "first_run_does_not_overwrite_existing_save",
+    "genesis_character_only_before_first_journal_record",
+    "no_new_journal_event_type",
+    "localhost_only_server",
+    "static_server_root_is_web_a4_only",
+    "json_writes_only",
+    "request_body_limited_to_64_kib",
+    "same_origin_local_browser_requests_only_when_origin_present",
+    "normal_restart_preserves_exact_confirmed_state",
+    "missing_current_state_requires_recovery_even_if_snapshot_is_at_head",
+    "recovery_restores_exact_confirmed_state",
+    "post_recovery_restart_is_clean"
+  ],
+  "documentation": [
+    "docs/A4_WRITING_CLIENT_0.8.4.md",
+    "docs/A4_FIRST_RUN_ANLEITUNG.md"
+  ],
+  "external_code_review": {
+    "requested_for_product_head": true,
+    "available": false,
+    "reason": "codex_code_review_usage_limit"
+  },
+  "scope_excluded": [
+    "new_gameplay_balance_rules",
+    "new_journal_event_types",
+    "persistent_district_simulation",
+    "property_write_path",
+    "network_sync",
+    "release_artifact",
+    "version_bump"
+  ],
+  "final_head_validation_required": true,
+  "safe_merge_required": true
+}
