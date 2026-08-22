@@ -186,6 +186,8 @@
 
 ## Später
 
+- [ ] Recovery-Berichte um eine maschinenlesbare Fehlerkategorie ergänzen, damit eine spätere Oberfläche beschädigtes JSON, fehlende Felder und falsche Datentypen verständlich unterscheiden kann, ohne Fehlermeldungstext auszuwerten.
+
 ### 0.9 – Network / Telegram Sync
 
 Asynchroner Crew-Abgleich über versionierte Events und serverbestätigte gemeinsame Ressourcen.

@@ -119,6 +119,23 @@ def _atomic_write_bytes(path: Path, data: bytes) -> None:
             os.unlink(tmp_name)
 
 
+def _journal_record_shape_error(record: object) -> str | None:
+    if not isinstance(record, dict):
+        return "Datensatz ist kein Objekt"
+    required = ("sequence", "event_id", "event_type", "previous_event_hash", "event_hash", "payload")
+    missing = [field for field in required if field not in record]
+    if missing:
+        return f"Pflichtfeld fehlt: {missing[0]}"
+    if isinstance(record["sequence"], bool) or not isinstance(record["sequence"], int) or record["sequence"] <= 0:
+        return "Sequenz ist keine positive Ganzzahl"
+    for field in ("event_id", "event_type", "previous_event_hash", "event_hash"):
+        if not isinstance(record[field], str) or not record[field]:
+            return f"Feld {field} ist keine nichtleere Zeichenkette"
+    if not isinstance(record["payload"], dict):
+        return "Payload ist kein Objekt"
+    return None
+
+
 def _scan_journal(path: Path) -> _JournalScan:
     if not path.exists():
         return _JournalScan((), None, b"")
@@ -135,6 +152,9 @@ def _scan_journal(path: Path) -> _JournalScan:
             record = json.loads(line)
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             return _JournalScan(tuple(records), f"Journal beschädigt in Zeile {index + 1}: {exc}", b"".join(raw_lines[index:]))
+        shape_error = _journal_record_shape_error(record)
+        if shape_error:
+            return _JournalScan(tuple(records), f"Journal-Datensatz ungültig in Zeile {index + 1}: {shape_error}", b"".join(raw_lines[index:]))
         supplied_hash = record.get("event_hash")
         unsigned = {k: v for k, v in record.items() if k != "event_hash"}
         expected = hashlib.sha256(_canonical_json(unsigned).encode("utf-8")).hexdigest()
