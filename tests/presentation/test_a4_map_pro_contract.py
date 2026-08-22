@@ -7,6 +7,7 @@ MAP_JS = (ROOT / "web" / "a4" / "map_pro.js").read_text(encoding="utf-8")
 APP_JS = (ROOT / "web" / "a4" / "app.js").read_text(encoding="utf-8")
 INDEX = (ROOT / "web" / "a4" / "index.html").read_text(encoding="utf-8")
 STYLES = (ROOT / "web" / "a4" / "styles.css").read_text(encoding="utf-8")
+LAUNCHER = (ROOT / "tools" / "start_a4_game_client.py").read_text(encoding="utf-8")
 
 
 class A4MapProContractTests(unittest.TestCase):
@@ -34,6 +35,8 @@ class A4MapProContractTests(unittest.TestCase):
         self.assertIn('id="map-pro-panel"', INDEX)
         self.assertIn('id="berlin-map-canvas"', INDEX)
         self.assertIn('id="map-detail"', INDEX)
+        self.assertIn('"web/a4/map_pro.js"', LAUNCHER)
+        self.assertIn('"manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json"', LAUNCHER)
 
     def test_filter_and_accessibility_contract_is_visible_in_markup_and_css(self):
         for filter_id in ("all", "owned", "prime", "hall"):
