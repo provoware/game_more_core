@@ -12,10 +12,11 @@
   <img alt="Economy 0.8.2 remote validiert" src="https://img.shields.io/badge/Economy-0.8.2_remote_validiert-f2c744">
   <img alt="Event Actions 0.8.3 A validiert" src="https://img.shields.io/badge/Event_Actions-0.8.3--A_validiert-00c2ff">
   <img alt="Crisis und Berlin Map 0.8.3 B validiert" src="https://img.shields.io/badge/Crisis_Map-0.8.3--B_validiert-e840ff">
+  <img alt="Settlement 0.8.3 C remote validiert" src="https://img.shields.io/badge/Settlement-0.8.3--C_remote_validiert-2ee6a6">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
-> **Entdecken → planen → handeln → eskalieren → entscheiden → auswerten → entwickeln.**  
+> **Entdecken → planen → handeln → eskalieren → entscheiden → abrechnen → entwickeln.**  
 > Verhalten, Training, Entscheidungen und Krisen formen die Crew – ohne starre Startklassen.
 
 </div>
@@ -29,16 +30,17 @@
 | | Aktueller Stand |
 |---|---|
 | **Runtime-Baseline** | `0.5.2-alpha.1` |
-| **Letzte remote validierte Feature-Stufe** | `0.8.3-B – Crisis Engine + Berlin Ops Map Foundation` |
-| **0.8.3-B-Abnahme** | PR #63 · Head `4a83cecc7298...` · Runtime Core `32559629560`, Presentation Core `32559629773`, Repository Health `32559629667` grün · 6 Review-Threads gelöst · `SAFE MERGE PASS` · Merge `816a3f1dd83d...` |
-| **Nächster Pflichtblock** | `0.8.3-C – Settlement & Consequences` |
-| **0.8.3-B1** | 6 Incident-Typen × 3 Reaktionen, atomarer Crisis-Lifecycle, pending Settlement, Recovery |
-| **0.8.3-B2** | 8 Bezirke, 12 Orte, 7 kaufbare Objekte, Hall of Tribute, Score-/Tier-Projektion |
-| **Weg zum ersten spielbaren Release** | `0.8.3-C Settlement/Folgen → vollständigen Loop abnehmen → schreibender A4-Client` |
+| **Letzte remote validierte Feature-Stufe** | `0.8.3-C – Settlement & Consequences` |
+| **0.8.3-C-Abnahme** | PR #65 · Head `ccfb145547b...` · Runtime Core `32568683844`, Presentation Core `32568683898`, Repository Health `32568683863` grün · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `5ae811333878...` |
+| **Nächster Pflichtblock** | schreibender **A4-Game-Client** auf den vorhandenen Application-Commands |
+| **0.8.3-A** | 8 kanonische Event-Aktionen und zentrale Blocker-/Voraussetzungslogik |
+| **0.8.3-B** | Crisis Engine + Berlin Ops Map Foundation |
+| **0.8.3-C** | atomare Abrechnung, Budget/Stress/Ruf, Biografie, `event.completed`, Recovery |
+| **Weg zum ersten spielbaren Release** | `A4 schreibend anbinden → First-Run/Save-Recovery-Smoke-Test → Version/Release-Artefakt` |
 | **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
 | **Persistenz** | append-only Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
-| **Grafischer Renderer** | statischer HTML-Blueprint vorhanden; Berlin Ops Map derzeit als getestete read-only Projection, noch kein schreibender Kartenclient |
+| **Grafischer Renderer** | statischer HTML-Blueprint vorhanden; Berlin Ops Map als getestete read-only Projection, noch kein schreibender Kartenclient |
 | **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert |
 
 > [!IMPORTANT]
@@ -48,10 +50,12 @@
 
 ## 🚦 Was bis zum Release noch fehlt
 
-Der aktuelle Stand ist eine validierte Spiellogik mit schreibgeschützter Präsentationsbasis – noch kein auslieferbarer Game-Client. Für das erste **spielbare Alpha-Release** bleiben zwei Pflichtblöcke:
+Der fachliche Event-Loop ist jetzt vollständig remote validiert: Planung, Economy, Eventaktionen, Krise, Settlement, `event.completed` und Recovery sind miteinander verbunden. Noch fehlt ein **bedienbarer schreibender Client**.
 
-1. **0.8.3-C Settlement & Consequences:** bestätigte Krisenfolgen über die vorhandenen Economy-/Character-Verträge buchen, Ruf/Stress/Stabilität/Heat anwenden, `event.completed` erzeugen und den Gesamtpfad inklusive Recovery testen.
-2. **Release-Kandidat:** danach A4 als kleinsten schreibenden Client anbinden, Ersteinstieg und Save/Recovery-Smoke-Test nachweisen und erst dann Version/Release-Artefakt festlegen.
+Für das erste **spielbare Alpha-Release** bleibt deshalb ein zentraler Produktblock plus Abnahme:
+
+1. **A4 als kleinsten schreibenden Game-Client anbinden:** ausschließlich bestehende Application-Commands verwenden; keine zweite Domain-, Economy-, Incident-, Settlement- oder Persistenzlogik im Client.
+2. **Release-Abnahme:** Ersteinstieg und deterministischen First-Run/Save-Recovery-Smoke-Test aus frischem Checkout nachweisen; erst danach Version und reproduzierbares Release-Artefakt festlegen.
 
 **Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau, Hall-of-Tribute-Saisons und native GitHub-Branch-Protection.
 
@@ -72,7 +76,7 @@ AUFBAUEN / BOOKEN / SOUND CHECKEN
    ↓
 EVENT
    ↓
-KRISE / ENTSCHEIDUNG
+OPTIONALE KRISE / ENTSCHEIDUNG
    ↓
 ABBAU / ABRECHNUNG
    ↓
@@ -130,6 +134,7 @@ NEUE ORTE / IMMOBILIEN / MÖGLICHKEITEN
 - 8 kanonische Event-Aktionen
 - Crisis-/Incident-State
 - 6 Krisentypen mit Reaktionswegen
+- Settlement-State + atomarer Eventabschluss
 - Berlin Ops Map Foundation
 - Hall of Tribute
 - Immobilien-/Upgrade-Datenbasis
@@ -190,7 +195,7 @@ Wesentliche Regeln:
 - append-only Journal über `event.phase_changed`
 - persistierter Eventzustand ist alleinige Autorität
 - idempotente Wiederholung desselben Commands
-- kein `completed`, bevor 0.8.3-C Settlement definiert
+- `completed` wird ausschließlich über den validierten 0.8.3-C-Settlement-Service erzeugt
 
 Maschinenlesbarer Vertrag: [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json)
 
@@ -198,7 +203,7 @@ Maschinenlesbarer Vertrag: [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EV
 
 ## 🚨 0.8.3-B1 – Crisis / Incident Engine ✅
 
-Ein laufendes Event kann jetzt tatsächlich eskalieren. Die Krise ist kein UI-Effekt, sondern eigener persistierter Zustand.
+Ein laufendes Event kann tatsächlich eskalieren. Die Krise ist kein UI-Effekt, sondern eigener persistierter Zustand.
 
 ```text
 live
@@ -223,7 +228,7 @@ Jeder Typ besitzt drei katalogisierte Reaktionen. Severity `1–5` skaliert die 
 
 ### Warum Folgen zunächst nur vorgemerkt werden
 
-Krisen erzeugen bestätigte Folgen auf Budget, Ruf, Crew-Stress, Stabilität und Heat. Diese stehen im `IncidentState.pending_settlement`, werden aber **noch nicht direkt** auf Economy oder Character geschrieben. Damit bleibt die 0.8.2-Regel erhalten: Geld ändert sich nur über bestätigte Economy-Transaktionen. Die eigentliche Buchung folgt in 0.8.3-C.
+Krisen erzeugen bestätigte Folgen auf Budget, Ruf, Crew-Stress, Stabilität und Heat. Diese stehen im `IncidentState.pending_settlement` und werden nicht direkt auf Economy oder Character geschrieben. Damit bleibt die 0.8.2-Regel erhalten: Geld ändert sich nur über bestätigte Economy-Transaktionen. Der validierte 0.8.3-C-Service übernimmt diese Folgen anschließend genau einmal.
 
 Der Replay prüft den Event-Kontext erneut; ein offener Incident darf nur mit seinem gespeicherten Vertragsstand aufgelöst werden.
 
@@ -266,6 +271,45 @@ Vertrag: [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json) 
 
 ---
 
+## 💰 0.8.3-C – Settlement & Consequences ✅
+
+0.8.3-C schließt den fachlichen Event-Loop. Aus `settlement` wird `completed` erst, wenn bestätigte Folgen gemeinsam verbucht und dauerhaft bestätigt sind.
+
+```text
+settlement
+  ↓
+Budget über Economy-Ledger
+  ↓
+Stress + Ruf über Character-Events
+  ↓
+Biografie dem bestätigten Character zuordnen
+  ↓
+event.phase_changed
+  ↓
+event.completed + SettlementState
+```
+
+Wesentliche Garantien:
+
+- vollständiger Abschluss in **einem atomaren Persistence-Commit**
+- Event ohne Krise ist gültig; fehlender Incident-State wird deterministisch als leer behandelt
+- `pending_settlement` wird genau einmal verbraucht
+- negatives Endbudget wird abgewiesen; kein erfundenes Schuldenmodell
+- Stress bleibt `0..100`
+- ältere Saves mit früher zulässigem negativem Ruf bleiben lesbar
+- neue Settlement-Ergebnisse normalisieren Ruf auf mindestens `0`, damit Ranking kompatibel bleibt
+- Budget-, Stress- und Ruf-Deltas im Receipt müssen exakt zu den bestätigten Effekten passen
+- Biografieeintrag trägt die bestätigte Character-ID
+- Heat/Stabilität bleiben bestätigte Settlement-Ergebnisse und werden noch nicht als District-State geschrieben
+- `event.completed` kann nicht über den allgemeinen Event-Service umgangen werden
+- Crash nach durablem Journal ist über Combined Recovery vollständig rekonstruierbar
+
+Remote-Abnahme: PR #65 · Head `ccfb145547b241a179bd0135d34a7470d690821c` · Runtime Core `32568683844` · Presentation Core `32568683898` · Repository Health `32568683863` · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `5ae811333878ae67947417ccb72e791caafe4ba9`.
+
+Vertrag: [`docs/SETTLEMENT_0.8.3-C.md`](docs/SETTLEMENT_0.8.3-C.md) · [`manifests/SETTLEMENT_MANIFEST.json`](manifests/SETTLEMENT_MANIFEST.json) · [`reports/SETTLEMENT_VALIDATION_0.8.3-C.json`](reports/SETTLEMENT_VALIDATION_0.8.3-C.json)
+
+---
+
 ## 🧭 Einstieg ohne Vorwissen
 
 1. Spielidee: [`docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md)
@@ -274,7 +318,7 @@ Vertrag: [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json) 
 4. aktueller Entwicklungsblock: [`TODO.md`](TODO.md)
 
 > [!NOTE]
-> Der vorhandene HTML-Blueprint ist weiterhin schreibgeschützt. Die Berlin Ops Map besitzt bereits einen getesteten Projection-Vertrag, aber noch keinen fertigen grafischen Renderer oder Domain-Schreibweg.
+> Der vorhandene HTML-Blueprint ist weiterhin schreibgeschützt. Die Berlin Ops Map besitzt bereits einen getesteten Projection-Vertrag, aber noch keinen fertigen grafischen Renderer oder Domain-Schreibweg. Der nächste Produktblock ist der schreibende A4-Client für den bereits validierten Fachloop.
 
 ### HTML-Blueprint starten
 
@@ -303,6 +347,7 @@ python3 tools/start_web_blueprint.py --port 0
 | Event Actions | [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json) |
 | Crisis + Berlin Map | [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md) |
 | Incident-Katalog | [`manifests/INCIDENT_MANIFEST.json`](manifests/INCIDENT_MANIFEST.json) |
+| Settlement | [`docs/SETTLEMENT_0.8.3-C.md`](docs/SETTLEMENT_0.8.3-C.md) · [`manifests/SETTLEMENT_MANIFEST.json`](manifests/SETTLEMENT_MANIFEST.json) |
 | Berlin Ops Map | [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json) |
 | Architektur | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
 | Gameplay Actions | [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md) |
@@ -318,9 +363,9 @@ python3 tools/start_web_blueprint.py --port 0
 ## 🧩 Architektur in 30 Sekunden
 
 ```text
-Domain: CharacterState + EventState + EconomyState + IncidentState
+Domain: CharacterState + EventState + EconomyState + IncidentState + SettlementState
   ↓
-Application: Character / Event / Economy / Execution / Incident Services
+Application: Character / Event / Economy / Execution / Incident / Settlement Services
   ↓
 Persistence: Journal + State + Snapshot + Recovery
   ↓
@@ -334,7 +379,7 @@ A4 / A3 / spätere Kartenansicht
 
 | Bereich | Verantwortung | Grenze |
 |---|---|---|
-| `domain` | Charakter, Progression, Event, Economy, Incident-State | kennt keine UI/Infrastruktur |
+| `domain` | Charakter, Progression, Event, Economy, Incident, Settlement | kennt keine UI/Infrastruktur |
 | `application` | Use Cases, Commands, atomare Orchestrierung | umgeht Persistenz nicht |
 | `infrastructure` | Journal, Save, Snapshot, Recovery | verwaltet keine sichtbaren UI-Texte |
 | `presentation` | Projection, Komponenten, Inszenierung | schreibt Domain-/Save-State nicht direkt |
@@ -415,6 +460,8 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - 0.8.2 Economy-Hardening / PR #61: Runtime Core `32557685040`, Presentation Core `32557685042`, Repository Health `32557685108`
 - 0.8.3-A / PR #62: Runtime Core `32558175370`, Presentation Core `32558175365`, Repository Health `32558175382`; `SAFE MERGE PASS`
 - 0.8.3-B / PR #63: Runtime Core `32559629560`, Presentation Core `32559629773`, Repository Health `32559629667`; 6 Review-Threads gelöst; `SAFE MERGE PASS`; Merge `816a3f1dd83d9396550d702c0ac85ba98ed069dd`
+- 0.8.3-C / PR #65: Runtime Core `32568683844`, Presentation Core `32568683898`, Repository Health `32568683863`; 0 ungelöste Review-Threads; `SAFE MERGE PASS`; Merge `5ae811333878ae67947417ccb72e791caafe4ba9`
+- Repository-Hygiene / PR #67: Runtime Core `32568910870`, Presentation Core `32568910892`, Repository Health `32568910865`; `SAFE MERGE PASS`; Merge `057b5131dfd5bfaf1c26ddd0a3e862fb52c0675f`
 
 </details>
 
@@ -429,6 +476,8 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json)
 - [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md)
 - [`manifests/INCIDENT_MANIFEST.json`](manifests/INCIDENT_MANIFEST.json)
+- [`docs/SETTLEMENT_0.8.3-C.md`](docs/SETTLEMENT_0.8.3-C.md)
+- [`manifests/SETTLEMENT_MANIFEST.json`](manifests/SETTLEMENT_MANIFEST.json)
 - [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json)
 - [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
 - [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
