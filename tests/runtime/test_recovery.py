@@ -141,6 +141,48 @@ class RecoveryTest(unittest.TestCase):
             self.assertGreater(receipt.replayed_events, 0)
             self.assertEqual(recovering.load_state()["character"], second_expected)
 
+    def test_structurally_invalid_snapshots_do_not_hide_valid_checkpoint(self):
+        invalid_variants = {
+            "JSON-Liste": lambda snapshot: [],
+            "fehlende Felder": lambda snapshot: {"snapshot_id": "snap-incomplete"},
+            "ungültige Sequenz": lambda snapshot: {**snapshot, "journal_sequence": True},
+            "falscher Hash": lambda snapshot: {**snapshot, "state_hash": "wrong"},
+        }
+        for label, damage in invalid_variants.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as tmp:
+                kernel = PersistenceKernel(tmp, ALLOWED)
+                start = CharacterState("c-r", "R")
+                kernel.initialize_state({"character": start.to_dict()})
+                snapshot_id = kernel.create_snapshot("valid_checkpoint")
+                valid_path = Path(tmp) / "snapshots" / f"{snapshot_id}.json"
+                valid_snapshot = json.loads(valid_path.read_text(encoding="utf-8"))
+                invalid_path = Path(tmp) / "snapshots" / f"snap-invalid-{len(label)}.json"
+                invalid_path.write_text(json.dumps(damage(valid_snapshot)), encoding="utf-8")
+                expected = CharacterActionService(ActionResolver(), kernel).execute(
+                    start, ACTION, action_instance_id=f"invalid-{len(label)}", world_seed="w", journal_context=CTX
+                ).resolved.character_after.to_dict()
+                (Path(tmp) / "state" / "current.json").write_text("{broken-state", encoding="utf-8")
+
+                recovering = PersistenceKernel.open_for_recovery(tmp, ALLOWED)
+                receipt = CharacterRecoveryService(recovering).recover(context=CTX)
+
+                self.assertEqual(receipt.checkpoint_kind, "snapshot")
+                self.assertEqual(receipt.checkpoint_sequence, 0)
+                self.assertEqual(recovering.load_state()["character"], expected)
+
+    def test_only_invalid_snapshots_raise_controlled_recovery_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            kernel = PersistenceKernel(tmp, ALLOWED)
+            kernel.initialize_state({"character": CharacterState("c-r", "R").to_dict()})
+            snapshot_id = kernel.create_snapshot("soon_invalid")
+            snapshot_path = Path(tmp) / "snapshots" / f"{snapshot_id}.json"
+            snapshot_path.write_text("[]", encoding="utf-8")
+            (Path(tmp) / "state" / "current.json").write_text("{broken-state", encoding="utf-8")
+
+            recovering = PersistenceKernel.open_for_recovery(tmp, ALLOWED)
+            with self.assertRaisesRegex(PersistenceError, "^Kein gültiger Recovery-Checkpoint vorhanden$"):
+                CharacterRecoveryService(recovering).recover(context=CTX)
+
     def test_fault_after_meta_commit_is_already_consistent(self):
         with tempfile.TemporaryDirectory() as tmp:
             start = CharacterState("c-r", "R")
