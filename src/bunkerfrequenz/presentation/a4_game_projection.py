@@ -14,6 +14,10 @@ from bunkerfrequenz.presentation.district_projection import build_living_distric
 from bunkerfrequenz.presentation.hall_of_tribute import build_hall_of_tribute_projection
 from bunkerfrequenz.presentation.property_projection import build_property_projection
 from bunkerfrequenz.presentation.property_upgrade_projection import build_property_upgrade_projection
+from bunkerfrequenz.presentation.seasonal_hall import (
+    build_seasonal_hall_projection,
+    derive_cycle_contexts_from_completed_event,
+)
 
 
 def _incident_catalog_projection(catalog: Mapping[str, Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -51,6 +55,9 @@ def build_a4_game_projection(
     ranking_manifest: Mapping[str, Any] | None = None,
     sync_manifest: Mapping[str, Any] | None = None,
     ranking_text_catalog: Mapping[str, str] | None = None,
+    hall_season_manifest: Mapping[str, Any] | None = None,
+    zeit_manifest: Mapping[str, Any] | None = None,
+    confirmed_hall_cycles: Mapping[str, Mapping[str, Any]] | None = None,
     confirmed_ranking_participants: Sequence[Mapping[str, Any]] = (),
     confirmed_network_records: Sequence[Mapping[str, Any]] = (),
     previous_ranking_cycles: Mapping[str, Mapping[str, Any]] | None = None,
@@ -67,10 +74,16 @@ def build_a4_game_projection(
     hall_parts = (hall_manifest, ranking_manifest, sync_manifest, ranking_text_catalog, city_map_manifest)
     if any(part is not None for part in hall_parts[:4]) and not all(part is not None for part in hall_parts):
         raise ValueError("Hall of Tribute benötigt Hall-, Ranking-, Sync-, Text- und City-Map-Vertrag")
+    if (hall_season_manifest is None) != (zeit_manifest is None):
+        raise ValueError("Hall-Saison benötigt Saison- und Zeit-Manifest gemeinsam")
+    if hall_season_manifest is not None and hall_manifest is None:
+        raise ValueError("Hall-Saison benötigt Hall-of-Tribute-Vertrag")
+    if confirmed_hall_cycles is not None and hall_season_manifest is None:
+        raise ValueError("Bestätigte Hall-Zyklen benötigen Saisonvertrag")
 
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.6-c1",
+        "view_model_version": "0.8.7-a1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
@@ -214,7 +227,7 @@ def build_a4_game_projection(
         )
 
     if hall_manifest is not None:
-        projection["hall_of_tribute"] = build_hall_of_tribute_projection(
+        hall_projection = build_hall_of_tribute_projection(
             raw,
             hall_manifest=hall_manifest,
             ranking_manifest=ranking_manifest,
@@ -225,5 +238,27 @@ def build_a4_game_projection(
             confirmed_network_records=confirmed_network_records,
             previous_cycles=previous_ranking_cycles,
         )
+        if hall_projection is not None and hall_season_manifest is not None:
+            cycle_contexts = confirmed_hall_cycles
+            if cycle_contexts is None:
+                raw_event = raw.get("event")
+                if raw_event is not None and not isinstance(raw_event, Mapping):
+                    raise ValueError("Event für Hall-Saison muss Mapping sein")
+                cycle_contexts = derive_cycle_contexts_from_completed_event(
+                    raw_event,
+                    season_manifest=hall_season_manifest,
+                    hall_manifest=hall_manifest,
+                    ranking_manifest=ranking_manifest,
+                    zeit_manifest=zeit_manifest,
+                )
+            hall_projection["seasonal"] = build_seasonal_hall_projection(
+                hall_projection,
+                season_manifest=hall_season_manifest,
+                hall_manifest=hall_manifest,
+                ranking_manifest=ranking_manifest,
+                zeit_manifest=zeit_manifest,
+                confirmed_cycle_contexts=cycle_contexts,
+            )
+        projection["hall_of_tribute"] = hall_projection
 
     return projection
