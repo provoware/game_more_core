@@ -275,6 +275,17 @@
     "presentation_core_required_status_available",
     "repository_health_required_status_available"
   ],
+  "html_blueprint_checks": {
+    "test_file": "tests/presentation/test_web_blueprint.py",
+    "command": "python3 -m unittest tests/presentation/test_web_blueprint.py -v",
+    "checks": [
+      "canonical_reference_asset_embedded",
+      "visible_pixel_coverage_evaluated",
+      "evaluation_targets_present",
+      "ui_manifest_consumed",
+      "machine_readable_report_exposed"
+    ]
+  },
   "safe_merge_checks": [
     "actor_permission_required",
     "pr_open_non_draft_main_target",

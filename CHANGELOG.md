@@ -4,6 +4,13 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### HTML-Blueprint-Auswertung
+
+- statische, frameworkfreie HTML-Übertragung ergänzt: Die kanonische WebP-Grafik bleibt als unveränderte Pixelreferenz sichtbar, während Workflow und vier UI-Varianten aus dem bestehenden UI-Manifest auswertbar gerendert werden.
+- vollautomatische Standardbibliothek-Startroutine mit Dateivorprüfung, lokalem Server, Browseröffnung, verständlicher Statusausgabe und belegbarem Portfehler ergänzt.
+- kopierbarer Browser-Prüfbericht einschließlich Prüfung sichtbarer Pixelfläche, Tastaturfokus, Responsive Layout, Reduced Motion und High-Contrast-Fallback verbessern Diagnose und Zugänglichkeit; das aktuell überwiegend transparente WebP wird als eingeschränkt gemeldet und die Ansicht bleibt ausdrücklich ohne Domain-Schreibzugriff.
+- Spieleranleitung um einen laiengerechten Ein-Befehl-Start, Stopp, manuellen Browserweg und Port-Fehlerhilfe erweitert.
+
 ### 0.8.1 – Event State Foundation
 
 - `EventState` als eigener, streng validierter Domain-State mit Ort, Budgetrahmen, Acts, Crew, Equipment-Readiness, Zeitfenster, Sicherheitsstatus, Eventphase und monotoner Revision eingeführt.

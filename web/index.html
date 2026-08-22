@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="de" data-renderer="blueprint-evaluation">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>BUNKERFREQUENZ – Blueprint-Auswertung</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Zum Inhalt</a>
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">BUNKERFREQUENZ // HTML PIPELINE</p>
+      <h1>BETON. BASS. BERLIN.</h1>
+    </div>
+    <output id="system-status" class="status" role="status" aria-live="polite">PRÜFUNG LÄUFT</output>
+  </header>
+
+  <main id="workspace">
+    <section class="hero" aria-labelledby="reference-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">01 // ORIGINAL</p><h2 id="reference-title">PIXELREFERENZ</h2></div>
+        <button id="toggle-reference" type="button" aria-pressed="false">REFERENZ VERGRÖSSERN</button>
+      </div>
+      <figure id="reference-frame" class="reference-frame">
+        <img id="blueprint-image" src="../docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp"
+             alt="System- und Character-Forge-Blueprint von BUNKERFREQUENZ">
+        <figcaption id="asset-facts">Originaldatei wird unverändert geladen.</figcaption>
+      </figure>
+    </section>
+
+    <section aria-labelledby="pipeline-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">02 // AUSWERTBAR</p><h2 id="pipeline-title">SPIELFLUSS</h2></div>
+        <p class="legend"><span aria-hidden="true">■</span> Klartext + Form + Farbe</p>
+      </div>
+      <ol id="workflow" class="workflow" aria-label="Ablauf"></ol>
+    </section>
+
+    <section aria-labelledby="variants-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">03 // ANSICHTEN</p><h2 id="variants-title">VIER SYSTEME, EIN VERTRAG</h2></div>
+      </div>
+      <div id="variants" class="variant-grid"></div>
+    </section>
+
+    <section class="diagnostics" aria-labelledby="debug-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">04 // TRANSPARENT</p><h2 id="debug-title">DIAGNOSE</h2></div>
+        <button id="copy-debug" type="button">PRÜFBERICHT KOPIEREN</button>
+      </div>
+      <p id="debug-summary">Dateien und Browsermerkmale werden geprüft.</p>
+      <pre id="debug-output" tabindex="0"></pre>
+      <noscript>JavaScript ist aus. Die Pixelreferenz bleibt sichtbar, die automatische Auswertung jedoch nicht.</noscript>
+    </section>
+  </main>
+
+  <footer>Statischer Prototyp · keine Spielstände · keine Domain-Schreibzugriffe</footer>
+</body>
+</html>

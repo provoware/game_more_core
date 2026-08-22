@@ -36,7 +36,7 @@
 | **Event Foundation** | Ort, Budgetrahmen, Acts, Crew, Equipment-Readiness, Zeitfenster, Sicherheit, Phasen und Revision |
 | **Persistenz** | Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
-| **Grafischer Renderer** | noch kein Qt/Web/Game-Engine-Framework fest verdrahtet |
+| **Grafischer Renderer** | auswertbarer statischer HTML-Blueprint vorhanden; noch kein schreibender Game-Client |
 | **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert |
 
 > [!IMPORTANT]
@@ -202,7 +202,15 @@ Details: [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
 6. Der nächste Entwicklungsblock steht kompakt in [`TODO.md`](TODO.md).
 
 > [!NOTE]
-> Noch gibt es **keinen fertigen grafischen Client zum Anklicken**. Der Runtime-, Persistenz- und Presentation-Kern wird zuerst reproduzierbar abgesichert, bevor ein konkretes Qt-/Web-/Game-Engine-Frontend fest verdrahtet wird.
+> Der statische HTML-Blueprint lässt sich bereits lokal prüfen und anklicken. Er zeigt die Originalgrafik unverändert, wertet den UI-Vertrag aus und schreibt keine Spieldaten. Ein vollständiger grafischer Game-Client ist das noch nicht.
+
+### HTML-Blueprint vollautomatisch starten
+
+```bash
+python3 tools/start_web_blueprint.py
+```
+
+Die Startroutine prüft zuerst alle benötigten Dateien, startet einen lokalen Server, zeigt Adresse und Stopp-Befehl an und öffnet den Standardbrowser. Für einen rein manuellen Browserstart dient `--no-browser`; bei einem belegten Port nennt die Fehlermeldung direkt Ursache und Port. Die Oberfläche führt zusätzlich einen kopierbaren Prüfbericht unter **Diagnose**.
 
 ---
 
@@ -211,6 +219,7 @@ Details: [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
 | Ich suche … | Dann hier entlang |
 |---|---|
 | Spieler-Einstieg | [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md) |
+| HTML-Blueprint starten | `python3 tools/start_web_blueprint.py` |
 | aktuellen Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
 | nächste Aufgaben | [`TODO.md`](TODO.md) |
 | Event State 0.8.1 | [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md) |
