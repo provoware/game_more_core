@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "version": "0.8.7-a1",
+  "hall_manifest_version": "0.8.5-e1",
+  "ranking_manifest_version": "0.8.5-a1",
+  "zeit_manifest_version": "0.4.2-alpha.1",
+  "cycle_types": ["weekly", "monthly"],
+  "default_cycle_type": "weekly",
+  "allowed_authorities": ["confirmed_online_time", "game_world_time"],
+  "system_time_is_sole_authority": false,
+  "local_event_anchor": {
+    "allowed": true,
+    "requires_event_phase": "completed",
+    "timestamp_source": "event.time_window.start_local",
+    "authority": "game_world_time",
+    "cycle_closed": false
+  },
+  "title_policy": {
+    "requires_closed_cycle": true,
+    "requires_confirmed_competition": true,
+    "minimum_confirmed_participants": 2,
+    "rank_required": 1,
+    "titles": {
+      "weekly": {
+        "reputation": "Lärmadel",
+        "level": "Kabelkönig",
+        "resonance": "Pegelpapst"
+      },
+      "monthly": {
+        "reputation": "Nachtminister",
+        "level": "Bunkerbaron",
+        "resonance": "Stromheiland"
+      }
+    },
+    "grand_title": {
+      "cycle_type": "monthly",
+      "requires_first_place_in_modes": ["reputation", "level", "resonance"],
+      "title": "Betonlegende"
+    }
+  },
+  "network_policy": {
+    "invent_competitors": false,
+    "invent_cycle_authority": false,
+    "invent_titles": false
+  }
+}
