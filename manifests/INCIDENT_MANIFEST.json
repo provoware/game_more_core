@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "version": "0.8.3-b1",
+  "state_block": "incidents",
+  "trigger_phases": ["live"],
+  "severity_range": [1, 5],
+  "effects_are_pending_until_settlement": true,
+  "incident_types": [
+    {
+      "incident_type": "power_drop",
+      "title_key": "incident.power_drop.title",
+      "base_severity": 3,
+      "responses": [
+        {"response_id": "power_drop.generator", "label_key": "incident.power_drop.generator", "target_phase": "live", "effects": {"budget_delta_cents": -12000, "reputation_delta": 3, "crew_stress_delta": 8, "stability_delta": 8, "heat_delta": 0}},
+        {"response_id": "power_drop.rewire", "label_key": "incident.power_drop.rewire", "target_phase": "live", "effects": {"budget_delta_cents": -3000, "reputation_delta": 1, "crew_stress_delta": 14, "stability_delta": 3, "heat_delta": 1}},
+        {"response_id": "power_drop.stop", "label_key": "incident.power_drop.stop", "target_phase": "teardown", "effects": {"budget_delta_cents": 0, "reputation_delta": -8, "crew_stress_delta": -4, "stability_delta": -10, "heat_delta": -2}}
+      ]
+    },
+    {
+      "incident_type": "security_breach",
+      "title_key": "incident.security_breach.title",
+      "base_severity": 4,
+      "responses": [
+        {"response_id": "security_breach.reinforce", "label_key": "incident.security_breach.reinforce", "target_phase": "live", "effects": {"budget_delta_cents": -8000, "reputation_delta": 2, "crew_stress_delta": 10, "stability_delta": 7, "heat_delta": -3}},
+        {"response_id": "security_breach.pause", "label_key": "incident.security_breach.pause", "target_phase": "live", "effects": {"budget_delta_cents": -1500, "reputation_delta": -2, "crew_stress_delta": 5, "stability_delta": 4, "heat_delta": -5}},
+        {"response_id": "security_breach.abort", "label_key": "incident.security_breach.abort", "target_phase": "teardown", "effects": {"budget_delta_cents": 0, "reputation_delta": -10, "crew_stress_delta": -3, "stability_delta": -12, "heat_delta": -8}}
+      ]
+    },
+    {
+      "incident_type": "equipment_failure",
+      "title_key": "incident.equipment_failure.title",
+      "base_severity": 3,
+      "responses": [
+        {"response_id": "equipment_failure.swap", "label_key": "incident.equipment_failure.swap", "target_phase": "live", "effects": {"budget_delta_cents": -6000, "reputation_delta": 2, "crew_stress_delta": 7, "stability_delta": 6, "heat_delta": 0}},
+        {"response_id": "equipment_failure.improvise", "label_key": "incident.equipment_failure.improvise", "target_phase": "live", "effects": {"budget_delta_cents": -1000, "reputation_delta": 4, "crew_stress_delta": 15, "stability_delta": 1, "heat_delta": 1}},
+        {"response_id": "equipment_failure.stop", "label_key": "incident.equipment_failure.stop", "target_phase": "teardown", "effects": {"budget_delta_cents": 0, "reputation_delta": -7, "crew_stress_delta": -2, "stability_delta": -8, "heat_delta": -1}}
+      ]
+    },
+    {
+      "incident_type": "artist_delay",
+      "title_key": "incident.artist_delay.title",
+      "base_severity": 2,
+      "responses": [
+        {"response_id": "artist_delay.extend_support", "label_key": "incident.artist_delay.extend_support", "target_phase": "live", "effects": {"budget_delta_cents": -2000, "reputation_delta": 3, "crew_stress_delta": 5, "stability_delta": 4, "heat_delta": 1}},
+        {"response_id": "artist_delay.reorder", "label_key": "incident.artist_delay.reorder", "target_phase": "live", "effects": {"budget_delta_cents": 0, "reputation_delta": 1, "crew_stress_delta": 8, "stability_delta": 2, "heat_delta": 0}},
+        {"response_id": "artist_delay.cut_slot", "label_key": "incident.artist_delay.cut_slot", "target_phase": "live", "effects": {"budget_delta_cents": 0, "reputation_delta": -3, "crew_stress_delta": 2, "stability_delta": 0, "heat_delta": 0}}
+      ]
+    },
+    {
+      "incident_type": "crowd_overload",
+      "title_key": "incident.crowd_overload.title",
+      "base_severity": 5,
+      "responses": [
+        {"response_id": "crowd_overload.limit_entry", "label_key": "incident.crowd_overload.limit_entry", "target_phase": "live", "effects": {"budget_delta_cents": -3000, "reputation_delta": -1, "crew_stress_delta": 10, "stability_delta": 10, "heat_delta": -6}},
+        {"response_id": "crowd_overload.add_staff", "label_key": "incident.crowd_overload.add_staff", "target_phase": "live", "effects": {"budget_delta_cents": -9000, "reputation_delta": 3, "crew_stress_delta": 6, "stability_delta": 8, "heat_delta": -4}},
+        {"response_id": "crowd_overload.end_event", "label_key": "incident.crowd_overload.end_event", "target_phase": "teardown", "effects": {"budget_delta_cents": 0, "reputation_delta": -12, "crew_stress_delta": -5, "stability_delta": -15, "heat_delta": -10}}
+      ]
+    },
+    {
+      "incident_type": "noise_pressure",
+      "title_key": "incident.noise_pressure.title",
+      "base_severity": 3,
+      "responses": [
+        {"response_id": "noise_pressure.reduce", "label_key": "incident.noise_pressure.reduce", "target_phase": "live", "effects": {"budget_delta_cents": 0, "reputation_delta": -1, "crew_stress_delta": 3, "stability_delta": 4, "heat_delta": -8}},
+        {"response_id": "noise_pressure.reconfigure", "label_key": "incident.noise_pressure.reconfigure", "target_phase": "live", "effects": {"budget_delta_cents": -2500, "reputation_delta": 1, "crew_stress_delta": 7, "stability_delta": 5, "heat_delta": -5}},
+        {"response_id": "noise_pressure.stop", "label_key": "incident.noise_pressure.stop", "target_phase": "teardown", "effects": {"budget_delta_cents": 0, "reputation_delta": -6, "crew_stress_delta": -3, "stability_delta": -5, "heat_delta": -12}}
+      ]
+    }
+  ]
+}
