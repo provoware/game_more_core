@@ -6,11 +6,13 @@ from __future__ import annotations
 import argparse
 from copy import deepcopy
 from datetime import datetime
+import errno
 from functools import partial
 import http.server
 import json
 from pathlib import Path
 import sys
+import tempfile
 import threading
 import uuid
 import webbrowser
@@ -53,10 +55,26 @@ def _load_json(path: Path) -> dict:
     return value
 
 
-def preflight() -> None:
-    missing = [path for path in REQUIRED if not (ROOT / path).is_file()]
+def preflight(root: Path = ROOT) -> None:
+    missing = [path for path in REQUIRED if not (root / path).is_file()]
     if missing:
         raise SystemExit("START FEHLGESCHLAGEN – fehlt: " + ", ".join(missing))
+
+
+def _prepare_save_dir(save_dir: Path) -> Path:
+    resolved = save_dir.expanduser().resolve()
+    try:
+        resolved.mkdir(parents=True, exist_ok=True)
+        # A real write probe catches read-only or otherwise unusable targets before
+        # the first gameplay command. It is temporary and never becomes game state.
+        with tempfile.NamedTemporaryFile(prefix=".a4-write-probe-", dir=resolved):
+            pass
+    except OSError as exc:
+        raise SystemExit(
+            "START FEHLGESCHLAGEN – Spielstandordner ist nicht beschreibbar: "
+            f"{resolved} ({exc})"
+        ) from exc
+    return resolved
 
 
 def port_number(value: str) -> int:
@@ -89,8 +107,7 @@ class A4ClientRuntime:
         self.game_version = str(journal_manifest.get("version", "0.8.3-c1"))
         self.incident_catalog = build_incident_catalog(incident_manifest)
         self.session_id = f"a4-{uuid.uuid4()}"
-        self.save_dir = save_dir.expanduser().resolve()
-        self.save_dir.mkdir(parents=True, exist_ok=True)
+        self.save_dir = _prepare_save_dir(save_dir)
         self.startup_recovery = None
         try:
             self.kernel = PersistenceKernel(self.save_dir, allowed)
@@ -116,6 +133,11 @@ class A4ClientRuntime:
                     "START FEHLGESCHLAGEN – Spielstand benötigt Recovery, "
                     f"konnte aber nicht sicher wiederhergestellt werden: {recovery_exc}"
                 ) from exc
+        except OSError as exc:
+            raise SystemExit(
+                "START FEHLGESCHLAGEN – Spielstand konnte nicht sicher geöffnet werden: "
+                f"{self.save_dir} ({exc})"
+            ) from exc
         self.session = GameClientSession(
             self.kernel,
             incident_catalog=self.incident_catalog,
@@ -338,7 +360,14 @@ class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
 
 def create_server(port: int, runtime: A4ClientRuntime) -> http.server.ThreadingHTTPServer:
     handler = partial(A4RequestHandler, directory=str(A4_STATIC))
-    server = http.server.ThreadingHTTPServer(("127.0.0.1", port), handler)
+    try:
+        server = http.server.ThreadingHTTPServer(("127.0.0.1", port), handler)
+    except OSError as exc:
+        if exc.errno == errno.EADDRINUSE:
+            detail = f"Port {port} ist belegt; nutze --port 0 für automatische freie Portwahl"
+        else:
+            detail = f"lokaler Server konnte auf Port {port} nicht gestartet werden: {exc}"
+        raise SystemExit(f"START FEHLGESCHLAGEN – {detail}") from exc
     server.runtime = runtime  # type: ignore[attr-defined]
     return server
 
