@@ -6,6 +6,7 @@ from typing import Any, Mapping
 
 from bunkerfrequenz.application.action_biography import build_action_biography_event
 from bunkerfrequenz.application.action_resolver import ActionResolver, ResolvedAction
+from bunkerfrequenz.application.state_blocks import merge_state_block
 from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceKernel
 
@@ -83,7 +84,11 @@ class CharacterActionService:
         receipt = self.persistence.commit(
             transaction_id=f"tx:{action_instance_id}",
             events=events,
-            derived_state={"character": resolved.character_after.to_dict()},
+            derived_state=merge_state_block(
+                self.persistence,
+                "character",
+                resolved.character_after.to_dict(),
+            ),
             context=journal_context,
         )
         return ActionCommitResult(resolved, receipt.event_ids, False)

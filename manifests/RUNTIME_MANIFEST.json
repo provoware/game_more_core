@@ -5,18 +5,23 @@
   "external_dependencies": [],
   "modules": {
     "character_state": "src/bunkerfrequenz/domain/character.py",
+    "event_state": "src/bunkerfrequenz/domain/event.py",
     "progression": "src/bunkerfrequenz/domain/progression.py",
     "trait_effects": "src/bunkerfrequenz/domain/trait_effects.py",
     "action_resolver": "src/bunkerfrequenz/application/action_resolver.py",
     "character_action_service": "src/bunkerfrequenz/application/character_action_service.py",
+    "event_state_service": "src/bunkerfrequenz/application/event_state_service.py",
+    "state_blocks": "src/bunkerfrequenz/application/state_blocks.py",
     "profile_service": "src/bunkerfrequenz/application/profile_service.py",
     "recovery_service": "src/bunkerfrequenz/application/recovery_service.py",
+    "game_recovery_service": "src/bunkerfrequenz/application/game_recovery.py",
     "persistence_kernel": "src/bunkerfrequenz/infrastructure/persistence.py"
   },
   "contracts": [
     "manifests/PROGRESSION_MANIFEST.json",
     "manifests/TRAIT_ENGINE_MANIFEST.json",
     "manifests/ACTION_MANIFEST.json",
+    "manifests/EVENT_STATE_MANIFEST.json",
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/PERSISTENCE_MANIFEST.json"
   ],
@@ -26,10 +31,15 @@
     "recovery_receipt_schema_version": 1,
     "snapshot_event_threshold": 50,
     "snapshot_time_threshold_seconds": 300,
-    "fault_points": ["after_journal_durable", "after_state_applied", "after_meta_committed"],
+    "fault_points": [
+      "after_journal_durable",
+      "after_state_applied",
+      "after_meta_committed"
+    ],
     "one_step_profile_undo": true,
     "corrupt_tail_quarantine": true,
-    "snapshot_plus_journal_replay": true
+    "snapshot_plus_journal_replay": true,
+    "combined_character_event_replay": true
   },
   "invariants": [
     "all_characters_start_with_equal_skill_values",
@@ -45,7 +55,10 @@
     "recovery_is_idempotent_after_a_recovered_checkpoint_is_committed",
     "trait_effects_match_the_trait_engine_manifest",
     "trait_effects_are_capped_per_runtime_target",
-    "level_50_continues_as_open_ended_journaled_resonance"
+    "level_50_continues_as_open_ended_journaled_resonance",
+    "character_and_event_state_blocks_preserve_each_other",
+    "event_revision_is_monotonic_and_stale_writes_are_rejected",
+    "physical_event_phases_require_verified_location_time_window_and_safety_clearance"
   ],
   "validation": {
     "compile_command": "PYTHONPATH=src python3 -m compileall -q src",
