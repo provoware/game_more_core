@@ -301,6 +301,16 @@ class GameClientSession:
                 return self._rejected("invalid_profile_changes")
             event_id = f"{command_id}:profile"
             if self.persistence.has_event(event_id):
+                existing = next(
+                    (record for record in self.persistence.read_records() if record["event_id"] == event_id),
+                    None,
+                )
+                if (
+                    existing is None
+                    or existing.get("event_type") != "character.profile_updated"
+                    or existing.get("payload", {}).get("new") != deepcopy(changes)
+                ):
+                    raise PersistenceError("Command-ID wurde mit anderem Profilupdate verwendet")
                 return self._confirmed((), True)
             self.profile.update(
                 character,
