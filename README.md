@@ -14,6 +14,7 @@
   <img alt="Crisis und Berlin Map 0.8.3 B validiert" src="https://img.shields.io/badge/Crisis_Map-0.8.3--B_validiert-e840ff">
   <img alt="Settlement 0.8.3 C remote validiert" src="https://img.shields.io/badge/Settlement-0.8.3--C_remote_validiert-2ee6a6">
   <img alt="A4 Game Client 0.8.4 remote validiert" src="https://img.shields.io/badge/A4_Game_Client-0.8.4_remote_validiert-ff7ad9">
+  <img alt="First Playable Alpha 0.8.4 alpha 1" src="https://img.shields.io/badge/First_Playable_Alpha-0.8.4--alpha.1-7dff00">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -31,14 +32,16 @@
 | | Aktueller Stand |
 |---|---|
 | **Runtime-Baseline** | `0.8.4-alpha.1` |
-| **Letzte remote validierte Feature-Stufe** | `0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery` |
+| **Erstes lokal spielbares Alpha** | ✅ `0.8.4-alpha.1` remote validiert, reproduzierbar paketiert und per `/safe-merge` übernommen |
 | **0.8.4-Abnahme** | PR #69 · Head `3d61e9d6385a...` · Runtime Core `32575062624`, Presentation Core `32575062602`, Repository Health `32575062620` grün · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `28459c197489...` |
 | **Release-Abnahme** | PR #72 · Head `7fe1a39c6b69...` · Runtime Core `32576362896`, Presentation Core `32576362890`, Repository Health `32576362810`, Release Acceptance `32576362827` grün · `SAFE MERGE PASS` · Merge `72bb30242727...` |
-| **Aktiver Release-Kandidat** | `0.8.4-alpha.1` · reproduzierbares ZIP + SHA-256 + entpackter Paket-Smoke auf PR #73 |
+| **Release PR #73** | Head `ece6c145bb07...` · Runtime `32576855723` · Presentation `32576855749` · Repository Health `32576855738` · Release Acceptance `32576855720` · Release Package `32576855768` · 0 Review-Threads · `SAFE MERGE PASS` · Merge `3fdb5cc3d57e...` |
+| **Release-Artefakt** | `BUNKERFREQUENZ-0.8.4-alpha.1.zip` · SHA-256 `fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146` · byte-reproduzierbar · entpackter Paket-Smoke bis `completed` |
 | **0.8.3-A** | 8 kanonische Event-Aktionen und zentrale Blocker-/Voraussetzungslogik |
 | **0.8.3-B** | Crisis Engine + Berlin Ops Map Foundation |
 | **0.8.3-C** | atomare Abrechnung, Budget/Stress/Ruf, Biografie, `event.completed`, Recovery |
 | **0.8.4** | lokaler schreibender A4-Client, First Run, kompletter Event-Smoke, Save/Restart/Recovery |
+| **Nächster Entwicklungsblock** | `0.8.5 – Dynamische Bezirkslage` aus bestätigten Settlement-/Event-Ergebnissen |
 | **Character Forge** | schreibender A4-Client + A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
 | **Persistenz** | append-only Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo; fehlender State bei gültigem Head-Snapshot regressionsgehärtet |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
@@ -46,24 +49,31 @@
 | **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert |
 
 > [!IMPORTANT]
-> `0.8.4-alpha.1` ist die erste lokal spielbare Runtime-Baseline. Sie wurde erst nach der separaten frischen-Checkout-Release-Abnahme festgelegt. Der Release-PR muss zusätzlich das reproduzierbare Paket samt SHA-256 und den entpackten Paket-Smoke auf seinem finalen Head bestätigen.
+> `0.8.4-alpha.1` ist die erste **freigegebene lokal spielbare Runtime-Baseline**. Release-Abnahme, reproduzierbares Paket, SHA-256 und entpackter Paket-Smoke sind bestätigt. Eine weitere Produktversion wird erst nach einer neuen eigenen Abnahme festgelegt.
 
 ---
 
-## 🚦 Release-Status
+## 🚦 Release-Status ✅
 
-Der fachliche Event-Loop **und der kleinste schreibende A4-Client** sind vollständig remote validiert. Die separate Release-Abnahme aus einem frischen Checkout ist ebenfalls abgeschlossen: realer Launcherprozess, freie Portwahl, Fehlerpfade, Save/Restart und Recovery sind geprüft.
+Der fachliche Event-Loop, der schreibende A4-Client und die separate Release-Abnahme aus einem frischen Checkout sind abgeschlossen. `0.8.4-alpha.1` wurde anschließend auf PR #73 als reproduzierbares Release-Paket qualifiziert und ausschließlich per `/safe-merge` übernommen.
 
-Für `0.8.4-alpha.1` läuft deshalb nur noch die Paket-/Merge-Qualifikation:
+Bestätigt wurden auf dem finalen Release-Head `ece6c145bb07dbb2eb87170887374c4124a871f1`:
 
-1. **Byte-reproduzierbares ZIP:** derselbe Source-Head muss zweimal exakt dieselben ZIP-Bytes erzeugen.
-2. **SHA-256:** Paket und Sidecar müssen denselben Digest bestätigen.
-3. **Entpackter Paket-Smoke:** `START_BUNKERFREQUENZ.sh` aus einem frischen Zielordner starten, First Run bis `completed` ausführen und Checkpoint bestätigen.
-4. **Finaler Release-Head:** Runtime Core, Presentation Core, Repository Health, Release Acceptance und Release Package müssen gemeinsam grün sein; danach ausschließlich `/safe-merge`.
+1. **Runtime Core:** `32576855723` ✅
+2. **Presentation Core:** `32576855749` ✅
+3. **Repository Health:** `32576855738` ✅
+4. **Release Acceptance:** `32576855720` ✅
+5. **Release Package:** `32576855768` ✅
+6. **Review-Threads:** `0` offen
+7. **Safe Merge:** PASS · Merge `3fdb5cc3d57e73734d1f594603cafdd6d06c5210`
 
-**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau, Hall-of-Tribute-Saisons und native GitHub-Branch-Protection.
+Das eigentliche Spiel-ZIP `BUNKERFREQUENZ-0.8.4-alpha.1.zip` besitzt SHA-256 `fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146`. Der Paket-Gate baut das ZIP zweimal byte-identisch, entpackt es in einen frischen Zielordner, startet `START_BUNKERFREQUENZ.sh`, prüft HTTP-Health, spielt den Kernpfad bis `completed` und erzeugt anschließend einen Checkpoint.
 
-Die genaue Reihenfolge steht in [`TODO.md`](TODO.md#release-abnahme--erstes-lokales-alpha-).
+**Nicht Bestandteil des ersten lokalen Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau, Hall-of-Tribute-Saisons und native GitHub-Branch-Protection.
+
+Der nächste Entwicklungsblock ist deshalb **0.8.5 – persistente Bezirksdynamik**, ohne vorzeitigen neuen Versionsbump.
+
+Maschinenlesbarer Release-Nachweis: [`reports/RELEASE_0.8.4-alpha.1.json`](reports/RELEASE_0.8.4-alpha.1.json)
 
 ---
 
@@ -142,6 +152,7 @@ NEUE ORTE / IMMOBILIEN / MÖGLICHKEITEN
 - Settlement-State + atomarer Eventabschluss
 - **schreibender lokaler A4-Game-Client**
 - First Run + Save/Restart/Recovery-Smoke
+- reproduzierbares lokales Alpha-Paket
 - Berlin Ops Map Foundation
 - Hall of Tribute
 - Immobilien-/Upgrade-Datenbasis
@@ -396,6 +407,7 @@ python3 tools/start_web_blueprint.py
 
 | Ich suche … | Dann hier entlang |
 |---|---|
+| Release-Nachweis | [`reports/RELEASE_0.8.4-alpha.1.json`](reports/RELEASE_0.8.4-alpha.1.json) |
 | vollständige Spielidee ohne Technik | [`docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md) |
 | technische Gesamtbeschreibung | [`docs/SPIELBESCHREIBUNG_TECHNISCH.md`](docs/SPIELBESCHREIBUNG_TECHNISCH.md) |
 | A4 First Run | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
@@ -503,6 +515,13 @@ PYTHONPATH=src:. python3 -m unittest discover -s tests/repository -v
 PYTHONPATH=src python3 tools/repository_health.py
 ```
 
+### Release Package
+
+```bash
+PYTHONPATH=src:. python3 -m unittest tests.runtime.test_release_package -v
+python3 tools/build_release.py --output-dir dist
+```
+
 ### Action-Vertrag / Balance
 
 ```bash
@@ -527,6 +546,7 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - Repository-Hygiene / PR #67: Runtime Core `32568910870`, Presentation Core `32568910892`, Repository Health `32568910865`; `SAFE MERGE PASS`; Merge `057b5131dfd5bfaf1c26ddd0a3e862fb52c0675f`
 - 0.8.4 A4 Game Client / PR #69: Runtime Core `32575062624`, Presentation Core `32575062602`, Repository Health `32575062620`; 0 ungelöste Review-Threads; `SAFE MERGE PASS`; Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
 - Release Acceptance / PR #72: Runtime Core `32576362896`, Presentation Core `32576362890`, Repository Health `32576362810`, Release Acceptance `32576362827`; `SAFE MERGE PASS`; Merge `72bb3024272797b27632a96559ae8abb665fff8a`
+- 0.8.4-alpha.1 Release / PR #73: Runtime Core `32576855723`, Presentation Core `32576855749`, Repository Health `32576855738`, Release Acceptance `32576855720`, Release Package `32576855768`; 0 ungelöste Review-Threads; `SAFE MERGE PASS`; Merge `3fdb5cc3d57e73734d1f594603cafdd6d06c5210`
 
 </details>
 
@@ -547,6 +567,7 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md)
 - [`reports/A4_CLIENT_VALIDATION_0.8.4.json`](reports/A4_CLIENT_VALIDATION_0.8.4.json)
 - [`reports/RELEASE_ACCEPTANCE_ALPHA.json`](reports/RELEASE_ACCEPTANCE_ALPHA.json)
+- [`reports/RELEASE_0.8.4-alpha.1.json`](reports/RELEASE_0.8.4-alpha.1.json)
 - [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json)
 - [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
 - [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)

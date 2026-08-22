@@ -3,7 +3,7 @@
   "version": "0.8.4-alpha.1",
   "release_type": "first_playable_local_alpha",
   "runtime_artifact": true,
-  "status": "release_candidate_validation_pending",
+  "status": "remote_validated_and_safe_merged",
   "supported_schema_versions": {
     "character": [1],
     "trait": [1],
@@ -20,6 +20,18 @@
     "release_acceptance_workflow_run": 32576362827,
     "safe_merge_pass": true
   },
+  "release": {
+    "pull_request": 73,
+    "validated_head": "ece6c145bb07dbb2eb87170887374c4124a871f1",
+    "merged_commit": "3fdb5cc3d57e73734d1f594603cafdd6d06c5210",
+    "runtime_core_workflow_run": 32576855723,
+    "presentation_core_workflow_run": 32576855749,
+    "repository_health_workflow_run": 32576855738,
+    "release_acceptance_workflow_run": 32576855720,
+    "release_package_workflow_run": 32576855768,
+    "unresolved_review_threads": 0,
+    "safe_merge_pass": true
+  },
   "artifact": {
     "format": "zip",
     "builder": "tools/build_release.py",
@@ -29,6 +41,11 @@
     "package_smoke_required": true,
     "contains_git_metadata": false,
     "contains_ci_configuration": false,
-    "contains_tests": false
+    "contains_tests": false,
+    "game_zip_sha256": "fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146",
+    "game_zip_size_bytes": 299300,
+    "github_actions_artifact_id": 9476765229,
+    "github_actions_artifact_digest": "sha256:5bf864f4999d3f096c3af68ff219e199d8bdd038d1db7466817355adf5ac81b7",
+    "github_actions_artifact_expires_at": "2026-09-21T13:48:56Z"
   }
 }

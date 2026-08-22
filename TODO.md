@@ -6,22 +6,24 @@
 - **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery`
 - **0.8.4-Abnahme:** PR #69 · Head `3d61e9d6385a0b79069132df24d655fef42b0451` · Runtime Core `32575062624` · Presentation Core `32575062602` · Repository Health `32575062620` · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
 - **Release-Abnahme:** PR #72 · Head `7fe1a39c6b69ec819fefe064a48d1647a5fa7c93` · Runtime Core `32576362896` · Presentation Core `32576362890` · Repository Health `32576362810` · Release Acceptance `32576362827` · `SAFE MERGE PASS` · Merge `72bb3024272797b27632a96559ae8abb665fff8a`
+- **Erstes lokales Alpha:** PR #73 · Head `ece6c145bb07dbb2eb87170887374c4124a871f1` · Runtime Core `32576855723` · Presentation Core `32576855749` · Repository Health `32576855738` · Release Acceptance `32576855720` · Release Package `32576855768` · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `3fdb5cc3d57e73734d1f594603cafdd6d06c5210`
+- **Release-Artefakt:** `BUNKERFREQUENZ-0.8.4-alpha.1.zip` · SHA-256 `fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146` · byte-reproduzierbar · entpackter Paket-Smoke bis `completed` bestanden
 - **Recovery-Härtung:** der vollständige A4-Smoke deckte einen fehlenden-State-Randfall auf; ein Snapshot am Journal-Head darf einen fehlenden `state/current.json` nicht mehr fälschlich als `healthy` deklarieren. Der zentrale Recovery-Kern stellt den State nun korrekt aus dem gültigen Snapshot wieder her und besitzt dafür eine Regression.
-- **Nächster Pflichtblock:** Release-Paket `0.8.4-alpha.1` byte-reproduzierbar bauen, SHA-256 erzeugen, entpacktes Paket smoke-testen und finalen Release-Head remote validieren
-- **Fortschritt zum ersten spielbaren Alpha-Release:** `99 %` (Planungswert; Fachloop, A4-Client, Release-Abnahme und erster Paket-Smoke grün; finaler Release-Head/Merge noch offen)
-- **Aktueller Release-Blocker:** finaler PR-#73-Head muss Runtime, Presentation, Repository Health, Release Acceptance und Release Package gemeinsam grün bestehen und anschließend per `/safe-merge` übernommen werden
+- **Nächster Pflichtblock:** `0.8.5 – Dynamische Bezirkslage` aus bestätigten Settlement-/Event-Ergebnissen; keine neue Produktversion vor eigener Abnahme
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `100 %`
+- **Aktueller Release-Blocker:** keiner; `0.8.4-alpha.1` ist remote validiert, reproduzierbar paketiert und sicher gemergt
 
-## Release-Ziel
+## Release-Ziel ✅
 
-Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-Aktionen, Krisen und Settlement über bestätigte Journal-Ereignisse mit einer bedienbaren Oberfläche.
+Das erste lokal startbare Alpha verbindet Character Forge, Equipment/Economy, Event-Aktionen, Krisen und Settlement über bestätigte Journal-Ereignisse mit einer bedienbaren Oberfläche.
 
-**Abnahme:** Aus einem frischen Checkout kann eine Person ohne Codewissen `Crew wählen → Event planen → Equipment beschaffen → Event starten → Krise lösen oder ohne Krise fortfahren → abrechnen → speichern → neu laden` vollständig durchführen.
+**Abnahme erfüllt:** Aus einem frischen Checkout bzw. entpackten Release-Paket kann eine Person ohne Codewissen `Crew wählen → Event planen → Equipment beschaffen → Event starten → Krise lösen oder ohne Krise fortfahren → abrechnen → speichern → neu laden/recovern` vollständig durchführen.
 
-**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau und native GitHub-Branch-Protection.
+**Nicht Bestandteil von 0.8.4-alpha.1:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau und native GitHub-Branch-Protection.
 
 ---
 
-# P0 – Pflichtpfad zum ersten spielbaren Alpha
+# P0 – Pflichtpfad zum ersten spielbaren Alpha ✅
 
 ## 0.8.1 – Event State Foundation ✅
 
@@ -149,17 +151,21 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 - [x] Release-Acceptance-Evidence mit Quell-Head und Gate-Runs erzeugen
 - [x] Release-Abnahme PR #72 per `/safe-merge` übernehmen
 - [x] erst danach Produktversion `0.8.4-alpha.1` festlegen
-- [ ] finalen reproduzierbaren ZIP-/SHA-256-Artefaktlauf auf dem Release-Head bestätigen
-- [ ] erzeugtes Paket in frischem Zielordner erneut starten und Kernpfad smoke-testen
-- [ ] finalen Release-PR #73 mit allen fünf Gates grün per `/safe-merge` übernehmen
+- [x] finalen reproduzierbaren ZIP-/SHA-256-Artefaktlauf auf dem Release-Head bestätigen
+- [x] erzeugtes Paket in frischem Zielordner erneut starten und Kernpfad smoke-testen
+- [x] finalen Release-PR #73 mit allen fünf Gates grün per `/safe-merge` übernehmen
+- [x] `SAFE MERGE PASS` und Main-Provenienz für Release-Merge `3fdb5cc3d57e73734d1f594603cafdd6d06c5210` bestätigen
 
 ---
 
 # P1 – direkt nach dem lokalen Alpha
 
+## 0.8.5 – Dynamische Bezirkslage ⏭️
+
 1. **Dynamische Bezirkslage**
    - Heat, Prestige, Polizeidruck und Szeneaktivität ausschließlich aus bestätigten Settlement-/Eventergebnissen verändern.
    - Auswirkungen auf Eventchancen, Kosten und Risiko datengetrieben ableiten.
+   - Persistenten District-State mit Replay, Idempotenz und Save/Recovery von Anfang an vorsehen.
 
 2. **Immobilien-Ausbaupfade**
    - Schallschutz, Strom, Fluchtwege, Deko, Bühne, Bar, Lager und Sicherheitsraum mit Leveln, Kosten und Effekten versehen.
@@ -170,8 +176,9 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
    - satirische Titel wie `Lärmadel`, `Bunkerbaron`, `Kabelkönig`, `Pegelpapst` oder `Nachtminister` vergeben.
    - Animation nur als Darstellung; Reduced Motion erhält vollständige statische Information.
 
-4. Native GitHub-Branch-Protection/Ruleset aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist.
-5. `0.9 Network / Telegram Sync` als getrennten Server-/Transportvertrag planen.
+4. Hochwertigen Berlin-Kartenrenderer erst an stabilen District-/Property-State anbinden.
+5. Native GitHub-Branch-Protection/Ruleset aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist.
+6. `0.9 Network / Telegram Sync` als getrennten Server-/Transportvertrag planen.
 
 ---
 
@@ -181,6 +188,7 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 - [x] reproduzierbaren vollständigen Event-/Incident-/Settlement-Replay-Beleg mit exaktem Head, CI-Runs und Safe-Merge-Provenienz in `reports/SETTLEMENT_VALIDATION_0.8.3-C.json` festgeschrieben.
 - [x] A4 übersetzt die kanonischen Event-Blocker-IDs in sichtbare Hilfetexte, berechnet die Gates aber niemals neu.
 - [x] fehlenden State bei gültigem Snapshot am Journal-Head als echte Recovery statt falschem `healthy` regressionsgetestet.
+- [x] finalen Release-Receipt `reports/RELEASE_0.8.4-alpha.1.json` mit innerem Spiel-ZIP-Hash und äußerem GitHub-Artefakt-Digest getrennt dokumentiert.
 - [ ] Repository Health um Abschlussabgleich gemergter Meilensteine zwischen Status/TODO/README erweitern.
 - [ ] A3 Event-/Incident-Blocker-IDs später ebenfalls über denselben sichtbaren Hilfetextvertrag darstellen, ohne Regeln neu zu berechnen.
 - [ ] gemeinsames versioniertes Spielszenario `Planung → Beschaffung → Krise → Abrechnung → Neustart` nach der Release-Abnahme in beide Gesamtbeschreibungen aufnehmen.
