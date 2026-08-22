@@ -2,9 +2,9 @@
 
 ## Zweck
 
-0.8.3-C schließt den fachlichen Event-Loop. Ein Event darf erst von `settlement` nach `completed` wechseln, wenn alle bereits bestätigten Incident-Folgen genau einmal verarbeitet und gemeinsam dauerhaft geschrieben wurden.
+0.8.3-C schließt den fachlichen Event-Loop. Ein Event darf erst von `settlement` nach `completed` wechseln, wenn alle bereits bestätigten Folgen genau einmal verarbeitet und gemeinsam dauerhaft geschrieben wurden.
 
-Der Settlement-Service erfindet keine neuen Krisenfolgen. Seine einzige Quelle ist `IncidentState.pending_settlement`.
+Der Settlement-Service erfindet keine neuen Krisenfolgen. Falls ein Event Incidents hatte, ist `IncidentState.pending_settlement` die einzige Quelle dieser Folgen. Ein vollkommen krisenfreies Event ist ebenfalls gültig: Fehlt vor dem Settlement noch ein `incidents`-Block, wird fachlich ein leerer `IncidentState(event_id=<event>)` angenommen.
 
 ## Verbindlicher Ablauf
 
@@ -12,8 +12,8 @@ Der Settlement-Service erfindet keine neuen Krisenfolgen. Seine einzige Quelle i
 Event.phase = settlement
 + EconomyState vorhanden
 + CharacterState vorhanden
-+ IncidentState.active = null
-+ pending_settlement bestätigt
++ optional IncidentState (fehlend = leer)
++ kein aktiver Incident
         ↓
 SettlementService.complete(...)
         ↓
@@ -54,9 +54,21 @@ Ein Endbudget unter `0` ist in 0.8.3-C1 nicht erlaubt. Eine spätere Schulden-/F
 
 ### Ruf
 
-`reputation_delta` wird über den neuen Journaltyp `character.reputation_changed` angewandt. Der Replay-Vertrag prüft `old + delta = new` und den bestätigten Ausgangswert.
+`reputation_delta` wird über den Journaltyp `character.reputation_changed` angewandt. Der kanonische Character-/Ranking-Vertrag verlangt nichtnegative Reputation. Deshalb gilt:
 
-Der Settlement-Character muss dem Event als Crewmitglied zugeordnet sein. So kann ein Eventabschluss nicht versehentlich den falschen Character verändern.
+```text
+new_reputation = max(0, old_reputation + reputation_delta)
+```
+
+Der Journalrecord bewahrt trotzdem den vollständigen bestätigten Delta-Wert auf. Recovery prüft den Ausgangswert und berechnet denselben Floor deterministisch erneut. Dadurch können negative Krisenfolgen Ruf bis `0` senken, aber keinen Zustand erzeugen, den die bestehende Ranking-Projektion nicht darstellen kann.
+
+Der Settlement-Character muss dem Event als Crewmitglied zugeordnet sein. Ist im aufrufenden `JournalContext` bereits eine `character_id` gesetzt, muss sie exakt passen.
+
+## Biografie-Zuordnung
+
+Ein bestätigter Eventabschluss erzeugt genau einen `character.biography_entry_added`-Record der Kategorie `event`. Der Settlement-Service setzt für den gesamten atomaren Commit die bestätigte Character-ID als Top-Level-`character_id`. Dadurch kann `build_biography_projection(...)` den Eintrag eindeutig dem Character zuordnen.
+
+Sichtbare Texte verwenden die bereits katalogisierten Biography-Keys; der Payload enthält zusätzlich Event-ID, Incident-Anzahl und die bestätigten Settlement-Deltas als Platzhalterdaten.
 
 ## Stabilität und Heat
 
@@ -75,12 +87,12 @@ Damit bleibt die Scope-Grenze von 0.8.3-B2 erhalten:
 
 Nach erfolgreichem Settlement:
 
-- `IncidentState.history` bleibt byte-/inhaltsgleich,
+- `IncidentState.history` bleibt inhaltsgleich,
 - `active` bleibt `null`,
 - alle fünf Werte in `pending_settlement` werden auf `0` gesetzt,
 - die Incident-Revision steigt exakt um `1`.
 
-`SettlementState.incident_ids` hält fest, welche Incident-Historie dem Abschluss zugrunde lag.
+Bei einem Event ohne vorherigen Incident startet der leere Incident-State bei Revision `0` und wird durch den abgeschlossenen Settlement-Receipt zu Revision `1`. `SettlementState.incident_ids` bleibt dann leer.
 
 ## Eventabschluss
 
@@ -100,12 +112,12 @@ und abschließend `event.completed`.
 Beim Replay gilt dieselbe Reihenfolge wie beim Commit:
 
 1. Economy-Replay stellt Ledger + neues Budget her.
-2. Character-Replay stellt Stress und Ruf her.
+2. Character-Replay stellt Stress und Ruf einschließlich Ruf-Floor her.
 3. Event-Phasenreplay stellt `completed` her.
 4. `event.completed` prüft diese Zwischenresultate gegen den Settlement-Receipt.
 5. Erst dann werden `pending_settlement` geleert und `SettlementState` eingesetzt.
 
-Bei widersprüchlichen Revisionen, Event-IDs, Character-IDs, Budgetwerten, Stress-/Rufwerten oder Incident-Folgen bricht Recovery fail-closed ab.
+Fehlt beim Recovery eines krisenfreien Events ein Incident-State, wird derselbe leere Ausgangszustand wie beim normalen Commit verwendet. Bei widersprüchlichen Revisionen, Event-IDs, Character-IDs, Budgetwerten, Stress-/Rufwerten oder Incident-Folgen bricht Recovery fail-closed ab.
 
 ## Idempotenz
 
@@ -114,11 +126,8 @@ Die Event-ID `<command_id>:completed` ist der kanonische Abschlussmarker.
 - gleiche Command-ID + gleicher Abschlussrequest → idempotenter Replay,
 - gleiche Command-ID + anderer Request → Fehler,
 - falsche `entity_id` → Fehler, auch beim Replay,
+- gesetzte falsche `character_id` → Fehler,
 - zweites fachliches Settlement desselben Saves → Fehler.
-
-## Biografie
-
-Ein bestätigter Eventabschluss erzeugt genau einen `character.biography_entry_added`-Record der Kategorie `event`. Sichtbare Texte verwenden die bereits katalogisierten Biography-Keys; der Journalrecord enthält zusätzlich Event-ID, Incident-Anzahl und die bestätigten Settlement-Deltas als Platzhalterdaten.
 
 ## Nicht Bestandteil von 0.8.3-C
 
