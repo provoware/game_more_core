@@ -55,8 +55,12 @@ class CharacterState:
             raise ValueError("Energie außerhalb 0..100")
         if isinstance(self.stress, bool) or not isinstance(self.stress, int) or not RESOURCE_MIN <= self.stress <= RESOURCE_MAX:
             raise ValueError("Stress außerhalb 0..100")
-        if isinstance(self.reputation, bool) or not isinstance(self.reputation, int) or self.reputation < 0:
-            raise ValueError("Reputation muss eine nichtnegative Ganzzahl sein")
+        # Legacy-Kompatibilität: Vor 0.8.3-C waren signierte Rufwerte im
+        # Character-Schema gültig. Der allgemeine Loader muss solche Saves
+        # weiterhin lesen können; nur neu erzeugte Settlement-Ergebnisse
+        # werden auf den kanonischen Ranking-Floor 0 normalisiert.
+        if isinstance(self.reputation, bool) or not isinstance(self.reputation, int):
+            raise ValueError("Reputation muss Ganzzahl sein")
 
     def to_dict(self) -> dict[str, Any]:
         self.validate()
