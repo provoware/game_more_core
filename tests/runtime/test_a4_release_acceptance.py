@@ -144,7 +144,6 @@ class A4ReleaseAcceptanceTests(unittest.TestCase):
         expected = _json_get(http.base + "/api/state")["state"]
         self.assertEqual(expected["event"]["phase"], "completed")
         http.close()
-        self._cleanups.pop()  # remove the already executed http.close cleanup
 
         restarted = A4ClientRuntime(save_dir)
         self.assertIsNone(restarted.startup_recovery)
