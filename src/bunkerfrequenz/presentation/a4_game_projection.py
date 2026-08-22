@@ -9,6 +9,7 @@ from bunkerfrequenz.domain.economy import EconomyState
 from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.incident import IncidentState
 from bunkerfrequenz.domain.settlement import SettlementState
+from bunkerfrequenz.presentation.district_projection import build_living_district_projection
 
 
 def _incident_catalog_projection(catalog: Mapping[str, Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -37,25 +38,30 @@ def build_a4_game_projection(
     state: Mapping[str, Any] | None,
     *,
     incident_catalog: Mapping[str, Mapping[str, Any]],
+    district_manifest: Mapping[str, Any] | None = None,
+    city_map_manifest: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build a read-only A4 game projection from confirmed state blocks.
 
-    Event button availability delegates to EventExecutionService. This module
-    never changes state and never re-implements transition/prerequisite rules.
+    Event button availability delegates to EventExecutionService. Districts
+    delegate to their read-only projection; this module never writes state.
     """
+    if (district_manifest is None) != (city_map_manifest is None):
+        raise ValueError("district_manifest und city_map_manifest müssen gemeinsam gesetzt werden")
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.5-b1",
+        "view_model_version": "0.8.5-d1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
-            for key in ("character", "event", "economy", "incidents", "settlement")
+            for key in ("character", "event", "economy", "incidents", "settlement", "districts")
         },
         "character": None,
         "event": None,
         "economy": None,
         "incidents": None,
         "settlement": None,
+        "districts": None,
         "incident_catalog": _incident_catalog_projection(incident_catalog),
     }
 
@@ -132,5 +138,15 @@ def build_a4_game_projection(
     if "settlement" in raw:
         settlement = SettlementState.from_dict(raw["settlement"])
         projection["settlement"] = settlement.to_dict()
+
+    if district_manifest is not None and city_map_manifest is not None:
+        raw_districts = raw.get("districts")
+        if raw_districts is not None and not isinstance(raw_districts, Mapping):
+            raise ValueError("Persistierter District-State muss ein Mapping sein")
+        projection["districts"] = build_living_district_projection(
+            raw_districts,
+            district_manifest=district_manifest,
+            city_map_manifest=city_map_manifest,
+        )
 
     return projection
