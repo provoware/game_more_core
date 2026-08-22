@@ -16,13 +16,20 @@ INCIDENTS = json.loads((ROOT / "manifests" / "INCIDENT_MANIFEST.json").read_text
 ALLOWED = set(JOURNAL["event_types"])
 
 
-def context(command_id: str, *, event_id: str = "event-a4") -> JournalContext:
+def context(
+    command_id: str,
+    *,
+    event_id: str = "event-a4",
+    entity_type: str = "event",
+    entity_id: str | None = None,
+) -> JournalContext:
+    resolved_entity_id = entity_id or ("player-local" if entity_type == "character" else event_id)
     return JournalContext(
         "2026-08-22T14:00:00+02:00",
         "session-a4",
         "player-local",
-        "event",
-        event_id,
+        entity_type,
+        resolved_entity_id,
         command_id,
         "a4-test",
         "0.8.4-a1",
@@ -80,6 +87,12 @@ class GameClientSessionTests(unittest.TestCase):
     def dispatch(self, command):
         return self.session.dispatch(command, context=context(command["command_id"]))
 
+    def profile_dispatch(self, command):
+        return self.session.dispatch(
+            command,
+            context=context(command["command_id"], entity_type="character"),
+        )
+
     def create_base(self):
         created = self.dispatch({
             "type": "event.create",
@@ -103,6 +116,49 @@ class GameClientSessionTests(unittest.TestCase):
         })
         self.assertEqual((result.status, result.error_code), ("rejected", "unexpected_command_fields"))
         self.assertEqual(self.kernel.read_records(), ())
+
+    def test_profile_update_uses_character_context_preserves_other_blocks_and_is_idempotent(self):
+        self.create_base()
+        before = self.session.read_state()
+        command = {
+            "type": "profile.update",
+            "command_id": "profile-personalize",
+            "changes": {
+                "display_name": "Pppoppi",
+                "alias": "Pegelpilot",
+                "additional_nicknames": ["Kabelkönig", "Betonkind"],
+                "motto": "Bass bleibt an",
+            },
+        }
+        first = self.profile_dispatch(command)
+        record_count = len(self.kernel.read_records())
+        second = self.profile_dispatch(command)
+
+        self.assertEqual(first.status, "confirmed")
+        self.assertEqual(first.committed_event_ids, ("profile-personalize:profile",))
+        self.assertEqual(second.status, "confirmed")
+        self.assertTrue(second.idempotent_replay)
+        self.assertEqual(second.committed_event_ids, ())
+        self.assertEqual(len(self.kernel.read_records()), record_count)
+
+        confirmed = self.session.read_state()
+        self.assertEqual(confirmed["character"]["display_name"], "Pppoppi")
+        self.assertEqual(confirmed["character"]["alias"], "Pegelpilot")
+        self.assertEqual(confirmed["character"]["additional_nicknames"], ["Kabelkönig", "Betonkind"])
+        self.assertEqual(confirmed["character"]["motto"], "Bass bleibt an")
+        self.assertEqual(confirmed["event"], before["event"])
+        self.assertEqual(confirmed["economy"], before["economy"])
+        self.assertEqual(self.kernel.read_records()[-1]["event_type"], "character.profile_updated")
+
+    def test_profile_update_rejects_event_context_before_write(self):
+        before_records = self.kernel.read_records()
+        result = self.dispatch({
+            "type": "profile.update",
+            "command_id": "wrong-profile-context",
+            "changes": {"display_name": "Falsch"},
+        })
+        self.assertEqual((result.status, result.error_code), ("rejected", "invalid_character_context"))
+        self.assertEqual(self.kernel.read_records(), before_records)
 
     def test_full_client_command_path_uses_canonical_services(self):
         self.create_base()

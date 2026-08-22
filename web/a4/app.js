@@ -75,15 +75,35 @@ function setHidden(id, hidden) {
   $(id).classList.toggle("hidden", hidden);
 }
 
+function setInputIfIdle(id, value) {
+  const input = $(id);
+  if (document.activeElement !== input) input.value = value ?? "";
+}
+
+function renderProfile(character) {
+  if (!character) return;
+  setInputIfIdle("profile-display-name", character.display_name);
+  setInputIfIdle("profile-alias", character.alias);
+  setInputIfIdle("profile-nicknames", (character.additional_nicknames || []).join(", "));
+  setInputIfIdle("profile-motto", character.motto);
+  $("profile-level").textContent = String(character.level);
+  $("profile-reputation").textContent = String(character.reputation);
+  $("profile-energy").textContent = String(character.energy);
+  $("profile-stress").textContent = String(character.stress);
+  $("profile-id").textContent = character.character_id;
+}
+
 function render() {
   const p = state.projection || {};
   const event = p.event;
   setHidden("first-run", Boolean(p.character));
+  setHidden("profile-panel", !p.character);
   setHidden("event-panel", !event);
   setHidden("economy-panel", !p.economy);
   setHidden("incident-panel", !event || !["live", "crisis"].includes(event.phase));
   setHidden("settlement-panel", !event || !["settlement", "completed"].includes(event.phase));
 
+  renderProfile(p.character);
   $("phase-badge").textContent = event ? event.phase.toUpperCase() : "NOCH KEIN EVENT";
   if (!event) return;
 
@@ -262,6 +282,23 @@ $("new-game").addEventListener("click", async () => {
   } catch (error) {
     log(`First Run ABGEWIESEN – ${error.message}`);
   }
+});
+
+$("save-profile").addEventListener("click", () => {
+  const nicknames = $("profile-nicknames").value
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+  sendCommand({
+    type: "profile.update",
+    command_id: commandId("profile-update"),
+    changes: {
+      display_name: $("profile-display-name").value.trim(),
+      alias: $("profile-alias").value.trim(),
+      additional_nicknames: nicknames,
+      motto: $("profile-motto").value.trim()
+    }
+  });
 });
 
 $("checkpoint").addEventListener("click", async () => {

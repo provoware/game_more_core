@@ -45,7 +45,7 @@ def build_a4_game_projection(
     """
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.4-a1",
+        "view_model_version": "0.8.5-b1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
@@ -65,6 +65,8 @@ def build_a4_game_projection(
             "character_id": character.character_id,
             "display_name": character.display_name,
             "alias": character.alias,
+            "additional_nicknames": list(character.additional_nicknames),
+            "motto": character.motto,
             "level": character.level,
             "energy": character.energy,
             "stress": character.stress,

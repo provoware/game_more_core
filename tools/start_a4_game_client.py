@@ -65,8 +65,6 @@ def _prepare_save_dir(save_dir: Path) -> Path:
     resolved = save_dir.expanduser().resolve()
     try:
         resolved.mkdir(parents=True, exist_ok=True)
-        # A real write probe catches read-only or otherwise unusable targets before
-        # the first gameplay command. It is temporary and never becomes game state.
         with tempfile.NamedTemporaryFile(prefix=".a4-write-probe-", dir=resolved):
             pass
     except OSError as exc:
@@ -153,13 +151,19 @@ class A4ClientRuntime:
                 incident_catalog=self.incident_catalog,
             )
 
-    def _context(self, command_id: str, event_id: str, character_id: str | None) -> JournalContext:
+    def _context(
+        self,
+        command_id: str,
+        entity_type: str,
+        entity_id: str,
+        character_id: str | None,
+    ) -> JournalContext:
         return JournalContext(
             datetime.now().astimezone().isoformat(timespec="seconds"),
             self.session_id,
             character_id or "player-local",
-            "event",
-            event_id,
+            entity_type,
+            entity_id,
             command_id,
             "a4-local-client",
             self.game_version,
@@ -216,7 +220,9 @@ class A4ClientRuntime:
                 }
                 create_result = self.session.dispatch(
                     create_command,
-                    context=self._context(create_command["command_id"], event_id, character.character_id),
+                    context=self._context(
+                        create_command["command_id"], "event", event_id, character.character_id
+                    ),
                 )
                 if create_result.status != "confirmed":
                     return self._command_payload(create_result)
@@ -230,7 +236,9 @@ class A4ClientRuntime:
                 }
                 economy_result = self.session.dispatch(
                     economy_command,
-                    context=self._context(economy_command["command_id"], event_id, character.character_id),
+                    context=self._context(
+                        economy_command["command_id"], "event", event_id, character.character_id
+                    ),
                 )
                 return self._command_payload(economy_result)
 
@@ -239,19 +247,28 @@ class A4ClientRuntime:
     def command(self, command: dict) -> dict:
         with self.lock:
             state = self.session.read_state()
-            event = state.get("event")
             character = state.get("character")
-            if not isinstance(event, dict):
-                return {"status": "rejected", "error_code": "event_missing", "state": self.projection()}
-            event_id = event.get("event_id")
-            character_id = character.get("character_id") if isinstance(character, dict) else None
             command_id = command.get("command_id")
             if not isinstance(command_id, str) or not command_id.strip():
                 return {"status": "rejected", "error_code": "invalid_command_id", "state": self.projection()}
-            result = self.session.dispatch(
-                command,
-                context=self._context(command_id, str(event_id), character_id),
-            )
+            if not isinstance(character, dict):
+                return {"status": "rejected", "error_code": "character_missing", "state": self.projection()}
+            character_id = character.get("character_id")
+            if not isinstance(character_id, str) or not character_id:
+                return {"status": "rejected", "error_code": "character_missing", "state": self.projection()}
+
+            if command.get("type") == "profile.update":
+                context = self._context(command_id, "character", character_id, character_id)
+            else:
+                event = state.get("event")
+                if not isinstance(event, dict):
+                    return {"status": "rejected", "error_code": "event_missing", "state": self.projection()}
+                event_id = event.get("event_id")
+                if not isinstance(event_id, str) or not event_id:
+                    return {"status": "rejected", "error_code": "event_missing", "state": self.projection()}
+                context = self._context(command_id, "event", event_id, character_id)
+
+            result = self.session.dispatch(command, context=context)
             return self._command_payload(result)
 
     def checkpoint(self) -> dict:
@@ -276,7 +293,7 @@ class A4ClientRuntime:
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.4-a1"
+    server_version = "BunkerfrequenzA4/0.8.5-b1"
 
     @property
     def runtime(self) -> A4ClientRuntime:
@@ -354,7 +371,6 @@ class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
         self._json(200 if result.get("status") == "confirmed" else 422, result)
 
     def log_message(self, format: str, *args) -> None:
-        # Keep the local console useful without echoing request bodies.
         super().log_message(format, *args)
 
 
