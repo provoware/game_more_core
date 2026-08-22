@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Mapping
 
+from bunkerfrequenz.application.district_service import DistrictService
 from bunkerfrequenz.application.economy_service import EconomyService
 from bunkerfrequenz.application.event_execution_service import EventExecutionService
 from bunkerfrequenz.application.event_state_service import EventStateService
@@ -48,7 +49,8 @@ class GameClientSession:
     """Thin write adapter for the local A4 client.
 
     It owns no gameplay rules. Persistent commands are delegated to canonical
-    Profile/Street/Event/Economy/Incident/Settlement application services.
+    Profile/Street/Event/Economy/Incident/Settlement/District application services.
+    District metrics are never accepted directly from the client.
     """
 
     def __init__(
@@ -59,6 +61,8 @@ class GameClientSession:
         incident_contract_version: str,
         street_manifest: Mapping[str, Any] | None = None,
         street_world_seed: str | None = None,
+        district_manifest: Mapping[str, Any] | None = None,
+        city_map_manifest: Mapping[str, Any] | None = None,
     ) -> None:
         if not incident_catalog:
             raise ValueError("incident_catalog darf nicht leer sein")
@@ -66,10 +70,17 @@ class GameClientSession:
             raise ValueError("incident_contract_version fehlt")
         if (street_manifest is None) != (street_world_seed is None):
             raise ValueError("street_manifest und street_world_seed müssen gemeinsam gesetzt werden")
+        if (district_manifest is None) != (city_map_manifest is None):
+            raise ValueError("district_manifest und city_map_manifest müssen gemeinsam gesetzt werden")
         self.persistence = persistence
         self.profile = CharacterProfileService(persistence)
         self.street = StreetEncounterService(persistence, street_manifest) if street_manifest is not None else None
         self.street_world_seed = street_world_seed
+        self.district = (
+            DistrictService(persistence, district_manifest, city_map_manifest)
+            if district_manifest is not None and city_map_manifest is not None
+            else None
+        )
         self.event_state = EventStateService(persistence)
         self.event_execution = EventExecutionService(self.event_state)
         self.economy = EconomyService(persistence)
@@ -205,7 +216,18 @@ class GameClientSession:
                 return self._confirmed(result.committed_event_ids, result.idempotent_replay)
 
             result = self.settlement.complete(context=context)
-            return self._confirmed(result.committed_event_ids, result.idempotent_replay)
+            committed = list(result.committed_event_ids)
+            overall_replay = result.idempotent_replay
+            metadata: dict[str, Any] = {}
+            if self.district is not None:
+                district_result = self.district.apply_confirmed_settlement(
+                    context=replace(context, command_id=f"{command_id}:district")
+                )
+                committed.extend(district_result.committed_event_ids)
+                overall_replay = overall_replay and district_result.idempotent_replay
+                metadata["district"] = deepcopy(district_result.metadata)
+                metadata["district"]["applied"] = district_result.applied
+            return self._confirmed(tuple(committed), overall_replay, metadata=metadata or None)
         except PersistenceError as exc:
             return self._rejected("persistence_error", str(exc))
         except (ValueError, KeyError, TypeError) as exc:
@@ -253,19 +275,27 @@ class GameClientSession:
             world_seed=self.street_world_seed,
             journal_context=context,
         )
-        return self._confirmed(
-            result.committed_event_ids,
-            result.idempotent_replay,
-            metadata={
-                "street_encounter": {
-                    "encounter_id": result.encounter_id,
-                    "polarity": result.polarity,
-                    "title_key": result.title_key,
-                    "body_key": result.body_key,
-                    "effects": deepcopy(result.effects),
-                }
-            },
-        )
+        committed = list(result.committed_event_ids)
+        overall_replay = result.idempotent_replay
+        metadata: dict[str, Any] = {
+            "street_encounter": {
+                "encounter_id": result.encounter_id,
+                "polarity": result.polarity,
+                "title_key": result.title_key,
+                "body_key": result.body_key,
+                "effects": deepcopy(result.effects),
+            }
+        }
+        if self.district is not None:
+            district_result = self.district.apply_confirmed_street_encounter(
+                source_event_id=f"{command_id}:001",
+                context=replace(context, command_id=f"{command_id}:district"),
+            )
+            committed.extend(district_result.committed_event_ids)
+            overall_replay = overall_replay and district_result.idempotent_replay
+            metadata["district"] = deepcopy(district_result.metadata)
+            metadata["district"]["applied"] = district_result.applied
+        return self._confirmed(tuple(committed), overall_replay, metadata=metadata)
 
     def _confirmed_event(self) -> EventState:
         state = self.persistence.load_state() or {}

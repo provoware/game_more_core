@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from bunkerfrequenz.application.district_recovery import replay_district_event
 from bunkerfrequenz.application.economy_service import replay_economy_event
 from bunkerfrequenz.application.event_state_service import replay_event_state_event
 from bunkerfrequenz.application.incident_service import replay_incident_event
@@ -13,7 +14,8 @@ def replay_game_event(derived_state: dict, record: dict) -> dict:
     state = replay_event_state_event(state, record)
     state = replay_economy_event(state, record)
     state = replay_incident_event(state, record)
-    return replay_settlement_event(state, record)
+    state = replay_settlement_event(state, record)
+    return replay_district_event(state, record)
 
 
 class GameRecoveryService:

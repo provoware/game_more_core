@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "version": "0.8.5-d1",
+  "state_block": "districts",
+  "city_map_manifest_version": "0.8.3-b2-foundation",
+  "metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
+  "bounds": {"minimum": 0, "maximum": 100},
+  "source_policy": {
+    "confirmed_settlement_only": true,
+    "confirmed_street_encounter_only": true,
+    "unknown_location_policy": "no_op_not_applied",
+    "client_metric_writes": false,
+    "system_time_as_authority": false
+  },
+  "location_district_aliases": {
+    "loc-a4-demo": "friedrichshain"
+  },
+  "settlement_mapping": {
+    "heat_direct": true,
+    "prestige_from_reputation_bps": 10000,
+    "police_from_positive_heat_bps": 5000,
+    "police_relief_from_positive_stability_bps": 2500,
+    "scene_from_reputation_bps": 5000,
+    "scene_from_stability_bps": 5000
+  },
+  "street_mapping": {
+    "positive": {"heat": 0, "prestige": 1, "police_pressure": 0, "scene_activity": 2},
+    "neutral": {"heat": 0, "prestige": 0, "police_pressure": 0, "scene_activity": 0},
+    "negative": {"heat": 1, "prestige": 0, "police_pressure": 1, "scene_activity": -1}
+  },
+  "journal_event_type": "world.district_effect_applied",
+  "recovery": {
+    "payload_contains_full_confirmed_state": true,
+    "source_ids_are_idempotent": true,
+    "combined_game_recovery": true
+  }
+}
