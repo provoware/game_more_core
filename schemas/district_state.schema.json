@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://provoware.local/schemas/district_state.schema.json",
+  "title": "BUNKERFREQUENZ DistrictState",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "revision", "metrics", "applied_sources", "last_change"],
+  "properties": {
+    "contract_version": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 0},
+    "metrics": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/metrics"}
+    },
+    "applied_sources": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "last_change": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source_type", "source_id", "district_id", "deltas"],
+          "properties": {
+            "source_type": {"enum": ["settlement", "street"]},
+            "source_id": {"type": "string", "minLength": 1},
+            "district_id": {"type": "string", "minLength": 1},
+            "deltas": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["heat", "prestige", "police_pressure", "scene_activity"],
+              "properties": {
+                "heat": {"type": "integer"},
+                "prestige": {"type": "integer"},
+                "police_pressure": {"type": "integer"},
+                "scene_activity": {"type": "integer"}
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heat", "prestige", "police_pressure", "scene_activity"],
+      "properties": {
+        "heat": {"type": "integer", "minimum": 0, "maximum": 100},
+        "prestige": {"type": "integer", "minimum": 0, "maximum": 100},
+        "police_pressure": {"type": "integer", "minimum": 0, "maximum": 100},
+        "scene_activity": {"type": "integer", "minimum": 0, "maximum": 100}
+      }
+    }
+  }
+}
