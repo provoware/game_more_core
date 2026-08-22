@@ -7,7 +7,7 @@
 **Techno-/FreeTekno-Crew-RPG · Character Forge · Event-Management · Bunker-Entwicklung**
 
 <p>
-  <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
+  <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
   <img alt="Character Forge 0.7.2 validiert" src="https://img.shields.io/badge/Character_Forge-0.7.2_validiert-7dff00">
   <img alt="Economy 0.8.2 remote validiert" src="https://img.shields.io/badge/Economy-0.8.2_remote_validiert-f2c744">
   <img alt="Event Actions 0.8.3 A validiert" src="https://img.shields.io/badge/Event_Actions-0.8.3--A_validiert-00c2ff">
@@ -30,15 +30,15 @@
 
 | | Aktueller Stand |
 |---|---|
-| **Runtime-Baseline** | `0.5.2-alpha.1` |
+| **Runtime-Baseline** | `0.8.4-alpha.1` |
 | **Letzte remote validierte Feature-Stufe** | `0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery` |
 | **0.8.4-Abnahme** | PR #69 · Head `3d61e9d6385a...` · Runtime Core `32575062624`, Presentation Core `32575062602`, Repository Health `32575062620` grün · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `28459c197489...` |
-| **Nächster Pflichtblock** | **Release-Abnahme** aus frischem Checkout; erst danach Version + reproduzierbares Artefakt |
+| **Release-Abnahme** | PR #72 · Head `7fe1a39c6b69...` · Runtime Core `32576362896`, Presentation Core `32576362890`, Repository Health `32576362810`, Release Acceptance `32576362827` grün · `SAFE MERGE PASS` · Merge `72bb30242727...` |
+| **Aktiver Release-Kandidat** | `0.8.4-alpha.1` · reproduzierbares ZIP + SHA-256 + entpackter Paket-Smoke auf PR #73 |
 | **0.8.3-A** | 8 kanonische Event-Aktionen und zentrale Blocker-/Voraussetzungslogik |
 | **0.8.3-B** | Crisis Engine + Berlin Ops Map Foundation |
 | **0.8.3-C** | atomare Abrechnung, Budget/Stress/Ruf, Biografie, `event.completed`, Recovery |
 | **0.8.4** | lokaler schreibender A4-Client, First Run, kompletter Event-Smoke, Save/Restart/Recovery |
-| **Weg zum ersten spielbaren Release** | `frischer Checkout/Klickstart → Fehlerpfade → Release-Evidence → Version → reproduzierbares Paket` |
 | **Character Forge** | schreibender A4-Client + A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
 | **Persistenz** | append-only Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo; fehlender State bei gültigem Head-Snapshot regressionsgehärtet |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
@@ -46,20 +46,20 @@
 | **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert |
 
 > [!IMPORTANT]
-> `VERSION.json` bezeichnet die letzte **versionierte Runtime-Baseline**. Feature-Meilensteine können weiter sein und werden getrennt in `PROJEKTSTATUS.json` und `TODO.md` geführt. Der 0.8.4-Merge erhöht die Produktversion bewusst noch nicht; das geschieht erst nach der Release-Abnahme.
+> `0.8.4-alpha.1` ist die erste lokal spielbare Runtime-Baseline. Sie wurde erst nach der separaten frischen-Checkout-Release-Abnahme festgelegt. Der Release-PR muss zusätzlich das reproduzierbare Paket samt SHA-256 und den entpackten Paket-Smoke auf seinem finalen Head bestätigen.
 
 ---
 
-## 🚦 Was bis zum Release noch fehlt
+## 🚦 Release-Status
 
-Der fachliche Event-Loop **und der kleinste schreibende A4-Client** sind jetzt vollständig remote validiert. Auch der automatisierte End-to-End-Pfad `First Run → Event → Equipment → optionale Krise → Settlement → Snapshot → Neustart → Recovery → identischer Zustand` ist Bestandteil der Runtime-Abnahme.
+Der fachliche Event-Loop **und der kleinste schreibende A4-Client** sind vollständig remote validiert. Die separate Release-Abnahme aus einem frischen Checkout ist ebenfalls abgeschlossen: realer Launcherprozess, freie Portwahl, Fehlerpfade, Save/Restart und Recovery sind geprüft.
 
-Für das erste **spielbare Alpha-Release** bleibt deshalb nur noch die Release-Qualifikation:
+Für `0.8.4-alpha.1` läuft deshalb nur noch die Paket-/Merge-Qualifikation:
 
-1. **Frischer Checkout / Klickstart:** lokalen A4-Client aus einer sauberen Umgebung mit dem dokumentierten Startbefehl prüfen, einschließlich Browserstart, alternativem freien Port und sauberem Stoppen.
-2. **Fehler- und Recovery-Abnahme:** verständliche Fehlertexte für fehlende Dateien, belegten Port und nicht beschreibbaren Save-Pfad sowie einen kontrollierten Recovery-Fall prüfen.
-3. **Release-Evidence:** Quell-Commit/Tree, Python-Version, Gate-Runs, Smoke-Ergebnis und Paket-Hash reproduzierbar festhalten.
-4. **Erst danach versionieren und paketieren:** `VERSION.json`, Release Notes und reproduzierbares ZIP/Artefakt erst nach grüner Abnahme festlegen.
+1. **Byte-reproduzierbares ZIP:** derselbe Source-Head muss zweimal exakt dieselben ZIP-Bytes erzeugen.
+2. **SHA-256:** Paket und Sidecar müssen denselben Digest bestätigen.
+3. **Entpackter Paket-Smoke:** `START_BUNKERFREQUENZ.sh` aus einem frischen Zielordner starten, First Run bis `completed` ausführen und Checkpoint bestätigen.
+4. **Finaler Release-Head:** Runtime Core, Presentation Core, Repository Health, Release Acceptance und Release Package müssen gemeinsam grün sein; danach ausschließlich `/safe-merge`.
 
 **Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau, Hall-of-Tribute-Saisons und native GitHub-Branch-Protection.
 
@@ -369,13 +369,19 @@ Start-/Spielanleitung: [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLE
 ### Schreibenden A4-Game-Client starten
 
 ```bash
+./START_BUNKERFREQUENZ.sh
+```
+
+Alternativ direkt über Python:
+
+```bash
 python3 tools/start_a4_game_client.py
 ```
 
 Bei einem belegten Port bzw. für automatische freie Portwahl:
 
 ```bash
-python3 tools/start_a4_game_client.py --port 0
+./START_BUNKERFREQUENZ.sh --port 0
 ```
 
 Der alte schreibgeschützte Blueprint bleibt separat startbar:
@@ -520,6 +526,7 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - 0.8.3-C / PR #65: Runtime Core `32568683844`, Presentation Core `32568683898`, Repository Health `32568683863`; 0 ungelöste Review-Threads; `SAFE MERGE PASS`; Merge `5ae811333878ae67947417ccb72e791caafe4ba9`
 - Repository-Hygiene / PR #67: Runtime Core `32568910870`, Presentation Core `32568910892`, Repository Health `32568910865`; `SAFE MERGE PASS`; Merge `057b5131dfd5bfaf1c26ddd0a3e862fb52c0675f`
 - 0.8.4 A4 Game Client / PR #69: Runtime Core `32575062624`, Presentation Core `32575062602`, Repository Health `32575062620`; 0 ungelöste Review-Threads; `SAFE MERGE PASS`; Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
+- Release Acceptance / PR #72: Runtime Core `32576362896`, Presentation Core `32576362890`, Repository Health `32576362810`, Release Acceptance `32576362827`; `SAFE MERGE PASS`; Merge `72bb3024272797b27632a96559ae8abb665fff8a`
 
 </details>
 
@@ -539,6 +546,7 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - [`docs/A4_WRITING_CLIENT_0.8.4.md`](docs/A4_WRITING_CLIENT_0.8.4.md)
 - [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md)
 - [`reports/A4_CLIENT_VALIDATION_0.8.4.json`](reports/A4_CLIENT_VALIDATION_0.8.4.json)
+- [`reports/RELEASE_ACCEPTANCE_ALPHA.json`](reports/RELEASE_ACCEPTANCE_ALPHA.json)
 - [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json)
 - [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
 - [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
