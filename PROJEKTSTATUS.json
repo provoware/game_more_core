@@ -2,27 +2,27 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.6-C",
-  "status": "0_8_6_c_remote_validated_safe_merged_release_baseline_0_8_4_alpha_1",
-  "current_focus": "next_0_8_7_a_seasonal_hall_of_tribute_with_confirmed_cycle_authority",
-  "last_validated_feature_iteration": "0.8.6-C",
+  "active_iteration": "0.8.7-B",
+  "status": "0_8_7_a_remote_validated_safe_merged_0_8_7_b_control_deck_in_validation",
+  "current_focus": "control_deck_2_0_street_approaches_incident_effect_previews_and_local_ui_options",
+  "last_validated_feature_iteration": "0.8.7-A",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #85 / head 6c302ce9425b27e7a1175a1cdcf463a100fc7191 / merge 10c7d6b5e04838b07ae6899b8b76580cd87de607",
+  "validation_reference": "PR #87 / head b887f912675ed2cf5efa8eb85631ab7858721836 / merge 841258a37915e05d7f87eed7841c8e4b8d79bf46",
   "remote_validation": {
-    "status": "success_for_0.8.6_c_berlin_ops_map_pro_on_0.8.4_alpha_1_release_baseline",
-    "pull_request": 85,
-    "validated_head": "6c302ce9425b27e7a1175a1cdcf463a100fc7191",
-    "runtime_core_workflow_run": 32592128107,
-    "presentation_core_workflow_run": 32592128117,
-    "repository_health_workflow_run": 32592128103,
-    "release_acceptance_workflow_run": 32592128147,
-    "release_package_workflow_run": 32592128113,
+    "status": "success_for_0.8.7_a_seasonal_hall_on_0.8.4_alpha_1_release_baseline",
+    "pull_request": 87,
+    "validated_head": "b887f912675ed2cf5efa8eb85631ab7858721836",
+    "runtime_core_workflow_run": 32593679072,
+    "presentation_core_workflow_run": 32593679117,
+    "repository_health_workflow_run": 32593679063,
+    "release_acceptance_workflow_run": 32593679077,
+    "release_package_workflow_run": 32593679102,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "codex_review_execution": "blocked_by_external_usage_limit_not_counted_as_pass",
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "10c7d6b5e04838b07ae6899b8b76580cd87de607"
+    "merged_commit": "841258a37915e05d7f87eed7841c8e4b8d79bf46"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -41,7 +41,8 @@
     {"iteration": "0.8.5-E", "pull_request": 80, "merged_commit": "d383a3f364c6ee8cd954041f1d324e0ace0cb357", "feature": "hall_of_tribute"},
     {"iteration": "0.8.6-A", "pull_request": 82, "merged_commit": "192b3eb4ad9dc4272eafeddc8604f7265bdd30fa", "feature": "property_purchase"},
     {"iteration": "0.8.6-B", "pull_request": 83, "merged_commit": "0b301bc9004f60dbc3ce221a7c6b3e462766b5b7", "feature": "property_upgrades"},
-    {"iteration": "0.8.6-C", "pull_request": 85, "merged_commit": "10c7d6b5e04838b07ae6899b8b76580cd87de607", "feature": "berlin_ops_map_pro"}
+    {"iteration": "0.8.6-C", "pull_request": 85, "merged_commit": "10c7d6b5e04838b07ae6899b8b76580cd87de607", "feature": "berlin_ops_map_pro"},
+    {"iteration": "0.8.7-A", "pull_request": 87, "merged_commit": "841258a37915e05d7f87eed7841c8e4b8d79bf46", "feature": "seasonal_hall_of_tribute"}
   ],
   "subsystems": {
     "character_forge": {
@@ -67,10 +68,12 @@
       "property_transactions_compensatable": false
     },
     "living_world": {
-      "status": "validated",
+      "status": "validated_with_control_deck_candidate",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
+      "street_approaches_candidate": ["balanced", "recovery", "network", "scout"],
+      "street_approaches_remote_validation_pending": true,
       "hall_of_tribute_visible": true
     },
     "properties": {
@@ -87,25 +90,26 @@
       "rent_supported": false,
       "yield_supported": false
     },
-    "presentation": {
+    "ranking": {
       "status": "remote_validated_and_safe_merged",
+      "seasonal_hall_iteration": "0.8.7-A",
+      "seasonal_hall_pull_request": 87,
+      "seasonal_hall_merge": "841258a37915e05d7f87eed7841c8e4b8d79bf46",
+      "weekly_monthly_cycles": true,
+      "system_time_sole_authority": false,
+      "fake_local_champion_titles": false
+    },
+    "presentation": {
+      "status": "validated_base_with_0.8.7_b_candidate",
       "a4_localhost_client": true,
-      "living_district_projection": true,
-      "property_projection": true,
-      "property_upgrade_projection": true,
       "high_quality_berlin_ops_renderer": true,
-      "berlin_ops_map_pro_iteration": "0.8.6-C",
-      "berlin_ops_map_pro_pull_request": 85,
-      "berlin_ops_map_pro_merge": "10c7d6b5e04838b07ae6899b8b76580cd87de607",
-      "map_districts": 8,
-      "map_locations": 12,
-      "map_filters": ["all", "owned", "prime", "hall"],
       "map_read_only": true,
-      "map_navigation": false,
-      "map_geocoding": false,
-      "map_external_service": false,
-      "map_keyboard_accessible": true,
-      "map_reduced_motion": true
+      "control_deck_2_candidate": true,
+      "sticky_hud_candidate": true,
+      "quick_navigation_candidate": true,
+      "local_ui_preferences_candidate": ["compact", "high_contrast", "large_text"],
+      "incident_effect_preview_candidate": true,
+      "browser_gameplay_authority": false
     },
     "network": {
       "telegram_transport_implemented": false,
@@ -122,11 +126,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.7-A",
-  "next_goal": "Saisonale Hall-of-Tribute-Wertungen mit bestätigter Wochen-/Monatszyklus-Autorität einführen; Systemzeit darf niemals alleinige Zyklusautorität sein und lokale Hall-Daten dürfen weiterhin keine Gegner erfinden.",
+  "next_iteration": "0.8.7-C",
+  "next_goal": "Nach validiertem Control Deck bezirksbezogene Welt-Ereignisse als reproduzierbare Instanzen auf dem persistenten DistrictState aufbauen.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-22T20:57:29+02:00"
+  "updated_at": "2026-08-22T21:21:00+02:00"
 }
