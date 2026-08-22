@@ -234,7 +234,19 @@ Standard:
 
 Die lokalen **Ansichtseinstellungen** liegen getrennt im Browser und sind kein Bestandteil des Spielstands.
 
-## 16. Was noch nicht enthalten ist
+## 16. Woran erkenne ich den geprüften Entwicklungsstand?
+
+Für Spieler ist die Produkt-Release-Baseline weiterhin `0.8.4-alpha.1`. Neue Features können bereits darüber hinaus geprüft und sicher gemergt sein, ohne dass die Produktversion sofort hochgezählt wird.
+
+Der aktuell bestätigte Feature-Stand steht in `PROJEKTSTATUS.json` unter `last_validated_feature_iteration`. Für 0.8.7-B muss dort stehen:
+
+```text
+0.8.7-B
+```
+
+Zusätzlich nennt `TODO.md` denselben Stand samt PR, grünen CI-Gates und Safe-Merge-Nachweis. Wenn diese Angaben widersprüchlich sind, gilt `PROJEKTSTATUS.json` als kanonischer Status und der Widerspruch ist ein Dokumentationsfehler – nicht automatisch ein Spielfehler.
+
+## 17. Was noch nicht enthalten ist
 
 Noch nicht Teil dieses Slices sind unter anderem:
 
@@ -244,4 +256,4 @@ Noch nicht Teil dieses Slices sind unter anderem:
 - echte Remote-Gegner ohne bestätigte Netzwerkquelle,
 - neuer Produktrelease oberhalb `0.8.4-alpha.1`.
 
-Die aktive Entwicklungsiteration ist **0.8.7-B – Control Deck & Player Choices**. Sie gilt erst nach vollständiger Remote-Abnahme und `/safe-merge` als validiert.
+**0.8.7-B – Control Deck & Player Choices** ist remote validiert und über `/safe-merge` übernommen. Als nächster Entwicklungsbaustein ist **0.8.7-C – Bezirksbezogene Welt-Ereignisse** vorbereitet.
