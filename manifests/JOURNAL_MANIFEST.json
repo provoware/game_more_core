@@ -1,40 +1,17 @@
 {
   "schema_version": 2,
-  "version": "0.8.2-alpha.1",
+  "version": "0.8.3-b1",
   "append_only": true,
-  "canonical_order_key": [
-    "sequence",
-    "event_id"
-  ],
+  "canonical_order_key": ["sequence", "event_id"],
   "hash_chain": true,
   "required_fields": [
-    "event_id",
-    "schema_version",
-    "event_type",
-    "sequence",
-    "transaction_id",
-    "timestamp_local",
-    "session_id",
-    "player_id",
-    "entity_type",
-    "entity_id",
-    "command_id",
-    "source",
-    "game_version",
-    "payload",
-    "previous_event_hash",
-    "event_hash"
+    "event_id", "schema_version", "event_type", "sequence", "transaction_id",
+    "timestamp_local", "session_id", "player_id", "entity_type", "entity_id",
+    "command_id", "source", "game_version", "payload", "previous_event_hash", "event_hash"
   ],
   "optional_fields": [
-    "timestamp_confirmed",
-    "character_id",
-    "causation_id",
-    "correlation_id",
-    "old_value",
-    "new_value",
-    "reason",
-    "compensation_for",
-    "server_sequence"
+    "timestamp_confirmed", "character_id", "causation_id", "correlation_id",
+    "old_value", "new_value", "reason", "compensation_for", "server_sequence"
   ],
   "event_types": [
     "character.profile_updated",
@@ -70,6 +47,7 @@
     "event.planning_updated",
     "event.phase_changed",
     "event.started",
+    "event.incident_started",
     "event.incident_resolved",
     "event.completed",
     "sync.local_enqueued",
@@ -83,15 +61,9 @@
     "time.anchor_confirmed"
   ],
   "undo_policy_groups": {
-    "reversible_local": [
-      "character.profile_updated",
-      "event.planning_updated",
-      "training.started"
-    ],
+    "reversible_local": ["character.profile_updated", "event.planning_updated", "training.started"],
     "compensatable_if_preconditions_hold": [
-      "inventory.item_acquired",
-      "inventory.item_removed",
-      "economy.transaction_posted"
+      "inventory.item_acquired", "inventory.item_removed", "economy.transaction_posted"
     ],
     "not_user_undoable": [
       "character.resources_changed",
@@ -106,6 +78,8 @@
       "world.location_discovered",
       "event.created",
       "event.phase_changed",
+      "event.incident_started",
+      "event.incident_resolved",
       "event.completed",
       "sync.server_confirmed",
       "system.recovery_performed",
