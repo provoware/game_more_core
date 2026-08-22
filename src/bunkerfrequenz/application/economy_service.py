@@ -69,11 +69,22 @@ class EconomyService:
         ):
             raise ValueError("price_multiplier_bps muss zwischen 1000 und 50000 liegen")
         self._validate_context(context)
+        request = {"kind": kind, "item_id": item_id, "quantity": quantity}
+        market_context = {"price_multiplier_bps": price_multiplier_bps}
         existing = self._existing(context.command_id)
         if existing is not None:
             payload = existing.get("payload", {})
-            if payload.get("request") != {"kind": kind, "item_id": item_id, "quantity": quantity}:
+            if payload.get("request") != request:
                 raise PersistenceError("Command-ID wurde mit anderer Economy-Aktion verwendet")
+            recorded_market = payload.get("market_context")
+            # Pre-0.8.5 records had no market_context and therefore mean the
+            # canonical legacy multiplier 10000. They remain replay-compatible,
+            # but may never be silently reinterpreted as another city's price.
+            if recorded_market is None:
+                if price_multiplier_bps != 10000:
+                    raise PersistenceError("Legacy-Command-ID ist an den Preisfaktor 10000 gebunden")
+            elif recorded_market != market_context:
+                raise PersistenceError("Command-ID wurde mit anderem Stadt-Preisfaktor verwendet")
             return self._current_result((), True, context=context)
 
         economy, event = self._load()
@@ -90,8 +101,8 @@ class EconomyService:
         )
         updated_event = self._resolve_event(event, updated_economy, budget_delta)
         payload = {
-            "request": {"kind": kind, "item_id": item_id, "quantity": quantity},
-            "market_context": {"price_multiplier_bps": price_multiplier_bps},
+            "request": request,
+            "market_context": market_context,
             "economy": updated_economy.to_dict(),
             "event": updated_event.to_dict(),
         }
