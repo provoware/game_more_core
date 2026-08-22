@@ -51,8 +51,10 @@ REQUIRED = (
     "manifests/PROPERTY_UPGRADE_MANIFEST.json",
     "manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json",
     "manifests/HALL_OF_TRIBUTE_MANIFEST.json",
+    "manifests/HALL_SEASON_MANIFEST.json",
     "manifests/RANKING_NETWORK_MANIFEST.json",
     "manifests/SYNC_MANIFEST.json",
+    "manifests/ZEIT_MANIFEST.json",
     "content/de/ui/street_encounters.json",
     "content/de/ui/character_forge.json",
 )
@@ -119,8 +121,10 @@ class A4ClientRuntime:
         self.property_upgrade_manifest = _load_json(ROOT / "manifests" / "PROPERTY_UPGRADE_MANIFEST.json")
         self.map_pro_manifest = _load_json(ROOT / "manifests" / "BERLIN_OPS_MAP_PRO_MANIFEST.json")
         self.hall_manifest = _load_json(ROOT / "manifests" / "HALL_OF_TRIBUTE_MANIFEST.json")
+        self.hall_season_manifest = _load_json(ROOT / "manifests" / "HALL_SEASON_MANIFEST.json")
         self.ranking_manifest = _load_json(ROOT / "manifests" / "RANKING_NETWORK_MANIFEST.json")
         self.sync_manifest = _load_json(ROOT / "manifests" / "SYNC_MANIFEST.json")
+        self.zeit_manifest = _load_json(ROOT / "manifests" / "ZEIT_MANIFEST.json")
         self.ranking_text_catalog = _load_json(ROOT / "content" / "de" / "ui" / "character_forge.json")
         self.street_texts = _load_json(ROOT / "content" / "de" / "ui" / "street_encounters.json")
         for encounter in street_manifest.get("encounters", ()):
@@ -196,6 +200,8 @@ class A4ClientRuntime:
                 ranking_manifest=self.ranking_manifest,
                 sync_manifest=self.sync_manifest,
                 ranking_text_catalog=self.ranking_text_catalog,
+                hall_season_manifest=self.hall_season_manifest,
+                zeit_manifest=self.zeit_manifest,
             )
 
     def _context(
@@ -348,7 +354,7 @@ class A4ClientRuntime:
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.6-c1"
+    server_version = "BunkerfrequenzA4/0.8.7-a1"
 
     @property
     def runtime(self) -> A4ClientRuntime:

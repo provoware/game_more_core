@@ -1,7 +1,7 @@
 "use strict";
 
 const $ = (id) => document.getElementById(id);
-const state = { projection: null, busy: false, hallMode: "reputation" };
+const state = { projection: null, busy: false, hallMode: "reputation", hallCycleType: "weekly" };
 
 const ACTION_LABELS = {
   begin_planning: "PLANUNG BEGINNEN",
@@ -29,6 +29,7 @@ const BLOCKER_LABELS = {
 
 const POLARITY_LABELS = { positive: "GLÜCK", negative: "PECH", neutral: "RUHIG" };
 const HALL_MODE_LABELS = { reputation: "RUF", level: "LEVEL", resonance: "RESONANZ" };
+const HALL_CYCLE_LABELS = { weekly: "WOCHE", monthly: "MONAT" };
 const MOVEMENT_SYMBOLS = { up: "↑", down: "↓", same: "→", new: "★", unranked: "–" };
 
 function commandId(prefix) {
@@ -206,6 +207,61 @@ function renderProperties(properties, propertyUpgrades) {
   }
 }
 
+function renderHallSeason(seasonal) {
+  const status = $("hall-season-status");
+  const titleStatus = $("hall-season-title-status");
+  titleStatus.replaceChildren();
+  for (const cycleType of ["weekly", "monthly"]) {
+    const button = $(`hall-cycle-${cycleType}`);
+    if (button) {
+      const selected = cycleType === state.hallCycleType;
+      button.classList.toggle("primary", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    }
+  }
+  if (!seasonal?.available) {
+    status.textContent = "Keine bestätigte Saison verfügbar. Ein lokaler Wochen-/Monatsanker entsteht erst aus einem bestätigten abgeschlossenen Event; Systemzeit allein zählt nicht.";
+    titleStatus.textContent = "Keine Saisontitel vergeben.";
+    return;
+  }
+  const cycle = seasonal.cycles?.[state.hallCycleType];
+  if (!cycle) {
+    status.textContent = `Für ${HALL_CYCLE_LABELS[state.hallCycleType] || state.hallCycleType} liegt kein bestätigter Zyklus vor.`;
+    titleStatus.textContent = "Keine Saisontitel vergeben.";
+    return;
+  }
+  const finalLabel = cycle.closed ? "ZYKLUS BESTÄTIGT ABGESCHLOSSEN" : "BESTÄTIGTER ANKER · NOCH NICHT FINAL";
+  status.textContent = `${HALL_CYCLE_LABELS[cycle.cycle_type]} ${cycle.cycle_id} · ${finalLabel} · Autorität ${displayId(cycle.authority)}`;
+  const modeResult = cycle.modes?.[state.hallMode];
+  if (!modeResult?.leader) {
+    titleStatus.textContent = "Für diese Metrik gibt es keinen bestätigten Leader.";
+    return;
+  }
+  const leader = modeResult.leader.display_name || modeResult.leader.alias || modeResult.leader.character_id;
+  const line = document.createElement("strong");
+  if (modeResult.awarded_title) {
+    line.textContent = `${modeResult.awarded_title} · ${leader} · bestätigter Rang 1`;
+  } else if (!cycle.closed) {
+    line.textContent = `${leader} führt · Kandidat: ${modeResult.title_candidate} · Titel erst nach bestätigtem Zyklusabschluss.`;
+  } else if (!cycle.confirmed_competition) {
+    line.textContent = `${leader} ist lokal Rang 1 · keine bestätigte Konkurrenz, daher kein Titel.`;
+  } else {
+    line.textContent = `${leader} führt · Titelstatus nicht final bestätigt.`;
+  }
+  titleStatus.append(line);
+  if (cycle.grand_title) {
+    const grand = document.createElement("span");
+    grand.textContent = `GRAND TITLE: ${cycle.grand_title.title}`;
+    titleStatus.append(grand);
+  }
+  const localTitles = (seasonal.local_titles || []).filter((item) => item.cycle_id === cycle.cycle_id);
+  if (localTitles.length) {
+    const own = document.createElement("span");
+    own.textContent = `DEINE BESTÄTIGTEN TITEL: ${localTitles.map((item) => item.title).join(" · ")}`;
+    titleStatus.append(own);
+  }
+}
+
 function renderHall(hall) {
   const host = $("hall-ranking");
   host.replaceChildren();
@@ -214,6 +270,7 @@ function renderHall(hall) {
   $("hall-status").textContent = hall.network_competition_available
     ? `Bestätigte Konkurrenz aktiv · Top ${hall.top_limit} · keine Ranggleichstände.`
     : "Nur dein bestätigter lokaler Character ist verfügbar. Keine Gegner oder Netzwerkwerte werden erfunden.";
+  renderHallSeason(hall.seasonal);
   const board = hall.boards?.[state.hallMode] || hall.boards?.[hall.default_mode];
   if (!board) {
     host.textContent = "Für diese Rankingmetrik liegen keine bestätigten Daten vor.";
@@ -428,6 +485,12 @@ for (const mode of ["reputation", "level", "resonance"]) {
   $(`hall-mode-${mode}`).addEventListener("click", () => {
     state.hallMode = mode;
     renderHall(state.projection?.hall_of_tribute);
+  });
+}
+for (const cycleType of ["weekly", "monthly"]) {
+  $(`hall-cycle-${cycleType}`).addEventListener("click", () => {
+    state.hallCycleType = cycleType;
+    renderHallSeason(state.projection?.hall_of_tribute?.seasonal);
   });
 }
 
