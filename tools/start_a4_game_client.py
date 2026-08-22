@@ -98,7 +98,12 @@ def port_number(value: str) -> int:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="BUNKERFREQUENZ A4 Game Client lokal starten")
-    parser.add_argument("--port", default=8044, type=port_number, help="Port; 0 wählt automatisch einen freien Port")
+    parser.add_argument(
+        "--port",
+        default=8044,
+        type=port_number,
+        help="Port; 0 wählt automatisch einen freien Port",
+    )
     parser.add_argument(
         "--save-dir",
         type=Path,
@@ -162,6 +167,7 @@ class A4ClientRuntime:
                 "START FEHLGESCHLAGEN – Spielstand konnte nicht sicher geöffnet werden: "
                 f"{self.save_dir} ({exc})"
             ) from exc
+
         self.session = GameClientSession(
             self.kernel,
             incident_catalog=self.incident_catalog,
@@ -173,6 +179,7 @@ class A4ClientRuntime:
         self.starter = _load_json(ROOT / "web" / "a4" / "starter.json")
         self.lock = threading.RLock()
         self._ensure_legacy_world()
+        self._reconcile_completed_world_settlement()
 
     def _ensure_legacy_world(self) -> None:
         state = self.session.read_state()
@@ -183,13 +190,55 @@ class A4ClientRuntime:
         command_id = f"world-bootstrap:{character.character_id}"
         result = self.session.ensure_world_player(
             character,
-            context=self._context(command_id, "character", character.character_id, character.character_id),
+            context=self._context(
+                command_id,
+                "character",
+                character.character_id,
+                character.character_id,
+            ),
         )
         if result.status != "confirmed":
             raise SystemExit(
                 "START FEHLGESCHLAGEN – bestehender Spielstand konnte nicht in den Living-City-State eingebucht werden: "
                 f"{result.error_detail or result.error_code}"
             )
+
+    def _reconcile_completed_world_settlement(self) -> None:
+        """Close only the crash gap Settlement-durable -> World-follow-up missing."""
+        state = self.session.read_state()
+        event = state.get("event")
+        settlement = state.get("settlement")
+        world = state.get("world")
+        character = state.get("character")
+        if not all(isinstance(item, dict) for item in (event, settlement, world, character)):
+            return
+        if event.get("phase") != "completed":
+            return
+        settlement_id = settlement.get("settlement_id")
+        event_id = event.get("event_id")
+        character_id = character.get("character_id")
+        if not all(isinstance(item, str) and item for item in (settlement_id, event_id, character_id)):
+            raise SystemExit("START FEHLGESCHLAGEN – abgeschlossener Settlement-State besitzt ungültige IDs")
+        applied = world.get("applied_settlements")
+        if not isinstance(applied, list):
+            raise SystemExit("START FEHLGESCHLAGEN – World-State besitzt ungültige Settlement-Historie")
+        if settlement_id in applied:
+            return
+        if self.session.world is None:
+            raise SystemExit("START FEHLGESCHLAGEN – Living-City-Service fehlt für Settlement-Abgleich")
+        context = self._context(
+            f"startup-world-settlement:{settlement_id}",
+            "event",
+            event_id,
+            character_id,
+        )
+        try:
+            self.session.world.apply_confirmed_settlement(context=context)
+        except (PersistenceError, ValueError, KeyError, TypeError) as exc:
+            raise SystemExit(
+                "START FEHLGESCHLAGEN – bestätigtes Settlement konnte nicht sicher mit der Stadt synchronisiert werden: "
+                f"{exc}"
+            ) from exc
 
     def projection(self) -> dict:
         with self.lock:
