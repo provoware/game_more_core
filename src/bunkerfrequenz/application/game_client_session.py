@@ -10,6 +10,7 @@ from bunkerfrequenz.application.event_execution_service import EventExecutionSer
 from bunkerfrequenz.application.event_state_service import EventStateService
 from bunkerfrequenz.application.incident_service import IncidentService
 from bunkerfrequenz.application.profile_service import CharacterProfileService
+from bunkerfrequenz.application.property_service import PropertyService
 from bunkerfrequenz.application.settlement_service import SettlementService
 from bunkerfrequenz.application.street_encounter_service import StreetEncounterService
 from bunkerfrequenz.domain.character import CharacterState
@@ -26,6 +27,7 @@ _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "event.execute": frozenset({"type", "command_id", "action_id"}),
     "economy.initialize": frozenset({"type", "command_id", "economy"}),
     "economy.transact": frozenset({"type", "command_id", "kind", "item_id", "quantity"}),
+    "property.purchase": frozenset({"type", "command_id", "location_id"}),
     "incident.open": frozenset({"type", "command_id", "incident_type", "severity"}),
     "incident.resolve": frozenset({"type", "command_id", "response_id"}),
     "settlement.complete": frozenset({"type", "command_id"}),
@@ -49,8 +51,9 @@ class GameClientSession:
     """Thin write adapter for the local A4 client.
 
     It owns no gameplay rules. Persistent commands are delegated to canonical
-    Profile/Street/Event/Economy/Incident/Settlement/District application services.
-    District metrics are never accepted directly from the client.
+    Profile/Street/Event/Economy/Property/Incident/Settlement/District services.
+    District metrics, property prices, owners and budget deltas are never
+    accepted directly from the client.
     """
 
     def __init__(
@@ -63,6 +66,7 @@ class GameClientSession:
         street_world_seed: str | None = None,
         district_manifest: Mapping[str, Any] | None = None,
         city_map_manifest: Mapping[str, Any] | None = None,
+        property_manifest: Mapping[str, Any] | None = None,
     ) -> None:
         if not incident_catalog:
             raise ValueError("incident_catalog darf nicht leer sein")
@@ -72,6 +76,8 @@ class GameClientSession:
             raise ValueError("street_manifest und street_world_seed müssen gemeinsam gesetzt werden")
         if (district_manifest is None) != (city_map_manifest is None):
             raise ValueError("district_manifest und city_map_manifest müssen gemeinsam gesetzt werden")
+        if property_manifest is not None and city_map_manifest is None:
+            raise ValueError("property_manifest benötigt city_map_manifest")
         self.persistence = persistence
         self.profile = CharacterProfileService(persistence)
         self.street = StreetEncounterService(persistence, street_manifest) if street_manifest is not None else None
@@ -79,6 +85,11 @@ class GameClientSession:
         self.district = (
             DistrictService(persistence, district_manifest, city_map_manifest)
             if district_manifest is not None and city_map_manifest is not None
+            else None
+        )
+        self.property = (
+            PropertyService(persistence, property_manifest, city_map_manifest)
+            if property_manifest is not None and city_map_manifest is not None
             else None
         )
         self.event_state = EventStateService(persistence)
@@ -195,6 +206,20 @@ class GameClientSession:
                     kind.strip(), item_id.strip(), quantity, context=context
                 )
                 return self._confirmed(result.committed_event_ids, result.idempotent_replay)
+
+            if command_type == "property.purchase":
+                if self.property is None:
+                    return self._rejected("property_not_configured")
+                location_id = command.get("location_id")
+                if not isinstance(location_id, str) or not location_id.strip():
+                    return self._rejected("invalid_location_id")
+                result = self.property.purchase(location_id.strip(), context=context)
+                ownership = result.properties.owned.get(location_id.strip())
+                return self._confirmed(
+                    result.committed_event_ids,
+                    result.idempotent_replay,
+                    metadata={"property": deepcopy(ownership)} if ownership is not None else None,
+                )
 
             if command_type == "incident.open":
                 incident_type = command.get("incident_type")
