@@ -6,10 +6,13 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ### Release-Planung
 
+- veralteten 0.8.1-Mergevorbehalt nach dem belegten Merge von PR #48 entfernt, 0.8.2 als aktive Iteration gesetzt und den Pflichtpfad auf die drei tatsächlich offenen Release-Pakete reduziert.
+- Release-Manifest von der überholten Architektur-Foundation auf die unverändert gültige Runtime-Baseline `0.5.2-alpha.1` samt Journal-/Save-Schemastand 2 abgeglichen.
+- Spieleranleitung nennt jetzt eine sofort ausführbare, schreibgeschützte Prüfung und grenzt sie klar von der kommenden Equipment-/Economy-Stufe ab.
 - README und TODO trennen den verpflichtenden Pfad zum ersten lokal spielbaren Alpha von nachgelagerter Härtung und späterem Netzwerkbetrieb.
 - prüfbare Release-Abnahme für Runtime-Client, Ersteinstieg, vollständigen Event-/Economy-Loop sowie Save/Recovery aus einem frischen Checkout ergänzt; eine Versionsanhebung erfolgt weiterhin erst nach grüner Abnahme.
 - Spieleranleitung erklärt laiengerecht, woran der aktuelle Prototyp und das spätere spielbare Alpha zu unterscheiden sind.
-- 0.8.1 sperrt neue Featurearbeit bis zur formalen Remote-Abnahme; 0.8.2 wird nur als gemeinsamer Economy-Vertical-Slice abgenommen und der schreibende A4-Client beginnt erst nach bestätigtem 0.8.3.
+- 0.8.2 wird nur als gemeinsamer Economy-Vertical-Slice abgenommen und der schreibende A4-Client beginnt erst nach bestätigtem 0.8.3.
 
 ### HTML-Blueprint-Auswertung
 

@@ -156,6 +156,8 @@ Noch offen sind insbesondere:
 
 Diese Systeme werden auf dem jetzt getesteten Character-, Persistence- und Presentation-Kern aufgebaut.
 
-## 10. Nächster Spielentwicklungsschritt
+## 10. Was kann ich jetzt sinnvoll prüfen?
 
-Als nächste größere Stufe ist **0.8 – Event-/Wirtschafts-Integration** vorgesehen. Damit sollen die bisher einzelnen Character-Actions in einen dauerhaften Spielkontext mit Eventplanung, Equipmentmarkt, Clubbetrieb und Clubbewertung eingebettet werden.
+Starte die HTML-Ansicht mit dem Befehl aus Abschnitt 0, prüfe den Leseweg und kopiere bei einem Problem den Prüfbericht. Erwarte dort noch keine speicherbare Eventplanung: So lässt sich der Prototyp testen, ohne ihn mit dem späteren Spiel zu verwechseln.
+
+Als nächste Stufe wird **0.8.2 – Equipment & Economy** umgesetzt. Katalog, Besitz, Reservierung, Transaktion und Recovery werden dabei gemeinsam geprüft, damit kein unfertiges Teilsystem als spielbereit erscheint.
