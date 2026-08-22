@@ -6,6 +6,13 @@ from typing import Any
 
 INCIDENT_STATUSES = ("open", "resolved")
 TARGET_PHASES = ("live", "teardown", "cancelled")
+_EFFECT_FIELDS = {
+    "budget_delta_cents",
+    "reputation_delta",
+    "crew_stress_delta",
+    "stability_delta",
+    "heat_delta",
+}
 
 
 def _text(value: Any, field_name: str) -> str:
@@ -22,24 +29,18 @@ def _int(value: Any, field_name: str, minimum: int, maximum: int | None = None) 
     return value
 
 
-def _validate_effects(value: dict[str, Any]) -> None:
-    required = {
-        "budget_delta_cents",
-        "reputation_delta",
-        "crew_stress_delta",
-        "stability_delta",
-        "heat_delta",
-    }
-    if not isinstance(value, dict) or set(value) != required:
+def _validate_effects(value: dict[str, Any], *, bounded: bool) -> None:
+    if not isinstance(value, dict) or set(value) != _EFFECT_FIELDS:
         raise ValueError("Incident-Effekte besitzen ungültige Felder")
-    for key in required:
+    for key in _EFFECT_FIELDS:
         raw = value[key]
         if isinstance(raw, bool) or not isinstance(raw, int):
             raise ValueError(f"Incident-Effekt {key} muss Ganzzahl sein")
-    if abs(value["reputation_delta"]) > 100 or abs(value["crew_stress_delta"]) > 100:
-        raise ValueError("Incident-Reputation/Stress außerhalb -100..100")
-    if abs(value["stability_delta"]) > 100 or abs(value["heat_delta"]) > 100:
-        raise ValueError("Incident-Stabilität/Heat außerhalb -100..100")
+    if bounded:
+        if abs(value["reputation_delta"]) > 100 or abs(value["crew_stress_delta"]) > 100:
+            raise ValueError("Incident-Reputation/Stress außerhalb -100..100")
+        if abs(value["stability_delta"]) > 100 or abs(value["heat_delta"]) > 100:
+            raise ValueError("Incident-Stabilität/Heat außerhalb -100..100")
 
 
 def _validate_active(value: dict[str, Any]) -> None:
@@ -94,7 +95,7 @@ def _validate_resolved(value: dict[str, Any]) -> None:
     _text(value["response_id"], "resolved.response_id")
     if value["target_phase"] not in TARGET_PHASES:
         raise ValueError("resolved.target_phase ist unbekannt")
-    _validate_effects(value["effects"])
+    _validate_effects(value["effects"], bounded=True)
     _int(value["resolved_at_revision"], "resolved.resolved_at_revision", 1)
     _text(value["contract_version"], "resolved.contract_version")
 
@@ -128,7 +129,9 @@ class IncidentState:
             ids.append(self.active["incident_id"])
         if len(ids) != len(set(ids)):
             raise ValueError("Incident-IDs müssen eindeutig sein")
-        _validate_effects(self.pending_settlement)
+        # Einzelne Incident-Effekte sind fachlich begrenzt; kumulierte Settlement-
+        # Summen dürfen mehrere bestätigte Incidents ohne künstliche ±100-Grenze addieren.
+        _validate_effects(self.pending_settlement, bounded=False)
         _int(self.revision, "revision", 0)
 
     def to_dict(self) -> dict[str, Any]:
