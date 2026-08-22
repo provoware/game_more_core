@@ -73,10 +73,6 @@ def _all_acts_confirmed(event: EventState) -> bool:
     return bool(event.acts) and all(act["status"] == "confirmed" for act in event.acts)
 
 
-def _has_confirmed_crew(event: EventState) -> bool:
-    return any(member["status"] == "confirmed" for member in event.crew)
-
-
 def _all_crew_confirmed(event: EventState) -> bool:
     return bool(event.crew) and all(member["status"] == "confirmed" for member in event.crew)
 
@@ -151,17 +147,23 @@ class EventExecutionService:
         *,
         context: JournalContext,
     ) -> EventActionResult:
-        availability = self.availability(event, action_id)
-        if not availability.enabled:
-            raise ValueError(
-                f"Event-Aktion {action_id} ist gesperrt: {', '.join(availability.blockers)}"
-            )
-        spec = EVENT_ACTIONS[action_id]
+        spec = EVENT_ACTIONS.get(action_id)
+        if spec is None:
+            raise ValueError(f"Unbekannte Event-Aktion: {action_id}")
+
+        def enforce_action_gate(persisted: EventState) -> None:
+            availability = self.availability(persisted, action_id)
+            if not availability.enabled:
+                raise ValueError(
+                    f"Event-Aktion {action_id} ist gesperrt: {', '.join(availability.blockers)}"
+                )
+
         committed: EventCommitResult = self._events.transition_phase(
             event,
             spec.target_phase,
             context=context,
             reason=f"event_action:{action_id}",
+            precondition=enforce_action_gate,
         )
         return EventActionResult(
             action_id=action_id,
