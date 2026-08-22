@@ -225,6 +225,7 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 - [ ] Einen maschinenlesbaren Economy-Replay-Abnahmebeleg mit festem Seed definieren; Nutzen: Katalog, Besitz, Reservierung, Transaktion und Recovery bleiben bei späteren Erweiterungen als zusammenhängender Slice nachweisbar.
 - [ ] Nach 0.8.3 Lieferzeit und Verfügbarkeit je Anbieter datengetrieben ergänzen; Nutzen: Beschaffung erhält echte Zeit-/Preisentscheidungen, ohne den bestätigten Economy-Kern zu verdoppeln.
 - [ ] Repository Health um einen Abschlussabgleich zwischen gemergten Meilensteinen in `PROJEKTSTATUS.json`, `TODO.md` und `README.md` erweitern; Nutzen: bereits erledigte Freigabeschritte blockieren die Folgeiteration nicht erneut und Statuspflege verursacht weniger Nacharbeit.
+- [ ] Nach Abnahme von 0.8.3 beide Gesamtbeschreibungen mit einem gemeinsamen, versionierten Spielszenario `Planung → Beschaffung → Krise → Abrechnung` ergänzen; Nutzen: Fachdesign, Cliententwicklung und QA erhalten dieselbe prüfbare Referenz, ohne geplantes Verhalten vorzeitig als fertig zu dokumentieren.
 
 ## Abgeschlossene Meilensteine
 

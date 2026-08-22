@@ -43,6 +43,8 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 
 | Datei | Thema |
 |---|---|
+| `docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md` | ausführliche Produkt-, Spielschleifen- und Systembeschreibung ohne Codewissen |
+| `docs/SPIELBESCHREIBUNG_TECHNISCH.md` | technisches Gesamtbild mit Architektur, Zuständen, Datenfluss, Invarianten und Erweiterungspunkten |
 | `docs/SPIELERANLEITUNG.md` | laienfreundlicher Spielablauf, Energie/Stress, Progression, Autosave, Undo und aktuelle Grenzen |
 | `docs/EVENT_STATE_0.8.1.md` | EventState, Phasenmaschine, Safety-Gate, Journal, Blockkoexistenz und 0.8.2/0.8.3-Grenze |
 | `docs/ECONOMY_0.8.2.md` | Katalog, Besitz, Reservierung, Preise, Transaktionen, Kompensation und Recovery |

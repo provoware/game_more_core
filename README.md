@@ -209,11 +209,11 @@ Details: [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
 
 **Du willst das Spielprinzip verstehen, ohne den Code zu kennen?**
 
-1. Starte mit der [`Spieleranleitung`](docs/SPIELERANLEITUNG.md).
-2. Lies danach bei Bedarf [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) für den Spiel-/Datenfluss.
-3. [`A4 Ops Deck`](docs/A4_OPS_DECK_0.6.3.md) beschreibt den normalen Arbeitsablauf.
-4. [`A3 Cinematic Forge`](docs/A3_CINEMATIC_FORGE_0.6.4.md) zeigt die stärker inszenierte Charakterentwicklung.
-5. Für den neuen Eventzustand: [`Event State Foundation 0.8.1`](docs/EVENT_STATE_0.8.1.md).
+1. Starte mit der ausführlichen [`Spielbeschreibung ohne Technik`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md).
+2. Nutze die [`Spieleranleitung`](docs/SPIELERANLEITUNG.md) für den heutigen praktischen Einstieg.
+3. Als Entwickler führt die [`technische Spielbeschreibung`](docs/SPIELBESCHREIBUNG_TECHNISCH.md) durch Architektur, Datenfluss und Erweiterungspunkte.
+4. [`A4 Ops Deck`](docs/A4_OPS_DECK_0.6.3.md) beschreibt den normalen Arbeitsablauf.
+5. [`A3 Cinematic Forge`](docs/A3_CINEMATIC_FORGE_0.6.4.md) zeigt die stärker inszenierte Charakterentwicklung.
 6. Der nächste Entwicklungsblock steht kompakt in [`TODO.md`](TODO.md).
 
 > [!NOTE]
@@ -233,6 +233,8 @@ Die Startroutine prüft zuerst alle benötigten Dateien, bindet den lokalen Serv
 
 | Ich suche … | Dann hier entlang |
 |---|---|
+| vollständige Spielidee ohne Technik | [`docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md) |
+| technische Gesamtbeschreibung | [`docs/SPIELBESCHREIBUNG_TECHNISCH.md`](docs/SPIELBESCHREIBUNG_TECHNISCH.md) |
 | Spieler-Einstieg | [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md) |
 | HTML-Blueprint starten | `python3 tools/start_web_blueprint.py` |
 | aktuellen Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
