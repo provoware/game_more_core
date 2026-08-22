@@ -1,7 +1,7 @@
 "use strict";
 
 const $ = (id) => document.getElementById(id);
-const state = { projection: null, busy: false };
+const state = { projection: null, busy: false, hallMode: "reputation" };
 
 const ACTION_LABELS = {
   begin_planning: "PLANUNG BEGINNEN",
@@ -27,11 +27,9 @@ const BLOCKER_LABELS = {
   safety_clearance_required: "Sicherheitsfreigabe fehlt"
 };
 
-const POLARITY_LABELS = {
-  positive: "GLÜCK",
-  negative: "PECH",
-  neutral: "RUHIG"
-};
+const POLARITY_LABELS = { positive: "GLÜCK", negative: "PECH", neutral: "RUHIG" };
+const HALL_MODE_LABELS = { reputation: "RUF", level: "LEVEL", resonance: "RESONANZ" };
+const MOVEMENT_SYMBOLS = { up: "↑", down: "↓", same: "→", new: "★", unranked: "–" };
 
 function commandId(prefix) {
   const suffix = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -82,9 +80,7 @@ async function refresh() {
   }
 }
 
-function setHidden(id, hidden) {
-  $(id).classList.toggle("hidden", hidden);
-}
+function setHidden(id, hidden) { $(id).classList.toggle("hidden", hidden); }
 
 function setInputIfIdle(id, value) {
   const input = $(id);
@@ -146,6 +142,43 @@ function renderDistricts(districts) {
     : districts.persisted ? "Persistierter District-State ohne neue Änderung." : "Noch keine persistente Bezirksänderung – angezeigt werden die Startwerte.";
 }
 
+function renderHall(hall) {
+  const host = $("hall-ranking");
+  host.replaceChildren();
+  if (!hall) return;
+  $("hall-participants").textContent = String(hall.confirmed_participant_count || 0);
+  $("hall-status").textContent = hall.network_competition_available
+    ? `Bestätigte Konkurrenz aktiv · Top ${hall.top_limit} · keine Ranggleichstände.`
+    : "Nur dein bestätigter lokaler Character ist verfügbar. Keine Gegner oder Netzwerkwerte werden erfunden.";
+  const board = hall.boards?.[state.hallMode] || hall.boards?.[hall.default_mode];
+  if (!board) {
+    host.textContent = "Für diese Rankingmetrik liegen keine bestätigten Daten vor.";
+    return;
+  }
+  for (const mode of hall.modes || []) {
+    const button = $(`hall-mode-${mode}`);
+    if (button) button.classList.toggle("primary", mode === state.hallMode);
+  }
+  for (const entry of board.entries || []) {
+    const row = document.createElement("article");
+    row.className = "equipment-row";
+    const info = document.createElement("div");
+    const title = document.createElement("strong");
+    const movement = entry.history?.movement || "new";
+    const movementLabel = hall.movement_labels?.[movement] || movement.toUpperCase();
+    const local = entry.character_id === hall.local_character_id ? " · DU" : "";
+    title.textContent = `#${entry.rank ?? "–"} ${MOVEMENT_SYMBOLS[movement] || "–"} ${entry.display_name || entry.alias || entry.character_id}${local}`;
+    const detail = document.createElement("span");
+    const value = entry.selected_metric?.available ? entry.selected_metric.value : "NICHT BESTÄTIGT";
+    const delta = entry.history?.rank_delta;
+    const change = delta == null ? movementLabel : `${movementLabel} ${signed(delta)}`;
+    detail.textContent = `${HALL_MODE_LABELS[state.hallMode] || state.hallMode.toUpperCase()} ${value} · ${change} · ${entry.competition?.zone === "top10" ? "TOP-10" : "FREIES FELD"}`;
+    info.append(title, detail);
+    row.append(info);
+    host.append(row);
+  }
+}
+
 function render() {
   const p = state.projection || {};
   const event = p.event;
@@ -153,6 +186,7 @@ function render() {
   setHidden("profile-panel", !p.character);
   setHidden("street-panel", !p.character);
   setHidden("district-panel", !p.districts);
+  setHidden("hall-panel", !p.hall_of_tribute);
   setHidden("event-panel", !event);
   setHidden("economy-panel", !p.economy);
   setHidden("incident-panel", !event || !["live", "crisis"].includes(event.phase));
@@ -160,6 +194,7 @@ function render() {
 
   renderProfile(p.character);
   renderDistricts(p.districts);
+  renderHall(p.hall_of_tribute);
   $("phase-badge").textContent = event ? event.phase.toUpperCase() : "NOCH KEIN EVENT";
   if (!event) return;
 
@@ -184,11 +219,7 @@ function renderEventActions(actions) {
     button.textContent = ACTION_LABELS[action.action_id] || action.action_id;
     button.disabled = !action.enabled;
     button.className = action.enabled ? "primary" : "disabled-action";
-    button.addEventListener("click", () => sendCommand({
-      type: "event.execute",
-      command_id: commandId(action.action_id),
-      action_id: action.action_id
-    }));
+    button.addEventListener("click", () => sendCommand({ type: "event.execute", command_id: commandId(action.action_id), action_id: action.action_id }));
     host.append(button);
     blockers.push(...action.blockers);
   }
@@ -214,14 +245,10 @@ function renderEconomy(economy) {
     actions.className = "inline-actions";
     const buy = document.createElement("button");
     buy.textContent = "KAUFEN";
-    buy.addEventListener("click", () => sendCommand({
-      type: "economy.transact", command_id: commandId("buy"), kind: "buy", item_id: item.item_id, quantity: 1
-    }));
+    buy.addEventListener("click", () => sendCommand({ type: "economy.transact", command_id: commandId("buy"), kind: "buy", item_id: item.item_id, quantity: 1 }));
     const reserve = document.createElement("button");
     reserve.textContent = "RESERVIEREN";
-    reserve.addEventListener("click", () => sendCommand({
-      type: "economy.transact", command_id: commandId("reserve"), kind: "reserve", item_id: item.item_id, quantity: 1
-    }));
+    reserve.addEventListener("click", () => sendCommand({ type: "economy.transact", command_id: commandId("reserve"), kind: "reserve", item_id: item.item_id, quantity: 1 }));
     actions.append(buy, reserve);
     row.append(info, actions);
     host.append(row);
@@ -244,9 +271,7 @@ function renderIncidents(p) {
       const response = responses.find((item) => item.response_id === responseId);
       const button = document.createElement("button");
       button.textContent = `${responseId} → ${response?.target_phase || "?"}`;
-      button.addEventListener("click", () => sendCommand({
-        type: "incident.resolve", command_id: commandId("incident-resolve"), response_id: responseId
-      }));
+      button.addEventListener("click", () => sendCommand({ type: "incident.resolve", command_id: commandId("incident-resolve"), response_id: responseId }));
       actions.append(button);
     }
     host.append(actions);
@@ -264,12 +289,7 @@ function renderIncidents(p) {
   for (const incident of p.incident_catalog || []) {
     const button = document.createElement("button");
     button.textContent = `${incident.incident_type} · S${incident.base_severity}`;
-    button.addEventListener("click", () => sendCommand({
-      type: "incident.open",
-      command_id: commandId("incident-open"),
-      incident_type: incident.incident_type,
-      severity: incident.base_severity
-    }));
+    button.addEventListener("click", () => sendCommand({ type: "incident.open", command_id: commandId("incident-open"), incident_type: incident.incident_type, severity: incident.base_severity }));
     actions.append(button);
   }
   host.append(actions);
@@ -280,13 +300,7 @@ function renderSettlement(p) {
   host.replaceChildren();
   if (p.settlement) {
     const pre = document.createElement("pre");
-    pre.textContent = JSON.stringify({
-      status: p.settlement.status,
-      effects: p.settlement.effects,
-      budget: p.settlement.budget,
-      stress: p.settlement.stress,
-      reputation: p.settlement.reputation
-    }, null, 2);
+    pre.textContent = JSON.stringify({ status: p.settlement.status, effects: p.settlement.effects, budget: p.settlement.budget, stress: p.settlement.stress, reputation: p.settlement.reputation }, null, 2);
     host.append(pre);
     return;
   }
@@ -296,20 +310,14 @@ function renderSettlement(p) {
     const button = document.createElement("button");
     button.className = "primary";
     button.textContent = "SETTLEMENT ABSCHLIESSEN";
-    button.addEventListener("click", () => sendCommand({
-      type: "settlement.complete", command_id: commandId("settlement")
-    }));
+    button.addEventListener("click", () => sendCommand({ type: "settlement.complete", command_id: commandId("settlement") }));
     host.append(text, button);
   }
 }
 
 async function sendCommand(command) {
   try {
-    const payload = await request("/api/command", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(command)
-    });
+    const payload = await request("/api/command", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(command) });
     log(`${command.type}: bestätigt${payload.idempotent_replay ? " (Replay)" : ""}`, payload.committed_event_ids);
     state.projection = payload.state;
     render();
@@ -324,11 +332,7 @@ $("new-game").addEventListener("click", async () => {
     const payload = await request("/api/new-game", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        command_id: commandId("first-run"),
-        character_name: $("character-name").value,
-        event_name: $("event-name").value
-      })
+      body: JSON.stringify({ command_id: commandId("first-run"), character_name: $("character-name").value, event_name: $("event-name").value })
     });
     log("First Run bestätigt", payload.committed_event_ids);
     state.projection = payload.state;
@@ -339,10 +343,7 @@ $("new-game").addEventListener("click", async () => {
 });
 
 $("save-profile").addEventListener("click", () => {
-  const nicknames = $("profile-nicknames").value
-    .split(",")
-    .map((value) => value.trim())
-    .filter(Boolean);
+  const nicknames = $("profile-nicknames").value.split(",").map((value) => value.trim()).filter(Boolean);
   sendCommand({
     type: "profile.update",
     command_id: commandId("profile-update"),
@@ -355,18 +356,17 @@ $("save-profile").addEventListener("click", () => {
   });
 });
 
-$("street-walk").addEventListener("click", () => sendCommand({
-  type: "street.walk",
-  command_id: commandId("street-walk")
-}));
+$("street-walk").addEventListener("click", () => sendCommand({ type: "street.walk", command_id: commandId("street-walk") }));
+for (const mode of ["reputation", "level", "resonance"]) {
+  $(`hall-mode-${mode}`).addEventListener("click", () => {
+    state.hallMode = mode;
+    renderHall(state.projection?.hall_of_tribute);
+  });
+}
 
 $("checkpoint").addEventListener("click", async () => {
   try {
-    const payload = await request("/api/checkpoint", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ request: "manual_checkpoint" })
-    });
+    const payload = await request("/api/checkpoint", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ request: "manual_checkpoint" }) });
     log(`Checkpoint bestätigt: ${payload.snapshot_id}`);
   } catch (error) {
     log(`Checkpoint ABGEWIESEN – ${error.message}`);
