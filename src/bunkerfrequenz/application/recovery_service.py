@@ -43,7 +43,8 @@ def _replay_reputation_change(character: CharacterState, payload: dict) -> None:
         raise ValueError("Reputation-Replay benötigt reason")
     if character.reputation != old:
         raise ValueError("Reputation-Replay passt nicht zum bestätigten Ausgangswert")
-    if new != old + delta:
+    expected = max(0, old + delta)
+    if new != expected:
         raise ValueError("Reputation-Replay besitzt inkonsistenten Zielwert")
     character.reputation = new
 
