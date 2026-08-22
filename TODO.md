@@ -2,16 +2,21 @@
 
 ## Aktueller Stand
 
-- **Versionierte Runtime-Baseline:** `0.8.4-alpha.1`
-- **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery`
+- **Versionierte Runtime-Baseline:** `0.8.4-alpha.1` – bewusst unverändert; 0.8.5 ist Feature-Fortschritt, noch kein neuer Produktrelease
+- **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.5-E – Hall of Tribute / sichtbares Competitive Ranking`
+- **0.8.5-A Competitive Ranking:** PR #75 · Merge `b41d8f416679515307f2a580fb66b0569057836a`
+- **0.8.5-B A4-Personalisierung:** PR #76 · Merge `5a9eed536d48f30cdd1f4569e9e1b1724e5ced80`
+- **0.8.5-C Street Encounters:** PR #77 · Runtime `32579029076` · Presentation `32579028963` · Repository Health `32579028895` · Release Acceptance `32579028891` · Release Package `32579028890` · 0 Review-Threads · Merge `38de9f42c2908d63945db7bf25277b2f940ede6e`
+- **0.8.5-D Living Districts:** PR #79 · finaler Head `fa57c7700d0c54c2ab68753ce069b14745ea7338` · Runtime `32586077024` · Presentation `32586077030` · Repository Health `32586077045` · Release Acceptance `32586077027` · Release Package `32586077025` · 0 Review-Threads · Merge `98c8b84715cc308dd1bc9fd92b7c7e56a35cc861`
+- **0.8.5-E Hall of Tribute:** PR #80 · Head `2e312e2ce27bf0858b5676d56270013e24198515` · Runtime `32586394504` · Presentation `32586394533` · Repository Health `32586394437` · Release Acceptance `32586394507` · Release Package `32586394495` · 0 Review-Threads · Merge `d383a3f364c6ee8cd954041f1d324e0ace0cb357`
 - **0.8.4-Abnahme:** PR #69 · Head `3d61e9d6385a0b79069132df24d655fef42b0451` · Runtime Core `32575062624` · Presentation Core `32575062602` · Repository Health `32575062620` · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
 - **Release-Abnahme:** PR #72 · Head `7fe1a39c6b69ec819fefe064a48d1647a5fa7c93` · Runtime Core `32576362896` · Presentation Core `32576362890` · Repository Health `32576362810` · Release Acceptance `32576362827` · `SAFE MERGE PASS` · Merge `72bb3024272797b27632a96559ae8abb665fff8a`
 - **Erstes lokales Alpha:** PR #73 · Head `ece6c145bb07dbb2eb87170887374c4124a871f1` · Runtime Core `32576855723` · Presentation Core `32576855749` · Repository Health `32576855738` · Release Acceptance `32576855720` · Release Package `32576855768` · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `3fdb5cc3d57e73734d1f594603cafdd6d06c5210`
 - **Release-Artefakt:** `BUNKERFREQUENZ-0.8.4-alpha.1.zip` · SHA-256 `fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146` · byte-reproduzierbar · entpackter Paket-Smoke bis `completed` bestanden
-- **Recovery-Härtung:** der vollständige A4-Smoke deckte einen fehlenden-State-Randfall auf; ein Snapshot am Journal-Head darf einen fehlenden `state/current.json` nicht mehr fälschlich als `healthy` deklarieren. Der zentrale Recovery-Kern stellt den State nun korrekt aus dem gültigen Snapshot wieder her und besitzt dafür eine Regression.
-- **Nächster Pflichtblock:** `0.8.5 – Dynamische Bezirkslage` aus bestätigten Settlement-/Event-Ergebnissen; keine neue Produktversion vor eigener Abnahme
+- **Recovery-Härtung:** Snapshot-/Journal-Recovery bleibt vollständig regressionsgedeckt; 0.8.5-D erweitert Combined Recovery um den persistenten District-State
+- **Nächster Pflichtblock:** `0.8.6-A – Property Purchase Foundation`: die bereits katalogisierten kaufbaren Orte ausschließlich über EconomyService erwerbbar machen
 - **Fortschritt zum ersten spielbaren Alpha-Release:** `100 %`
-- **Aktueller Release-Blocker:** keiner; `0.8.4-alpha.1` ist remote validiert, reproduzierbar paketiert und sicher gemergt
+- **Aktueller Release-Blocker:** keiner; `0.8.4-alpha.1` bleibt die freigegebene Runtime-Baseline, während 0.8.5-A bis E auf `main` zusätzlich remote validiert sind
 
 ## Release-Ziel ✅
 
@@ -19,7 +24,7 @@ Das erste lokal startbare Alpha verbindet Character Forge, Equipment/Economy, Ev
 
 **Abnahme erfüllt:** Aus einem frischen Checkout bzw. entpackten Release-Paket kann eine Person ohne Codewissen `Crew wählen → Event planen → Equipment beschaffen → Event starten → Krise lösen oder ohne Krise fortfahren → abrechnen → speichern → neu laden/recovern` vollständig durchführen.
 
-**Nicht Bestandteil von 0.8.4-alpha.1:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau und native GitHub-Branch-Protection.
+**Release-Hinweis:** `0.8.4-alpha.1` bleibt der letzte bewusst freigegebene Produktrelease. Die danach gemergten 0.8.5-Features erhöhen die Produktversion nicht stillschweigend; ein neuer Release braucht eine eigene Abnahme.
 
 ---
 
@@ -67,11 +72,11 @@ Das erste lokal startbare Alpha verbindet Character Forge, Equipment/Economy, Ev
 
 ### Folgeausbau nach dem lokalen Alpha
 
-- [ ] persistente Bezirksdynamik aus bestätigten Settlement-Ergebnissen ableiten
+- [x] persistente Bezirksdynamik aus bestätigten Settlement-/Street-Ergebnissen ableiten – 0.8.5-D / PR #79
 - [ ] Immobilienkauf an EconomyService anbinden
 - [ ] Immobilien-Ausbauzustand + Kosten-/Nutzenregeln implementieren
 - [ ] hochwertigen Kartenrenderer an die read-only Projection anbinden
-- [ ] Hall-of-Tribute-Ranking aus bestätigten Statistiken speisen
+- [x] Hall-of-Tribute-Ranking aus bestätigten Statistiken speisen – 0.8.5-E / PR #80; lokale Ansicht erfindet keine Gegner
 
 ## 0.8.3-C – Settlement & Consequences ✅
 
@@ -91,7 +96,7 @@ Das erste lokal startbare Alpha verbindet Character Forge, Equipment/Economy, Ev
 - [x] Settlement-Receipt bindet Budget-, Stress- und Ruf-Deltas exakt an die bestätigten `effects`
 - [x] Settlement-Character muss bestätigtes Crewmitglied des Events sein
 - [x] Biografieeintrag mit bestätigter Top-Level-`character_id` journalisiert und projizierbar gemacht
-- [x] Stabilität und Heat im Settlement-Receipt bestätigt, aber noch nicht als District-/World-State geschrieben
+- [x] Stabilität und Heat im Settlement-Receipt bestätigt; seit 0.8.5-D werden daraus zusätzlich persistente District-Folgen abgeleitet
 - [x] Incident-Historie unverändert erhalten und `pending_settlement` nach erfolgreichem Abschluss genau einmal geleert
 - [x] direkten allgemeinen `settlement → completed`-Schreibweg gesperrt
 - [x] `event.completed` ausschließlich nach bestätigtem Settlement erzeugt
@@ -158,27 +163,87 @@ Das erste lokal startbare Alpha verbindet Character Forge, Equipment/Economy, Ev
 
 ---
 
-# P1 – direkt nach dem lokalen Alpha
+# P1 – Living World nach dem lokalen Alpha
 
-## 0.8.5 – Dynamische Bezirkslage ⏭️
+## 0.8.5 – Ranking, Personalisierung, Straße und Living Districts ✅
 
-1. **Dynamische Bezirkslage**
-   - Heat, Prestige, Polizeidruck und Szeneaktivität ausschließlich aus bestätigten Settlement-/Eventergebnissen verändern.
-   - Auswirkungen auf Eventchancen, Kosten und Risiko datengetrieben ableiten.
-   - Persistenten District-State mit Replay, Idempotenz und Save/Recovery von Anfang an vorsehen.
+### 0.8.5-A – Competitive Top-10 Ranking ✅
 
-2. **Immobilien-Ausbaupfade**
-   - Schallschutz, Strom, Fluchtwege, Deko, Bühne, Bar, Lager und Sicherheitsraum mit Leveln, Kosten und Effekten versehen.
-   - Kauf/Upgrade ausschließlich über Economy-Transaktionen.
+- [x] Ranggleichstände abgeschafft; Rangnummern immer eindeutig
+- [x] aktuelle Metrik bleibt primäre Autorität
+- [x] bei gleichem Wert verdrängt höheres Momentum den Stillstehenden
+- [x] Top-10-Druckfaktor 1,0; ab bisherigem Platz 11 nur noch 0,1
+- [x] Previous-Cycle-Snapshot, Auf-/Abstieg und stabile Tiebreaker regressionsgeprüft
+- [x] PR #75 per `/safe-merge` übernommen · Merge `b41d8f416679515307f2a580fb66b0569057836a`
 
-3. **Hall of Tribute + saisonales Ranking**
-   - bestätigte Wochen-/Monatsstatistiken projizieren.
-   - satirische Titel wie `Lärmadel`, `Bunkerbaron`, `Kabelkönig`, `Pegelpapst` oder `Nachtminister` vergeben.
-   - Animation nur als Darstellung; Reduced Motion erhält vollständige statische Information.
+### 0.8.5-B – A4-Personalisierung ✅
 
-4. Hochwertigen Berlin-Kartenrenderer erst an stabilen District-/Property-State anbinden.
-5. Native GitHub-Branch-Protection/Ruleset aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist.
-6. `0.9 Network / Telegram Sync` als getrennten Server-/Transportvertrag planen.
+- [x] Anzeigename, Alias, mehrere Spitznamen und Motto im A4-Client editierbar
+- [x] technische Character-ID bleibt unveränderlich
+- [x] ausschließlich vorhandenen `CharacterProfileService` wiederverwendet
+- [x] Profilwrite erhält Event-/Economy-State unverändert und ist idempotent
+- [x] PR #76 per `/safe-merge` übernommen · Merge `5a9eed536d48f30cdd1f4569e9e1b1724e5ced80`
+
+### 0.8.5-C – Replaybare Street Encounters ✅
+
+- [x] 25 % ruhige Runde, 60 % positiv, 15 % negativ
+- [x] unter tatsächlichen Begegnungen 80 % positiv / 20 % negativ
+- [x] stabile Walk-ID + SHA-256-basierte Auswahl; kein Reload-Reroll
+- [x] nur bestehende Energie-/Stress-/Rufeffekte; keine erfundenen Geld-/Itemgewinne
+- [x] A4-Button und Ergebnisdarstellung ohne Zufallslogik im Browser
+- [x] finaler Head `8fcd9866ec7b84b1040635de04329bf013632125` 5/5 grün
+- [x] PR #77 per `/safe-merge` übernommen · Merge `38de9f42c2908d63945db7bf25277b2f940ede6e`
+
+### 0.8.5-D – Living Districts ✅
+
+- [x] persistenter `DistrictState` für alle acht Berlin-Ops-Bezirke
+- [x] Heat, Prestige, Polizeidruck und Szeneaktivität auf 0..100
+- [x] Settlement-Folgen nur aus bestätigtem Event + Settlement
+- [x] Street-Folgen nur aus bestätigtem `street.encounter_resolved`-Journalrecord
+- [x] Quellen idempotent; unbekannter Ort = sicherer No-op statt erfundener Zuordnung
+- [x] Combined Recovery um District-Replay erweitert
+- [x] bestehende City-Map-Projection mit persistierten District-Metriken wiederverwendet
+- [x] A4-Bezirkslage read-only; Browser besitzt keine District-Balance-/Schreiblogik
+- [x] zu breiter PR #78 bewusst geschlossen und durch fokussierten PR #79 ersetzt
+- [x] CI fand einen echten HTTP/Python-Tuple-vs-List-Restartunterschied; auf finalem Head JSON-stabil behoben
+- [x] finaler Head `fa57c7700d0c54c2ab68753ce069b14745ea7338` 5/5 grün
+- [x] PR #79 per `/safe-merge` übernommen · Merge `98c8b84715cc308dd1bc9fd92b7c7e56a35cc861`
+
+### 0.8.5-E – Hall of Tribute / sichtbares Ranking ✅
+
+- [x] bestehende 0.8.5-A-Ranking-Engine unverändert wiederverwendet
+- [x] A4-Hall mit Ruf / Level / Resonanz
+- [x] Platz, `↑` Aufstieg, `↓` Abstieg, `→` gehalten, `★` neu und Top-10-Zone sichtbar
+- [x] lokaler Client erfindet keine Gegner oder Netzwerkmetriken
+- [x] zusätzliche Teilnehmer nur über explizit bestätigte Participant-Projections
+- [x] Regression mit 12 bestätigten Teilnehmern prüft Top 10 und Challenger-Verdrängung
+- [x] finaler Head `2e312e2ce27bf0858b5676d56270013e24198515` 5/5 grün
+- [x] PR #80 per `/safe-merge` übernommen · Merge `d383a3f364c6ee8cd954041f1d324e0ace0cb357`
+
+### Noch bewusst nicht Bestandteil von 0.8.5
+
+- [ ] saisonale Wochen-/Monatszyklen und satirische Hall-of-Tribute-Titel
+- [ ] echtes Netzwerk-/Telegram-Roster; lokale Hall zeigt daher nur bestätigte lokale Daten, bis weitere Teilnehmer bestätigt geliefert werden
+- [ ] Immobilienkauf und Immobilienausbau
+- [ ] hochwertiger Berlin-Kartenrenderer
+
+---
+
+# P2 – Nächster sinnvoller Ausbau
+
+## 0.8.6-A – Property Purchase Foundation ⏭️
+
+1. Die sieben bereits als `purchasable` katalogisierten Berlin-Ops-Orte als echte kaufbare Objekte modellieren.
+2. Kauf ausschließlich über bestätigte EconomyService-Transaktionen; keine direkte UI-Besitzmutation.
+3. Eigentum als eigenen kleinen State-/Journalvertrag mit Idempotenz, Replay und Recovery führen.
+4. Nicht kaufbare Orte weiterhin fail-closed ablehnen.
+5. Erst nach dieser Grundlage Property-Upgrades und hochwertigen Map-Renderer anbinden.
+
+### Danach
+
+- **0.8.6-B – Property Upgrades:** Schallschutz, Strom, Fluchtwege, Deko, Bühne, Bar, Lager, Security, Studio und Office datengetrieben ausbauen.
+- **0.8.6-C – Seasonal Hall:** bestätigte Zeitzyklen, Wochen-/Monatswertung und Titel wie `Lärmadel`, `Bunkerbaron`, `Kabelkönig`, `Pegelpapst`, `Nachtminister`.
+- **0.8.6-D – Berlin Ops Map PRO:** Renderer auf stabilem District-/Property-State statt vorgezogener UI-Simulation.
 
 ---
 
@@ -190,7 +255,8 @@ Das erste lokal startbare Alpha verbindet Character Forge, Equipment/Economy, Ev
 - [x] fehlenden State bei gültigem Snapshot am Journal-Head als echte Recovery statt falschem `healthy` regressionsgetestet.
 - [x] finalen Release-Receipt `reports/RELEASE_0.8.4-alpha.1.json` mit innerem Spiel-ZIP-Hash und äußerem GitHub-Artefakt-Digest getrennt dokumentiert.
 - [ ] Repository Health um Abschlussabgleich gemergter Meilensteine zwischen Status/TODO/README erweitern.
+- [ ] District-No-op-Replay-Receipt für unbekannte Orte semantisch auf `idempotent_replay` präzisieren; aktuell bereits sicherer No-op ohne Doppelwrite.
 - [ ] A3 Event-/Incident-Blocker-IDs später ebenfalls über denselben sichtbaren Hilfetextvertrag darstellen, ohne Regeln neu zu berechnen.
-- [ ] gemeinsames versioniertes Spielszenario `Planung → Beschaffung → Krise → Abrechnung → Neustart` nach der Release-Abnahme in beide Gesamtbeschreibungen aufnehmen.
+- [ ] gemeinsames versioniertes Spielszenario `Planung → Beschaffung → Straße → Bezirksfolge → Krise → Abrechnung → Hall → Neustart` in die nächste Release-Gesamtbeschreibung aufnehmen.
 
 ---
