@@ -105,7 +105,7 @@ class SettlementEdgeCaseTests(unittest.TestCase):
                 SettlementService(kernel).complete(context=context("deficit"))
 
             self.assertEqual(kernel.load_state(), before)
-            self.assertEqual(kernel.read_records(), [])
+            self.assertEqual(len(kernel.read_records()), 0)
 
     def test_settlement_service_rejects_wrong_phase(self):
         with tempfile.TemporaryDirectory() as tmp:
