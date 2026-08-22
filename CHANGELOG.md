@@ -4,6 +4,20 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### 0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery
+
+- kleinsten schreibenden A4-Game-Client als lokale, frameworkfreie Oberfläche ergänzt; der Browser schreibt ausschließlich über einen dünnen `GameClientSession`-Adapter in bereits bestehende Application-Services und enthält keine zweite Event-, Economy-, Incident- oder Settlement-Logik.
+- `a4_game_projection` als read-only Spielprojektion ergänzt; verfügbare Event-Aktionen und Blocker stammen direkt aus `EventExecutionService.available_actions(...)`, damit UI und Runtime denselben Gate-Vertrag verwenden.
+- Schreibcommands auf eine explizite Allowlist und bekannte Felder begrenzt; unbekannte Commands oder Zusatzfelder werden vor jedem Domain-Write fail-closed abgewiesen.
+- lokalen A4-Server auf `127.0.0.1` begrenzt und statische Auslieferung ausschließlich aus `web/a4/` erlaubt; Repository-Root und Save-Verzeichnis werden nicht als statische Webinhalte exponiert.
+- First Run ergänzt: ein deterministischer Starter erzeugt Character, Event und kleinen Economy-Katalog nur auf einem leeren Journal/GENESIS-Stand und überschreibt niemals einen vorhandenen Spielstand.
+- vollständigen automatisierten Smoke-Test ergänzt: neues Spiel → Planung → Beschaffung → Equipment kaufen/reservieren → Transport → Aufbau → Soundcheck → Live → optionale Krise → Reaktion → Abbau → Settlement → Snapshot → Neustart → identischer Zustand → erzwungene Recovery → identischer Zustand → erneuter Neustart.
+- Recovery-Lücke behoben, die durch den neuen Smoke-Test sichtbar wurde: Ein Snapshot exakt auf Journal-Head darf einen fehlenden `state/current.json`-Checkpoint nicht mehr fälschlich als `healthy` deklarieren; `healthy` verlangt nun einen echten State-Checkpoint am Journal-Head, andernfalls wird der gültige Snapshot zur Wiederherstellung verwendet.
+- eigene Regression für fehlenden State bei vorhandenem gültigem Snapshot ergänzt; der Test erwartet weiterhin echte Recovery und wurde nicht abgeschwächt.
+- technische A4-Schreibgrenze, laiengerechte First-Run-Anleitung und maschinenlesbare A4-Validation-Evidence ergänzt.
+- auf dem gehärteten Produkt-Head `d914a94804f5e79bb751fba03e98f6bd49bb35ac` Runtime Core `32574175146`, Presentation Core `32574175165` und Repository Health `32574175129` erfolgreich bestanden; nach den abschließenden Dokumentationsänderungen muss der endgültige PR-Head erneut alle drei Gates bestehen.
+- keine neue Journal-Eventart, keine neue Balance-/Domainlogik, kein `VERSION.json`-Bump und noch kein Release-Artefakt; Release-Abnahme und Produktversionierung bleiben ausdrücklich der nachfolgenden Stufe vorbehalten.
+
 ### 0.8.3-C – Settlement & Consequences
 
 - `SettlementState` und `SettlementService.complete(...)` als verbindlichen atomaren Abschlussweg von `settlement` nach `completed` ergänzt; der allgemeine Event-Service darf `completed` nicht mehr direkt erzeugen.
