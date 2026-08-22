@@ -10,11 +10,12 @@
   <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
   <img alt="Character Forge 0.7.2 validiert" src="https://img.shields.io/badge/Character_Forge-0.7.2_validiert-7dff00">
   <img alt="Economy 0.8.2 remote validiert" src="https://img.shields.io/badge/Economy-0.8.2_remote_validiert-f2c744">
-  <img alt="Event Loop 0.8.3 A in Abnahme" src="https://img.shields.io/badge/Event_Loop-0.8.3--A_in_Abnahme-00c2ff">
+  <img alt="Event Actions 0.8.3 A validiert" src="https://img.shields.io/badge/Event_Actions-0.8.3--A_validiert-00c2ff">
+  <img alt="Crisis und Berlin Map 0.8.3 B in Abnahme" src="https://img.shields.io/badge/Crisis_Map-0.8.3--B_in_Abnahme-e840ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
-> **Entdecken → planen → handeln → eskalieren → auswerten → entwickeln.**  
+> **Entdecken → planen → handeln → eskalieren → entscheiden → auswerten → entwickeln.**  
 > Verhalten, Training, Entscheidungen und Krisen formen die Crew – ohne starre Startklassen.
 
 </div>
@@ -28,16 +29,17 @@
 | | Aktueller Stand |
 |---|---|
 | **Runtime-Baseline** | `0.5.2-alpha.1` |
-| **Letzte remote validierte Feature-Basis** | `0.8.2 – Equipment & Economy` inklusive Integritätshärtung |
-| **0.8.2-Abnahme** | PR #61 · Head `cee782476dccc...` · Runtime Core `32557685040`, Presentation Core `32557685042`, Repository Health `32557685108` grün · Merge `9cfa107f0256...` |
-| **Aktive Iteration** | `0.8.3-A – Event Execution Engine` |
-| **0.8.3-A** | 8 kanonische Aktionen von `draft` bis `settlement`; finaler PR-Head #62 wird remote abgenommen |
-| **Weg zum ersten spielbaren Release** | `0.8.3-A Aktionen → 0.8.3-B Krisen → 0.8.3-C Settlement/Folgen → Release-Kandidat` |
+| **Letzte remote validierte Feature-Stufe** | `0.8.3-A – Event Execution Engine` |
+| **0.8.3-A-Abnahme** | PR #62 · Head `710674a9e330...` · Runtime Core `32558175370`, Presentation Core `32558175365`, Repository Health `32558175382` grün · `SAFE MERGE PASS` · Merge `8a5b08b5f44e...` |
+| **Aktive Iteration** | `0.8.3-B1 Crisis Engine + 0.8.3-B2 Berlin Ops Map Foundation` |
+| **Aktiver PR** | #63 |
+| **0.8.3-B1** | 6 Incident-Typen × 3 Reaktionen, atomarer Crisis-Lifecycle, pending Settlement, Recovery |
+| **0.8.3-B2** | 8 Bezirke, 12 Orte, 7 kaufbare Objekte, Hall of Tribute, Score-/Tier-Projektion |
+| **Weg zum ersten spielbaren Release** | `B final abnehmen → 0.8.3-C Settlement/Folgen → schreibender A4-Client` |
 | **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
-| **Event Foundation** | Ort, Budget, Acts, Crew, Equipment-Readiness, Zeitfenster, Sicherheit, Phasen und Revision |
-| **Persistenz** | Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
+| **Persistenz** | append-only Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
-| **Grafischer Renderer** | auswertbarer statischer HTML-Blueprint vorhanden; noch kein schreibender Game-Client |
+| **Grafischer Renderer** | statischer HTML-Blueprint vorhanden; Berlin Ops Map derzeit nur datengetriebene Projection, noch kein schreibender Kartenclient |
 | **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert |
 
 > [!IMPORTANT]
@@ -47,15 +49,15 @@
 
 ## 🚦 Was bis zum Release noch fehlt
 
-Der aktuelle Stand ist eine validierte Spiellogik mit statischer, schreibgeschützter HTML-Auswertung – noch kein auslieferbarer Game-Client. Für das erste **spielbare Alpha-Release** sind jetzt drei Schritte verpflichtend:
+Der aktuelle Stand ist eine validierte Spiellogik mit schreibgeschützter Präsentationsbasis – noch kein auslieferbarer Game-Client. Für das erste **spielbare Alpha-Release** bleiben drei Schritte:
 
-1. **0.8.3-A Event Execution Engine abschließen:** verbindliche Phasenaktionen und ihre zentralen Voraussetzungen auf dem exakten PR-Head remote bestätigen und regelkonform mergen.
-2. **0.8.3-B/C vollständigen Event-Loop schließen:** Krisen/Incidents sowie Settlement, Ruf- und Character-Folgen journalfähig ergänzen und den Gesamtpfad inklusive Recovery testen.
-3. **Release-Kandidat abnehmen:** Erst nach bestätigtem 0.8.3 den schreibenden A4-Client an die Runtime anbinden, dann Ersteinstieg, Start aus frischem Checkout und Save/Recovery-Smoke-Test nachweisen; danach erst Version und Release-Artefakt festlegen.
+1. **0.8.3-B final abnehmen:** Crisis Engine und Berlin-Ops-Map-Foundation auf dem exakten PR-Head dreifach grün bestätigen und ausschließlich über `/safe-merge` übernehmen.
+2. **0.8.3-C Settlement & Consequences:** bestätigte Krisenfolgen über die vorhandenen Economy-/Character-Verträge buchen, `event.completed` erzeugen und den Gesamtpfad inklusive Recovery testen.
+3. **Release-Kandidat:** danach A4 als kleinsten schreibenden Client anbinden, Ersteinstieg und Save/Recovery-Smoke-Test nachweisen und erst dann Version/Release-Artefakt festlegen.
 
-**Nicht blockierend für das erste lokale Alpha-Release:** Telegram-/Netzwerk-Sync und native GitHub-Branch-Protection. Beides bleibt wichtig, ist aber kein Bestandteil des lokalen Spielkerns.
+**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik und native GitHub-Branch-Protection.
 
-Die prüfbaren Arbeitspakete und ihre Reihenfolge stehen in [`TODO.md`](TODO.md#p0--pflichtpfad-zum-ersten-spielbaren-alpha-release).
+Die genaue Reihenfolge steht in [`TODO.md`](TODO.md#p0--pflichtpfad-zum-ersten-spielbaren-alpha).
 
 ---
 
@@ -70,13 +72,15 @@ BESCHAFFEN / TRAINIEREN / VERNETZEN
    ↓
 AUFBAUEN / BOOKEN / SOUND CHECKEN
    ↓
-EVENT / KRISE / ENTSCHEIDUNG
+EVENT
    ↓
-AUSWERTEN
+KRISE / ENTSCHEIDUNG
    ↓
-SKILLS · TRAITS · BIOGRAFIE · LEVEL · RESONANZ
+ABBAU / ABRECHNUNG
    ↓
-NEUE MÖGLICHKEITEN
+SKILLS · TRAITS · BIOGRAFIE · LEVEL · RESONANZ · RUF
+   ↓
+NEUE ORTE / IMMOBILIEN / MÖGLICHKEITEN
 ```
 
 ### Was Charaktere wirklich verändert
@@ -122,42 +126,19 @@ NEUE MÖGLICHKEITEN
 </td>
 <td valign="top" width="33%">
 
-### Character Forge
+### Event / World
 
-- 8 gemeinsame Komponenten
-- A4 Ops Deck
-- A3 Cinematic Forge
-- bestätigtes Progressionsfeedback
-- dynamische Biografie
-- Reduced-Motion-Fallback
-- Ranking / Network Foundation
-- 20 Manifest-Actions mit Ressourcenwirkung
+- Event State + Economy
+- 8 kanonische Event-Aktionen
+- Crisis-/Incident-State
+- 6 Krisentypen mit Reaktionswegen
+- Berlin Ops Map Foundation
+- Hall of Tribute
+- Immobilien-/Upgrade-Datenbasis
 
 </td>
 </tr>
 </table>
-
-### 0.7.2 verbindet den kompletten Character-Forge-Ablauf
-
-```text
-Action
-  ↓
-Energie / Stress
-  ↓
-Progression
-  ↓
-bestätigte Journal-Events
-  ↓
-Feedback + dynamische Biografie
-  ↓
-60-s-Autosave + Snapshot
-  ↓
-Undo nach erlaubter Kompensationsregel
-  ↓
-Reload / Recovery
-  ↓
-identische Projektion in A4 und A3
-```
 
 ---
 
@@ -168,7 +149,7 @@ identische Projektion in A4 und A3
 | Eventbereich | Vertrag |
 |---|---|
 | **Ort** | technische ID, Anzeigename, Region und Zugangsstatus |
-| **Budget** | Event-Budget in Cent; Änderungen laufen seit 0.8.2 über bestätigte Economy-Transaktionen |
+| **Budget** | Änderungen laufen seit 0.8.2 über bestätigte Economy-Transaktionen |
 | **Acts** | geplant / bestätigt / abgesagt |
 | **Crew** | Character-ID, Rolle und Verfügbarkeit |
 | **Equipment** | Anforderung und Readiness aus bestätigtem Besitz/Reservierung |
@@ -177,25 +158,7 @@ identische Projektion in A4 und A3
 | **Revision** | monotone Revision; veraltete Schreibversuche werden abgewiesen |
 
 ```text
-draft
-  ↓
-planning
-  ↓
-procurement
-  ↓
-transport
-  ↓
-setup
-  ↓
-soundcheck
-  ↓
-live ↔ crisis
-  ↓       ↓
-teardown ←
-  ↓
-settlement
-  ↓
-completed
+draft → planning → procurement → transport → setup → soundcheck → live ↔ crisis → teardown → settlement → completed
 ```
 
 > [!CAUTION]
@@ -205,9 +168,9 @@ Details: [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
 
 ---
 
-## ⚙️ 0.8.3-A – Event Execution Engine
+## ⚙️ 0.8.3-A – Event Execution Engine ✅
 
-Die Phasenmaschine ist jetzt nicht mehr nur ein frei adressierbarer technischer Übergang. `EventExecutionService` stellt einen verbindlichen Aktionspfad bereit und liefert für spätere Clients dieselben Blocker, die beim Execute tatsächlich geprüft werden.
+Die Phasenmaschine ist nicht mehr nur ein frei adressierbarer technischer Übergang. `EventExecutionService` stellt einen verbindlichen Aktionspfad bereit und liefert dieselben Blocker, die beim Execute tatsächlich geprüft werden.
 
 ```text
 begin_planning
@@ -221,40 +184,109 @@ begin_planning
 → settlement
 ```
 
-Dabei gelten unter anderem:
+Wesentliche Regeln:
 
-- bestätigte Acts/Crew und positives Budget vor der Beschaffung,
-- vollständige Crew-/Act-Bestätigung und Equipment-Readiness vor Transport bzw. Live,
-- Ort, Zugang, Zeitfenster und Sicherheitsfreigabe für physische Phasen,
-- append-only Journal über `event.phase_changed` mit `reason=event_action:<action_id>`,
-- idempotente Wiederholung desselben Commands,
-- kein Abschluss zu `completed`, bevor 0.8.3-C die Settlement-Folgen definiert.
+- bestätigte Acts/Crew und positives Budget vor der Beschaffung
+- vollständige Crew-/Act-Bestätigung und Equipment-Readiness vor Transport/Live
+- Ort, Zugang, Zeitfenster und Sicherheitsfreigabe für physische Phasen
+- append-only Journal über `event.phase_changed`
+- persistierter Eventzustand ist alleinige Autorität
+- idempotente Wiederholung desselben Commands
+- kein `completed`, bevor 0.8.3-C Settlement definiert
 
 Maschinenlesbarer Vertrag: [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json)
 
 ---
 
+## 🚨 0.8.3-B1 – Crisis / Incident Engine
+
+Ein laufendes Event kann jetzt tatsächlich eskalieren. Die Krise ist kein UI-Effekt, sondern eigener persistierter Zustand.
+
+```text
+live
+ ↓ Incident öffnen – atomarer Commit
+crisis + IncidentState.active
+ ↓ Response auswählen
+crisis
+ ↓ atomarer Resolve-Commit
+live | teardown | cancelled
+```
+
+### Startkatalog
+
+- Stromausfall
+- Security-Probleme
+- Equipment-Ausfall
+- verspäteter Act
+- Crowd Overload
+- Lärmdruck
+
+Jeder Typ besitzt drei katalogisierte Reaktionen. Severity `1–5` skaliert die Effekte deterministisch.
+
+### Warum Folgen zunächst nur vorgemerkt werden
+
+Krisen erzeugen bestätigte Folgen auf Budget, Ruf, Crew-Stress, Stabilität und Heat. Diese stehen im `IncidentState.pending_settlement`, werden aber **noch nicht direkt** auf Economy oder Character geschrieben. Damit bleibt die 0.8.2-Regel erhalten: Geld ändert sich nur über bestätigte Economy-Transaktionen. Die eigentliche Buchung folgt in 0.8.3-C.
+
+Vertrag: [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md) · [`manifests/INCIDENT_MANIFEST.json`](manifests/INCIDENT_MANIFEST.json)
+
+---
+
+## 🗺️ 0.8.3-B2 – Berlin Ops Map Foundation
+
+Die Welt bekommt eine eigene Handlungsebene. Sie ist ausdrücklich **stilisierte Spielkarte, keine Navigation**: 0–100-Koordinaten statt realer Adresslogik machen sie offline, portabel und rendererunabhängig.
+
+### Stilrichtung
+
+**Retro-Autokarte × moderner Control Room**
+
+- entsättigte Kartengrundfläche
+- transparente Bezirkszonen
+- kontrastreiche Neonmarker
+- Wert-/Tier-Hervorhebung statt beliebiger Dekoration
+- Halo, Pulse und Ranking-Badge für Premium-Orte
+- Reduced-Motion-Fallback ohne Informationsverlust
+
+### Aktuelle Datenbasis
+
+- **8 Bezirke:** Mitte, Friedrichshain, Kreuzberg, Neukölln, Wedding, Lichtenberg, Treptow, Charlottenburg
+- **12 Spielorte**
+- **7 kaufbare Objekte**
+- **10 Ausbauarten**
+- exakt **1 Hall of Tribute**
+
+Jeder Ort besitzt `prestige`, `audience_pull`, `risk`, `underground_factor` und `utility`. Daraus berechnet die read-only Projection einen deterministischen Score und die Tiers `standard / strong / prime / legendary`.
+
+Bereits vorbereitet, aber noch nicht persistent: `heat`, `prestige`, `police_pressure`, `scene_activity` je Bezirk.
+
+### Hall of Tribute
+
+Die Hall ist der feste Prestige-/Ranking-Ort. Für spätere Auszeichnungen sind bereits satirische Titel vorbereitet, z. B. **Lärmadel, Bunkerbaron, Kabelkönig, Pegelpapst, Stromheiland, Betonlegende und Nachtminister**.
+
+Vertrag: [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json) · [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md)
+
+---
+
 ## 🧭 Einstieg ohne Vorwissen
 
-**Du willst das Spielprinzip verstehen, ohne den Code zu kennen?**
-
-1. Starte mit der ausführlichen [`Spielbeschreibung ohne Technik`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md).
-2. Nutze die [`Spieleranleitung`](docs/SPIELERANLEITUNG.md) für den heutigen praktischen Einstieg.
-3. Als Entwickler führt die [`technische Spielbeschreibung`](docs/SPIELBESCHREIBUNG_TECHNISCH.md) durch Architektur, Datenfluss und Erweiterungspunkte.
-4. [`A4 Ops Deck`](docs/A4_OPS_DECK_0.6.3.md) beschreibt den normalen Arbeitsablauf.
-5. [`A3 Cinematic Forge`](docs/A3_CINEMATIC_FORGE_0.6.4.md) zeigt die stärker inszenierte Charakterentwicklung.
-6. Der nächste Entwicklungsblock steht kompakt in [`TODO.md`](TODO.md).
+1. Spielidee: [`docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md)
+2. praktischer aktueller Einstieg: [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md)
+3. Entwicklergesamtbild: [`docs/SPIELBESCHREIBUNG_TECHNISCH.md`](docs/SPIELBESCHREIBUNG_TECHNISCH.md)
+4. aktueller Entwicklungsblock: [`TODO.md`](TODO.md)
 
 > [!NOTE]
-> Der statische HTML-Blueprint lässt sich bereits lokal prüfen und anklicken. Er zeigt die Originalgrafik unverändert, wertet den UI-Vertrag aus und schreibt keine Spieldaten. Ein vollständiger grafischer Game-Client ist das noch nicht.
+> Der vorhandene HTML-Blueprint ist weiterhin schreibgeschützt. Die Berlin Ops Map besitzt bereits einen getesteten Projection-Vertrag, aber noch keinen fertigen grafischen Renderer oder Domain-Schreibweg.
 
-### HTML-Blueprint vollautomatisch starten
+### HTML-Blueprint starten
 
 ```bash
 python3 tools/start_web_blueprint.py
 ```
 
-Die Startroutine prüft zuerst alle benötigten Dateien, bindet den lokalen Server ohne fehleranfällige Vorabreservierung, zeigt Adresse und Stopp-Befehl sofort an und öffnet den Standardbrowser. Für einen rein manuellen Browserstart dient `--no-browser`; bei einem belegten Port nennt die Fehlermeldung mit `--port 0` direkt den automatischen Ausweg. Die Oberfläche führt zusätzlich einen kopierbaren Prüfbericht unter **Diagnose**.
+Bei einem belegten Port:
+
+```bash
+python3 tools/start_web_blueprint.py --port 0
+```
 
 ---
 
@@ -265,23 +297,20 @@ Die Startroutine prüft zuerst alle benötigten Dateien, bindet den lokalen Serv
 | vollständige Spielidee ohne Technik | [`docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md) |
 | technische Gesamtbeschreibung | [`docs/SPIELBESCHREIBUNG_TECHNISCH.md`](docs/SPIELBESCHREIBUNG_TECHNISCH.md) |
 | Spieler-Einstieg | [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md) |
-| HTML-Blueprint starten | `python3 tools/start_web_blueprint.py` |
 | aktuellen Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
 | nächste Aufgaben | [`TODO.md`](TODO.md) |
-| Event State 0.8.1 | [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md) |
-| Event Actions 0.8.3-A | [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json) |
-| Architektur und Grenzen | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
-| Spiel-/Datenfluss | [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) |
-| Character Forge | [`docs/CHARACTER_FORGE.md`](docs/CHARACTER_FORGE.md) |
+| Event State | [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md) |
+| Event Actions | [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json) |
+| Crisis + Berlin Map | [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md) |
+| Incident-Katalog | [`manifests/INCIDENT_MANIFEST.json`](manifests/INCIDENT_MANIFEST.json) |
+| Berlin Ops Map | [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json) |
+| Architektur | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
 | Gameplay Actions | [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md) |
 | Persistence / Recovery | [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md) · [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md) |
-| A4 Ops Deck | [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md) |
-| A3 Cinematic Forge | [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md) |
-| Ranking / Network | [`docs/RANKING_NETWORK_0.6.5.md`](docs/RANKING_NETWORK_0.6.5.md) |
+| A4 / A3 | [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md) · [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md) |
 | Repository Guard | [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md) |
-| `/safe-merge` bedienen | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
-| Datei finden | [`docs/REPOSITORY_INDEX.md`](docs/REPOSITORY_INDEX.md) |
-| als Entwickler übernehmen | [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md) |
+| `/safe-merge` | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
+| Entwicklerübergabe | [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md) |
 | Änderungshistorie | [`CHANGELOG.md`](CHANGELOG.md) |
 
 ---
@@ -289,26 +318,24 @@ Die Startroutine prüft zuerst alle benötigten Dateien, bindet den lokalen Serv
 ## 🧩 Architektur in 30 Sekunden
 
 ```text
-Domain: CharacterState + EventState
+Domain: CharacterState + EventState + EconomyState + IncidentState
   ↓
-Application: Character-/Event-/Economy-/Execution-Services
+Application: Character / Event / Economy / Execution / Incident Services
   ↓
-Persistence / bestätigte Events
+Persistence: Journal + State + Snapshot + Recovery
   ↓
-Character Projection + Feedback
+Read-only Projections
+  ├─→ Character / Feedback
+  ├─→ Ranking
+  └─→ Berlin Ops Map
   ↓
-PresentationState
-  ↓
-8 gemeinsame Komponenten
-  ├─→ A4 Ops Deck
-  ├─→ A3 Cinematic Forge
-  └─→ Ranking / Network
+A4 / A3 / spätere Kartenansicht
 ```
 
 | Bereich | Verantwortung | Grenze |
 |---|---|---|
-| `domain` | Charakter, Progression, Traits, Eventzustand | kennt keine UI/Infrastruktur |
-| `application` | Use Cases, Commands, Capabilities, Event-/Economy-Aktionen | umgeht Persistenz nicht |
+| `domain` | Charakter, Progression, Event, Economy, Incident-State | kennt keine UI/Infrastruktur |
+| `application` | Use Cases, Commands, atomare Orchestrierung | umgeht Persistenz nicht |
 | `infrastructure` | Journal, Save, Snapshot, Recovery | verwaltet keine sichtbaren UI-Texte |
 | `presentation` | Projection, Komponenten, Inszenierung | schreibt Domain-/Save-State nicht direkt |
 | `content` | sichtbare/lokalisierte Texte | ersetzt keine technischen Regeln |
@@ -316,8 +343,6 @@ PresentationState
 ---
 
 ## 🛡️ Repository-Sicherheit
-
-Normale Änderungen nach `main` folgen diesem Pfad:
 
 ```text
 Pull Request
@@ -334,19 +359,15 @@ Repository Health ✅
    ↓
 Merge exakt 1×
    ↓
-Main-Provenienz prüfen
+Main-Provenienz
    ↓
 SAFE MERGE PASS
 ```
 
-Zusätzlich gilt:
-
-- alte versionsgebundene Feature-Branches werden fail-closed blockiert
-- `repository-health` prüft JSON, Python-Compile/Struktur, Konfliktmarker, Informationskonsistenz, kanonische Symbole und Exporte
-- Guard-/CI-Sicherheitsdateien dürfen sich in normalen `/safe-merge`-PRs nicht selbst verändern
-- `Main Integrity` kontrolliert Änderungen auf `main`
-- GitHub-Eventual-Consistency erhält nur beim Lesen der Provenienz begrenzte Retries; der Merge wird **nie wiederholt**
-- native GitHub-Branch-Protection ist weiterhin eine zusätzliche offene serverseitige Härtung
+- `repository-health` prüft JSON, Python-Struktur/Compile, Konfliktmarker, Informationskonsistenz, kanonische Symbole und Exporte.
+- Guard-/CI-Sicherheitsdateien dürfen sich in normalen `/safe-merge`-PRs nicht selbst verändern.
+- `Main Integrity` kontrolliert Änderungen auf `main`.
+- native GitHub-Branch-Protection bleibt zusätzliche offene serverseitige Härtung.
 
 ---
 
@@ -383,27 +404,16 @@ python3 tools/simulate_characters/progression_simulator.py \
   --output reports/PROGRESSION_SIMULATION_0.4.1.json
 ```
 
-Fachliche Prüfungen bleiben risikobasiert. Pull Requests nach `main` benötigen jedoch immer einen eindeutigen Status von Runtime Core, Presentation Core und Repository Health.
+Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime Core, Presentation Core und Repository Health.
 
 <details>
-<summary><strong>📜 Bisherige Remote-Abnahmen anzeigen</strong></summary>
+<summary><strong>📜 Wichtige Remote-Abnahmen</strong></summary>
 
-- 0.6.3 / PR #28: Runtime Core `32514970109`, Presentation Core `32514970398`
-- 0.6.4 / PR #29: Runtime Core `32516833552`, Presentation Core `32516833514`
-- 0.6.5 / PR #30: Runtime Core `32517683276`, Presentation Core `32517683263`
-- 0.7.1 / PR #31: Runtime Core `32519042006`, Presentation Core `32519041908`
-- Repository Guard / PR #34: Runtime Core `32522887448`, Presentation Core `32522887380`, Repository Health `32522887383`
-- Safe-Merge-Bootstrap / PR #35: Runtime Core `32527116025`, Presentation Core `32527115999`, Repository Health `32527116022`
-- Eventual-Consistency-Hotfix / PR #37: Runtime Core `32527882811`, Presentation Core `32527882838`, Repository Health `32527882791`
+- 0.7.2 / PR #41: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406`
 - Safe-Merge-End-to-End / PR #38: Runtime Core `32528078989`, Presentation Core `32528078992`, Repository Health `32528078926`; `SAFE MERGE PASS`
-- Safety Receipt / PR #39: Runtime Core `32528915005`, Presentation Core `32528914997`, Repository Health `32528915004`; `SAFE MERGE PASS`
-- 0.7.2 / PR #41, validierter Head `5f7ded400a5f...`: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406`
-- 0.7.2 Closeout / PR #45: Runtime Core `32534969250`, Presentation Core `32534969199`, Repository Health `32534969209`; `SAFE MERGE PASS`
-- Integrity-Reparatur / PR #47: Runtime Core `32536504014`, Presentation Core `32536504089`, Repository Health `32536504068`; `SAFE MERGE PASS`
 - 0.8.1 / PR #48: Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303`
-- 0.8.2 Economy-Hardening / PR #61: Runtime Core `32557685040`, Presentation Core `32557685042`, Repository Health `32557685108`; Merge `9cfa107f0256...`
-
-Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 aus dem kanonischen Baum entfernt. Spätere direkte `main`-Änderungen wurden vom Main-Integrity-Guard erkannt und über validierte PRs bereinigt. Repository Guard und `/safe-merge` bleiben der vorgeschriebene normale Mergeweg.
+- 0.8.2 Economy-Hardening / PR #61: Runtime Core `32557685040`, Presentation Core `32557685042`, Repository Health `32557685108`
+- 0.8.3-A / PR #62: Runtime Core `32558175370`, Presentation Core `32558175365`, Repository Health `32558175382`; `SAFE MERGE PASS`
 
 </details>
 
@@ -416,22 +426,20 @@ Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Repa
 - [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md)
 - [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
 - [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json)
-- [`docs/CHARACTER_CORE_0.5.md`](docs/CHARACTER_CORE_0.5.md)
+- [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md)
+- [`manifests/INCIDENT_MANIFEST.json`](manifests/INCIDENT_MANIFEST.json)
+- [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json)
 - [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
 - [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
 - [`docs/UI_UX_BLUEPRINT.md`](docs/UI_UX_BLUEPRINT.md)
 - [`docs/PRESENTATION_CONTRACT_0.6.md`](docs/PRESENTATION_CONTRACT_0.6.md)
-- [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md)
-- [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md)
-- [`docs/RANKING_NETWORK_0.6.5.md`](docs/RANKING_NETWORK_0.6.5.md)
 - [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md)
 - [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md)
-- [`docs/DATENMODELL.md`](docs/DATENMODELL.md)
 
 ---
 
 ## 🔧 Entwicklungsregel
 
-Eine Iteration bearbeitet eine klar begründete Zielstelle. Parallelimplementierungen derselben kanonischen Datei werden nicht weitergeführt. Normale PRs nach `main` werden ausschließlich über `/safe-merge` übernommen. Dafür müssen `runtime-core`, `presentation-core` und `repository-health` auf dem exakten PR-Head grün sein; der Branch muss den aktuellen `main` enthalten und alle Review-Threads müssen gelöst sein.
+Eine Iteration bearbeitet eine klar begründete Zielstelle. Normale PRs nach `main` werden ausschließlich über `/safe-merge` übernommen. Dafür müssen `runtime-core`, `presentation-core` und `repository-health` auf dem exakten PR-Head grün sein; der Branch muss den aktuellen `main` enthalten und alle Review-Threads müssen gelöst sein.
 
 Details: [`AGENTS.md`](AGENTS.md) · [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md) · [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md)
