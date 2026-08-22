@@ -22,6 +22,9 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ### Release-Planung
 
+- den vollständigen 0.8.2-Economy-Slice mit den lokalen Entsprechungen aller drei Kern-Gates abgenommen; die Remote-Abnahme auf dem exakten PR-Head bleibt ausdrücklich offen.
+- Status und Aufgabenliste trennen lokale Economy-Abnahme jetzt eindeutig von Remote-CI; die Spieleranleitung erklärt diesen Unterschied ohne Entwicklerwissen.
+- einen reproduzierbaren, maschinenlesbaren Economy-Replay-Beleg mit festem Seed, Head-SHA und fachlichen Receipts als konkrete Folgeoptimierung festgehalten.
 - veralteten 0.8.1-Mergevorbehalt nach dem belegten Merge von PR #48 entfernt, 0.8.2 als aktive Iteration gesetzt und den Pflichtpfad auf die drei tatsächlich offenen Release-Pakete reduziert.
 - Release-Manifest von der überholten Architektur-Foundation auf die unverändert gültige Runtime-Baseline `0.5.2-alpha.1` samt Journal-/Save-Schemastand 2 abgeglichen.
 - Spieleranleitung nennt jetzt eine sofort ausführbare, schreibgeschützte Prüfung und grenzt sie klar von der kommenden Equipment-/Economy-Stufe ab.
