@@ -8,18 +8,18 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Character Forge 0.7.2 validiert" src="https://img.shields.io/badge/Character_Forge-0.7.2_validiert-7dff00">
+  <img alt="Feature Stand 0.8.5 E validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.5--E_validiert-7dff00">
   <img alt="Economy 0.8.2 remote validiert" src="https://img.shields.io/badge/Economy-0.8.2_remote_validiert-f2c744">
-  <img alt="Event Actions 0.8.3 A validiert" src="https://img.shields.io/badge/Event_Actions-0.8.3--A_validiert-00c2ff">
-  <img alt="Crisis und Berlin Map 0.8.3 B validiert" src="https://img.shields.io/badge/Crisis_Map-0.8.3--B_validiert-e840ff">
   <img alt="Settlement 0.8.3 C remote validiert" src="https://img.shields.io/badge/Settlement-0.8.3--C_remote_validiert-2ee6a6">
   <img alt="A4 Game Client 0.8.4 remote validiert" src="https://img.shields.io/badge/A4_Game_Client-0.8.4_remote_validiert-ff7ad9">
+  <img alt="Living Districts 0.8.5 D validiert" src="https://img.shields.io/badge/Living_Districts-0.8.5--D_validiert-00c2ff">
+  <img alt="Hall of Tribute 0.8.5 E validiert" src="https://img.shields.io/badge/Hall_of_Tribute-0.8.5--E_validiert-e840ff">
   <img alt="First Playable Alpha 0.8.4 alpha 1" src="https://img.shields.io/badge/First_Playable_Alpha-0.8.4--alpha.1-7dff00">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
-> **Entdecken → planen → handeln → eskalieren → entscheiden → abrechnen → entwickeln.**  
-> Verhalten, Training, Entscheidungen und Krisen formen die Crew – ohne starre Startklassen.
+> **Entdecken → planen → handeln → eskalieren → entscheiden → abrechnen → Welt verändern → aufsteigen.**  
+> Verhalten, Training, Entscheidungen, Straßenleben und Events formen Crew und Stadt – ohne starre Startklassen.
 
 </div>
 
@@ -31,33 +31,32 @@
 
 | | Aktueller Stand |
 |---|---|
-| **Runtime-Baseline** | `0.8.4-alpha.1` |
+| **Runtime-Baseline** | `0.8.4-alpha.1` – weiterhin letzter bewusst freigegebener Produktrelease |
+| **Validierter Feature-Stand auf main** | ✅ `0.8.5-E` · Competitive Ranking, Personalisierung, Street Encounters, Living Districts und Hall of Tribute |
 | **Erstes lokal spielbares Alpha** | ✅ `0.8.4-alpha.1` remote validiert, reproduzierbar paketiert und per `/safe-merge` übernommen |
-| **0.8.4-Abnahme** | PR #69 · Head `3d61e9d6385a...` · Runtime Core `32575062624`, Presentation Core `32575062602`, Repository Health `32575062620` grün · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `28459c197489...` |
-| **Release-Abnahme** | PR #72 · Head `7fe1a39c6b69...` · Runtime Core `32576362896`, Presentation Core `32576362890`, Repository Health `32576362810`, Release Acceptance `32576362827` grün · `SAFE MERGE PASS` · Merge `72bb30242727...` |
-| **Release PR #73** | Head `ece6c145bb07...` · Runtime `32576855723` · Presentation `32576855749` · Repository Health `32576855738` · Release Acceptance `32576855720` · Release Package `32576855768` · 0 Review-Threads · `SAFE MERGE PASS` · Merge `3fdb5cc3d57e...` |
 | **Release-Artefakt** | `BUNKERFREQUENZ-0.8.4-alpha.1.zip` · SHA-256 `fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146` · byte-reproduzierbar · entpackter Paket-Smoke bis `completed` |
-| **0.8.3-A** | 8 kanonische Event-Aktionen und zentrale Blocker-/Voraussetzungslogik |
-| **0.8.3-B** | Crisis Engine + Berlin Ops Map Foundation |
-| **0.8.3-C** | atomare Abrechnung, Budget/Stress/Ruf, Biografie, `event.completed`, Recovery |
-| **0.8.4** | lokaler schreibender A4-Client, First Run, kompletter Event-Smoke, Save/Restart/Recovery |
-| **Nächster Entwicklungsblock** | `0.8.5 – Dynamische Bezirkslage` aus bestätigten Settlement-/Event-Ergebnissen |
+| **0.8.5-A** | Competitive Top-10 ohne Ranggleichstände; Momentum verdrängt bei Wertgleichstand |
+| **0.8.5-B** | Anzeigename, Alias, Spitznamen und Motto im A4-Client editierbar |
+| **0.8.5-C** | replaybare Street Encounters · 60 % positiv / 25 % ruhig / 15 % negativ |
+| **0.8.5-D** | persistente Bezirkslage: Heat, Prestige, Polizeidruck, Szeneaktivität · Settlement/Street → Journal → Recovery |
+| **0.8.5-E** | Hall of Tribute im A4-Client · Ruf/Level/Resonanz · Top 10 · Auf-/Abstieg · keine erfundenen Gegner |
+| **Nächster Entwicklungsblock** | `0.8.6-A – Property Purchase Foundation`: die 7 katalogisierten kaufbaren Orte ausschließlich über bestätigte Economy-Transaktionen erwerbbar machen |
 | **Character Forge** | schreibender A4-Client + A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
-| **Persistenz** | append-only Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo; fehlender State bei gültigem Head-Snapshot regressionsgehärtet |
+| **Persistenz** | append-only Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo; District-State ist in Combined Recovery integriert |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
-| **Grafischer Renderer** | A4 lokaler Game-Client vorhanden; Berlin Ops Map weiter als getestete read-only Projection, noch kein hochwertiger Kartenrenderer |
-| **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert |
+| **Grafischer Renderer** | A4 lokaler Game-Client vorhanden; Berlin Ops Map besitzt dynamische read-only District-Werte, hochwertiger Kartenrenderer folgt später |
+| **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert; Hall erfindet deshalb keine Netzwerkgegner |
 
 > [!IMPORTANT]
-> `0.8.4-alpha.1` ist die erste **freigegebene lokal spielbare Runtime-Baseline**. Release-Abnahme, reproduzierbares Paket, SHA-256 und entpackter Paket-Smoke sind bestätigt. Eine weitere Produktversion wird erst nach einer neuen eigenen Abnahme festgelegt.
+> `0.8.4-alpha.1` bleibt die erste **freigegebene lokal spielbare Runtime-Baseline**. Die anschließend gemergten und remote validierten 0.8.5-A–E-Features ändern diese Produktversion bewusst nicht stillschweigend. Ein neuer Release benötigt eine eigene Release-Abnahme.
 
 ---
 
-## 🚦 Release-Status ✅
+## 🚦 Release- und Feature-Status ✅
 
-Der fachliche Event-Loop, der schreibende A4-Client und die separate Release-Abnahme aus einem frischen Checkout sind abgeschlossen. `0.8.4-alpha.1` wurde anschließend auf PR #73 als reproduzierbares Release-Paket qualifiziert und ausschließlich per `/safe-merge` übernommen.
+Der fachliche Event-Loop, der schreibende A4-Client und die separate Release-Abnahme aus einem frischen Checkout sind abgeschlossen. `0.8.4-alpha.1` wurde auf PR #73 als reproduzierbares Release-Paket qualifiziert und ausschließlich per `/safe-merge` übernommen.
 
-Bestätigt wurden auf dem finalen Release-Head `ece6c145bb07dbb2eb87170887374c4124a871f1`:
+Finaler Release-Head `ece6c145bb07dbb2eb87170887374c4124a871f1`:
 
 1. **Runtime Core:** `32576855723` ✅
 2. **Presentation Core:** `32576855749` ✅
@@ -67,20 +66,28 @@ Bestätigt wurden auf dem finalen Release-Head `ece6c145bb07dbb2eb87170887374c41
 6. **Review-Threads:** `0` offen
 7. **Safe Merge:** PASS · Merge `3fdb5cc3d57e73734d1f594603cafdd6d06c5210`
 
-Das eigentliche Spiel-ZIP `BUNKERFREQUENZ-0.8.4-alpha.1.zip` besitzt SHA-256 `fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146`. Der Paket-Gate baut das ZIP zweimal byte-identisch, entpackt es in einen frischen Zielordner, startet `START_BUNKERFREQUENZ.sh`, prüft HTTP-Health, spielt den Kernpfad bis `completed` und erzeugt anschließend einen Checkpoint.
+Das Spiel-ZIP `BUNKERFREQUENZ-0.8.4-alpha.1.zip` besitzt SHA-256 `fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146`. Der Paket-Gate baut das ZIP zweimal byte-identisch, entpackt es in einen frischen Zielordner, startet `START_BUNKERFREQUENZ.sh`, prüft HTTP-Health, spielt den Kernpfad bis `completed` und erzeugt anschließend einen Checkpoint.
 
-**Nicht Bestandteil des ersten lokalen Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau, Hall-of-Tribute-Saisons und native GitHub-Branch-Protection.
+### Danach sicher gemergter Feature-Ausbau 0.8.5
 
-Der nächste Entwicklungsblock ist deshalb **0.8.5 – persistente Bezirksdynamik**, ohne vorzeitigen neuen Versionsbump.
+| Stufe | Inhalt | Merge |
+|---|---|---|
+| **0.8.5-A** | Competitive Displacement Ranking | `b41d8f416679515307f2a580fb66b0569057836a` |
+| **0.8.5-B** | A4-Profilpersonalisierung | `5a9eed536d48f30cdd1f4569e9e1b1724e5ced80` |
+| **0.8.5-C** | Replaybare Street Encounters | `38de9f42c2908d63945db7bf25277b2f940ede6e` |
+| **0.8.5-D** | Living Districts | `98c8b84715cc308dd1bc9fd92b7c7e56a35cc861` |
+| **0.8.5-E** | Hall of Tribute / sichtbare Top 10 | `d383a3f364c6ee8cd954041f1d324e0ace0cb357` |
 
-Maschinenlesbarer Release-Nachweis: [`reports/RELEASE_0.8.4-alpha.1.json`](reports/RELEASE_0.8.4-alpha.1.json)
+**Noch bewusst nicht Bestandteil:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, Immobilienkauf/-ausbau, saisonale Hall-Zyklen und nativer GitHub-Branch-Schutz.
+
+Maschinenlesbarer Release-Nachweis: [`reports/RELEASE_0.8.4-alpha.1.json`](reports/RELEASE_0.8.4-alpha.1.json) · aktueller Feature-Stand: [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json)
 
 ---
 
 ## 🎛️ Der Kern des Spiels
 
 ```text
-ENTDECKEN
+ENTDECKEN / STRASSE
    ↓
 PLANEN
    ↓
@@ -96,10 +103,14 @@ ABBAU / ABRECHNUNG
    ↓
 SKILLS · TRAITS · BIOGRAFIE · LEVEL · RESONANZ · RUF
    ↓
+HEAT · PRESTIGE · POLIZEIDRUCK · SZENEAKTIVITÄT
+   ↓
+HALL OF TRIBUTE / TOP 10
+   ↓
 NEUE ORTE / IMMOBILIEN / MÖGLICHKEITEN
 ```
 
-### Was Charaktere wirklich verändert
+### Was Charaktere und Welt wirklich verändert
 
 - **16 Skills** statt fester Klassen
 - **165 individuelle Trait-Namen** über 15 gemeinsame Effektfamilien
@@ -107,6 +118,9 @@ NEUE ORTE / IMMOBILIEN / MÖGLICHKEITEN
 - Spezialisierungen entstehen aus dauerhaftem Verhalten – nicht aus einer Klassenwahl
 - Level 1–50 gehen anschließend in **offene Resonanzränge** über
 - dynamische Biografie entsteht ausschließlich aus bestätigten Journal-Ereignissen
+- Street Encounters sind deterministisch und können nicht durch Reload neu gewürfelt werden
+- bestätigte Settlements und Street Encounters verändern die persistente Bezirkslage
+- Ranglistenwerte werden projiziert; der Browser sortiert oder erfindet keine Konkurrenz
 
 ---
 
@@ -124,6 +138,7 @@ NEUE ORTE / IMMOBILIEN / MÖGLICHKEITEN
 - Skills, Traits, Spezialisierung
 - Level + Open-End-Resonanz
 - Energie und Stress `0–100`
+- replaybare Street Encounters
 
 </td>
 <td valign="top" width="33%">
@@ -139,6 +154,7 @@ NEUE ORTE / IMMOBILIEN / MÖGLICHKEITEN
 - Quarantäne beschädigter Tails
 - kompensierender Profil-Undo
 - Snapshot-basierte Wiederherstellung eines fehlenden State-Checkpoints
+- Combined Recovery einschließlich District-State
 
 </td>
 <td valign="top" width="33%">
@@ -154,8 +170,9 @@ NEUE ORTE / IMMOBILIEN / MÖGLICHKEITEN
 - First Run + Save/Restart/Recovery-Smoke
 - reproduzierbares lokales Alpha-Paket
 - Berlin Ops Map Foundation
-- Hall of Tribute
-- Immobilien-/Upgrade-Datenbasis
+- persistente Living Districts
+- Hall of Tribute mit sichtbarer Top 10
+- 7 katalogisierte kaufbare Orte als Grundlage für 0.8.6-A
 
 </td>
 </tr>
@@ -254,9 +271,9 @@ Vertrag: [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md) · [`manif
 
 ---
 
-## 🗺️ 0.8.3-B2 – Berlin Ops Map Foundation ✅
+## 🗺️ 0.8.3-B2 + 0.8.5-D – Berlin Ops Map & Living Districts ✅
 
-Die Welt bekommt eine eigene Handlungsebene. Sie ist ausdrücklich **stilisierte Spielkarte, keine Navigation**: 0–100-Koordinaten statt realer Adresslogik machen sie offline, portabel und rendererunabhängig.
+Die Welt besitzt eine eigene Handlungsebene. Sie ist ausdrücklich **stilisierte Spielkarte, keine Navigation**: 0–100-Koordinaten statt realer Adresslogik machen sie offline, portabel und rendererunabhängig.
 
 ### Stilrichtung
 
@@ -279,13 +296,15 @@ Die Welt bekommt eine eigene Handlungsebene. Sie ist ausdrücklich **stilisierte
 
 Jeder Ort besitzt `prestige`, `audience_pull`, `risk`, `underground_factor` und `utility`. Daraus berechnet die read-only Projection einen deterministischen Score und die Tiers `standard / strong / prime / legendary`.
 
-Bereits vorbereitet, aber noch nicht persistent: `heat`, `prestige`, `police_pressure`, `scene_activity` je Bezirk. Unbekannte District-Overrides sowie Besitzangaben für nicht kaufbare Orte werden fail-closed abgewiesen.
+Seit 0.8.5-D sind `heat`, `prestige`, `police_pressure` und `scene_activity` je Bezirk **persistent**. Sie entstehen ausschließlich aus bestätigten Settlement- bzw. Street-Quellen, werden auf `0..100` begrenzt, besitzen stabile Source-IDs und werden durch Combined Recovery rekonstruiert. Ein unbekannter Ort erzeugt einen sicheren No-op statt einer erfundenen Bezirkszuordnung.
 
 ### Hall of Tribute
 
-Die Hall ist der feste Prestige-/Ranking-Ort. Für spätere Auszeichnungen sind bereits satirische Titel vorbereitet, z. B. **Lärmadel, Bunkerbaron, Kabelkönig, Pegelpapst, Stromheiland, Betonlegende und Nachtminister**.
+Die Hall ist seit 0.8.5-E sichtbarer Prestige-/Ranking-Ort im A4-Client. Sofort verfügbare lokale Modi sind **Ruf, Level und Resonanz**. Das bestehende Competitive-Displacement-Ranking liefert eindeutige Plätze und Bewegungen. Ohne bestätigte weitere Teilnehmer werden keine Gegner oder Netzwerkwerte erfunden.
 
-Vertrag: [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json) · [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md)
+Saisonale Titel wie **Lärmadel, Bunkerbaron, Kabelkönig, Pegelpapst, Stromheiland, Betonlegende und Nachtminister** bleiben bewusst ein späterer, eigener Zeitzyklus-Ausbau.
+
+Verträge: [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json) · [`manifests/DISTRICT_STATE_MANIFEST.json`](manifests/DISTRICT_STATE_MANIFEST.json) · [`manifests/HALL_OF_TRIBUTE_MANIFEST.json`](manifests/HALL_OF_TRIBUTE_MANIFEST.json)
 
 ---
 
@@ -305,11 +324,13 @@ Biografie dem bestätigten Character zuordnen
 event.phase_changed
   ↓
 event.completed + SettlementState
+  ↓
+0.8.5-D: bestätigte District-Folge ableiten
 ```
 
 Wesentliche Garantien:
 
-- vollständiger Abschluss in **einem atomaren Persistence-Commit**
+- vollständiger Settlement-Abschluss in **einem atomaren Persistence-Commit**
 - Event ohne Krise ist gültig; fehlender Incident-State wird deterministisch als leer behandelt
 - `pending_settlement` wird genau einmal verbraucht
 - negatives Endbudget wird abgewiesen; kein erfundenes Schuldenmodell
@@ -318,7 +339,7 @@ Wesentliche Garantien:
 - neue Settlement-Ergebnisse normalisieren Ruf auf mindestens `0`, damit Ranking kompatibel bleibt
 - Budget-, Stress- und Ruf-Deltas im Receipt müssen exakt zu den bestätigten Effekten passen
 - Biografieeintrag trägt die bestätigte Character-ID
-- Heat/Stabilität bleiben bestätigte Settlement-Ergebnisse und werden noch nicht als District-State geschrieben
+- Heat/Stabilität bleiben bestätigte Settlement-Ergebnisse; 0.8.5-D leitet daraus erst nach bestätigtem Settlement die persistente District-Folge ab
 - `event.completed` kann nicht über den allgemeinen Event-Service umgangen werden
 - Crash nach durablem Journal ist über Combined Recovery vollständig rekonstruierbar
 
@@ -366,6 +387,22 @@ Start-/Spielanleitung: [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLE
 
 ---
 
+## 🌆 0.8.5 – Living World & sichtbare Konkurrenz ✅
+
+0.8.5 erweitert das erste Alpha **ohne versteckten Produktversionssprung** in fünf voneinander getrennten, jeweils remote validierten Schritten:
+
+1. **Competitive Ranking:** aktuelle Metrik bleibt primär; bei Gleichstand gewinnt der steigende Challenger über bestätigtes Previous-Cycle-Momentum. Rangnummern bleiben eindeutig.
+2. **Personalisierung:** Name, Alias, Spitznamen und Motto können im A4-Client bearbeitet werden; die technische Character-ID bleibt unveränderlich.
+3. **Street Encounters:** stabile Walk-ID + deterministische Auswahl; kein Reload-Reroll und keine erfundenen Geld-/Itemgewinne.
+4. **Living Districts:** bestätigte Street-/Settlement-Ergebnisse verändern die vier persistenten Bezirkswerte und bleiben replay-/recoveryfähig.
+5. **Hall of Tribute:** dieselbe Ranking-Engine wird als read-only Top-10-Ansicht sichtbar; der Browser berechnet keine Rangfolge.
+
+Der zunächst vorhandene PR #78 wurde **nicht** gemergt, weil er Living Districts unnötig mit Housing, Mehrstadtlogik, Trust und Minispielen gekoppelt hatte. PR #79 ersetzte ihn durch den kleineren District-Vertrag.
+
+Der stärkste nächste Schritt ist deshalb **0.8.6-A Property Purchase Foundation**: Die City-Map besitzt bereits sieben kaufbare Orte und EconomyService die kanonische Geldautorität. Eigentum soll als eigener kleiner, replaybarer State hinzukommen – noch ohne Ausbau- oder Rendererlogik.
+
+---
+
 ## 🧭 Einstieg ohne Vorwissen
 
 1. Spielidee: [`docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md)
@@ -373,9 +410,10 @@ Start-/Spielanleitung: [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLE
 3. allgemeiner Spieler-Einstieg: [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md)
 4. Entwicklergesamtbild: [`docs/SPIELBESCHREIBUNG_TECHNISCH.md`](docs/SPIELBESCHREIBUNG_TECHNISCH.md)
 5. aktueller Entwicklungsblock: [`TODO.md`](TODO.md)
+6. Ausbauvorrat: [`FEATURE_POOL.md`](FEATURE_POOL.md)
 
 > [!NOTE]
-> Der ältere HTML-Blueprint unter `web/` bleibt bewusst **schreibgeschützt und getrennt**. Der neue lokale A4-Game-Client befindet sich in `web/a4/` und schreibt ausschließlich über die Application-Grenze. Die Berlin Ops Map besitzt weiterhin einen getesteten read-only Projection-Vertrag, aber noch keinen hochwertigen Kartenrenderer oder eigenen Domain-Schreibweg.
+> Der ältere HTML-Blueprint unter `web/` bleibt bewusst **schreibgeschützt und getrennt**. Der lokale A4-Game-Client befindet sich in `web/a4/` und schreibt ausschließlich über die Application-Grenze. District- und Hall-Daten werden read-only projiziert; ein hochwertiger Kartenrenderer und Property-Schreibpfad sind getrennte Folgeiterationen.
 
 ### Schreibenden A4-Game-Client starten
 
@@ -415,11 +453,15 @@ python3 tools/start_web_blueprint.py
 | Spieler-Einstieg | [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md) |
 | aktuellen Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
 | nächste Aufgaben | [`TODO.md`](TODO.md) |
+| Feature-Pool | [`FEATURE_POOL.md`](FEATURE_POOL.md) |
 | Event State | [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md) |
 | Event Actions | [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json) |
 | Crisis + Berlin Map | [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md) |
 | Incident-Katalog | [`manifests/INCIDENT_MANIFEST.json`](manifests/INCIDENT_MANIFEST.json) |
 | Settlement | [`docs/SETTLEMENT_0.8.3-C.md`](docs/SETTLEMENT_0.8.3-C.md) · [`manifests/SETTLEMENT_MANIFEST.json`](manifests/SETTLEMENT_MANIFEST.json) |
+| Living Districts | [`manifests/DISTRICT_STATE_MANIFEST.json`](manifests/DISTRICT_STATE_MANIFEST.json) · [`schemas/district_state.schema.json`](schemas/district_state.schema.json) |
+| Hall of Tribute | [`manifests/HALL_OF_TRIBUTE_MANIFEST.json`](manifests/HALL_OF_TRIBUTE_MANIFEST.json) |
+| Competitive Ranking | [`manifests/RANKING_NETWORK_MANIFEST.json`](manifests/RANKING_NETWORK_MANIFEST.json) |
 | Berlin Ops Map | [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json) |
 | Architektur | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
 | Gameplay Actions | [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md) |
@@ -435,9 +477,9 @@ python3 tools/start_web_blueprint.py
 ## 🧩 Architektur in 30 Sekunden
 
 ```text
-Domain: CharacterState + EventState + EconomyState + IncidentState + SettlementState
+Domain: CharacterState + EventState + EconomyState + IncidentState + SettlementState + DistrictState
   ↓
-Application: Character / Event / Economy / Execution / Incident / Settlement Services
+Application: Character / Street / Event / Economy / Execution / Incident / Settlement / District Services
   ↑                     ↓
   └──── GameClientSession (nur Routing/Orchestrierung, keine zweite Fachlogik)
                         ↓
@@ -445,8 +487,8 @@ Persistence: Journal + State + Snapshot + Recovery
                         ↓
 Read-only Projections
   ├─→ Character / Feedback
-  ├─→ Ranking
-  ├─→ Berlin Ops Map
+  ├─→ Competitive Ranking / Hall of Tribute
+  ├─→ Living Districts / Berlin Ops Map
   └─→ A4 Game Projection
                         ↓
 A4 Game Client / A3 / spätere Kartenansicht
@@ -454,10 +496,10 @@ A4 Game Client / A3 / spätere Kartenansicht
 
 | Bereich | Verantwortung | Grenze |
 |---|---|---|
-| `domain` | Charakter, Progression, Event, Economy, Incident, Settlement | kennt keine UI/Infrastruktur |
+| `domain` | Charakter, Progression, Event, Economy, Incident, Settlement, District | kennt keine UI/Infrastruktur |
 | `application` | Use Cases, Commands, atomare Orchestrierung, GameClientSession-Routing | umgeht Persistenz nicht; dupliziert keine Domainregeln |
 | `infrastructure` | Journal, Save, Snapshot, Recovery | verwaltet keine sichtbaren UI-Texte |
-| `presentation` | Projection, Komponenten, Inszenierung | schreibt Domain-/Save-State nicht direkt |
+| `presentation` | Projection, Komponenten, Hall/Map-Darstellung | schreibt Domain-/Save-State nicht direkt |
 | `content` | sichtbare/lokalisierte Texte | ersetzt keine technischen Regeln |
 
 ---
@@ -547,6 +589,11 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - 0.8.4 A4 Game Client / PR #69: Runtime Core `32575062624`, Presentation Core `32575062602`, Repository Health `32575062620`; 0 ungelöste Review-Threads; `SAFE MERGE PASS`; Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
 - Release Acceptance / PR #72: Runtime Core `32576362896`, Presentation Core `32576362890`, Repository Health `32576362810`, Release Acceptance `32576362827`; `SAFE MERGE PASS`; Merge `72bb3024272797b27632a96559ae8abb665fff8a`
 - 0.8.4-alpha.1 Release / PR #73: Runtime Core `32576855723`, Presentation Core `32576855749`, Repository Health `32576855738`, Release Acceptance `32576855720`, Release Package `32576855768`; 0 ungelöste Review-Threads; `SAFE MERGE PASS`; Merge `3fdb5cc3d57e73734d1f594603cafdd6d06c5210`
+- 0.8.5-A / PR #75: Runtime Core `32578257295`, Presentation Core `32578257274`, Repository Health `32578257380`, Release Acceptance `32578257240`, Release Package `32578257345`; Merge `b41d8f416679515307f2a580fb66b0569057836a`
+- 0.8.5-B / PR #76: Runtime Core `32578559486`, Presentation Core `32578559454`, Repository Health `32578559549`, Release Acceptance `32578559453`, Release Package `32578559471`; Merge `5a9eed536d48f30cdd1f4569e9e1b1724e5ced80`
+- 0.8.5-C / PR #77: Runtime Core `32579029076`, Presentation Core `32579028963`, Repository Health `32579028895`, Release Acceptance `32579028891`, Release Package `32579028890`; Merge `38de9f42c2908d63945db7bf25277b2f940ede6e`
+- 0.8.5-D / PR #79: Runtime Core `32586077024`, Presentation Core `32586077030`, Repository Health `32586077045`, Release Acceptance `32586077027`, Release Package `32586077025`; 0 Review-Threads; Merge `98c8b84715cc308dd1bc9fd92b7c7e56a35cc861`
+- 0.8.5-E / PR #80: Runtime Core `32586394504`, Presentation Core `32586394533`, Repository Health `32586394437`, Release Acceptance `32586394507`, Release Package `32586394495`; 0 Review-Threads; Merge `d383a3f364c6ee8cd954041f1d324e0ace0cb357`
 
 </details>
 
@@ -569,6 +616,10 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - [`reports/RELEASE_ACCEPTANCE_ALPHA.json`](reports/RELEASE_ACCEPTANCE_ALPHA.json)
 - [`reports/RELEASE_0.8.4-alpha.1.json`](reports/RELEASE_0.8.4-alpha.1.json)
 - [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json)
+- [`manifests/DISTRICT_STATE_MANIFEST.json`](manifests/DISTRICT_STATE_MANIFEST.json)
+- [`schemas/district_state.schema.json`](schemas/district_state.schema.json)
+- [`manifests/RANKING_NETWORK_MANIFEST.json`](manifests/RANKING_NETWORK_MANIFEST.json)
+- [`manifests/HALL_OF_TRIBUTE_MANIFEST.json`](manifests/HALL_OF_TRIBUTE_MANIFEST.json)
 - [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
 - [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
 - [`docs/UI_UX_BLUEPRINT.md`](docs/UI_UX_BLUEPRINT.md)
