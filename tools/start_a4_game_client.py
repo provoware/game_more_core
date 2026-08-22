@@ -40,6 +40,7 @@ REQUIRED = (
     "web/a4/index.html",
     "web/a4/styles.css",
     "web/a4/app.js",
+    "web/a4/map_pro.js",
     "web/a4/starter.json",
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/INCIDENT_MANIFEST.json",
