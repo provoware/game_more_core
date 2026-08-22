@@ -35,10 +35,53 @@ def _incident_catalog_projection(catalog: Mapping[str, Mapping[str, Any]]) -> li
                     "response_id": response_id,
                     "label_key": response.get("label_key"),
                     "target_phase": response.get("target_phase"),
+                    "effects": deepcopy(response.get("effects", {})),
                 }
                 for response_id, response in responses.items()
             ],
         })
+    return result
+
+
+def _street_approaches_projection(
+    manifest: Mapping[str, Any] | None,
+    text_catalog: Mapping[str, str] | None,
+) -> list[dict[str, str]]:
+    if manifest is None and text_catalog is None:
+        return []
+    if manifest is None or text_catalog is None:
+        raise ValueError("Street-Ansätze benötigen Manifest und Textkatalog gemeinsam")
+    policy = manifest.get("approach_policy")
+    approaches = manifest.get("approaches")
+    if not isinstance(policy, Mapping) or not isinstance(approaches, Sequence) or isinstance(approaches, (str, bytes)):
+        raise ValueError("Street-Ansatzvertrag ist unvollständig")
+    default_id = policy.get("default_approach_id")
+    if not isinstance(default_id, str) or not default_id:
+        raise ValueError("Street-Ansatzvertrag besitzt keinen Standard")
+
+    result: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for raw in approaches:
+        if not isinstance(raw, Mapping):
+            raise ValueError("Street-Ansatz muss Mapping sein")
+        approach_id = raw.get("approach_id")
+        label_key = raw.get("label_key")
+        description_key = raw.get("description_key")
+        if not all(isinstance(value, str) and value for value in (approach_id, label_key, description_key)):
+            raise ValueError("Street-Ansatz besitzt ungültige Anzeige-Metadaten")
+        if approach_id in seen:
+            raise ValueError("Street-Ansatz-ID ist doppelt")
+        seen.add(approach_id)
+        if label_key not in text_catalog or description_key not in text_catalog:
+            raise KeyError(f"Street-Ansatztext fehlt: {approach_id}")
+        result.append({
+            "approach_id": approach_id,
+            "label": text_catalog[label_key],
+            "description": text_catalog[description_key],
+            "selected_by_default": approach_id == default_id,
+        })
+    if default_id not in seen:
+        raise ValueError("Standard-Street-Ansatz ist nicht katalogisiert")
     return result
 
 
@@ -57,6 +100,8 @@ def build_a4_game_projection(
     ranking_text_catalog: Mapping[str, str] | None = None,
     hall_season_manifest: Mapping[str, Any] | None = None,
     zeit_manifest: Mapping[str, Any] | None = None,
+    street_manifest: Mapping[str, Any] | None = None,
+    street_text_catalog: Mapping[str, str] | None = None,
     confirmed_hall_cycles: Mapping[str, Mapping[str, Any]] | None = None,
     confirmed_ranking_participants: Sequence[Mapping[str, Any]] = (),
     confirmed_network_records: Sequence[Mapping[str, Any]] = (),
@@ -80,10 +125,12 @@ def build_a4_game_projection(
         raise ValueError("Hall-Saison benötigt Hall-of-Tribute-Vertrag")
     if confirmed_hall_cycles is not None and hall_season_manifest is None:
         raise ValueError("Bestätigte Hall-Zyklen benötigen Saisonvertrag")
+    if (street_manifest is None) != (street_text_catalog is None):
+        raise ValueError("Street-Ansätze benötigen Manifest und Textkatalog gemeinsam")
 
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.7-a1",
+        "view_model_version": "0.8.7-b1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
@@ -102,6 +149,7 @@ def build_a4_game_projection(
         "property_upgrades": None,
         "berlin_ops_map": None,
         "hall_of_tribute": None,
+        "street_approaches": _street_approaches_projection(street_manifest, street_text_catalog),
         "incident_catalog": _incident_catalog_projection(incident_catalog),
     }
 

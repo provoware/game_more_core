@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "version": "0.8.5-c1",
+  "schema_version": 2,
+  "version": "0.8.7-b1",
   "selection": {
     "method": "sha256_stable_weighted",
     "weight_total": 100,
@@ -15,6 +15,84 @@
     "inventory_changes": false,
     "economy_changes": false
   },
+  "approach_policy": {
+    "default_approach_id": "balanced",
+    "player_choice": true,
+    "approach_changes_only_selection_weights": true,
+    "effects_remain_encounter_authority": true,
+    "system_time_as_authority": false,
+    "compatible_replay_versions": ["0.8.5-c1"]
+  },
+  "approaches": [
+    {
+      "approach_id": "balanced",
+      "label_key": "street.approach.balanced.label",
+      "description_key": "street.approach.balanced.description",
+      "weights": {
+        "street.none": 25,
+        "street.spaeti_water": 10,
+        "street.friendly_face": 10,
+        "street.shortcut": 10,
+        "street.crew_greeting": 10,
+        "street.coffee_house": 10,
+        "street.useful_find": 10,
+        "street.puddle": 5,
+        "street.bike_splash": 5,
+        "street.sudden_rain": 5
+      }
+    },
+    {
+      "approach_id": "recovery",
+      "label_key": "street.approach.recovery.label",
+      "description_key": "street.approach.recovery.description",
+      "weights": {
+        "street.none": 30,
+        "street.spaeti_water": 15,
+        "street.friendly_face": 5,
+        "street.shortcut": 5,
+        "street.crew_greeting": 10,
+        "street.coffee_house": 15,
+        "street.useful_find": 5,
+        "street.puddle": 5,
+        "street.bike_splash": 5,
+        "street.sudden_rain": 5
+      }
+    },
+    {
+      "approach_id": "network",
+      "label_key": "street.approach.network.label",
+      "description_key": "street.approach.network.description",
+      "weights": {
+        "street.none": 15,
+        "street.spaeti_water": 5,
+        "street.friendly_face": 20,
+        "street.shortcut": 5,
+        "street.crew_greeting": 20,
+        "street.coffee_house": 5,
+        "street.useful_find": 15,
+        "street.puddle": 5,
+        "street.bike_splash": 5,
+        "street.sudden_rain": 5
+      }
+    },
+    {
+      "approach_id": "scout",
+      "label_key": "street.approach.scout.label",
+      "description_key": "street.approach.scout.description",
+      "weights": {
+        "street.none": 15,
+        "street.spaeti_water": 5,
+        "street.friendly_face": 5,
+        "street.shortcut": 20,
+        "street.crew_greeting": 5,
+        "street.coffee_house": 5,
+        "street.useful_find": 20,
+        "street.puddle": 10,
+        "street.bike_splash": 5,
+        "street.sudden_rain": 10
+      }
+    }
+  ],
   "encounters": [
     {
       "encounter_id": "street.none",

@@ -22,7 +22,7 @@ from bunkerfrequenz.infrastructure.persistence import JournalContext, Persistenc
 
 _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "profile.update": frozenset({"type", "command_id", "changes"}),
-    "street.walk": frozenset({"type", "command_id"}),
+    "street.walk": frozenset({"type", "command_id", "approach_id"}),
     "event.create": frozenset({"type", "command_id", "event"}),
     "event.update_planning": frozenset({"type", "command_id", "changes"}),
     "event.execute": frozenset({"type", "command_id", "action_id"}),
@@ -338,16 +338,21 @@ class GameClientSession:
 
         if self.street is None or self.street_world_seed is None:
             return self._rejected("street_not_configured")
+        approach_id = command.get("approach_id")
+        if approach_id is not None and (not isinstance(approach_id, str) or not approach_id.strip()):
+            return self._rejected("invalid_street_approach")
         result = self.street.walk(
             character,
             walk_instance_id=command_id,
             world_seed=self.street_world_seed,
             journal_context=context,
+            approach_id=approach_id.strip() if isinstance(approach_id, str) else None,
         )
         committed = list(result.committed_event_ids)
         overall_replay = result.idempotent_replay
         metadata: dict[str, Any] = {
             "street_encounter": {
+                "approach_id": result.approach_id,
                 "encounter_id": result.encounter_id,
                 "polarity": result.polarity,
                 "title_key": result.title_key,

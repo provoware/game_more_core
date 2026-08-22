@@ -52,7 +52,7 @@ class A4SeasonalHallContractTests(unittest.TestCase):
 
     def test_ui_copy_never_claims_local_rank_one_is_automatically_a_title(self):
         self.assertIn("Systemzeit allein bestimmt niemals eine Saison.", INDEX)
-        self.assertIn("endgültige Titel benötigen einen bestätigten geschlossenen Zyklus", INDEX)
+        self.assertIn("Endgültige Titel benötigen einen bestätigten geschlossenen Zyklus", INDEX)
         self.assertIn("keine bestätigte Konkurrenz, daher kein Titel", APP)
         self.assertIn("Titel erst nach bestätigtem Zyklusabschluss", APP)
 
