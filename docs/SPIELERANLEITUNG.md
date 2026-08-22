@@ -1,10 +1,10 @@
 # BUNKERFREQUENZ – Spieleranleitung
 
-> **Stand: 0.8.3-B Spiellogik in Abnahme · HTML-Blueprint weiterhin schreibgeschützt**
+> **Stand: 0.8.3-B Spiellogik remote validiert · HTML-Blueprint weiterhin schreibgeschützt**
 
 Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Der Spielkern kann inzwischen Charakteraktionen, Eventphasen, Equipment/Economy und Krisen sicher speichern und wiederherstellen. Die anklickbare HTML-Ansicht ist trotzdem noch kein fertiger Game-Client und verändert keine Spielstände.
 
-**Woran erkenne ich den Release-Stand?** Das erste spielbare Alpha ist erreicht, wenn du ohne Codewissen eine Crew wählen, ein Event planen, Equipment beschaffen, eine Krise lösen, abrechnen und den gespeicherten Stand nach einem Neustart wieder laden kannst. 0.8.3-B bringt dafür jetzt die Krisenlogik und die Datenbasis der Berlin-Karte; Settlement und der schreibende Client fehlen noch.
+**Woran erkenne ich den Release-Stand?** Das erste spielbare Alpha ist erreicht, wenn du ohne Codewissen eine Crew wählen, ein Event planen, Equipment beschaffen, eine Krise lösen, abrechnen und den gespeicherten Stand nach einem Neustart wieder laden kannst. 0.8.3-B ist für Krisenlogik und Berlin-Kartenbasis bestätigt; Settlement und der schreibende Client fehlen noch.
 
 ## 0. HTML-Ansicht starten – ohne Vorwissen
 
@@ -136,7 +136,7 @@ Planung beginnen
 
 Die Runtime prüft dabei Acts, Crew, Budget, Equipment, Ort, Zugang, Zeitfenster und Sicherheitsfreigabe. Ein späterer Client zeigt diese Blockaden nur an; er berechnet sie nicht noch einmal selbst.
 
-## 11. Krise erkennen und lösen – neu in 0.8.3-B1
+## 11. Krise erkennen und lösen – validiert in 0.8.3-B1
 
 Während `live` kann ein Incident eröffnet werden. Das Event wechselt dann atomar in `crisis`: Es gibt keinen Zustand „Krise gespeichert, Event aber noch live“ oder umgekehrt.
 
@@ -160,7 +160,7 @@ Strom frisst Bass
 
 ### Schweregrad
 
-Incidents besitzen Severity `1–5`. Je höher der Wert, desto stärker werden die katalogisierten Folgen. Die Skalierung ist deterministisch: gleicher bestätigter Zustand + gleiche Reaktion = gleiche Wirkung.
+Incidents besitzen Severity `1–5`. Je höher der Wert, desto stärker werden die katalogisierten Einzelfolgen. Die Skalierung ist deterministisch: gleicher bestätigter Zustand + gleiche Reaktion = gleiche Wirkung. Mehrere Krisen dürfen sich bis zur Abrechnung zu größeren Gesamtsummen addieren.
 
 ### Was passiert nach deiner Entscheidung?
 
@@ -179,9 +179,11 @@ Diese Werte werden in 0.8.3-B **vorgemerkt**, aber noch nicht direkt gebucht. Wa
 - höchstens eine aktive Krise gleichzeitig,
 - nur erlaubte Reaktionen werden angenommen,
 - wiederholter gleicher Command wirkt nicht doppelt,
+- auch ein Replay muss zum richtigen Event-Kontext gehören,
+- ein offener Incident wird nicht mit einem nachträglich anderen Regelstand aufgelöst,
 - Crash nach Journal-Schreibvorgang kann per Recovery rekonstruiert werden.
 
-## 12. Berlin Ops Map – neu in 0.8.3-B2
+## 12. Berlin Ops Map – validierte Foundation in 0.8.3-B2
 
 Die Berlin-Karte ist zunächst eine **stilisierte Handlungskarte**, keine echte Navigation. Sie verwendet eine eigene 0–100-Kartenfläche statt exakter Straßenadressen. Dadurch funktioniert sie offline und kann später auf kleinen wie großen Displays skaliert werden.
 
@@ -230,7 +232,7 @@ Jeder Bezirk kann später dynamische Werte bekommen:
 - Polizeidruck
 - Szeneaktivität
 
-0.8.3-B kann diese Werte bereits darstellen, verändert sie aber noch nicht dauerhaft. Das folgt nach dem kompletten Event-/Settlement-Kern.
+0.8.3-B kann diese Werte bereits darstellen, verändert sie aber noch nicht dauerhaft. Unbekannte oder falsch geschriebene Bezirks-IDs werden nicht still ignoriert, sondern als Fehler abgewiesen.
 
 ## 13. Immobilien-Ausbaupfade
 
@@ -247,7 +249,7 @@ Die Datenbasis kennt bereits mögliche Ausbau-Slots:
 - Studio
 - Büro
 
-Kaufen und Ausbau sind noch nicht schreibend angebunden. Später müssen Kosten ausschließlich über bestätigte Economy-Transaktionen laufen.
+Kaufen und Ausbau sind noch nicht schreibend angebunden. Später müssen Kosten ausschließlich über bestätigte Economy-Transaktionen laufen. Besitz darf nur auf tatsächlich kaufbare Locations zeigen.
 
 ## 14. Hall of Tribute
 
