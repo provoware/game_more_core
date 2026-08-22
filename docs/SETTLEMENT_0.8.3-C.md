@@ -54,13 +54,15 @@ Ein Endbudget unter `0` ist in 0.8.3-C1 nicht erlaubt. Eine spätere Schulden-/F
 
 ### Ruf
 
-`reputation_delta` wird über den Journaltyp `character.reputation_changed` angewandt. Der kanonische Character-/Ranking-Vertrag verlangt nichtnegative Reputation. Deshalb gilt:
+`reputation_delta` wird über den Journaltyp `character.reputation_changed` angewandt. Neue Settlement-Ergebnisse müssen zur bestehenden Ranking-Projektion passen. Deshalb gilt für das Ergebnis:
 
 ```text
 new_reputation = max(0, old_reputation + reputation_delta)
 ```
 
-Der Journalrecord bewahrt trotzdem den vollständigen bestätigten Delta-Wert auf. Recovery prüft den Ausgangswert und berechnet denselben Floor deterministisch erneut. Dadurch können negative Krisenfolgen Ruf bis `0` senken, aber keinen Zustand erzeugen, den die bestehende Ranking-Projektion nicht darstellen kann.
+**Legacy-Kompatibilität:** Vor 0.8.3-C waren im allgemeinen Character-State auch negative Rufwerte gültig. Solche bestehenden Saves bleiben lesbar und werden nicht beim Laden verworfen. Erst das neue Settlement ist die Normalisierungsgrenze: Ein negativer alter Ruf darf als `old` in die Abrechnung eingehen; `new` wird danach auf mindestens `0` normalisiert.
+
+Der Journalrecord bewahrt den vollständigen bestätigten Delta-Wert auf. Recovery prüft den Ausgangswert und berechnet denselben Floor deterministisch erneut.
 
 Der Settlement-Character muss dem Event als Crewmitglied zugeordnet sein. Ist im aufrufenden `JournalContext` bereits eine `character_id` gesetzt, muss sie exakt passen.
 
@@ -69,6 +71,20 @@ Der Settlement-Character muss dem Event als Crewmitglied zugeordnet sein. Ist im
 Ein bestätigter Eventabschluss erzeugt genau einen `character.biography_entry_added`-Record der Kategorie `event`. Der Settlement-Service setzt für den gesamten atomaren Commit die bestätigte Character-ID als Top-Level-`character_id`. Dadurch kann `build_biography_projection(...)` den Eintrag eindeutig dem Character zuordnen.
 
 Sichtbare Texte verwenden die bereits katalogisierten Biography-Keys; der Payload enthält zusätzlich Event-ID, Incident-Anzahl und die bestätigten Settlement-Deltas als Platzhalterdaten.
+
+## Receipt-Integrität
+
+`SettlementState.effects` und die tatsächlich angewandten Triplets dürfen nicht voneinander abweichen. Verbindlich gilt:
+
+```text
+effects.budget_delta_cents == budget.delta
+effects.crew_stress_delta  == stress.delta
+effects.reputation_delta   == reputation.delta
+```
+
+Die Zielwerte dürfen wegen ihrer bestehenden Grenzen trotzdem geklemmt werden: Stress bleibt `0..100`, Ruf eines neu erzeugten Settlements bleibt mindestens `0`. Entscheidend ist, dass der **bestätigte Delta-Wert** im Receipt exakt derselbe ist wie der angewandte Delta-Wert.
+
+Ein manipuliertes oder beschädigtes Journal kann dadurch nicht eine Folge als bestätigt markieren, aber einen anderen Betrag buchen. Solche Widersprüche werden bei Validierung und Recovery fail-closed abgewiesen.
 
 ## Stabilität und Heat
 
@@ -117,7 +133,7 @@ Beim Replay gilt dieselbe Reihenfolge wie beim Commit:
 4. `event.completed` prüft diese Zwischenresultate gegen den Settlement-Receipt.
 5. Erst dann werden `pending_settlement` geleert und `SettlementState` eingesetzt.
 
-Fehlt beim Recovery eines krisenfreien Events ein Incident-State, wird derselbe leere Ausgangszustand wie beim normalen Commit verwendet. Bei widersprüchlichen Revisionen, Event-IDs, Character-IDs, Budgetwerten, Stress-/Rufwerten oder Incident-Folgen bricht Recovery fail-closed ab.
+Fehlt beim Recovery eines krisenfreien Events ein Incident-State, wird derselbe leere Ausgangszustand wie beim normalen Commit verwendet. Bei widersprüchlichen Revisionen, Event-IDs, Character-IDs, Budgetwerten, Stress-/Rufwerten, Receipt-Deltas oder Incident-Folgen bricht Recovery fail-closed ab.
 
 ## Idempotenz
 
