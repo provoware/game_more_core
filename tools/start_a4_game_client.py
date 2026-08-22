@@ -35,6 +35,7 @@ from bunkerfrequenz.infrastructure.persistence import (  # noqa: E402
 from bunkerfrequenz.presentation.a4_game_projection import build_a4_game_projection  # noqa: E402
 
 MAX_BODY_BYTES = 64 * 1024
+STREET_WORLD_SEED = "bunkerfrequenz-a4-local-street-v1"
 REQUIRED = (
     "web/a4/index.html",
     "web/a4/styles.css",
@@ -42,6 +43,8 @@ REQUIRED = (
     "web/a4/starter.json",
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/INCIDENT_MANIFEST.json",
+    "manifests/STREET_ENCOUNTER_MANIFEST.json",
+    "content/de/ui/street_encounters.json",
 )
 
 
@@ -99,10 +102,20 @@ class A4ClientRuntime:
     def __init__(self, save_dir: Path) -> None:
         journal_manifest = _load_json(ROOT / "manifests" / "JOURNAL_MANIFEST.json")
         incident_manifest = _load_json(ROOT / "manifests" / "INCIDENT_MANIFEST.json")
+        street_manifest = _load_json(ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json")
+        self.street_texts = _load_json(ROOT / "content" / "de" / "ui" / "street_encounters.json")
+        for encounter in street_manifest.get("encounters", ()):
+            if not isinstance(encounter, dict):
+                raise SystemExit("START FEHLGESCHLAGEN – Street-Katalog ist ungültig")
+            for field in ("title_key", "body_key"):
+                key = encounter.get(field)
+                if not isinstance(key, str) or key not in self.street_texts:
+                    raise SystemExit(f"START FEHLGESCHLAGEN – Street-Text fehlt: {key}")
+
         allowed = set(journal_manifest.get("event_types", ()))
         if not allowed:
             raise SystemExit("START FEHLGESCHLAGEN – JOURNAL_MANIFEST besitzt keine Eventtypen")
-        self.game_version = str(journal_manifest.get("version", "0.8.3-c1"))
+        self.game_version = str(journal_manifest.get("version", "0.8.5-c1"))
         self.incident_catalog = build_incident_catalog(incident_manifest)
         self.session_id = f"a4-{uuid.uuid4()}"
         self.save_dir = _prepare_save_dir(save_dir)
@@ -140,6 +153,8 @@ class A4ClientRuntime:
             self.kernel,
             incident_catalog=self.incident_catalog,
             incident_contract_version=incident_manifest["version"],
+            street_manifest=street_manifest,
+            street_world_seed=STREET_WORLD_SEED,
         )
         self.starter = _load_json(ROOT / "web" / "a4" / "starter.json")
         self.lock = threading.RLock()
@@ -257,7 +272,7 @@ class A4ClientRuntime:
             if not isinstance(character_id, str) or not character_id:
                 return {"status": "rejected", "error_code": "character_missing", "state": self.projection()}
 
-            if command.get("type") == "profile.update":
+            if command.get("type") in {"profile.update", "street.walk"}:
                 context = self._context(command_id, "character", character_id, character_id)
             else:
                 event = state.get("event")
@@ -289,11 +304,19 @@ class A4ClientRuntime:
         }
         if result.error_detail:
             payload["detail"] = result.error_detail
+        if result.metadata:
+            payload["metadata"] = deepcopy(result.metadata)
+            encounter = payload["metadata"].get("street_encounter")
+            if isinstance(encounter, dict):
+                title_key = encounter.get("title_key")
+                body_key = encounter.get("body_key")
+                encounter["title"] = self.street_texts.get(title_key, title_key)
+                encounter["body"] = self.street_texts.get(body_key, body_key)
         return payload
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.5-b1"
+    server_version = "BunkerfrequenzA4/0.8.5-c1"
 
     @property
     def runtime(self) -> A4ClientRuntime:

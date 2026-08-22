@@ -13,6 +13,7 @@ from bunkerfrequenz.infrastructure.persistence import JournalContext, Persistenc
 ROOT = Path(__file__).parents[2]
 JOURNAL = json.loads((ROOT / "manifests" / "JOURNAL_MANIFEST.json").read_text(encoding="utf-8"))
 INCIDENTS = json.loads((ROOT / "manifests" / "INCIDENT_MANIFEST.json").read_text(encoding="utf-8"))
+STREET = json.loads((ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json").read_text(encoding="utf-8"))
 ALLOWED = set(JOURNAL["event_types"])
 
 
@@ -32,7 +33,7 @@ def context(
         resolved_entity_id,
         command_id,
         "a4-test",
-        "0.8.4-a1",
+        "0.8.5-c1",
         "player-local",
     )
 
@@ -80,6 +81,8 @@ class GameClientSessionTests(unittest.TestCase):
             self.kernel,
             incident_catalog=build_incident_catalog(INCIDENTS),
             incident_contract_version=INCIDENTS["version"],
+            street_manifest=STREET,
+            street_world_seed="a4-street-test-seed",
         )
         self.character = CharacterState("player-local", "Lokale Crew")
         self.session.bootstrap_character(self.character)
@@ -87,7 +90,7 @@ class GameClientSessionTests(unittest.TestCase):
     def dispatch(self, command):
         return self.session.dispatch(command, context=context(command["command_id"]))
 
-    def profile_dispatch(self, command):
+    def character_dispatch(self, command):
         return self.session.dispatch(
             command,
             context=context(command["command_id"], entity_type="character"),
@@ -130,9 +133,9 @@ class GameClientSessionTests(unittest.TestCase):
                 "motto": "Bass bleibt an",
             },
         }
-        first = self.profile_dispatch(command)
+        first = self.character_dispatch(command)
         record_count = len(self.kernel.read_records())
-        second = self.profile_dispatch(command)
+        second = self.character_dispatch(command)
 
         self.assertEqual(first.status, "confirmed")
         self.assertEqual(first.committed_event_ids, ("profile-personalize:profile",))
@@ -157,6 +160,43 @@ class GameClientSessionTests(unittest.TestCase):
             "command_id": "wrong-profile-context",
             "changes": {"display_name": "Falsch"},
         })
+        self.assertEqual((result.status, result.error_code), ("rejected", "invalid_character_context"))
+        self.assertEqual(self.kernel.read_records(), before_records)
+
+    def test_street_walk_uses_character_context_returns_metadata_and_is_idempotent(self):
+        self.create_base()
+        before = self.session.read_state()
+        command = {"type": "street.walk", "command_id": "street-client-001"}
+        first = self.character_dispatch(command)
+        record_count = len(self.kernel.read_records())
+        first_state = self.session.read_state()
+        second = self.character_dispatch(command)
+
+        self.assertEqual(first.status, "confirmed")
+        self.assertIsNotNone(first.metadata)
+        encounter = first.metadata["street_encounter"]
+        self.assertIn(encounter["polarity"], {"neutral", "positive", "negative"})
+        self.assertEqual(set(encounter["effects"]), {"energy_delta", "stress_delta", "reputation_delta"})
+        self.assertTrue(first.committed_event_ids)
+        first_record = next(
+            record for record in self.kernel.read_records()
+            if record["event_id"] == "street-client-001:001"
+        )
+        self.assertEqual(first_record["event_type"], "street.encounter_resolved")
+        self.assertEqual(first_record["payload"]["encounter_id"], encounter["encounter_id"])
+
+        self.assertEqual(second.status, "confirmed")
+        self.assertTrue(second.idempotent_replay)
+        self.assertEqual(second.committed_event_ids, ())
+        self.assertEqual(second.metadata, first.metadata)
+        self.assertEqual(len(self.kernel.read_records()), record_count)
+        self.assertEqual(self.session.read_state(), first_state)
+        self.assertEqual(self.session.read_state()["event"], before["event"])
+        self.assertEqual(self.session.read_state()["economy"], before["economy"])
+
+    def test_street_walk_rejects_event_context_before_write(self):
+        before_records = self.kernel.read_records()
+        result = self.dispatch({"type": "street.walk", "command_id": "street-wrong-context"})
         self.assertEqual((result.status, result.error_code), ("rejected", "invalid_character_context"))
         self.assertEqual(self.kernel.read_records(), before_records)
 

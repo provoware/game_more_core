@@ -10,6 +10,7 @@ from bunkerfrequenz.application.event_state_service import EventStateService
 from bunkerfrequenz.application.incident_service import IncidentService
 from bunkerfrequenz.application.profile_service import CharacterProfileService
 from bunkerfrequenz.application.settlement_service import SettlementService
+from bunkerfrequenz.application.street_encounter_service import StreetEncounterService
 from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.domain.economy import EconomyState
 from bunkerfrequenz.domain.event import EventState
@@ -18,6 +19,7 @@ from bunkerfrequenz.infrastructure.persistence import JournalContext, Persistenc
 
 _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "profile.update": frozenset({"type", "command_id", "changes"}),
+    "street.walk": frozenset({"type", "command_id"}),
     "event.create": frozenset({"type", "command_id", "event"}),
     "event.update_planning": frozenset({"type", "command_id", "changes"}),
     "event.execute": frozenset({"type", "command_id", "action_id"}),
@@ -28,7 +30,7 @@ _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "settlement.complete": frozenset({"type", "command_id"}),
 }
 _COMMAND_TYPES = frozenset(_COMMAND_FIELDS)
-_PROFILE_COMMANDS = frozenset({"profile.update"})
+_CHARACTER_COMMANDS = frozenset({"profile.update", "street.walk"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,13 +41,14 @@ class GameClientCommandResult:
     idempotent_replay: bool
     error_code: str | None
     error_detail: str | None = None
+    metadata: dict[str, Any] | None = None
 
 
 class GameClientSession:
     """Thin write adapter for the local A4 client.
 
-    It owns no gameplay rules. Persistent commands are delegated to the
-    canonical Profile/Event/Economy/Incident/Settlement application services.
+    It owns no gameplay rules. Persistent commands are delegated to canonical
+    Profile/Street/Event/Economy/Incident/Settlement application services.
     """
 
     def __init__(
@@ -54,13 +57,19 @@ class GameClientSession:
         *,
         incident_catalog: dict[str, dict[str, Any]],
         incident_contract_version: str,
+        street_manifest: Mapping[str, Any] | None = None,
+        street_world_seed: str | None = None,
     ) -> None:
         if not incident_catalog:
             raise ValueError("incident_catalog darf nicht leer sein")
         if not isinstance(incident_contract_version, str) or not incident_contract_version.strip():
             raise ValueError("incident_contract_version fehlt")
+        if (street_manifest is None) != (street_world_seed is None):
+            raise ValueError("street_manifest und street_world_seed müssen gemeinsam gesetzt werden")
         self.persistence = persistence
         self.profile = CharacterProfileService(persistence)
+        self.street = StreetEncounterService(persistence, street_manifest) if street_manifest is not None else None
+        self.street_world_seed = street_world_seed
         self.event_state = EventStateService(persistence)
         self.event_execution = EventExecutionService(self.event_state)
         self.economy = EconomyService(persistence)
@@ -72,16 +81,9 @@ class GameClientSession:
         self.settlement = SettlementService(persistence)
 
     def read_state(self) -> dict[str, Any]:
-        """Return a defensive copy of the confirmed save state."""
         return deepcopy(self.persistence.load_state() or {})
 
     def bootstrap_character(self, character: CharacterState) -> dict[str, Any]:
-        """Create the immutable GENESIS character for a fresh local save.
-
-        Character creation has no canonical journal event yet. Therefore the
-        first-run shell may only seed the GENESIS checkpoint before any journal
-        record exists. It never mutates an already active save.
-        """
         character.validate()
         current = self.persistence.load_state()
         if current is None:
@@ -109,7 +111,6 @@ class GameClientSession:
         *,
         context: JournalContext,
     ) -> GameClientCommandResult:
-        """Validate the client envelope and delegate one command to canonical services."""
         command_type = command.get("type")
         if not isinstance(command_type, str) or command_type not in _COMMAND_TYPES:
             return self._rejected("unknown_command")
@@ -128,8 +129,8 @@ class GameClientSession:
             return self._rejected("command_context_mismatch")
 
         try:
-            if command_type in _PROFILE_COMMANDS:
-                return self._dispatch_profile(command, command_id=command_id, context=context)
+            if command_type in _CHARACTER_COMMANDS:
+                return self._dispatch_character(command, command_id=command_id, context=context)
 
             if context.entity_type != "event" or not context.entity_id:
                 return self._rejected("invalid_event_context")
@@ -180,10 +181,7 @@ class GameClientSession:
                 if isinstance(quantity, bool) or not isinstance(quantity, int) or quantity < 1:
                     return self._rejected("invalid_quantity")
                 result = self.economy.transact(
-                    kind.strip(),
-                    item_id.strip(),
-                    quantity,
-                    context=context,
+                    kind.strip(), item_id.strip(), quantity, context=context
                 )
                 return self._confirmed(result.committed_event_ids, result.idempotent_replay)
 
@@ -192,14 +190,10 @@ class GameClientSession:
                 severity = command.get("severity")
                 if not isinstance(incident_type, str) or not incident_type.strip():
                     return self._rejected("invalid_incident_type")
-                if severity is not None and (
-                    isinstance(severity, bool) or not isinstance(severity, int)
-                ):
+                if severity is not None and (isinstance(severity, bool) or not isinstance(severity, int)):
                     return self._rejected("invalid_severity")
                 result = self.incidents.open(
-                    incident_type.strip(),
-                    context=context,
-                    severity=severity,
+                    incident_type.strip(), context=context, severity=severity
                 )
                 return self._confirmed(result.committed_event_ids, result.idempotent_replay)
 
@@ -219,7 +213,7 @@ class GameClientSession:
         except RuntimeError as exc:
             return self._rejected("runtime_error", str(exc))
 
-    def _dispatch_profile(
+    def _dispatch_character(
         self,
         command: Mapping[str, Any],
         *,
@@ -234,21 +228,44 @@ class GameClientSession:
         character = CharacterState.from_dict(raw_character)
         if character.character_id != context.entity_id:
             return self._rejected("character_context_mismatch")
-        changes = command.get("changes")
-        if not isinstance(changes, dict) or not changes:
-            return self._rejected("invalid_profile_changes")
 
-        event_id = f"{command_id}:profile"
-        if self.persistence.has_event(event_id):
-            return self._confirmed((), True)
-        self.profile.update(
+        if command["type"] == "profile.update":
+            changes = command.get("changes")
+            if not isinstance(changes, dict) or not changes:
+                return self._rejected("invalid_profile_changes")
+            event_id = f"{command_id}:profile"
+            if self.persistence.has_event(event_id):
+                return self._confirmed((), True)
+            self.profile.update(
+                character,
+                deepcopy(changes),
+                event_id=event_id,
+                transaction_id=f"tx:{command_id}:profile",
+                context=context,
+            )
+            return self._confirmed((event_id,), False)
+
+        if self.street is None or self.street_world_seed is None:
+            return self._rejected("street_not_configured")
+        result = self.street.walk(
             character,
-            deepcopy(changes),
-            event_id=event_id,
-            transaction_id=f"tx:{command_id}:profile",
-            context=context,
+            walk_instance_id=command_id,
+            world_seed=self.street_world_seed,
+            journal_context=context,
         )
-        return self._confirmed((event_id,), False)
+        return self._confirmed(
+            result.committed_event_ids,
+            result.idempotent_replay,
+            metadata={
+                "street_encounter": {
+                    "encounter_id": result.encounter_id,
+                    "polarity": result.polarity,
+                    "title_key": result.title_key,
+                    "body_key": result.body_key,
+                    "effects": deepcopy(result.effects),
+                }
+            },
+        )
 
     def _confirmed_event(self) -> EventState:
         state = self.persistence.load_state() or {}
@@ -261,6 +278,8 @@ class GameClientSession:
         self,
         committed_event_ids: tuple[str, ...],
         idempotent_replay: bool,
+        *,
+        metadata: dict[str, Any] | None = None,
     ) -> GameClientCommandResult:
         return GameClientCommandResult(
             "confirmed",
@@ -269,6 +288,7 @@ class GameClientSession:
             bool(idempotent_replay),
             None,
             None,
+            deepcopy(metadata) if metadata is not None else None,
         )
 
     @staticmethod
