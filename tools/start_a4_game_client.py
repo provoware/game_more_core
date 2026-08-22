@@ -44,6 +44,8 @@ REQUIRED = (
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/INCIDENT_MANIFEST.json",
     "manifests/STREET_ENCOUNTER_MANIFEST.json",
+    "manifests/DISTRICT_STATE_MANIFEST.json",
+    "manifests/CITY_MAP_MANIFEST.json",
     "content/de/ui/street_encounters.json",
 )
 
@@ -103,6 +105,8 @@ class A4ClientRuntime:
         journal_manifest = _load_json(ROOT / "manifests" / "JOURNAL_MANIFEST.json")
         incident_manifest = _load_json(ROOT / "manifests" / "INCIDENT_MANIFEST.json")
         street_manifest = _load_json(ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json")
+        self.district_manifest = _load_json(ROOT / "manifests" / "DISTRICT_STATE_MANIFEST.json")
+        self.city_map_manifest = _load_json(ROOT / "manifests" / "CITY_MAP_MANIFEST.json")
         self.street_texts = _load_json(ROOT / "content" / "de" / "ui" / "street_encounters.json")
         for encounter in street_manifest.get("encounters", ()):
             if not isinstance(encounter, dict):
@@ -115,7 +119,7 @@ class A4ClientRuntime:
         allowed = set(journal_manifest.get("event_types", ()))
         if not allowed:
             raise SystemExit("START FEHLGESCHLAGEN – JOURNAL_MANIFEST besitzt keine Eventtypen")
-        self.game_version = str(journal_manifest.get("version", "0.8.5-c1"))
+        self.game_version = str(journal_manifest.get("version", "0.8.5-d1"))
         self.incident_catalog = build_incident_catalog(incident_manifest)
         self.session_id = f"a4-{uuid.uuid4()}"
         self.save_dir = _prepare_save_dir(save_dir)
@@ -155,6 +159,8 @@ class A4ClientRuntime:
             incident_contract_version=incident_manifest["version"],
             street_manifest=street_manifest,
             street_world_seed=STREET_WORLD_SEED,
+            district_manifest=self.district_manifest,
+            city_map_manifest=self.city_map_manifest,
         )
         self.starter = _load_json(ROOT / "web" / "a4" / "starter.json")
         self.lock = threading.RLock()
@@ -164,6 +170,8 @@ class A4ClientRuntime:
             return build_a4_game_projection(
                 self.session.read_state(),
                 incident_catalog=self.incident_catalog,
+                district_manifest=self.district_manifest,
+                city_map_manifest=self.city_map_manifest,
             )
 
     def _context(
@@ -316,7 +324,7 @@ class A4ClientRuntime:
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.5-c1"
+    server_version = "BunkerfrequenzA4/0.8.5-d1"
 
     @property
     def runtime(self) -> A4ClientRuntime:
