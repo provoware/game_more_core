@@ -6,6 +6,7 @@ from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.domain.economy import EconomyState
 from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.incident import IncidentState
+from bunkerfrequenz.domain.settlement import SettlementState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceKernel
 
 
@@ -86,6 +87,29 @@ class SettlementEdgeCaseTests(unittest.TestCase):
             self.assertFalse(any(result.incidents.pending_settlement.values()))
             self.assertEqual(result.economy.ledger[-1]["budget_delta_cents"], 0)
 
+    def test_legacy_negative_reputation_loads_and_settlement_normalizes_result(self):
+        legacy = CharacterState("player-1", "Legacy", reputation=-7)
+        self.assertEqual(CharacterState.from_dict(legacy.to_dict()).reputation, -7)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            kernel = PersistenceKernel(tmp, ALLOWED)
+            kernel.initialize_state({
+                "event": settlement_event().to_dict(),
+                "economy": economy().to_dict(),
+                "character": legacy.to_dict(),
+            })
+
+            result = SettlementService(kernel).complete(context=context("legacy-reputation"))
+
+            self.assertEqual(result.character.reputation, 0)
+            self.assertEqual(result.settlement.reputation, {"old": -7, "delta": 0, "new": 0})
+            reputation_record = next(
+                record for record in kernel.read_records()
+                if record["event_type"] == "character.reputation_changed"
+            )
+            self.assertEqual(reputation_record["payload"]["old"], -7)
+            self.assertEqual(reputation_record["payload"]["new"], 0)
+
     def test_negative_final_budget_is_rejected_without_partial_commit(self):
         with tempfile.TemporaryDirectory() as tmp:
             kernel = PersistenceKernel(tmp, ALLOWED)
@@ -106,6 +130,37 @@ class SettlementEdgeCaseTests(unittest.TestCase):
 
             self.assertEqual(kernel.load_state(), before)
             self.assertEqual(len(kernel.read_records()), 0)
+
+    def test_settlement_receipt_binds_applied_deltas_to_confirmed_effects(self):
+        base = SettlementState(
+            event_id="event-1",
+            settlement_id="settlement:test",
+            contract_version="0.8.3-c1",
+            incident_ids=[],
+            effects={
+                "budget_delta_cents": 0,
+                "reputation_delta": 0,
+                "crew_stress_delta": 0,
+                "stability_delta": 0,
+                "heat_delta": 0,
+            },
+            budget={"old": 50_000, "delta": 0, "new": 50_000},
+            character_id="player-1",
+            stress={"old": 10, "delta": 0, "new": 10},
+            reputation={"old": 4, "delta": 0, "new": 4},
+            event_revision={"old": 8, "new": 10},
+            economy_revision={"old": 0, "new": 1},
+            incident_revision={"old": 0, "new": 1},
+        ).to_dict()
+
+        for effect_key in ("budget_delta_cents", "crew_stress_delta", "reputation_delta"):
+            with self.subTest(effect_key=effect_key):
+                corrupted = {
+                    **base,
+                    "effects": {**base["effects"], effect_key: 1},
+                }
+                with self.assertRaisesRegex(ValueError, "angewandten Delta"):
+                    SettlementState.from_dict(corrupted)
 
     def test_settlement_service_rejects_wrong_phase(self):
         with tempfile.TemporaryDirectory() as tmp:
