@@ -2,7 +2,8 @@
   "version": "0.8.3-c1",
   "iteration": "0.8.3-C",
   "state_block": "settlement",
-  "required_state_blocks": ["event", "economy", "character", "incidents"],
+  "required_state_blocks": ["event", "economy", "character"],
+  "optional_initial_state_blocks": ["incidents"],
   "preconditions": {
     "event_phase": "settlement",
     "active_incident": null,
@@ -44,6 +45,8 @@
     "phase_reason": "event_settlement:complete"
   },
   "incidents": {
+    "zero_incident_event_supported": true,
+    "missing_initial_state_means_empty_incident_state": true,
     "pending_settlement_consumed_once": true,
     "history_immutable": true,
     "active_must_be_null": true,
@@ -60,6 +63,7 @@
   "recovery": {
     "atomic_commit": true,
     "event_completed_replay_validates_prior_economy_character_phase_records": true,
+    "incident_free_replay_supported": true,
     "same_command_id_idempotent": true,
     "same_command_id_different_request_rejected": true
   },
