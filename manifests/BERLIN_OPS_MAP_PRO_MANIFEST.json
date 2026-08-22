@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "version": "0.8.6-c1",
+  "source_city_map_version": "0.8.3-b2-foundation",
+  "geography_mode": "stylized_game_map_not_navigation",
+  "coordinate_system": {"min": 0, "max": 100},
+  "tier_order": ["standard", "strong", "prime", "legendary"],
+  "filters": ["all", "owned", "prime", "hall"],
+  "interaction": {
+    "focus": true,
+    "click": true,
+    "persistent_selection": false,
+    "domain_write": false
+  },
+  "accessibility": {
+    "keyboard": true,
+    "visible_focus": true,
+    "reduced_motion": true,
+    "information_without_color": true
+  },
+  "renderer": {
+    "responsive": true,
+    "external_map_service": false,
+    "geocoding": false,
+    "navigation": false,
+    "district_metrics_source": "confirmed_living_district_projection",
+    "location_values_source": "confirmed_city_map_projection",
+    "ownership_source": "confirmed_property_projection",
+    "upgrade_source": "confirmed_property_upgrade_projection",
+    "score_tier_source": "confirmed_city_map_projection"
+  }
+}
