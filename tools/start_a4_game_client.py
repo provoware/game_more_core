@@ -36,6 +36,15 @@ from bunkerfrequenz.presentation.a4_game_projection import build_a4_game_project
 
 MAX_BODY_BYTES = 64 * 1024
 STREET_WORLD_SEED = "bunkerfrequenz-a4-local-street-v1"
+_WORLD_CHARACTER_COMMANDS = {
+    "profile.update",
+    "street.walk",
+    "world.intro_acknowledge",
+    "world.move",
+    "world.housing_guest",
+    "world.inspect_storefront",
+    "world.minigame",
+}
 REQUIRED = (
     "web/a4/index.html",
     "web/a4/styles.css",
@@ -44,7 +53,9 @@ REQUIRED = (
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/INCIDENT_MANIFEST.json",
     "manifests/STREET_ENCOUNTER_MANIFEST.json",
+    "manifests/WORLD_MANIFEST.json",
     "content/de/ui/street_encounters.json",
+    "content/de/world.json",
 )
 
 
@@ -103,6 +114,8 @@ class A4ClientRuntime:
         journal_manifest = _load_json(ROOT / "manifests" / "JOURNAL_MANIFEST.json")
         incident_manifest = _load_json(ROOT / "manifests" / "INCIDENT_MANIFEST.json")
         street_manifest = _load_json(ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json")
+        self.world_manifest = _load_json(ROOT / "manifests" / "WORLD_MANIFEST.json")
+        self.world_texts = _load_json(ROOT / "content" / "de" / "world.json")
         self.street_texts = _load_json(ROOT / "content" / "de" / "ui" / "street_encounters.json")
         for encounter in street_manifest.get("encounters", ()):
             if not isinstance(encounter, dict):
@@ -115,7 +128,7 @@ class A4ClientRuntime:
         allowed = set(journal_manifest.get("event_types", ()))
         if not allowed:
             raise SystemExit("START FEHLGESCHLAGEN – JOURNAL_MANIFEST besitzt keine Eventtypen")
-        self.game_version = str(journal_manifest.get("version", "0.8.5-c1"))
+        self.game_version = str(journal_manifest.get("version", "0.8.5-d1"))
         self.incident_catalog = build_incident_catalog(incident_manifest)
         self.session_id = f"a4-{uuid.uuid4()}"
         self.save_dir = _prepare_save_dir(save_dir)
@@ -155,15 +168,36 @@ class A4ClientRuntime:
             incident_contract_version=incident_manifest["version"],
             street_manifest=street_manifest,
             street_world_seed=STREET_WORLD_SEED,
+            world_manifest=self.world_manifest,
         )
         self.starter = _load_json(ROOT / "web" / "a4" / "starter.json")
         self.lock = threading.RLock()
+        self._ensure_legacy_world()
+
+    def _ensure_legacy_world(self) -> None:
+        state = self.session.read_state()
+        raw_character = state.get("character")
+        if not isinstance(raw_character, dict):
+            return
+        character = CharacterState.from_dict(raw_character)
+        command_id = f"world-bootstrap:{character.character_id}"
+        result = self.session.ensure_world_player(
+            character,
+            context=self._context(command_id, "character", character.character_id, character.character_id),
+        )
+        if result.status != "confirmed":
+            raise SystemExit(
+                "START FEHLGESCHLAGEN – bestehender Spielstand konnte nicht in den Living-City-State eingebucht werden: "
+                f"{result.error_detail or result.error_code}"
+            )
 
     def projection(self) -> dict:
         with self.lock:
             return build_a4_game_projection(
                 self.session.read_state(),
                 incident_catalog=self.incident_catalog,
+                world_manifest=self.world_manifest,
+                world_texts=self.world_texts,
             )
 
     def _context(
@@ -226,6 +260,19 @@ class A4ClientRuntime:
             except (ValueError, RuntimeError) as exc:
                 return {"status": "rejected", "error_code": "bootstrap_character_failed", "detail": str(exc)}
 
+            world_command_id = f"{bootstrap_id}:world-register"
+            world_result = self.session.ensure_world_player(
+                character,
+                context=self._context(
+                    world_command_id,
+                    "character",
+                    character.character_id,
+                    character.character_id,
+                ),
+            )
+            if world_result.status != "confirmed":
+                return self._command_payload(world_result)
+
             state_after_character = self.session.read_state()
             if "event" not in state_after_character:
                 create_command = {
@@ -272,7 +319,7 @@ class A4ClientRuntime:
             if not isinstance(character_id, str) or not character_id:
                 return {"status": "rejected", "error_code": "character_missing", "state": self.projection()}
 
-            if command.get("type") in {"profile.update", "street.walk"}:
+            if command.get("type") in _WORLD_CHARACTER_COMMANDS:
                 context = self._context(command_id, "character", character_id, character_id)
             else:
                 event = state.get("event")
@@ -312,11 +359,17 @@ class A4ClientRuntime:
                 body_key = encounter.get("body_key")
                 encounter["title"] = self.street_texts.get(title_key, title_key)
                 encounter["body"] = self.street_texts.get(body_key, body_key)
+            storefront = payload["metadata"].get("storefront")
+            if isinstance(storefront, dict):
+                keys = storefront.get("note_keys")
+                if isinstance(keys, list):
+                    storefront["notes"] = [self.world_texts.get(key, key) for key in keys]
+                    storefront.pop("note_keys", None)
         return payload
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.5-c1"
+    server_version = "BunkerfrequenzA4/0.8.5-d1"
 
     @property
     def runtime(self) -> A4ClientRuntime:
