@@ -3,157 +3,141 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – weiterhin letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.6-B – Property Upgrades`
-- **0.8.6-A Property Purchase:** PR #82 · Head `af582597fa2a899ab0cc0d062e128ec6b0e7dc1a` · Merge `192b3eb4ad9dc4272eafeddc8604f7265bdd30fa`
-- **0.8.6-B Property Upgrades:** PR #83 · Head `acbf6b1c5615137664ed4ad84fb0535bea297030` · Runtime `32589287044` · Presentation `32589287132` · Repository Health `32589287056` · Release Acceptance `32589287152` · Release Package `32589287135` · 0 Review-Threads · `SAFE MERGE PASS` · Merge `0b301bc9004f60dbc3ce221a7c6b3e462766b5b7`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.6-C – Berlin Ops Map PRO`
+- **0.8.6-A Property Purchase:** PR #82 · Merge `192b3eb4ad9dc4272eafeddc8604f7265bdd30fa`
+- **0.8.6-B Property Upgrades:** PR #83 · Merge `0b301bc9004f60dbc3ce221a7c6b3e462766b5b7`
+- **0.8.6-C Berlin Ops Map PRO:** PR #85 · Head `6c302ce9425b27e7a1175a1cdcf463a100fc7191` · Runtime `32592128107` · Presentation `32592128117` · Repository Health `32592128103` · Release Acceptance `32592128147` · Release Package `32592128113` · 0 Review-Threads · `SAFE MERGE PASS` · Merge `10c7d6b5e04838b07ae6899b8b76580cd87de607`
 - **Erstes lokales Alpha:** `0.8.4-alpha.1` · ZIP SHA-256 `fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146`
-- **Nächster Pflichtblock:** `0.8.6-C – Berlin Ops Map PRO`
+- **Nächster Pflichtblock:** `0.8.7-A – Saisonale Hall of Tribute`
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
 ---
 
 # Abgeschlossen ✅
 
-## 0.8.1 – Event State Foundation
+## 0.8.1–0.8.5 – Kernspiel und Living World
 
-- [x] EventState, Ort, Budget, Acts, Crew, Equipment, Zeitfenster und Safety
-- [x] Revision, Idempotenz, Journal und Combined Recovery
-
-## 0.8.2 – Equipment & Economy
-
-- [x] Katalog, Inventar, Reservierung und deterministische Marktpreise
-- [x] Budgetänderungen ausschließlich über bestätigte Economy-Transaktionen
-- [x] Kompensation nur für zulässige Equipment-Käufe/-Verkäufe
-
-## 0.8.3 – Event, Krise und Settlement
-
-- [x] 8 kanonische Event-Aktionen
-- [x] Incident/Crisis Engine mit 6 Krisentypen
-- [x] atomarer Settlement-Abschluss einschließlich Budget, Stress, Ruf und Biografie
-- [x] vollständiger Eventpfad bis `completed`
-
-## 0.8.4 – Schreibender lokaler A4-Client
-
-- [x] localhost-only Game Client
-- [x] keine zweite Domainlogik im Browser
-- [x] First Run, Save, Snapshot, Restart und Recovery
-- [x] reproduzierbares `0.8.4-alpha.1`-Paket
-
-## 0.8.5 – Living World
-
-- [x] **A:** Competitive Displacement Ranking
-- [x] **B:** A4-Profilpersonalisierung
-- [x] **C:** replaybare Street Encounters
-- [x] **D:** persistente Living Districts
-- [x] **E:** Hall of Tribute / sichtbare Top 10
+- [x] Character Forge, Skills, Traits und Progression
+- [x] Event State + Equipment/Economy
+- [x] Event Execution + Crisis/Incident + Settlement
+- [x] schreibender lokaler A4-Client mit Save/Snapshot/Recovery
+- [x] Competitive Ranking, Profilpersonalisierung und Street Encounters
+- [x] persistente Living Districts
+- [x] Hall of Tribute / sichtbare Top 10
 
 ## 0.8.6-A – Property Purchase Foundation ✅
 
-- [x] sieben bereits katalogisierte kaufbare Berlin-Ops-Orte an echten Schreibpfad anbinden
-- [x] `property.purchase` akzeptiert nur `location_id`; Preis/Owner/Budgetdelta sind keine Client-Autorität
-- [x] Kaufpreis ausschließlich aus `CITY_MAP_MANIFEST.purchase_price_cents`
-- [x] Economy-Ledger-Kind `property_purchase`
-- [x] Economy + Event-Budget + PropertyState in **einem atomaren Commit**
+- [x] 7 kaufbare Berlin-Ops-Orte über kanonische Economy autorisieren
+- [x] Client besitzt keine Preis-/Owner-/Budgetautorität
+- [x] Economy + Event-Budget + PropertyState atomar bestätigen
 - [x] `world.property_purchased` append-only journalisieren
-- [x] Combined Recovery für Economy/Event/Eigentum
-- [x] nicht kaufbare Orte und Doppelkäufe fail-closed
-- [x] A4 und Berlin-Ops-Projection zeigen bestätigten Besitz
-- [x] Fault-Injection, Idempotenz und Command-Injection regressionsprüfen
-- [x] PR #82 5/5 grün und per `/safe-merge` übernommen
+- [x] Combined Recovery, Idempotenz, Fault-Injection und Manipulationsschutz
+- [x] PR #82 sicher gemergt
 
 ## 0.8.6-B – Property Upgrades ✅
 
-- [x] eigenen rückwärtskompatiblen `PropertyUpgradeState` einführen
-- [x] zehn vorhandene Ausbauarten nutzen; keine Parallelkataloge
-- [x] Level `1–3` mit Kostenmultiplikatoren `1.00 / 1.50 / 2.25`
-- [x] Ausbaukosten aus bestätigtem ursprünglichem Immobilienkaufpreis ableiten
-- [x] `property.upgrade` akzeptiert nur `location_id + upgrade_id`
-- [x] Client darf Kosten, Level, Deltas und Menge nicht bestimmen
-- [x] Economy-Ledger-Kind `property_upgrade`; kein Equipment-Market-Tick
+- [x] separater rückwärtskompatibler `PropertyUpgradeState`
+- [x] 10 Ausbauarten, Level 1–3, feste Kostenleiter
+- [x] Client besitzt keine Kosten-/Level-/Deltaautorität
 - [x] Economy + Event-Budget + Upgrade-State atomar bestätigen
-- [x] `world.property_upgraded` replaybar journalisieren
-- [x] Combined Recovery einschließlich Fault nach durablem Journal
-- [x] effektive Standortwerte auf `0..100` begrenzen
-- [x] bestehenden City-Map-Score/Tier für Ausbauwirkung wiederverwenden
-- [x] A4 zeigt Level, nächsten bestätigten Preis und effektive Werte
-- [x] Max-Level, Eigentum, Slot, Budget, Idempotenz und Manipulationsversuche regressionsprüfen
-- [x] PR #83 5/5 grün, 0 Review-Threads, `SAFE MERGE PASS`
+- [x] `world.property_upgraded` + Combined Recovery
+- [x] effektive Standortwerte → bestehender City-Map-Score/Tier
+- [x] PR #83 5/5 grün und sicher gemergt
+
+## 0.8.6-C – Berlin Ops Map PRO ✅
+
+- [x] `BERLIN_OPS_MAP_PRO_MANIFEST.json` als read-only Presentation-Vertrag
+- [x] vorhandene Living-District-/City-Map-/Property-/Upgrade-Projections als einzige Datenquellen
+- [x] 8 District-Flächen und 12 Locations auf stilisierten 0–100-Koordinaten
+- [x] District-Werte Heat, Prestige, Polizeidruck und Szeneaktivität sichtbar
+- [x] Location-Details mit Score, Tier, Rang, Eigentum, Standortwerten und Ausbaulevel
+- [x] reine Sichtfilter `all / owned / prime / hall`
+- [x] Tier, Eigentum und Hall auch ohne reine Farbcodierung unterscheidbar
+- [x] Tastaturfokus, ARIA, sichtbarer Fokus und Reduced Motion
+- [x] `map_pro.js` ohne `/api/command`, `fetch()`, Geolocation oder externe Kartendienste
+- [x] Launcher-Preflight verlangt Manifest + Rendererdatei
+- [x] Projection-/Fail-Closed-/Browser-Vertrag regressionsgedeckt
+- [x] Runtime Core `32592128107` ✅
+- [x] Presentation Core `32592128117` ✅
+- [x] Repository Health `32592128103` ✅
+- [x] Release Acceptance `32592128147` ✅
+- [x] Release Package `32592128113` ✅
+- [x] 0 Review-Threads
+- [x] `/safe-merge` PASS · Merge `10c7d6b5e04838b07ae6899b8b76580cd87de607`
 
 ---
 
 # AKTIV / NÄCHSTER PFLICHTBLOCK
 
-## 0.8.6-C – Berlin Ops Map PRO 🗺️
+## 0.8.7-A – Saisonale Hall of Tribute 🏆
 
 ### Ziel
 
-Eine hochwertige, unmittelbar verständliche Kartenansicht auf den **bereits bestätigten** Daten aufbauen. Der Renderer ist reine Presentation und besitzt keinerlei eigene Spiellogik.
+Die bestehende Hall erweitert sich um **bestätigte Wochen-/Monatszyklen**, ohne lokale Gegner, Ergebnisse oder Zeitgrenzen zu erfinden. Die Systemzeit darf niemals alleinige Saisonautorität sein.
 
-### C1 – Kartenvertrag und Datenadapter
+### A1 – Zeit- und Saisonvertrag
 
-- [ ] vorhandene `city_map_projection` als einzige fachliche Kartenquelle festschreiben
-- [ ] Renderer-View-Model für Districts, Locations, Eigentum, Ausbaulevel, Score/Tier und Hall ableiten
-- [ ] keinerlei direkte Domain-/Save-Writes aus der Karte zulassen
-- [ ] unbekannte IDs und unvollständige Projection fail-closed behandeln
+- [ ] vorhandene Zeit-/Ranking-Verträge zuerst auf Wiederverwendung prüfen
+- [ ] bestätigte `cycle_id`/Zyklusmetadaten als Autorität definieren
+- [ ] Wochen- und Monatszyklen klar trennen
+- [ ] Systemzeit nur als Anzeige-/Plausibilitätswert zulassen, nicht als alleinige Autorität
+- [ ] Replay desselben bestätigten Zyklus deterministisch halten
 
-### C2 – Visuelle Karte
+### A2 – Saisonale Ranking-Projection
 
-- [ ] stilisierte 0–100-Koordinaten in echte responsive Kartenfläche umsetzen
-- [ ] Bezirksflächen mit Heat/Prestige/Polizeidruck/Szeneaktivität sichtbar machen
-- [ ] 12 Orte mit Kategorie, Score und Tier darstellen
-- [ ] Eigentum und Ausbauzustand klar markieren
-- [ ] Hall of Tribute als besonderen Prestige-Ort hervorheben
-- [ ] keine reale Navigations-/Adresskarte vortäuschen
+- [ ] bestehende Competitive-Ranking-Engine wiederverwenden
+- [ ] lokale Hall erfindet weiterhin keine Remote-Teilnehmer
+- [ ] aktuelle und abgeschlossene Zyklen unterscheidbar projizieren
+- [ ] Titel ausschließlich aus bestätigtem Zyklus + bestätigtem Ranking ableiten
+- [ ] mögliche Titel katalogisieren, z. B. Lärmadel, Bunkerbaron, Kabelkönig, Pegelpapst, Nachtminister
 
-### C3 – Interaktion
+### A3 – A4-Hall-Darstellung
 
-- [ ] Klick/Fokus auf Bezirk → bestätigte Bezirkswerte und letzte Änderung zeigen
-- [ ] Klick/Fokus auf Location → Basiswerte, effektive Ausbauwerte, Score/Tier und Eigentum zeigen
-- [ ] Property-Kauf/-Ausbau weiterhin ausschließlich über vorhandene A4-Commands delegieren
-- [ ] Tastatursteuerung und sichtbaren Fokus sicherstellen
-- [ ] Reduced-Motion-Variante ohne Informationsverlust
+- [ ] Wochen-/Monatsansicht ohne zweite Sortierlogik im Browser
+- [ ] Zyklusstatus und bestätigten Titel sichtbar machen
+- [ ] bestehende Ruf-/Level-/Resonanzansichten erhalten
+- [ ] Tastatur-/Reduced-Motion-Verträge beibehalten
 
-### C4 – Robustheit / Abnahme
+### A4 – Robustheit / Abnahme
 
-- [ ] Projection-Tests für Wert-/Tier-/Ownership-Darstellung
-- [ ] Responsive- und Accessibility-Vertrag testen
-- [ ] prüfen, dass Renderer keine Domainwerte berechnet oder persistiert
-- [ ] A4 First Run und Release Package unverändert grün halten
-- [ ] Runtime Core ✅
-- [ ] Presentation Core ✅
-- [ ] Repository Health ✅
-- [ ] Release Acceptance ✅
-- [ ] Release Package ✅
+- [ ] Zyklus-ID-, Replay- und Boundary-Regressionen
+- [ ] keine Zeit-Rerolls durch Reload
+- [ ] keine erfundenen Teilnehmer/Titel
+- [ ] bestehende Hall-/Map-/Property-Funktionen regressionsfrei
+- [ ] Runtime Core
+- [ ] Presentation Core
+- [ ] Repository Health
+- [ ] Release Acceptance
+- [ ] Release Package
 - [ ] 0 Review-Threads
 - [ ] `/safe-merge`
 
-### Explizit NICHT in 0.8.6-C
+### Explizit NICHT in 0.8.7-A
 
-- keine neuen District-Regeln
-- keine neuen Property-Kosten
-- keine Miete, Rendite oder Verkauf
-- keine neue Event-Bonuslogik
-- kein Netzwerk-/Telegram-State
-- keine echte Navigation oder Geocoding-Abhängigkeit
+- kein Telegram-/Server-Sync
+- keine echten Netzwerkgegner ohne bestätigte Netzwerkdaten
+- keine neue globale Zeitengine ohne Bedarf
+- keine District-Zufallsereignisse
+- keine Property-Boni oder laufenden Einnahmen
 
 ---
 
 # Danach – priorisierter Ausbau
 
-1. **0.8.7-A – Saisonale Hall of Tribute:** bestätigter Wochen-/Monatszyklus mit Prestige-Titeln; Zeitautorität separat härten.
-2. **0.8.7-B – Bezirksbezogene Welt-Ereignisse:** DistrictState als echte Quelle, reproduzierbare Ereignisinstanzen.
-3. **0.9 – Network Foundation:** erst nach eigenem Server-/Transport-/Konfliktvertrag; niemals UI- oder Telegramdaten direkt als Domainautorität.
+1. **0.8.7-B – Bezirksbezogene Welt-Ereignisse:** DistrictState als Quelle, reproduzierbare Ereignisinstanzen.
+2. **0.8.7-C – Street Encounter Content Packs:** mehr Vielfalt über denselben validierten Encounter-Vertrag.
+3. **0.9 – Network Foundation:** eigener Server-/Transport-/Konfliktvertrag vor Telegram-/Ranking-Sync.
 
 ---
 
 ## Arbeitsregeln
 
 - Pro Iteration kleinster sinnvoller Scope.
-- Keine zweite Implementierung eines bereits vorhandenen Services/States.
+- Keine zweite Implementierung eines vorhandenen Services/States.
 - UI/Renderer schreibt Domain-State niemals direkt.
 - Economy nur über kanonische Economy-Services/Events.
 - Journal bleibt append-only.
-- Systemzeit ist niemals alleinige Zufalls- oder Saisonautorität.
+- Systemzeit ist niemals alleinige Zufalls-, Saison- oder Replayautorität.
 - Normaler Merge ausschließlich nach aktuellem `main`, grünen Required Checks, 0 offenen Review-Threads und `/safe-merge`.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
