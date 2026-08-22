@@ -20,6 +20,17 @@ def _nonnegative_int(value: Any, field_name: str) -> int:
     return value
 
 
+def upgrade_cost_cents(purchase_price_cents: int, cost_bps: int, level_multiplier_bps: int) -> int:
+    """Return a deterministic fixed upgrade cost using integer basis points."""
+    if isinstance(purchase_price_cents, bool) or not isinstance(purchase_price_cents, int) or purchase_price_cents < 1:
+        raise ValueError("purchase_price_cents muss positive Ganzzahl sein")
+    if isinstance(cost_bps, bool) or not isinstance(cost_bps, int) or cost_bps < 1:
+        raise ValueError("cost_bps muss positive Ganzzahl sein")
+    if isinstance(level_multiplier_bps, bool) or not isinstance(level_multiplier_bps, int) or level_multiplier_bps < 1:
+        raise ValueError("level_multiplier_bps muss positive Ganzzahl sein")
+    return max(1, purchase_price_cents * cost_bps * level_multiplier_bps // 10_000 // 10_000)
+
+
 @dataclass(slots=True)
 class PropertyUpgradeState:
     contract_version: str
