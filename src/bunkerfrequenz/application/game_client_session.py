@@ -8,6 +8,7 @@ from bunkerfrequenz.application.economy_service import EconomyService
 from bunkerfrequenz.application.event_execution_service import EventExecutionService
 from bunkerfrequenz.application.event_state_service import EventStateService
 from bunkerfrequenz.application.incident_service import IncidentService
+from bunkerfrequenz.application.profile_service import CharacterProfileService
 from bunkerfrequenz.application.settlement_service import SettlementService
 from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.domain.economy import EconomyState
@@ -16,6 +17,7 @@ from bunkerfrequenz.infrastructure.persistence import JournalContext, Persistenc
 
 
 _COMMAND_FIELDS: dict[str, frozenset[str]] = {
+    "profile.update": frozenset({"type", "command_id", "changes"}),
     "event.create": frozenset({"type", "command_id", "event"}),
     "event.update_planning": frozenset({"type", "command_id", "changes"}),
     "event.execute": frozenset({"type", "command_id", "action_id"}),
@@ -26,6 +28,7 @@ _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "settlement.complete": frozenset({"type", "command_id"}),
 }
 _COMMAND_TYPES = frozenset(_COMMAND_FIELDS)
+_PROFILE_COMMANDS = frozenset({"profile.update"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,8 +44,8 @@ class GameClientCommandResult:
 class GameClientSession:
     """Thin write adapter for the local A4 client.
 
-    It owns no gameplay rules. Every persistent command is delegated to the
-    already canonical Event/Economy/Incident/Settlement application services.
+    It owns no gameplay rules. Persistent commands are delegated to the
+    canonical Profile/Event/Economy/Incident/Settlement application services.
     """
 
     def __init__(
@@ -57,6 +60,7 @@ class GameClientSession:
         if not isinstance(incident_contract_version, str) or not incident_contract_version.strip():
             raise ValueError("incident_contract_version fehlt")
         self.persistence = persistence
+        self.profile = CharacterProfileService(persistence)
         self.event_state = EventStateService(persistence)
         self.event_execution = EventExecutionService(self.event_state)
         self.economy = EconomyService(persistence)
@@ -119,12 +123,17 @@ class GameClientSession:
         command_id = command.get("command_id")
         if not isinstance(command_id, str) or not command_id.strip():
             return self._rejected("invalid_command_id")
+        command_id = command_id.strip()
         if context.command_id != command_id:
             return self._rejected("command_context_mismatch")
-        if context.entity_type != "event" or not context.entity_id:
-            return self._rejected("invalid_event_context")
 
         try:
+            if command_type in _PROFILE_COMMANDS:
+                return self._dispatch_profile(command, command_id=command_id, context=context)
+
+            if context.entity_type != "event" or not context.entity_id:
+                return self._rejected("invalid_event_context")
+
             if command_type == "event.create":
                 raw = command.get("event")
                 if not isinstance(raw, dict):
@@ -209,6 +218,37 @@ class GameClientSession:
             return self._rejected("validation_error", str(exc))
         except RuntimeError as exc:
             return self._rejected("runtime_error", str(exc))
+
+    def _dispatch_profile(
+        self,
+        command: Mapping[str, Any],
+        *,
+        command_id: str,
+        context: JournalContext,
+    ) -> GameClientCommandResult:
+        if context.entity_type != "character" or not context.entity_id:
+            return self._rejected("invalid_character_context")
+        raw_character = self.read_state().get("character")
+        if not isinstance(raw_character, dict):
+            return self._rejected("character_missing")
+        character = CharacterState.from_dict(raw_character)
+        if character.character_id != context.entity_id:
+            return self._rejected("character_context_mismatch")
+        changes = command.get("changes")
+        if not isinstance(changes, dict) or not changes:
+            return self._rejected("invalid_profile_changes")
+
+        event_id = f"{command_id}:profile"
+        if self.persistence.has_event(event_id):
+            return self._confirmed((), True)
+        self.profile.update(
+            character,
+            deepcopy(changes),
+            event_id=event_id,
+            transaction_id=f"tx:{command_id}:profile",
+            context=context,
+        )
+        return self._confirmed((event_id,), False)
 
     def _confirmed_event(self) -> EventState:
         state = self.persistence.load_state() or {}
