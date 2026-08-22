@@ -69,7 +69,7 @@ class A4SeasonIntegrationTests(unittest.TestCase):
 
         projection = self.build_projection(state)
         hall = projection["hall_of_tribute"]
-        season = hall["season"]
+        season = hall["seasonal"]
         self.assertTrue(season["available"])
         self.assertEqual(season["cycles"]["weekly"]["cycle_id"], "week:2026-W34")
         self.assertEqual(season["cycles"]["monthly"]["cycle_id"], "month:2026-08")
@@ -80,7 +80,7 @@ class A4SeasonIntegrationTests(unittest.TestCase):
 
         projection_again = self.build_projection(state)
         self.assertEqual(
-            projection_again["hall_of_tribute"]["season"]["cycles"],
+            projection_again["hall_of_tribute"]["seasonal"]["cycles"],
             season["cycles"],
         )
 
