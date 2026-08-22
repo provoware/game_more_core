@@ -216,6 +216,7 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 
 ## Später
 
+- [ ] Persistenz-Orchestrierung nach der ausgelagerten Datei-/Journalgrenze in getrennte Commit- und Recovery-Komponenten teilen und deren bisherigen privaten Vertrag mit gezielten Tests sichern; Nutzen: Das verbleibende Kernmodul sinkt unter 500 Zeilen, ohne Speicherreihenfolge oder Datenformat anzutasten.
 - [ ] Optionalen Start-Selbsttest mit zeitlich begrenztem HTTP-Aufruf ergänzen; Nutzen: Support kann Dateivorprüfung, Serverbindung und erreichbare Startseite mit einem nicht blockierenden Befehl gemeinsam nachweisen.
 - [ ] Kanonisches Blueprint-WebP aus der dokumentierten Originalquelle reproduzierbar neu exportieren und die überwiegend transparente aktuelle Datei erst nach visueller Abnahme ersetzen; Nutzen: vollständige Pixelreferenz statt formal ladbarer, aber visuell unbrauchbarer Fläche.
 - [ ] HTML-Blueprint über einen schreibgeschützten Adapter mit fixture-basiertem Projection-JSON speisen und per Vertragstest nachweisen, dass fehlende oder unbestätigte Werte sichtbar leer bleiben; Nutzen: realistische UI-Auswertung ohne zweiten Domain-Schreibweg.
