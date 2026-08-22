@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "version": "0.8.5-d1",
+  "world_id": "living_city",
+  "world_seed": "bunkerfrequenz-living-city-v1",
+  "booking_id": {
+    "prefix": "BF",
+    "digits": 6,
+    "never_reuse": true
+  },
+  "housing": {
+    "rule": "one_independent_home_less_than_registered_players",
+    "allowed_statuses": ["independent", "guest", "homeless"],
+    "shortage_count": 1
+  },
+  "trust": {
+    "violation_types": ["deception", "betrayal", "fraud"],
+    "block_cycles": 12,
+    "blocked_direction_effectiveness_bps": 0,
+    "reverse_direction_effectiveness_bps": 10000
+  },
+  "district_metric_defaults": {
+    "heat": 20,
+    "prestige": 20,
+    "police_pressure": 15,
+    "scene_activity": 30
+  },
+  "settlement_to_district": {
+    "prestige_from_reputation_bps": 5000,
+    "police_from_heat_bps": 5000,
+    "police_relief_from_stability_bps": 2500,
+    "scene_from_reputation_bps": 2000,
+    "scene_from_stability_bps": 3000
+  },
+  "cities": [
+    {
+      "city_id": "berlin",
+      "label": "Berlin",
+      "price_multiplier_bps": 10000,
+      "customs": ["direkt", "improvisiert", "späte_nächte", "starke_bezirksidentität"],
+      "districts": ["mitte", "friedrichshain", "kreuzberg", "neukoelln", "wedding", "lichtenberg", "treptow", "charlottenburg"]
+    },
+    {
+      "city_id": "leipzig",
+      "label": "Leipzig",
+      "price_multiplier_bps": 9200,
+      "customs": ["gemeinschaftlich", "selbstgemacht", "raum_für_experimente"],
+      "districts": ["connewitz", "plagwitz", "zentrum_sued"]
+    },
+    {
+      "city_id": "hamburg",
+      "label": "Hamburg",
+      "price_multiplier_bps": 11500,
+      "customs": ["hafenprägung", "direkte_absprachen", "höhere_logistikkosten"],
+      "districts": ["st_pauli", "altona", "wilhelmsburg"]
+    }
+  ],
+  "locations": [
+    {"location_id": "concrete_orbit", "city_id": "berlin", "district_id": "lichtenberg", "category": "bunker", "party_risk_eligible": true, "mini_games": []},
+    {"location_id": "signalwerk", "city_id": "berlin", "district_id": "friedrichshain", "category": "warehouse", "party_risk_eligible": false, "mini_games": []},
+    {"location_id": "sublevel_44", "city_id": "berlin", "district_id": "wedding", "category": "basement", "party_risk_eligible": true, "mini_games": ["xoxo"]},
+    {"location_id": "neon_hof", "city_id": "berlin", "district_id": "kreuzberg", "category": "courtyard", "party_risk_eligible": false, "mini_games": ["slot"]},
+    {"location_id": "frequenzdach", "city_id": "berlin", "district_id": "neukoelln", "category": "rooftop", "party_risk_eligible": false, "mini_games": []},
+    {"location_id": "plattenstudio", "city_id": "berlin", "district_id": "mitte", "category": "studio", "party_risk_eligible": false, "mini_games": ["poker"]},
+    {"location_id": "ringlager", "city_id": "berlin", "district_id": "treptow", "category": "warehouse", "party_risk_eligible": false, "mini_games": []},
+    {"location_id": "west_kontor", "city_id": "berlin", "district_id": "charlottenburg", "category": "office_floor", "party_risk_eligible": false, "mini_games": ["poker"]},
+    {"location_id": "kanal_null", "city_id": "berlin", "district_id": "treptow", "category": "open_air", "party_risk_eligible": true, "mini_games": []},
+    {"location_id": "tape_kiosk", "city_id": "berlin", "district_id": "neukoelln", "category": "record_store", "party_risk_eligible": false, "mini_games": ["xoxo", "slot"]},
+    {"location_id": "generator_ost", "city_id": "berlin", "district_id": "lichtenberg", "category": "infrastructure", "party_risk_eligible": false, "mini_games": []},
+    {"location_id": "hall_of_tribute", "city_id": "berlin", "district_id": "friedrichshain", "category": "tribute_hall", "party_risk_eligible": false, "mini_games": []},
+    {"location_id": "waldkante_ost", "city_id": "berlin", "district_id": "treptow", "category": "forest_edge", "party_risk_eligible": true, "mini_games": []},
+    {"location_id": "connewitz_hof", "city_id": "leipzig", "district_id": "connewitz", "category": "courtyard", "party_risk_eligible": false, "mini_games": ["xoxo"]},
+    {"location_id": "plagwitz_werk", "city_id": "leipzig", "district_id": "plagwitz", "category": "warehouse", "party_risk_eligible": false, "mini_games": ["poker"]},
+    {"location_id": "st_pauli_keller", "city_id": "hamburg", "district_id": "st_pauli", "category": "basement", "party_risk_eligible": true, "mini_games": ["slot"]},
+    {"location_id": "wilhelmsburg_halle", "city_id": "hamburg", "district_id": "wilhelmsburg", "category": "warehouse", "party_risk_eligible": false, "mini_games": ["poker"]}
+  ],
+  "legacy_location_aliases": {
+    "loc-a4-demo": "concrete_orbit"
+  },
+  "intro": {
+    "story_key": "intro.first_arrival"
+  },
+  "storefronts": [
+    {
+      "location_id": "tape_kiosk",
+      "note_keys": ["window.tape.01", "window.tape.02", "window.tape.secret", "window.tape.03"]
+    },
+    {
+      "location_id": "plattenstudio",
+      "note_keys": ["window.studio.01", "window.studio.secret", "window.studio.02", "window.studio.03"]
+    },
+    {
+      "location_id": "west_kontor",
+      "note_keys": ["window.west.01", "window.west.02", "window.west.03", "window.west.secret"]
+    }
+  ],
+  "honor_titles": [
+    {"title_id": "betonstarter", "label_key": "title.betonstarter", "kind": "honor"},
+    {"title_id": "krisenlotse", "label_key": "title.krisenlotse", "kind": "honor"},
+    {"title_id": "pegelphantom", "label_key": "title.pegelphantom", "kind": "infamy"},
+    {"title_id": "nachtminister", "label_key": "title.nachtminister", "kind": "honor"}
+  ],
+  "great_deeds": [
+    {"deed_id": "first_completed_event", "label_key": "deed.first_completed_event", "valence": "positive", "title_id": "betonstarter"},
+    {"deed_id": "crisis_survivor", "label_key": "deed.crisis_survivor", "valence": "positive", "title_id": "krisenlotse"},
+    {"deed_id": "high_heat_finish", "label_key": "deed.high_heat_finish", "valence": "negative", "title_id": "pegelphantom"},
+    {"deed_id": "prestige_night", "label_key": "deed.prestige_night", "valence": "positive", "title_id": "nachtminister"}
+  ],
+  "mini_games": {
+    "poker": {"mode": "five_card_showdown_no_wager", "win_points": 2, "draw_points": 1},
+    "slot": {"mode": "score_only_no_wager", "jackpot_points": 3, "pair_points": 1},
+    "xoxo": {"mode": "player_vs_deterministic_ai", "win_points": 2, "draw_points": 1}
+  },
+  "party_encounter": {
+    "eligible_modes": ["unofficial"],
+    "base_trigger_percent": 25,
+    "max_trigger_percent": 85,
+    "choices": [
+      {"choice_id": "cooperate_and_end", "label_key": "party.choice.cooperate_and_end", "effects": {"stress_delta": 4, "reputation_delta": -2, "heat_delta": -3, "police_pressure_delta": -5, "scene_activity_delta": -2}},
+      {"choice_id": "accept_conditions_reduce", "label_key": "party.choice.accept_conditions_reduce", "effects": {"stress_delta": 6, "reputation_delta": 1, "heat_delta": -1, "police_pressure_delta": -2, "scene_activity_delta": -4}},
+      {"choice_id": "cancel_and_take_consequences", "label_key": "party.choice.cancel_and_take_consequences", "effects": {"stress_delta": 8, "reputation_delta": -4, "heat_delta": 4, "police_pressure_delta": 6, "scene_activity_delta": -6}}
+    ]
+  }
+}
