@@ -27,7 +27,13 @@ def _int(value: Any, field: str, *, minimum: int | None = None) -> int:
     return value
 
 
-def _triplet(value: Any, field: str, *, bounded_0_100: bool = False) -> dict[str, int]:
+def _triplet(
+    value: Any,
+    field: str,
+    *,
+    bounded_0_100: bool = False,
+    nonnegative: bool = False,
+) -> dict[str, int]:
     if not isinstance(value, dict) or set(value) != {"old", "delta", "new"}:
         raise ValueError(f"{field} benötigt old/delta/new")
     old = _int(value["old"], f"{field}.old")
@@ -37,6 +43,10 @@ def _triplet(value: Any, field: str, *, bounded_0_100: bool = False) -> dict[str
         expected = min(100, max(0, old + delta))
         if not 0 <= old <= 100 or new != expected:
             raise ValueError(f"{field} ist außerhalb 0..100 oder inkonsistent")
+    elif nonnegative:
+        expected = max(0, old + delta)
+        if old < 0 or new != expected:
+            raise ValueError(f"{field} ist negativ oder inkonsistent")
     elif new != old + delta:
         raise ValueError(f"{field} ist inkonsistent")
     return {"old": old, "delta": delta, "new": new}
@@ -79,7 +89,7 @@ class SettlementState:
         if budget["old"] < 0 or budget["new"] < 0:
             raise ValueError("Settlement-Budget darf nicht negativ sein")
         _triplet(self.stress, "stress", bounded_0_100=True)
-        _triplet(self.reputation, "reputation")
+        _triplet(self.reputation, "reputation", nonnegative=True)
         self._revision_triplet(self.event_revision, "event_revision", steps=2)
         self._revision_triplet(self.economy_revision, "economy_revision", steps=1)
         self._revision_triplet(self.incident_revision, "incident_revision", steps=1)
