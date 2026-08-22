@@ -16,10 +16,10 @@ ALLOWED = {
 }
 
 
-def context(command_id: str) -> JournalContext:
+def context(command_id: str, *, entity_id: str = "event-1", entity_type: str = "event") -> JournalContext:
     return JournalContext(
-        "2026-08-22T20:00:00+02:00", "session-0.8.3b", "player-1", "event",
-        "event-1", command_id, "runtime", "0.8.3-b1",
+        "2026-08-22T20:00:00+02:00", "session-0.8.3b", "player-1", entity_type,
+        entity_id, command_id, "runtime", "0.8.3-b1",
     )
 
 
@@ -83,6 +83,16 @@ class IncidentServiceTests(unittest.TestCase):
         self.assertEqual(effects["budget_delta_cents"], -20000)
         self.assertEqual(effects["crew_stress_delta"], 13)
 
+    def test_cumulative_pending_settlement_may_exceed_single_incident_bounds(self):
+        result = None
+        for index in range(5):
+            self.service.open("power_drop", context=context(f"open-cumulative-{index}"), severity=5)
+            result = self.service.resolve("power_drop.rewire", context=context(f"resolve-cumulative-{index}"))
+        self.assertIsNotNone(result)
+        self.assertEqual(result.event.phase, "live")
+        self.assertEqual(result.incidents.pending_settlement["crew_stress_delta"], 115)
+        self.assertEqual(len(result.incidents.history), 5)
+
     def test_incident_requires_live_and_one_active_incident_at_a_time(self):
         self.service.open("equipment_failure", context=context("open-first"))
         with self.assertRaises(ValueError):
@@ -105,6 +115,32 @@ class IncidentServiceTests(unittest.TestCase):
         self.assertFalse(first_resolve.idempotent_replay)
         self.assertTrue(replay_resolve.idempotent_replay)
         self.assertEqual(first_resolve.incidents.to_dict(), replay_resolve.incidents.to_dict())
+
+    def test_replay_still_requires_matching_event_context(self):
+        self.service.open("noise_pressure", context=context("open-context"))
+        with self.assertRaises(ValueError):
+            self.service.open(
+                "noise_pressure",
+                context=context("open-context", entity_id="event-other"),
+            )
+        with self.assertRaises(ValueError):
+            self.service.open(
+                "noise_pressure",
+                context=context("open-context", entity_type="character"),
+            )
+
+    def test_resolution_rejects_changed_contract_version(self):
+        self.service.open("equipment_failure", context=context("open-versioned"))
+        changed_contract = IncidentService(
+            self.kernel,
+            self.catalog,
+            contract_version="0.8.3-b2-incompatible",
+        )
+        with self.assertRaises(PersistenceError):
+            changed_contract.resolve("equipment_failure.swap", context=context("resolve-versioned"))
+        state = self.kernel.load_state()
+        self.assertEqual(state["event"]["phase"], "crisis")
+        self.assertEqual(state["incidents"]["active"]["contract_version"], "0.8.3-b1")
 
     def test_recovery_replays_incident_and_event_phase_after_durable_journal_crash(self):
         self.kernel.create_snapshot("before_incident")
