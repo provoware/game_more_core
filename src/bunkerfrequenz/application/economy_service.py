@@ -4,7 +4,12 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any
 
-from bunkerfrequenz.domain.economy import EconomyState, market_price
+from bunkerfrequenz.domain.economy import (
+    EconomyState,
+    PROPERTY_LEDGER_ITEM_PREFIX,
+    PROPERTY_PURCHASE_LEDGER_KIND,
+    market_price,
+)
 from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 
@@ -15,6 +20,15 @@ class EconomyCommitResult:
     event: EventState
     committed_event_ids: tuple[str, ...]
     idempotent_replay: bool
+
+
+@dataclass(frozen=True, slots=True)
+class PreparedPropertyPurchase:
+    economy: EconomyState
+    event: EventState
+    transaction_id: str
+    item_id: str
+    purchase_price_cents: int
 
 
 class EconomyService:
@@ -91,6 +105,67 @@ class EconomyService:
             transaction_id=f"tx:{context.command_id}", events=events, derived_state=current, context=context
         )
         return EconomyCommitResult(updated_economy, updated_event, receipt.event_ids, False)
+
+    def prepare_property_purchase(
+        self,
+        economy: EconomyState,
+        event: EventState,
+        *,
+        location_id: str,
+        purchase_price_cents: int,
+        transaction_id: str,
+    ) -> PreparedPropertyPurchase:
+        """Prepare, but do not commit, one fixed-price property purchase.
+
+        PropertyService owns the surrounding atomic commit. EconomyService remains
+        the only place that is allowed to calculate and validate the monetary
+        mutation, preventing direct property/UI budget writes.
+        """
+        economy.validate()
+        event.validate()
+        if not isinstance(location_id, str) or not location_id.strip():
+            raise ValueError("location_id fehlt")
+        location_id = location_id.strip()
+        if isinstance(purchase_price_cents, bool) or not isinstance(purchase_price_cents, int) or purchase_price_cents < 1:
+            raise ValueError("purchase_price_cents muss positive Ganzzahl sein")
+        if not isinstance(transaction_id, str) or not transaction_id.strip():
+            raise ValueError("Property-Kauf benötigt transaction_id")
+        transaction_id = transaction_id.strip()
+        if any(entry["transaction_id"] == transaction_id for entry in economy.ledger):
+            raise PersistenceError("Property-Transaktion existiert bereits im Economy-Ledger")
+
+        item_id = f"{PROPERTY_LEDGER_ITEM_PREFIX}{location_id}"
+        budget_after = event.budget_cents - purchase_price_cents
+        if budget_after < 0:
+            raise ValueError("Event-Budget reicht für diesen Immobilienkauf nicht aus")
+
+        economy_data = economy.to_dict()
+        economy_data["ledger"].append({
+            "transaction_id": transaction_id,
+            "kind": PROPERTY_PURCHASE_LEDGER_KIND,
+            "item_id": item_id,
+            "quantity": 1,
+            "unit_price_cents": purchase_price_cents,
+            "budget_delta_cents": -purchase_price_cents,
+            "compensates": None,
+        })
+        # Property prices are fixed by the City-Map contract. Buying real estate
+        # therefore increments the economy revision but does not advance the
+        # equipment market tick.
+        economy_data["revision"] += 1
+        economy_after = EconomyState.from_dict(economy_data)
+
+        event_data = event.to_dict()
+        event_data["budget_cents"] = budget_after
+        event_data["revision"] += 1
+        event_after = EventState.from_dict(event_data)
+        return PreparedPropertyPurchase(
+            economy=economy_after,
+            event=event_after,
+            transaction_id=transaction_id,
+            item_id=item_id,
+            purchase_price_cents=purchase_price_cents,
+        )
 
     def compensate(self, transaction_id: str, *, context: JournalContext) -> EconomyCommitResult:
         self._validate_context(context)
