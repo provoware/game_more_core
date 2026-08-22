@@ -21,11 +21,26 @@ RANKING = load("RANKING_NETWORK_MANIFEST.json")
 SYNC = load("SYNC_MANIFEST.json")
 ZEIT = load("ZEIT_MANIFEST.json")
 CITY = load("CITY_MAP_MANIFEST.json")
+DISTRICT = load("DISTRICT_STATE_MANIFEST.json")
 INCIDENT = load("INCIDENT_MANIFEST.json")
 TEXT = json.loads((ROOT / "content" / "de" / "ui" / "character_forge.json").read_text(encoding="utf-8"))
 
 
 class A4SeasonIntegrationTests(unittest.TestCase):
+    def build_projection(self, state: dict) -> dict:
+        return build_a4_game_projection(
+            state,
+            incident_catalog=build_incident_catalog(INCIDENT),
+            district_manifest=DISTRICT,
+            city_map_manifest=CITY,
+            hall_manifest=HALL,
+            ranking_manifest=RANKING,
+            sync_manifest=SYNC,
+            ranking_text_catalog=TEXT,
+            hall_season_manifest=SEASON,
+            zeit_manifest=ZEIT,
+        )
+
     def test_completed_event_exposes_stable_week_month_without_fake_title(self):
         character = CharacterState("player-local", "Local Crew", reputation=42)
         event = EventState(
@@ -52,18 +67,7 @@ class A4SeasonIntegrationTests(unittest.TestCase):
         )
         state = {"character": character.to_dict(), "event": event.to_dict()}
 
-        projection = build_a4_game_projection(
-            state,
-            incident_catalog=build_incident_catalog(INCIDENT),
-            city_map_manifest=CITY,
-            hall_manifest=HALL,
-            ranking_manifest=RANKING,
-            sync_manifest=SYNC,
-            ranking_text_catalog=TEXT,
-            hall_season_manifest=SEASON,
-            zeit_manifest=ZEIT,
-        )
-
+        projection = self.build_projection(state)
         hall = projection["hall_of_tribute"]
         season = hall["season"]
         self.assertTrue(season["available"])
@@ -74,17 +78,7 @@ class A4SeasonIntegrationTests(unittest.TestCase):
         self.assertFalse(season["cycles"]["weekly"]["titles_final"])
         self.assertEqual(season["local_titles"], [])
 
-        projection_again = build_a4_game_projection(
-            state,
-            incident_catalog=build_incident_catalog(INCIDENT),
-            city_map_manifest=CITY,
-            hall_manifest=HALL,
-            ranking_manifest=RANKING,
-            sync_manifest=SYNC,
-            ranking_text_catalog=TEXT,
-            hall_season_manifest=SEASON,
-            zeit_manifest=ZEIT,
-        )
+        projection_again = self.build_projection(state)
         self.assertEqual(
             projection_again["hall_of_tribute"]["season"]["cycles"],
             season["cycles"],
