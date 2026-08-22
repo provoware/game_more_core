@@ -226,7 +226,7 @@ Details: [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
 python3 tools/start_web_blueprint.py
 ```
 
-Die Startroutine prüft zuerst alle benötigten Dateien, startet einen lokalen Server, zeigt Adresse und Stopp-Befehl an und öffnet den Standardbrowser. Für einen rein manuellen Browserstart dient `--no-browser`; bei einem belegten Port nennt die Fehlermeldung direkt Ursache und Port. Die Oberfläche führt zusätzlich einen kopierbaren Prüfbericht unter **Diagnose**.
+Die Startroutine prüft zuerst alle benötigten Dateien, bindet den lokalen Server ohne fehleranfällige Vorabreservierung, zeigt Adresse und Stopp-Befehl sofort an und öffnet den Standardbrowser. Für einen rein manuellen Browserstart dient `--no-browser`; bei einem belegten Port nennt die Fehlermeldung mit `--port 0` direkt den automatischen Ausweg. Die Oberfläche führt zusätzlich einen kopierbaren Prüfbericht unter **Diagnose**.
 
 ---
 

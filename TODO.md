@@ -216,6 +216,7 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 
 ## Später
 
+- [ ] Optionalen Start-Selbsttest mit zeitlich begrenztem HTTP-Aufruf ergänzen; Nutzen: Support kann Dateivorprüfung, Serverbindung und erreichbare Startseite mit einem nicht blockierenden Befehl gemeinsam nachweisen.
 - [ ] Kanonisches Blueprint-WebP aus der dokumentierten Originalquelle reproduzierbar neu exportieren und die überwiegend transparente aktuelle Datei erst nach visueller Abnahme ersetzen; Nutzen: vollständige Pixelreferenz statt formal ladbarer, aber visuell unbrauchbarer Fläche.
 - [ ] HTML-Blueprint über einen schreibgeschützten Adapter mit fixture-basiertem Projection-JSON speisen und per Vertragstest nachweisen, dass fehlende oder unbestätigte Werte sichtbar leer bleiben; Nutzen: realistische UI-Auswertung ohne zweiten Domain-Schreibweg.
 - [ ] Für den HTML-Blueprint einen automatisierten visuellen Kontrast- und Viewport-Nachweis bei 390, 900 und 1440 Pixeln ergänzen; Nutzen: die neue Blickführung bleibt bei späteren UI-Erweiterungen lesbar und regressionssicher.

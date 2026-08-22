@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import http.server
-import socket
-import sys
 import threading
 import webbrowser
 from pathlib import Path
@@ -28,36 +27,45 @@ def preflight() -> None:
         raise SystemExit("START FEHLGESCHLAGEN – fehlt: " + ", ".join(missing))
 
 
-def find_port(host: str, requested: int) -> int:
-    with socket.socket() as probe:
-        probe.bind((host, requested))
-        return int(probe.getsockname()[1])
+def port_number(value: str) -> int:
+    port = int(value)
+    if not 0 <= port <= 65535:
+        raise argparse.ArgumentTypeError("muss zwischen 0 und 65535 liegen")
+    return port
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="BUNKERFREQUENZ HTML-Pipeline lokal starten")
     parser.add_argument("--host", default="127.0.0.1", help="Bind-Adresse (Standard: nur dieser Rechner)")
-    parser.add_argument("--port", default=8043, type=int, help="Port; 0 wählt automatisch einen freien Port")
+    parser.add_argument("--port", default=8043, type=port_number, help="Port; 0 wählt automatisch einen freien Port")
     parser.add_argument("--no-browser", action="store_true", help="Browser nicht automatisch öffnen")
-    return parser.parse_args()
+    return parser.parse_args(argv)
+
+
+def create_server(host: str, port: int) -> http.server.ThreadingHTTPServer:
+    handler = lambda *values, **kwargs: http.server.SimpleHTTPRequestHandler(  # noqa: E731
+        *values, directory=str(ROOT), **kwargs
+    )
+    try:
+        return http.server.ThreadingHTTPServer((host, port), handler)
+    except OSError as error:
+        if error.errno == errno.EADDRINUSE:
+            detail = f"Port {port} ist belegt; nutze --port 0"
+        else:
+            detail = f"Server kann auf {host}:{port} nicht starten: {error}"
+        raise SystemExit(f"START FEHLGESCHLAGEN – {detail}") from error
 
 
 def main() -> None:
     args = parse_args()
     preflight()
-    try:
-        port = find_port(args.host, args.port)
-    except OSError as error:
-        raise SystemExit(f"START FEHLGESCHLAGEN – Port {args.port} ist belegt: {error}") from error
-    handler = lambda *values, **kwargs: http.server.SimpleHTTPRequestHandler(  # noqa: E731
-        *values, directory=str(ROOT), **kwargs
-    )
-    server = http.server.ThreadingHTTPServer((args.host, port), handler)
+    server = create_server(args.host, args.port)
+    port = int(server.server_address[1])
     url = f"http://{args.host}:{port}/web/"
     print("BUNKERFREQUENZ HTML-Pipeline")
     print("STATUS: BEREIT")
     print(f"ADRESSE: {url}")
-    print("STOPP: Strg+C")
+    print("STOPP: Strg+C", flush=True)
     if not args.no_browser:
         threading.Timer(0.25, webbrowser.open, args=(url,)).start()
     try:

@@ -12,11 +12,11 @@ Die Ansicht wird erst dann mit Schreibfunktionen verbunden, wenn der vollständi
 
 1. Öffne ein Terminal im Projektordner.
 2. Gib genau `python3 tools/start_web_blueprint.py` ein.
-3. Warte auf `STATUS: BEREIT`. Der Browser öffnet sich automatisch.
-4. Prüfe oben `● BEREIT` und unten den Bereich **Diagnose**.
+3. Warte auf `STATUS: BEREIT` und eine Zeile `ADRESSE:`. Erst dann ist der Start abgeschlossen; der Browser öffnet sich automatisch.
+4. Prüfe im Browser oben `● BEREIT` und unten den Bereich **Diagnose**. Damit sind Server und Oberfläche gemeinsam geprüft.
 5. Beende den lokalen Server im Terminal mit `Strg+C`.
 
-Falls kein Browser aufgeht, kopiere die hinter `ADRESSE:` genannte Adresse in einen Browser. Für einen bewusst manuellen Start kann `python3 tools/start_web_blueprint.py --no-browser` verwendet werden. Meldet die Routine einen belegten Port, starte einmal mit `--port 0`; dann wird automatisch ein freier Port gewählt.
+Falls kein Browser aufgeht, kopiere die hinter `ADRESSE:` genannte Adresse in einen Browser. Für einen bewusst manuellen Start kann `python3 tools/start_web_blueprint.py --no-browser` verwendet werden. Meldet die Routine `Port 8043 ist belegt`, starte einmal mit `python3 tools/start_web_blueprint.py --port 0`; die danach ausgegebene Adresse enthält den automatisch gewählten freien Port.
 
 **Was bedeutet die Ansicht?** Der schmale Block **Leseweg** erklärt zuerst Reihenfolge, Modus und Datenquelle. Danach zeigen die nummerierten Sektoren **Pixelreferenz** die vorhandene Grafik unverändert, **Spielfluss** die fünf Schritte und **Ansichten** die vier Darstellungsvarianten aus dem gültigen UI-Manifest. **Diagnose** zeigt getrennt, welche Dateien und Verträge geladen wurden. Mit **Prüfbericht kopieren** lassen sich die technischen Angaben weitergeben, ohne einen Spielstand offenzulegen.
 
