@@ -4,6 +4,16 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### 0.8.3-A – Event Execution Engine
+
+- `EventExecutionService` als verbindliche Application-Grenze für acht kanonische Eventaktionen von `draft` bis `settlement` ergänzt; ein späterer Client muss keine freie Phasenmutation verwenden.
+- zentrale Voraussetzungen für bestätigte Acts/Crew, positives Budget und Equipment-Readiness eingeführt; bestehende Ort-, Zugang-, Zeitfenster- und Safety-Gates werden zusätzlich als vorab auswertbare Blocker gespiegelt.
+- `EventActionAvailability` liefert `enabled` plus stabile Blocker-IDs, damit A4/A3 später dieselben Regeln erklären können, die beim Execute tatsächlich gelten.
+- Ausführung bleibt append-only über `event.phase_changed`; `reason=event_action:<action_id>` macht die fachliche Aktion im Journal nachvollziehbar, ohne einen parallelen Persistenzweg einzuführen.
+- `EVENT_ACTION_MANIFEST.json` als maschinenlesbarer Vertrag und Runtime-Regressionen für Happy Path, gesperrte Voraussetzungen, falsche Phase, Idempotenz und Manifestabgleich ergänzt.
+- 0.8.3-A endet bewusst bei `settlement`; Krisen/Incidents folgen in 0.8.3-B, Abrechnung/Ruf/Character-Folgen und `event.completed` in 0.8.3-C.
+- README, TODO, Projektstatus, Projektmanifest und Spieleranleitung auf den aktiven 0.8.3-A-Stand abgeglichen; Runtime-Baseline bleibt unverändert `0.5.2-alpha.1`.
+
 ### Spielbeschreibung und Entwicklerübergabe
 
 - eine ausführliche fachliche Spielbeschreibung ohne technische Vorkenntnisse ergänzt; sie erklärt Vision, Spielerrolle, Charakterentwicklung, Eventphasen, Economy, Folgen, Bedienvision und den klar abgegrenzten Produktstand.
@@ -19,10 +29,12 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Kauf-/Verkaufskompensation auf ursprünglichen Stückpreis, einmalige Anwendung und erneut gültige Bestandsbedingungen begrenzt.
 - kombiniertes Economy-/Event-Replay samt Fault-Injection-Test ergänzt; Client, Netzwerk, Clubs und 0.8.3-Event-Loop bleiben unverändert.
 - Spieleranleitung erklärt Lager, Reservierung, Budget und Wiederherstellung in einfacher Sprache.
+- Economy-Commands zusätzlich an die bestätigte Event-ID gebunden; widersprüchliche Replays derselben Revision werden fail-closed abgewiesen.
+- 0.8.2-Basis inklusive Integritätshärtung auf PR #61 dreifach remote grün validiert und als `9cfa107f0256587bf5a440c64c3e0af6c482fed2` nach `main` übernommen.
 
 ### Release-Planung
 
-- den vollständigen 0.8.2-Economy-Slice mit den lokalen Entsprechungen aller drei Kern-Gates abgenommen; die Remote-Abnahme auf dem exakten PR-Head bleibt ausdrücklich offen.
+- den vollständigen 0.8.2-Economy-Slice mit den lokalen Entsprechungen aller drei Kern-Gates abgenommen; die spätere Integritätshärtung wurde auf PR #61 mit allen drei Remote-Gates bestätigt.
 - Status und Aufgabenliste trennen lokale Economy-Abnahme jetzt eindeutig von Remote-CI; die Spieleranleitung erklärt diesen Unterschied ohne Entwicklerwissen.
 - einen reproduzierbaren, maschinenlesbaren Economy-Replay-Beleg mit festem Seed, Head-SHA und fachlichen Receipts als konkrete Folgeoptimierung festgehalten.
 - veralteten 0.8.1-Mergevorbehalt nach dem belegten Merge von PR #48 entfernt, 0.8.2 als aktive Iteration gesetzt und den Pflichtpfad auf die drei tatsächlich offenen Release-Pakete reduziert.

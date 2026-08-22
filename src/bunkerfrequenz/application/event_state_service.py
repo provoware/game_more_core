@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable
 
 from bunkerfrequenz.application.state_blocks import merge_state_block
 from bunkerfrequenz.domain.event import EventState
@@ -148,6 +148,7 @@ class EventStateService:
         *,
         context: JournalContext,
         reason: str | None = None,
+        precondition: Callable[[EventState], None] | None = None,
     ) -> EventCommitResult:
         event.validate()
         self._validate_context(event.event_id, context)
@@ -169,6 +170,8 @@ class EventStateService:
             return self._replay_result(event.event_id)
 
         persisted = self._load_current(event)
+        if precondition is not None:
+            precondition(persisted)
         updated = persisted.transition_to(new_phase)
         payload = {
             "event_id": event.event_id,
