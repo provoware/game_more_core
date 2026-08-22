@@ -81,13 +81,15 @@ class IncidentService:
         if isinstance(resolved_severity, bool) or not isinstance(resolved_severity, int) or not 1 <= resolved_severity <= 5:
             raise ValueError("severity muss Ganzzahl zwischen 1 und 5 sein")
         request = {"operation": "open", "incident_type": incident_type, "severity": resolved_severity}
+
+        # Kontext wird auch bei idempotenten Replays gegen den autoritativen Save geprüft.
+        event, incidents, state = self._load(context)
         existing = self._existing(context.command_id)
         if existing is not None:
             if existing.get("payload", {}).get("request") != request:
                 raise PersistenceError("Command-ID wurde mit anderem Incident-Open verwendet")
-            return self._current_result((), True)
+            return self._result_from_state(state, True)
 
-        event, incidents, state = self._load(context)
         if event.phase != "live":
             raise ValueError("Incident kann in 0.8.3-B1 nur während live eröffnet werden")
         if incidents.active is not None:
@@ -120,16 +122,22 @@ class IncidentService:
 
     def resolve(self, response_id: str, *, context: JournalContext) -> IncidentCommitResult:
         request = {"operation": "resolve", "response_id": response_id}
+
+        # Kontext wird vor Replay-Erkennung validiert; falsche Entity-IDs werden nie als Erfolg quittiert.
+        event, incidents, state = self._load(context)
         existing = self._existing(context.command_id)
         if existing is not None:
             if existing.get("payload", {}).get("request") != request:
                 raise PersistenceError("Command-ID wurde mit anderer Incident-Auflösung verwendet")
-            return self._current_result((), True)
+            return self._result_from_state(state, True)
 
-        event, incidents, state = self._load(context)
         if event.phase != "crisis" or incidents.active is None:
             raise ValueError("Kein aktiver Incident in crisis vorhanden")
         active = deepcopy(incidents.active)
+        if active["contract_version"] != self.contract_version:
+            raise PersistenceError(
+                "Aktiver Incident verwendet anderen Vertragsstand; Auflösung benötigt passenden Katalog"
+            )
         spec = self.catalog.get(active["incident_type"])
         if spec is None:
             raise PersistenceError("Aktiver Incident-Typ fehlt im Katalog")
@@ -203,14 +211,14 @@ class IncidentService:
         event_id = f"{command_id}:incident"
         return next((record for record in self.persistence.read_records() if record["event_id"] == event_id), None)
 
-    def _current_result(self, ids: tuple[str, ...], replay: bool) -> IncidentCommitResult:
-        state = self.persistence.load_state() or {}
+    @staticmethod
+    def _result_from_state(state: dict[str, Any], replay: bool) -> IncidentCommitResult:
         if "event" not in state or "incidents" not in state:
             raise PersistenceError("Incident-Replay verweist auf fehlenden Zustand")
         return IncidentCommitResult(
             EventState.from_dict(state["event"]),
             IncidentState.from_dict(state["incidents"]),
-            ids,
+            (),
             replay,
         )
 
