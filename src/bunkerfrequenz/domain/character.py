@@ -55,6 +55,8 @@ class CharacterState:
             raise ValueError("Energie außerhalb 0..100")
         if isinstance(self.stress, bool) or not isinstance(self.stress, int) or not RESOURCE_MIN <= self.stress <= RESOURCE_MAX:
             raise ValueError("Stress außerhalb 0..100")
+        if isinstance(self.reputation, bool) or not isinstance(self.reputation, int):
+            raise ValueError("Reputation muss Ganzzahl sein")
 
     def to_dict(self) -> dict[str, Any]:
         self.validate()
