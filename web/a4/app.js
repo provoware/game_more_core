@@ -122,18 +122,44 @@ function renderStreetEncounter(encounter) {
   host.append(heading, body, effects);
 }
 
+function renderDistricts(districts) {
+  const host = $("district-list");
+  host.replaceChildren();
+  if (!districts) return;
+  $("district-revision").textContent = String(districts.revision || 0);
+  for (const district of districts.entries || []) {
+    const row = document.createElement("article");
+    row.className = "equipment-row";
+    const info = document.createElement("div");
+    const title = document.createElement("strong");
+    title.textContent = district.district_id.replaceAll("_", " ").toUpperCase();
+    const detail = document.createElement("span");
+    const metrics = district.metrics || {};
+    detail.textContent = `Heat ${metrics.heat ?? "–"} · Prestige ${metrics.prestige ?? "–"} · Polizeidruck ${metrics.police_pressure ?? "–"} · Szene ${metrics.scene_activity ?? "–"}`;
+    info.append(title, detail);
+    row.append(info);
+    host.append(row);
+  }
+  const change = districts.last_change;
+  $("district-last-change").textContent = change
+    ? `Letzte bestätigte Änderung: ${change.district_id} · ${change.source_type} · Heat ${signed(change.deltas?.heat)} · Prestige ${signed(change.deltas?.prestige)} · Polizeidruck ${signed(change.deltas?.police_pressure)} · Szene ${signed(change.deltas?.scene_activity)}`
+    : districts.persisted ? "Persistierter District-State ohne neue Änderung." : "Noch keine persistente Bezirksänderung – angezeigt werden die Startwerte.";
+}
+
 function render() {
   const p = state.projection || {};
   const event = p.event;
   setHidden("first-run", Boolean(p.character));
   setHidden("profile-panel", !p.character);
   setHidden("street-panel", !p.character);
+  setHidden("district-panel", !p.districts);
   setHidden("event-panel", !event);
   setHidden("economy-panel", !p.economy);
   setHidden("incident-panel", !event || !["live", "crisis"].includes(event.phase));
   setHidden("settlement-panel", !event || !["settlement", "completed"].includes(event.phase));
 
   renderProfile(p.character);
+  renderDistricts(p.districts);
   $("phase-badge").textContent = event ? event.phase.toUpperCase() : "NOCH KEIN EVENT";
   if (!event) return;
 
