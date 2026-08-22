@@ -11,6 +11,7 @@ from bunkerfrequenz.domain.incident import IncidentState
 from bunkerfrequenz.domain.settlement import SettlementState
 from bunkerfrequenz.presentation.district_projection import build_living_district_projection
 from bunkerfrequenz.presentation.hall_of_tribute import build_hall_of_tribute_projection
+from bunkerfrequenz.presentation.property_projection import build_property_projection
 
 
 def _incident_catalog_projection(catalog: Mapping[str, Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -41,6 +42,7 @@ def build_a4_game_projection(
     incident_catalog: Mapping[str, Mapping[str, Any]],
     district_manifest: Mapping[str, Any] | None = None,
     city_map_manifest: Mapping[str, Any] | None = None,
+    property_manifest: Mapping[str, Any] | None = None,
     hall_manifest: Mapping[str, Any] | None = None,
     ranking_manifest: Mapping[str, Any] | None = None,
     sync_manifest: Mapping[str, Any] | None = None,
@@ -52,17 +54,19 @@ def build_a4_game_projection(
     """Build a read-only A4 game projection from confirmed state blocks."""
     if (district_manifest is None) != (city_map_manifest is None):
         raise ValueError("district_manifest und city_map_manifest müssen gemeinsam gesetzt werden")
+    if property_manifest is not None and city_map_manifest is None:
+        raise ValueError("property_manifest benötigt city_map_manifest")
     hall_parts = (hall_manifest, ranking_manifest, sync_manifest, ranking_text_catalog, city_map_manifest)
     if any(part is not None for part in hall_parts[:4]) and not all(part is not None for part in hall_parts):
         raise ValueError("Hall of Tribute benötigt Hall-, Ranking-, Sync-, Text- und City-Map-Vertrag")
 
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.5-e1",
+        "view_model_version": "0.8.6-a1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
-            for key in ("character", "event", "economy", "incidents", "settlement", "districts")
+            for key in ("character", "event", "economy", "incidents", "settlement", "districts", "properties")
         },
         "character": None,
         "event": None,
@@ -70,6 +74,7 @@ def build_a4_game_projection(
         "incidents": None,
         "settlement": None,
         "districts": None,
+        "properties": None,
         "hall_of_tribute": None,
         "incident_catalog": _incident_catalog_projection(incident_catalog),
     }
@@ -148,6 +153,19 @@ def build_a4_game_projection(
         settlement = SettlementState.from_dict(raw["settlement"])
         projection["settlement"] = settlement.to_dict()
 
+    owned_property_ids: frozenset[str] = frozenset()
+    if property_manifest is not None and city_map_manifest is not None:
+        raw_properties = raw.get("properties")
+        if raw_properties is not None and not isinstance(raw_properties, Mapping):
+            raise ValueError("Persistierter Property-State muss ein Mapping sein")
+        property_projection = build_property_projection(
+            raw_properties,
+            property_manifest=property_manifest,
+            city_map_manifest=city_map_manifest,
+        )
+        projection["properties"] = property_projection
+        owned_property_ids = frozenset(property_projection["owned_location_ids"])
+
     if district_manifest is not None and city_map_manifest is not None:
         raw_districts = raw.get("districts")
         if raw_districts is not None and not isinstance(raw_districts, Mapping):
@@ -156,6 +174,7 @@ def build_a4_game_projection(
             raw_districts,
             district_manifest=district_manifest,
             city_map_manifest=city_map_manifest,
+            owned_property_ids=owned_property_ids,
         )
 
     if hall_manifest is not None:

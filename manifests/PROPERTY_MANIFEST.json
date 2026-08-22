@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "version": "0.8.6-a1",
+  "state_block": "properties",
+  "city_map_manifest_version": "0.8.3-b2-foundation",
+  "economy_manifest_version": "0.8.6-a1",
+  "purchase": {
+    "command_type": "property.purchase",
+    "journal_event_type": "world.property_purchased",
+    "economy_event_type": "economy.transaction_posted",
+    "economy_ledger_kind": "property_purchase",
+    "economy_item_prefix": "property:",
+    "quantity": 1,
+    "price_authority": "CITY_MAP_MANIFEST.purchase_price_cents",
+    "requires_purchasable_true": true,
+    "requires_unowned": true,
+    "requires_positive_event_budget_after_purchase": false,
+    "requires_nonnegative_event_budget_after_purchase": true,
+    "atomic_with_economy": true,
+    "client_price_authority": false
+  },
+  "ownership": {
+    "scope": "confirmed_local_character",
+    "one_owner_per_location": true,
+    "resale_supported": false,
+    "rent_supported": false,
+    "upgrades_supported": false
+  },
+  "recovery": {
+    "payload_contains_full_confirmed_state": true,
+    "purchase_command_idempotent": true,
+    "combined_game_recovery": true
+  }
+}

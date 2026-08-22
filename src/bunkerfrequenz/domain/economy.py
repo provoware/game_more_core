@@ -5,6 +5,8 @@ from dataclasses import dataclass, field
 from typing import Any
 
 REGULAR_LEDGER_KINDS = frozenset({"buy", "sell", "consume", "reserve", "release"})
+PROPERTY_PURCHASE_LEDGER_KIND = "property_purchase"
+PROPERTY_LEDGER_ITEM_PREFIX = "property:"
 SETTLEMENT_LEDGER_KIND = "settlement"
 SETTLEMENT_LEDGER_ITEM_ID = "__event_settlement__"
 
@@ -37,9 +39,10 @@ def _validate_ledger_entry(entry: dict[str, Any], seen: set[str]) -> None:
         raise ValueError("Ledger-Transaktions-ID ist ungültig oder doppelt")
     seen.add(transaction_id)
     kind = entry["kind"]
-    if kind not in REGULAR_LEDGER_KINDS | {SETTLEMENT_LEDGER_KIND}:
+    if kind not in REGULAR_LEDGER_KINDS | {PROPERTY_PURCHASE_LEDGER_KIND, SETTLEMENT_LEDGER_KIND}:
         raise ValueError("Ledger-kind ist unbekannt")
-    if not isinstance(entry["item_id"], str) or not entry["item_id"].strip():
+    item_id = entry["item_id"]
+    if not isinstance(item_id, str) or not item_id.strip():
         raise ValueError("Ledger-item_id muss nicht leerer Text sein")
     _positive_int(entry["quantity"], "ledger.quantity")
     if isinstance(entry["budget_delta_cents"], bool) or not isinstance(entry["budget_delta_cents"], int):
@@ -49,14 +52,25 @@ def _validate_ledger_entry(entry: dict[str, Any], seen: set[str]) -> None:
         raise ValueError("ledger.compensates muss Text oder null sein")
 
     if kind == SETTLEMENT_LEDGER_KIND:
-        if entry["item_id"] != SETTLEMENT_LEDGER_ITEM_ID:
+        if item_id != SETTLEMENT_LEDGER_ITEM_ID:
             raise ValueError("Settlement-Ledger benötigt kanonische item_id")
         if entry["quantity"] != 1 or entry["unit_price_cents"] != 0 or compensates is not None:
             raise ValueError("Settlement-Ledger besitzt ungültige Buchungsfelder")
-    else:
-        _positive_int(entry["unit_price_cents"], "ledger.unit_price_cents")
-        if entry["item_id"] == SETTLEMENT_LEDGER_ITEM_ID:
-            raise ValueError("Normale Economy-Transaktion darf Settlement-item_id nicht verwenden")
+        return
+
+    _positive_int(entry["unit_price_cents"], "ledger.unit_price_cents")
+    if item_id == SETTLEMENT_LEDGER_ITEM_ID:
+        raise ValueError("Normale Economy-Transaktion darf Settlement-item_id nicht verwenden")
+
+    if kind == PROPERTY_PURCHASE_LEDGER_KIND:
+        if not item_id.startswith(PROPERTY_LEDGER_ITEM_PREFIX) or len(item_id) <= len(PROPERTY_LEDGER_ITEM_PREFIX):
+            raise ValueError("Property-Kauf benötigt kanonische property:item_id")
+        if entry["quantity"] != 1:
+            raise ValueError("Property-Kauf benötigt quantity=1")
+        if entry["budget_delta_cents"] != -entry["unit_price_cents"]:
+            raise ValueError("Property-Kauf muss exakt den bestätigten Kaufpreis abbuchen")
+        if compensates is not None:
+            raise ValueError("Property-Kauf ist in 0.8.6-A nicht kompensierbar")
 
 
 @dataclass(slots=True)
