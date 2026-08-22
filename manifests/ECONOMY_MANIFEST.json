@@ -1,18 +1,31 @@
 {
-  "schema_version": 1,
-  "version": "0.8.2-alpha.1",
+  "schema_version": 2,
+  "version": "0.8.6-a1",
   "state_block": "economy",
   "domain_type": "EconomyState",
   "catalog_fields": ["label", "base_price_cents", "volatility_bps", "consumable"],
   "inventory_fields": ["owned", "reserved"],
-  "transaction_kinds": ["buy", "sell", "consume", "reserve", "release"],
+  "transaction_kinds": ["buy", "sell", "consume", "reserve", "release", "property_purchase", "settlement"],
   "market_price_rule": "max(1, base_price_cents * (10000 + ((market_tick % 5) - 2) * volatility_bps) // 10000)",
+  "property_purchase": {
+    "kind": "property_purchase",
+    "item_id_prefix": "property:",
+    "quantity": 1,
+    "price_authority": "CITY_MAP_MANIFEST.purchase_price_cents",
+    "client_price_authority": false,
+    "compensatable": false,
+    "market_tick_changes": false,
+    "revision_changes": true,
+    "budget_delta_rule": "-purchase_price_cents"
+  },
   "invariants": [
     "catalog and inventory are separate state sections",
     "reserved quantity never exceeds owned quantity",
-    "budget changes only with confirmed buy, sell or compensation transactions",
+    "budget changes only with confirmed economy transaction records",
     "event requirement readiness derives from confirmed reservation",
-    "market_tick and revision increase once per confirmed operation"
+    "equipment market_tick increases only for market-sensitive equipment operations",
+    "settlement and property_purchase are fixed postings and do not advance market_tick",
+    "economy revision increases once per confirmed economy mutation"
   ],
   "compensation": {
     "eligible_kinds": ["buy", "sell"],
@@ -29,6 +42,6 @@
   ],
   "persistence": {
     "combined_replay": "bunkerfrequenz.application.game_recovery.replay_game_event",
-    "atomic_state_blocks": ["economy", "event"]
+    "atomic_state_blocks": ["economy", "event", "properties"]
   }
 }
