@@ -8,7 +8,7 @@ from typing import Any, Mapping
 from bunkerfrequenz.domain.character import CharacterState, RESOURCE_MAX, RESOURCE_MIN
 from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.settlement import SettlementState
-from bunkerfrequenz.domain.world import WORLD_METRICS, WorldState
+from bunkerfrequenz.domain.world import WorldState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 
 
@@ -51,10 +51,24 @@ class WorldService:
     def ensure_player(self, character: CharacterState, *, context: JournalContext) -> WorldCommitResult:
         character.validate()
         self._character_context(context, character.character_id)
+        existing = self._existing_payload(
+            context,
+            "world-register",
+            "world.player_registered",
+            {"character_id": character.character_id},
+        )
         state = deepcopy(self.persistence.load_state() or {})
         world = self._world_or_empty(state)
+        if existing is not None:
+            booking_id = existing.get("booking_id")
+            return WorldCommitResult(world, (), True, {"booking_id": booking_id})
         if character.character_id in world.players:
-            return WorldCommitResult(world, (), True, {"booking_id": world.players[character.character_id]["booking_id"]})
+            return WorldCommitResult(
+                world,
+                (),
+                True,
+                {"booking_id": world.players[character.character_id]["booking_id"]},
+            )
 
         data = world.to_dict()
         number = data["next_booking_number"]
@@ -65,8 +79,9 @@ class WorldService:
             booking = self._booking_id(number)
         data["next_booking_number"] = number + 1
 
-        # Every new registration increases independent capacity by one, but the newcomer
-        # becomes the single person without an independent home.
+        # Es existiert absichtlich immer genau ein unabhängiger Wohnplatz weniger
+        # als registrierte Figuren. Beim Eintritt einer neuen Figur erhält die
+        # bisherige Mangelperson einen Platz; der Neuzugang übernimmt den Mangel.
         for home in data["housing"].values():
             if home["status"] != "independent":
                 home.update(status="independent", host_character_id=None)
@@ -83,37 +98,37 @@ class WorldService:
         data["mini_games"][character.character_id] = WorldState.default_minigames()
         data["revision"] += 1
         updated = WorldState.from_dict(data)
-        state["world"] = updated.to_dict()
-        event_id = f"{context.command_id}:world-register"
-        receipt = self.persistence.commit(
-            transaction_id=f"tx:{context.command_id}:world-register",
-            events=[{
-                "event_id": event_id,
-                "event_type": "world.player_registered",
-                "payload": {
-                    "contract_version": self.version,
-                    "character_id": character.character_id,
-                    "booking_id": booking,
-                    "world": updated.to_dict(),
-                },
-            }],
-            derived_state=state,
-            context=context,
+        return self._commit_world(
+            updated,
+            state,
+            context,
+            suffix="world-register",
+            event_type="world.player_registered",
+            payload={
+                "contract_version": self.version,
+                "character_id": character.character_id,
+                "booking_id": booking,
+            },
+            metadata={"booking_id": booking},
         )
-        return WorldCommitResult(updated, receipt.event_ids, False, {"booking_id": booking})
 
     def acknowledge_intro(self, character_id: str, *, context: JournalContext) -> WorldCommitResult:
         self._character_context(context, character_id)
+        existing = self._existing_payload(
+            context,
+            "intro",
+            "world.intro_acknowledged",
+            {"character_id": character_id},
+        )
         world, state = self._load_world()
         self._registered(world, character_id)
-        if world.players[character_id]["intro_acknowledged"]:
+        if existing is not None or world.players[character_id]["intro_acknowledged"]:
             return WorldCommitResult(world, (), True)
         data = world.to_dict()
         data["players"][character_id]["intro_acknowledged"] = True
         data["revision"] += 1
-        updated = WorldState.from_dict(data)
         return self._commit_world(
-            updated,
+            WorldState.from_dict(data),
             state,
             context,
             suffix="intro",
@@ -131,8 +146,6 @@ class WorldService:
         context: JournalContext,
     ) -> WorldCommitResult:
         self._character_context(context, character_id)
-        world, state = self._load_world()
-        self._registered(world, character_id)
         city_id = self._require_text(city_id, "city_id")
         district_id = self._require_text(district_id, "district_id")
         if city_id not in self._cities or district_id not in self._cities[city_id]["districts"]:
@@ -143,17 +156,21 @@ class WorldService:
             if location is None or location["city_id"] != city_id or location["district_id"] != district_id:
                 raise ValueError("Ort gehört nicht zu gewählter Stadt/Bezirk")
         request = {"city_id": city_id, "district_id": district_id, "location_id": location_id}
-        existing = self._record(f"{context.command_id}:move")
+        existing = self._existing_payload(
+            context,
+            "move",
+            "world.character_moved",
+            {"character_id": character_id, "request": request},
+        )
+        world, state = self._load_world()
+        self._registered(world, character_id)
         if existing is not None:
-            if existing.get("payload", {}).get("request") != request:
-                raise PersistenceError("Command-ID wurde für andere Bewegung verwendet")
             return WorldCommitResult(world, (), True)
         data = world.to_dict()
         data["positions"][character_id] = request
         data["revision"] += 1
-        updated = WorldState.from_dict(data)
         return self._commit_world(
-            updated,
+            WorldState.from_dict(data),
             state,
             context,
             suffix="move",
@@ -165,8 +182,14 @@ class WorldService:
         self, character_id: str, host_character_id: str | None, *, context: JournalContext
     ) -> WorldCommitResult:
         self._character_context(context, character_id)
+        request = {"character_id": character_id, "host_character_id": host_character_id}
+        existing = self._existing_payload(
+            context, "housing", "world.housing_changed", request
+        )
         world, state = self._load_world()
         self._registered(world, character_id)
+        if existing is not None:
+            return WorldCommitResult(world, (), True)
         if world.housing[character_id]["status"] == "independent":
             raise ValueError("Nur die Person ohne unabhängiges Zuhause kann Gaststatus ändern")
         data = world.to_dict()
@@ -176,12 +199,17 @@ class WorldService:
             self._registered(world, host_character_id)
             if host_character_id == character_id:
                 raise ValueError("Man kann nicht bei sich selbst unterkommen")
+            if world.housing[host_character_id]["status"] != "independent":
+                raise ValueError("Gastgeber benötigt ein unabhängiges Zuhause")
             data["housing"][character_id] = {"status": "guest", "host_character_id": host_character_id}
         data["revision"] += 1
-        updated = WorldState.from_dict(data)
         return self._commit_world(
-            updated, state, context, suffix="housing", event_type="world.housing_changed",
-            payload={"character_id": character_id, "host_character_id": host_character_id},
+            WorldState.from_dict(data),
+            state,
+            context,
+            suffix="housing",
+            event_type="world.housing_changed",
+            payload=request,
         )
 
     def record_trust_violation(
@@ -193,18 +221,30 @@ class WorldService:
         context: JournalContext,
     ) -> WorldCommitResult:
         self._character_context(context, offender_id)
-        world, state = self._load_world()
-        self._registered(world, offender_id)
-        self._registered(world, target_id)
-        if offender_id == target_id:
-            raise ValueError("Misstrauensfolge benötigt zwei verschiedene Spieler")
         allowed = set(self.manifest.get("trust", {}).get("violation_types", ()))
         if violation_type not in allowed:
             raise ValueError("Unbekannte Misstrauenstat")
         cycles = int(self.manifest["trust"]["block_cycles"])
+        request = {
+            "offender_id": offender_id,
+            "target_id": target_id,
+            "violation_type": violation_type,
+            "cycles": cycles,
+        }
+        existing = self._existing_payload(
+            context, "trust", "world.trust_violation_recorded", request
+        )
+        world, state = self._load_world()
+        self._registered(world, offender_id)
+        self._registered(world, target_id)
+        if existing is not None:
+            return WorldCommitResult(world, (), True)
+        if offender_id == target_id:
+            raise ValueError("Misstrauensfolge benötigt zwei verschiedene Spieler")
         data = world.to_dict()
         data["trust_blocks"] = [
-            block for block in data["trust_blocks"]
+            block
+            for block in data["trust_blocks"]
             if not (block["offender_id"] == offender_id and block["target_id"] == target_id)
         ]
         data["trust_blocks"].append({
@@ -214,10 +254,13 @@ class WorldService:
             "remaining_cycles": cycles,
         })
         data["revision"] += 1
-        updated = WorldState.from_dict(data)
         return self._commit_world(
-            updated, state, context, suffix="trust", event_type="world.trust_violation_recorded",
-            payload={"offender_id": offender_id, "target_id": target_id, "violation_type": violation_type, "cycles": cycles},
+            WorldState.from_dict(data),
+            state,
+            context,
+            suffix="trust",
+            event_type="world.trust_violation_recorded",
+            payload=request,
         )
 
     def effectiveness_bps(self, source_id: str, target_id: str) -> int:
@@ -233,30 +276,48 @@ class WorldService:
         self, source_id: str, target_id: str, *, context: JournalContext
     ) -> WorldCommitResult:
         self._character_context(context, source_id)
+        request = {"source_id": source_id, "target_id": target_id}
+        existing = self._existing_payload(
+            context, "trust-cycle", "world.trust_cycle_consumed", request
+        )
         world, state = self._load_world()
+        self._registered(world, source_id)
+        self._registered(world, target_id)
+        if existing is not None:
+            return WorldCommitResult(
+                world,
+                (),
+                True,
+                {"effectiveness_bps": int(self.manifest["trust"]["blocked_direction_effectiveness_bps"])},
+            )
         data = world.to_dict()
         matched = None
-        remaining = []
+        remaining: list[dict[str, Any]] = []
         for block in data["trust_blocks"]:
             if block["offender_id"] == source_id and block["target_id"] == target_id:
                 matched = block
-                block = dict(block)
-                block["remaining_cycles"] -= 1
-                if block["remaining_cycles"] > 0:
-                    remaining.append(block)
+                changed = dict(block)
+                changed["remaining_cycles"] -= 1
+                if changed["remaining_cycles"] > 0:
+                    remaining.append(changed)
             else:
                 remaining.append(block)
         if matched is None:
             return WorldCommitResult(world, (), True, {"effectiveness_bps": 10000})
         data["trust_blocks"] = remaining
         data["revision"] += 1
-        updated = WorldState.from_dict(data)
         result = self._commit_world(
-            updated, state, context, suffix="trust-cycle", event_type="world.trust_cycle_consumed",
-            payload={"source_id": source_id, "target_id": target_id},
+            WorldState.from_dict(data),
+            state,
+            context,
+            suffix="trust-cycle",
+            event_type="world.trust_cycle_consumed",
+            payload=request,
         )
         return WorldCommitResult(
-            result.world, result.committed_event_ids, result.idempotent_replay,
+            result.world,
+            result.committed_event_ids,
+            result.idempotent_replay,
             {"effectiveness_bps": int(self.manifest["trust"]["blocked_direction_effectiveness_bps"])},
         )
 
@@ -268,29 +329,61 @@ class WorldService:
 
     def set_party_mode(self, event_id: str, mode: str, *, context: JournalContext) -> WorldCommitResult:
         self._event_context(context, event_id)
-        world, state = self._load_world()
-        event = self._event(state, event_id)
-        if event.phase not in {"draft", "planning", "procurement", "transport", "setup", "soundcheck"}:
-            raise ValueError("Party-Modus kann nach LIVE nicht mehr geändert werden")
         if mode not in {"official", "unofficial"}:
             raise ValueError("Party-Modus muss official oder unofficial sein")
+        request = {"event_id": event_id, "mode": mode}
+        existing = self._existing_payload(
+            context, "party-mode", "world.party_mode_changed", request
+        )
+        world, state = self._load_world()
+        event = self._event(state, event_id)
+        if existing is not None:
+            return WorldCommitResult(world, (), True)
+        if event.phase not in {"draft", "planning", "procurement", "transport", "setup", "soundcheck"}:
+            raise ValueError("Party-Modus kann nach LIVE nicht mehr geändert werden")
         data = world.to_dict()
         data["party_modes"][event_id] = mode
         data["revision"] += 1
-        updated = WorldState.from_dict(data)
         return self._commit_world(
-            updated, state, context, suffix="party-mode", event_type="world.party_mode_changed",
-            payload={"event_id": event_id, "mode": mode},
+            WorldState.from_dict(data),
+            state,
+            context,
+            suffix="party-mode",
+            event_type="world.party_mode_changed",
+            payload=request,
         )
 
     def check_party_encounter(self, event_id: str, *, context: JournalContext) -> WorldCommitResult:
         self._event_context(context, event_id)
+        existing = self._record(f"{context.command_id}:party-check")
         world, state = self._load_world()
         event = self._event(state, event_id)
+        if existing is not None:
+            payload = existing.get("payload", {})
+            if existing.get("event_type") != "world.party_encounter_checked" or payload.get("event_id") != event_id:
+                raise PersistenceError("Command-ID wurde für anderen Party-Risikocheck verwendet")
+            metadata = {
+                "triggered": bool(payload.get("triggered")),
+                "roll": payload.get("roll"),
+                "threshold": payload.get("threshold"),
+                "choices": self.party_choices() if payload.get("triggered") else [],
+            }
+            return WorldCommitResult(world, (), True, metadata)
+        if event_id in world.party_checks:
+            check = world.party_checks[event_id]
+            return WorldCommitResult(
+                world,
+                (),
+                True,
+                {
+                    "triggered": check["triggered"],
+                    "roll": None,
+                    "threshold": None,
+                    "choices": self.party_choices() if check["triggered"] and not check["resolved"] else [],
+                },
+            )
         if event.phase != "live":
             raise ValueError("Behördenbegegnung wird nur während LIVE geprüft")
-        if event_id in world.party_checks:
-            return WorldCommitResult(world, (), True, deepcopy(world.party_checks[event_id]))
         if world.party_modes.get(event_id, "official") != "unofficial":
             raise ValueError("Behörden-Risikocheck ist nur für als unofficial bestätigte Party vorgesehen")
         location_id = self._canonical_event_location(event)
@@ -301,54 +394,100 @@ class WorldService:
         config = self.manifest["party_encounter"]
         threshold = min(
             int(config["max_trigger_percent"]),
-            int(config["base_trigger_percent"]) + metrics["heat"] // 2 + metrics["police_pressure"] // 3,
+            int(config["base_trigger_percent"])
+            + metrics["heat"] // 2
+            + metrics["police_pressure"] // 3,
         )
         roll = self._percent("party-check", event_id, location_id)
         triggered = roll < threshold
         data = world.to_dict()
-        data["party_checks"][event_id] = {"triggered": triggered, "resolved": not triggered, "choice_id": None}
+        data["party_checks"][event_id] = {
+            "triggered": triggered,
+            "resolved": not triggered,
+            "choice_id": None,
+        }
         data["revision"] += 1
-        updated = WorldState.from_dict(data)
-        result = self._commit_world(
-            updated, state, context, suffix="party-check", event_type="world.party_encounter_checked",
-            payload={"event_id": event_id, "location_id": location_id, "roll": roll, "threshold": threshold, "triggered": triggered},
+        metadata = {
+            "triggered": triggered,
+            "roll": roll,
+            "threshold": threshold,
+            "choices": self.party_choices() if triggered else [],
+        }
+        return self._commit_world(
+            WorldState.from_dict(data),
+            state,
+            context,
+            suffix="party-check",
+            event_type="world.party_encounter_checked",
+            payload={
+                "event_id": event_id,
+                "location_id": location_id,
+                "roll": roll,
+                "threshold": threshold,
+                "triggered": triggered,
+            },
+            metadata=metadata,
         )
-        metadata = {"triggered": triggered, "roll": roll, "threshold": threshold, "choices": self.party_choices() if triggered else []}
-        return WorldCommitResult(result.world, result.committed_event_ids, False, metadata)
 
     def resolve_party_encounter(
         self, event_id: str, choice_id: str, *, context: JournalContext
     ) -> WorldCommitResult:
         self._event_context(context, event_id)
+        choice = next(
+            (item for item in self.manifest["party_encounter"]["choices"] if item["choice_id"] == choice_id),
+            None,
+        )
+        if choice is None:
+            raise ValueError("Unbekannte Behördenentscheidung")
+        existing = self._existing_payload(
+            context,
+            "party-resolve",
+            "world.party_encounter_resolved",
+            {"event_id": event_id, "choice_id": choice_id},
+        )
         world, state = self._load_world()
+        if existing is not None:
+            return WorldCommitResult(
+                world,
+                (),
+                True,
+                {"choice_id": choice_id, "effects": deepcopy(existing.get("effects", {}))},
+            )
         event = self._event(state, event_id)
         check = world.party_checks.get(event_id)
         if check is None or not check["triggered"] or check["resolved"]:
             raise ValueError("Keine offene Behördenbegegnung vorhanden")
-        choice = next((item for item in self.manifest["party_encounter"]["choices"] if item["choice_id"] == choice_id), None)
-        if choice is None:
-            raise ValueError("Unbekannte Behördenentscheidung")
         character_raw = state.get("character")
         if not isinstance(character_raw, dict):
             raise PersistenceError("Behördenbegegnung benötigt Character-State")
         character = CharacterState.from_dict(character_raw)
         if context.character_id is not None and context.character_id != character.character_id:
             raise ValueError("JournalContext.character_id passt nicht zum Character")
-        location = self._locations[self._canonical_event_location(event)]
+        location_id = self._canonical_event_location(event)
+        location = self._locations.get(location_id)
+        if location is None:
+            raise ValueError("Event-Ort ist nicht im Living-City-Manifest katalogisiert")
         effects = dict(choice["effects"])
 
         world_data = world.to_dict()
         metrics = world_data["districts"][location["city_id"]][location["district_id"]]
         for key in ("heat", "police_pressure", "scene_activity"):
-            delta = int(effects[f"{key}_delta"])
-            metrics[key] = self._clamp(metrics[key] + delta)
-        world_data["party_checks"][event_id] = {"triggered": True, "resolved": True, "choice_id": choice_id}
+            metrics[key] = self._clamp(metrics[key] + int(effects[f"{key}_delta"]))
+        world_data["party_checks"][event_id] = {
+            "triggered": True,
+            "resolved": True,
+            "choice_id": choice_id,
+        }
         world_data["revision"] += 1
         world_after = WorldState.from_dict(world_data)
 
         character_data = character.to_dict()
-        character_data["stress"] = self._clamp_resource(character.stress + int(effects["stress_delta"]))
-        character_data["reputation"] = max(0, character.reputation + int(effects["reputation_delta"]))
+        character_data["stress"] = self._clamp_resource(
+            character.stress + int(effects["stress_delta"])
+        )
+        character_data["reputation"] = max(
+            0, character.reputation + int(effects["reputation_delta"])
+        )
         character_after = CharacterState.from_dict(character_data)
         state["world"] = world_after.to_dict()
         state["character"] = character_after.to_dict()
@@ -356,20 +495,34 @@ class WorldService:
             {
                 "event_id": f"{context.command_id}:party-resolve",
                 "event_type": "world.party_encounter_resolved",
-                "payload": {"event_id": event_id, "choice_id": choice_id, "effects": effects, "world": world_after.to_dict(), "character": character_after.to_dict()},
+                "payload": {
+                    "event_id": event_id,
+                    "choice_id": choice_id,
+                    "effects": effects,
+                    "world": world_after.to_dict(),
+                },
             },
             {
                 "event_id": f"{context.command_id}:party-resources",
                 "event_type": "character.resources_changed",
                 "payload": {
                     "energy": {"old": character.energy, "delta": 0, "new": character.energy},
-                    "stress": {"old": character.stress, "delta": int(effects["stress_delta"]), "new": character_after.stress},
+                    "stress": {
+                        "old": character.stress,
+                        "delta": int(effects["stress_delta"]),
+                        "new": character_after.stress,
+                    },
                 },
             },
             {
                 "event_id": f"{context.command_id}:party-reputation",
                 "event_type": "character.reputation_changed",
-                "payload": {"old": character.reputation, "delta": int(effects["reputation_delta"]), "new": character_after.reputation, "reason": "party_authority_encounter"},
+                "payload": {
+                    "old": character.reputation,
+                    "delta": int(effects["reputation_delta"]),
+                    "new": character_after.reputation,
+                    "reason": "party_authority_encounter",
+                },
             },
         ]
         receipt = self.persistence.commit(
@@ -378,27 +531,45 @@ class WorldService:
             derived_state=state,
             context=context,
         )
-        return WorldCommitResult(world_after, receipt.event_ids, False, {"choice_id": choice_id, "effects": effects})
+        return WorldCommitResult(
+            world_after,
+            receipt.event_ids,
+            False,
+            {"choice_id": choice_id, "effects": effects},
+        )
 
     def inspect_storefront(self, character_id: str, *, context: JournalContext) -> WorldCommitResult:
         self._character_context(context, character_id)
+        existing = self._record(f"{context.command_id}:storefront")
         world, state = self._load_world()
         self._registered(world, character_id)
+        if existing is not None:
+            payload = existing.get("payload", {})
+            if existing.get("event_type") != "world.storefront_inspected" or payload.get("character_id") != character_id:
+                raise PersistenceError("Command-ID wurde für anderes Schaufenster-Lesen verwendet")
+            return WorldCommitResult(world, (), True, {"note_keys": list(payload.get("note_keys", []))})
         location_id = world.positions[character_id]["location_id"]
         if location_id not in self._storefronts:
             raise ValueError("Am aktuellen Ort gibt es kein katalogisiertes Schaufenster")
         notes = list(self._storefronts[location_id])
         data = world.to_dict()
-        if location_id not in data["storefront_reads"][character_id]:
-            data["storefront_reads"][character_id].append(location_id)
-            data["revision"] += 1
-            updated = WorldState.from_dict(data)
-            result = self._commit_world(
-                updated, state, context, suffix="storefront", event_type="world.storefront_inspected",
-                payload={"character_id": character_id, "location_id": location_id, "note_keys": notes},
-            )
-            return WorldCommitResult(result.world, result.committed_event_ids, False, {"note_keys": notes})
-        return WorldCommitResult(world, (), True, {"note_keys": notes})
+        if location_id in data["storefront_reads"][character_id]:
+            return WorldCommitResult(world, (), True, {"note_keys": notes})
+        data["storefront_reads"][character_id].append(location_id)
+        data["revision"] += 1
+        return self._commit_world(
+            WorldState.from_dict(data),
+            state,
+            context,
+            suffix="storefront",
+            event_type="world.storefront_inspected",
+            payload={
+                "character_id": character_id,
+                "location_id": location_id,
+                "note_keys": notes,
+            },
+            metadata={"note_keys": notes},
+        )
 
     def play_minigame(
         self,
@@ -409,20 +580,25 @@ class WorldService:
         context: JournalContext,
     ) -> WorldCommitResult:
         self._character_context(context, character_id)
+        if game_id not in {"poker", "slot", "xoxo"}:
+            raise ValueError("Unbekanntes Minispiel")
+        request = {"game_id": game_id, "cell": cell}
+        existing = self._record(f"{context.command_id}:minigame")
         world, state = self._load_world()
         self._registered(world, character_id)
+        if existing is not None:
+            payload = existing.get("payload", {})
+            if (
+                existing.get("event_type") != "world.minigame_played"
+                or payload.get("character_id") != character_id
+                or payload.get("request") != request
+            ):
+                raise PersistenceError("Command-ID wurde für anderes Minispiel verwendet")
+            return WorldCommitResult(world, (), True, deepcopy(payload.get("result")))
         location_id = world.positions[character_id]["location_id"]
         location = self._locations.get(location_id or "")
         if location is None or game_id not in location.get("mini_games", []):
             raise ValueError("Dieses Minispiel ist am aktuellen Ort nicht verfügbar")
-        if game_id not in {"poker", "slot", "xoxo"}:
-            raise ValueError("Unbekanntes Minispiel")
-        existing = self._record(f"{context.command_id}:minigame")
-        if existing is not None:
-            payload = existing.get("payload", {})
-            if payload.get("request") != {"game_id": game_id, "cell": cell}:
-                raise PersistenceError("Command-ID wurde für anderes Minispiel verwendet")
-            return WorldCommitResult(world, (), True, deepcopy(payload.get("result")))
 
         data = world.to_dict()
         games = data["mini_games"][character_id]
@@ -433,12 +609,15 @@ class WorldService:
             result = self._slot(character_id, context.command_id)
             games["slot_score"] += result["points"]
         else:
-            result = self._xoxo(games["xoxo"], character_id, context.command_id, cell)
+            result = self._xoxo(games["xoxo"], character_id, cell)
         data["revision"] += 1
-        updated = WorldState.from_dict(data)
         return self._commit_world(
-            updated, state, context, suffix="minigame", event_type="world.minigame_played",
-            payload={"character_id": character_id, "request": {"game_id": game_id, "cell": cell}, "result": result},
+            WorldState.from_dict(data),
+            state,
+            context,
+            suffix="minigame",
+            event_type="world.minigame_played",
+            payload={"character_id": character_id, "request": request, "result": result},
             metadata=result,
         )
 
@@ -458,7 +637,6 @@ class WorldService:
             raise ValueError("District-Folge benötigt passendes abgeschlossenes Event")
         world = self._world_or_empty(state)
         if character.character_id not in world.players:
-            # Legacy save: register deterministically inside the same resulting world snapshot.
             world = self._register_without_commit(world, character)
         if settlement.settlement_id in world.applied_settlements:
             return WorldCommitResult(world, (), True)
@@ -466,21 +644,40 @@ class WorldService:
         data = world.to_dict()
         location_id = self._canonical_event_location(event)
         location = self._locations.get(location_id)
+        district_applied = location is not None
         if location is not None:
             metrics = data["districts"][location["city_id"]][location["district_id"]]
             effects = settlement.effects
             config = self.manifest["settlement_to_district"]
             metrics["heat"] = self._clamp(metrics["heat"] + int(effects["heat_delta"]))
-            metrics["prestige"] = self._clamp(metrics["prestige"] + self._scaled(int(effects["reputation_delta"]), int(config["prestige_from_reputation_bps"])))
+            metrics["prestige"] = self._clamp(
+                metrics["prestige"]
+                + self._scaled(
+                    int(effects["reputation_delta"]),
+                    int(config["prestige_from_reputation_bps"]),
+                )
+            )
             metrics["police_pressure"] = self._clamp(
                 metrics["police_pressure"]
-                + self._scaled(max(0, int(effects["heat_delta"])), int(config["police_from_heat_bps"]))
-                - self._scaled(max(0, int(effects["stability_delta"])), int(config["police_relief_from_stability_bps"]))
+                + self._scaled(
+                    max(0, int(effects["heat_delta"])),
+                    int(config["police_from_heat_bps"]),
+                )
+                - self._scaled(
+                    max(0, int(effects["stability_delta"])),
+                    int(config["police_relief_from_stability_bps"]),
+                )
             )
             metrics["scene_activity"] = self._clamp(
                 metrics["scene_activity"]
-                + self._scaled(int(effects["reputation_delta"]), int(config["scene_from_reputation_bps"]))
-                + self._scaled(int(effects["stability_delta"]), int(config["scene_from_stability_bps"]))
+                + self._scaled(
+                    int(effects["reputation_delta"]),
+                    int(config["scene_from_reputation_bps"]),
+                )
+                + self._scaled(
+                    int(effects["stability_delta"]),
+                    int(config["scene_from_stability_bps"]),
+                )
             )
         self._award_deeds(data, settlement, character.character_id, context.command_id)
         data["applied_settlements"].append(settlement.settlement_id)
@@ -488,6 +685,15 @@ class WorldService:
         updated = WorldState.from_dict(data)
         state["world"] = updated.to_dict()
         event_id = f"{context.command_id}:world-settlement"
+        existing = self._record(event_id)
+        if existing is not None:
+            payload = existing.get("payload", {})
+            if (
+                existing.get("event_type") != "world.settlement_applied"
+                or payload.get("settlement_id") != settlement.settlement_id
+            ):
+                raise PersistenceError("Command-ID wurde für andere District-Abrechnung verwendet")
+            return WorldCommitResult(world, (), True)
         receipt = self.persistence.commit(
             transaction_id=f"tx:{context.command_id}:world-settlement",
             events=[{
@@ -497,13 +703,19 @@ class WorldService:
                     "contract_version": self.version,
                     "settlement_id": settlement.settlement_id,
                     "location_id": location_id,
+                    "district_applied": district_applied,
                     "world": updated.to_dict(),
                 },
             }],
             derived_state=state,
             context=context,
         )
-        return WorldCommitResult(updated, receipt.event_ids, False)
+        return WorldCommitResult(
+            updated,
+            receipt.event_ids,
+            False,
+            {"district_applied": district_applied, "location_id": location_id},
+        )
 
     def party_choices(self) -> list[dict[str, Any]]:
         return [
@@ -518,13 +730,18 @@ class WorldService:
         for home in data["housing"].values():
             if home["status"] != "independent":
                 home.update(status="independent", host_character_id=None)
-        booking = self._booking_id(data["next_booking_number"])
+        number = data["next_booking_number"]
+        booking = self._booking_id(number)
         used = {entry["booking_id"] for entry in data["players"].values()}
         while booking in used:
-            data["next_booking_number"] += 1
-            booking = self._booking_id(data["next_booking_number"])
-        data["next_booking_number"] += 1
-        data["players"][character.character_id] = {"booking_id": booking, "display_name": character.display_name, "intro_acknowledged": False}
+            number += 1
+            booking = self._booking_id(number)
+        data["next_booking_number"] = number + 1
+        data["players"][character.character_id] = {
+            "booking_id": booking,
+            "display_name": character.display_name,
+            "intro_acknowledged": False,
+        }
         data["positions"][character.character_id] = self._default_position()
         data["housing"][character.character_id] = {"status": "homeless", "host_character_id": None}
         data["honors"][character.character_id] = []
@@ -532,8 +749,18 @@ class WorldService:
         data["mini_games"][character.character_id] = WorldState.default_minigames()
         return WorldState.from_dict(data)
 
-    def _award_deeds(self, data: dict[str, Any], settlement: SettlementState, character_id: str, source: str) -> None:
-        existing = {item["deed_id"] for item in data["great_deeds"] if item["character_id"] == character_id}
+    def _award_deeds(
+        self,
+        data: dict[str, Any],
+        settlement: SettlementState,
+        character_id: str,
+        source: str,
+    ) -> None:
+        existing = {
+            item["deed_id"]
+            for item in data["great_deeds"]
+            if item["character_id"] == character_id
+        }
         candidates = ["first_completed_event"]
         if settlement.incident_ids:
             candidates.append("crisis_survivor")
@@ -558,39 +785,83 @@ class WorldService:
 
     def _poker(self, character_id: str, command_id: str) -> dict[str, Any]:
         deck = [f"{rank}{suit}" for suit in "CDHS" for rank in "23456789TJQKA"]
-        ordered = sorted(deck, key=lambda card: self._hash("poker", character_id, command_id, card))
+        ordered = sorted(
+            deck,
+            key=lambda card: self._hash("poker", character_id, command_id, card),
+        )
         player = ordered[:5]
         house = ordered[5:10]
         player_rank = self._poker_rank(player)
         house_rank = self._poker_rank(house)
-        outcome = "win" if player_rank > house_rank else "draw" if player_rank == house_rank else "loss"
+        outcome = (
+            "win" if player_rank > house_rank
+            else "draw" if player_rank == house_rank
+            else "loss"
+        )
         config = self.manifest["mini_games"]["poker"]
-        points = int(config["win_points"]) if outcome == "win" else int(config["draw_points"]) if outcome == "draw" else 0
-        return {"game_id": "poker", "player_hand": player, "house_hand": house, "outcome": outcome, "points": points}
+        points = (
+            int(config["win_points"]) if outcome == "win"
+            else int(config["draw_points"]) if outcome == "draw"
+            else 0
+        )
+        return {
+            "game_id": "poker",
+            "player_hand": player,
+            "house_hand": house,
+            "outcome": outcome,
+            "points": points,
+        }
 
     @staticmethod
     def _poker_rank(hand: list[str]) -> tuple[int, list[int]]:
-        values = "23456789TJQKA"
-        ranks = sorted((values.index(card[0]) + 2 for card in hand), reverse=True)
+        if len(hand) != 5 or len(set(hand)) != 5:
+            raise ValueError("Poker-Hand muss fünf unterschiedliche Karten besitzen")
+        value_order = "23456789TJQKA"
+        ranks = sorted((value_order.index(card[0]) + 2 for card in hand), reverse=True)
+        suits = [card[1] for card in hand]
         counts = {rank: ranks.count(rank) for rank in set(ranks)}
         groups = sorted(((count, rank) for rank, count in counts.items()), reverse=True)
+        unique = sorted(set(ranks), reverse=True)
+        straight_high: int | None = None
+        if len(unique) == 5:
+            if unique[0] - unique[-1] == 4:
+                straight_high = unique[0]
+            elif unique == [14, 5, 4, 3, 2]:
+                straight_high = 5
+        flush = len(set(suits)) == 1
+
+        if straight_high is not None and flush:
+            return 8, [straight_high]
         if groups[0][0] == 4:
-            category = 7
-        elif [g[0] for g in groups[:2]] == [3, 2]:
-            category = 6
-        elif groups[0][0] == 3:
-            category = 3
-        elif [g[0] for g in groups[:2]] == [2, 2]:
-            category = 2
-        elif groups[0][0] == 2:
-            category = 1
-        else:
-            category = 0
-        return category, [rank for count, rank in groups for _ in range(count)]
+            four = groups[0][1]
+            kicker = max(rank for rank in ranks if rank != four)
+            return 7, [four, kicker]
+        if [group[0] for group in groups[:2]] == [3, 2]:
+            return 6, [groups[0][1], groups[1][1]]
+        if flush:
+            return 5, ranks
+        if straight_high is not None:
+            return 4, [straight_high]
+        if groups[0][0] == 3:
+            trip = groups[0][1]
+            kickers = sorted((rank for rank in ranks if rank != trip), reverse=True)
+            return 3, [trip, *kickers]
+        pairs = sorted((rank for count, rank in groups if count == 2), reverse=True)
+        if len(pairs) == 2:
+            kicker = max(rank for rank in ranks if rank not in pairs)
+            return 2, [pairs[0], pairs[1], kicker]
+        if len(pairs) == 1:
+            pair = pairs[0]
+            kickers = sorted((rank for rank in ranks if rank != pair), reverse=True)
+            return 1, [pair, *kickers]
+        return 0, ranks
 
     def _slot(self, character_id: str, command_id: str) -> dict[str, Any]:
         symbols = ("BASS", "BETON", "BLITZ", "KABEL", "KRONE")
-        reels = [symbols[self._number("slot", character_id, command_id, str(index)) % len(symbols)] for index in range(3)]
+        reels = [
+            symbols[self._number("slot", character_id, command_id, str(index)) % len(symbols)]
+            for index in range(3)
+        ]
         config = self.manifest["mini_games"]["slot"]
         if len(set(reels)) == 1:
             outcome, points = "jackpot", int(config["jackpot_points"])
@@ -600,7 +871,7 @@ class WorldService:
             outcome, points = "miss", 0
         return {"game_id": "slot", "reels": reels, "outcome": outcome, "points": points}
 
-    def _xoxo(self, xoxo: dict[str, Any], character_id: str, command_id: str, cell: int | None) -> dict[str, Any]:
+    def _xoxo(self, xoxo: dict[str, Any], character_id: str, cell: int | None) -> dict[str, Any]:
         if isinstance(cell, bool) or not isinstance(cell, int) or not 0 <= cell <= 8:
             raise ValueError("XOXO benötigt cell 0..8")
         if xoxo["status"] in {"won", "lost", "draw"}:
@@ -615,7 +886,16 @@ class WorldService:
         status = self._xoxo_status(board)
         if status is None:
             open_cells = [index for index, mark in enumerate(board) if not mark]
-            ai_cell = min(open_cells, key=lambda index: self._hash("xoxo-ai", character_id, str(xoxo["round"]), "".join(board), str(index)))
+            ai_cell = min(
+                open_cells,
+                key=lambda index: self._hash(
+                    "xoxo-ai",
+                    character_id,
+                    str(xoxo["round"]),
+                    "".join(board),
+                    str(index),
+                ),
+            )
             board[ai_cell] = "O"
             status = self._xoxo_status(board)
         if status == "X":
@@ -632,11 +912,20 @@ class WorldService:
             points = int(self.manifest["mini_games"]["xoxo"]["draw_points"])
         else:
             points = 0
-        return {"game_id": "xoxo", "board": list(board), "status": xoxo["status"], "points": points}
+        return {
+            "game_id": "xoxo",
+            "board": list(board),
+            "status": xoxo["status"],
+            "points": points,
+        }
 
     @staticmethod
     def _xoxo_status(board: list[str]) -> str | None:
-        lines = ((0,1,2),(3,4,5),(6,7,8),(0,3,6),(1,4,7),(2,5,8),(0,4,8),(2,4,6))
+        lines = (
+            (0, 1, 2), (3, 4, 5), (6, 7, 8),
+            (0, 3, 6), (1, 4, 7), (2, 5, 8),
+            (0, 4, 8), (2, 4, 6),
+        )
         for a, b, c in lines:
             if board[a] and board[a] == board[b] == board[c]:
                 return board[a]
@@ -653,8 +942,7 @@ class WorldService:
         payload: dict[str, Any],
         metadata: dict[str, Any] | None = None,
     ) -> WorldCommitResult:
-        event_id = f"{context.command_id}:{suffix}"
-        existing = self._record(event_id)
+        existing = self._existing_payload(context, suffix, event_type, payload)
         if existing is not None:
             return WorldCommitResult(self._load_world()[0], (), True, deepcopy(metadata))
         state["world"] = updated.to_dict()
@@ -662,11 +950,35 @@ class WorldService:
         body["world"] = updated.to_dict()
         receipt = self.persistence.commit(
             transaction_id=f"tx:{context.command_id}:{suffix}",
-            events=[{"event_id": event_id, "event_type": event_type, "payload": body}],
+            events=[{
+                "event_id": f"{context.command_id}:{suffix}",
+                "event_type": event_type,
+                "payload": body,
+            }],
             derived_state=state,
             context=context,
         )
         return WorldCommitResult(updated, receipt.event_ids, False, deepcopy(metadata))
+
+    def _existing_payload(
+        self,
+        context: JournalContext,
+        suffix: str,
+        event_type: str,
+        expected: Mapping[str, Any],
+    ) -> dict[str, Any] | None:
+        record = self._record(f"{context.command_id}:{suffix}")
+        if record is None:
+            return None
+        if record.get("event_type") != event_type:
+            raise PersistenceError("Command-ID wurde für anderen World-Eventtyp verwendet")
+        payload = record.get("payload", {})
+        if not isinstance(payload, dict):
+            raise PersistenceError("Vorhandener World-Record besitzt ungültigen Payload")
+        for key, value in expected.items():
+            if payload.get(key) != value:
+                raise PersistenceError("Command-ID wurde mit anderem World-Request verwendet")
+        return payload
 
     def _load_world(self) -> tuple[WorldState, dict[str, Any]]:
         state = deepcopy(self.persistence.load_state() or {})
@@ -677,7 +989,11 @@ class WorldService:
 
     def _world_or_empty(self, state: dict[str, Any]) -> WorldState:
         raw = state.get("world")
-        return WorldState.from_dict(raw) if isinstance(raw, dict) else WorldState.empty_from_manifest(self.manifest)
+        return (
+            WorldState.from_dict(raw)
+            if isinstance(raw, dict)
+            else WorldState.empty_from_manifest(self.manifest)
+        )
 
     def _event(self, state: dict[str, Any], event_id: str) -> EventState:
         raw = state.get("event")
@@ -692,7 +1008,11 @@ class WorldService:
         preferred = self._locations.get("concrete_orbit")
         if preferred is None:
             preferred = next(iter(self._locations.values()))
-        return {"city_id": preferred["city_id"], "district_id": preferred["district_id"], "location_id": preferred["location_id"]}
+        return {
+            "city_id": preferred["city_id"],
+            "district_id": preferred["district_id"],
+            "location_id": preferred["location_id"],
+        }
 
     def _canonical_event_location(self, event: EventState) -> str:
         if event.location is None:
@@ -711,7 +1031,13 @@ class WorldService:
             districts = city.get("districts")
             if not isinstance(districts, list) or not districts:
                 raise ValueError("City benötigt districts")
-            result[city_id] = {**dict(city), "districts": tuple(str(item) for item in districts)}
+            multiplier = city.get("price_multiplier_bps")
+            if isinstance(multiplier, bool) or not isinstance(multiplier, int) or not 1000 <= multiplier <= 50000:
+                raise ValueError("City price_multiplier_bps muss 1000..50000 sein")
+            normalized_districts = tuple(self._require_text(item, "district_id") for item in districts)
+            if len(normalized_districts) != len(set(normalized_districts)):
+                raise ValueError("City besitzt doppelte district_id")
+            result[city_id] = {**dict(city), "districts": normalized_districts}
         return result
 
     def _build_location_catalog(self) -> dict[str, dict[str, Any]]:
@@ -728,27 +1054,81 @@ class WorldService:
     def _validate_manifest(self) -> None:
         if not self._cities or not self._locations:
             raise ValueError("WORLD_MANIFEST benötigt Städte und Orte")
+        booking = self.manifest.get("booking_id")
+        if (
+            not isinstance(booking, Mapping)
+            or booking.get("prefix") != "BF"
+            or booking.get("digits") != 6
+            or booking.get("never_reuse") is not True
+        ):
+            raise ValueError("WORLD_MANIFEST Booking-ID-Vertrag ist inkompatibel")
         for location in self._locations.values():
             city_id = location.get("city_id")
             district_id = location.get("district_id")
             if city_id not in self._cities or district_id not in self._cities[city_id]["districts"]:
                 raise ValueError("WORLD_MANIFEST Location verweist auf unbekannten Bezirk")
+            games = location.get("mini_games", [])
+            if not isinstance(games, list) or any(game not in {"poker", "slot", "xoxo"} for game in games):
+                raise ValueError("WORLD_MANIFEST Location besitzt unbekanntes Minispiel")
+        for alias, target in self._aliases.items():
+            self._require_text(alias, "legacy_location_alias")
+            if target not in self._locations:
+                raise ValueError("Legacy-Location-Alias verweist auf unbekannten Ort")
         trust = self.manifest.get("trust")
         if not isinstance(trust, Mapping) or int(trust.get("block_cycles", 0)) < 1:
             raise ValueError("WORLD_MANIFEST Trust-Vertrag ungültig")
+        if set(trust.get("violation_types", ())) != {"deception", "betrayal", "fraud"}:
+            raise ValueError("WORLD_MANIFEST Trust-Verstoßarten sind inkompatibel")
+        for key in ("blocked_direction_effectiveness_bps", "reverse_direction_effectiveness_bps"):
+            value = trust.get(key)
+            if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 10000:
+                raise ValueError("WORLD_MANIFEST Trust-Wirkungsfaktor ungültig")
         party = self.manifest.get("party_encounter")
         if not isinstance(party, Mapping) or len(party.get("choices", ())) != 3:
             raise ValueError("Party-Encounter muss exakt drei Entscheidungen besitzen")
+        base = party.get("base_trigger_percent")
+        maximum = party.get("max_trigger_percent")
+        if (
+            isinstance(base, bool) or not isinstance(base, int)
+            or isinstance(maximum, bool) or not isinstance(maximum, int)
+            or not 0 <= base <= maximum <= 100
+        ):
+            raise ValueError("Party-Risikoschwellen sind ungültig")
+        required_effects = {
+            "stress_delta", "reputation_delta", "heat_delta",
+            "police_pressure_delta", "scene_activity_delta",
+        }
+        choice_ids: set[str] = set()
+        for choice in party["choices"]:
+            if not isinstance(choice, Mapping):
+                raise ValueError("Party-Entscheidung ist ungültig")
+            choice_id = self._require_text(choice.get("choice_id"), "choice_id")
+            if choice_id in choice_ids:
+                raise ValueError("Party-Entscheidung-ID doppelt")
+            choice_ids.add(choice_id)
+            effects = choice.get("effects")
+            if not isinstance(effects, Mapping) or set(effects) != required_effects:
+                raise ValueError("Party-Entscheidung besitzt falsche Effekte")
+            if any(isinstance(value, bool) or not isinstance(value, int) for value in effects.values()):
+                raise ValueError("Party-Effekte müssen Ganzzahlen sein")
         for deed in self._deeds.values():
             if deed.get("title_id") not in self._titles:
                 raise ValueError("Great Deed verweist auf unbekannten Titel")
+        for location_id, notes in self._storefronts.items():
+            if location_id not in self._locations:
+                raise ValueError("Storefront verweist auf unbekannten Ort")
+            if not notes or len(notes) != len(set(notes)) or any(not isinstance(note, str) or not note for note in notes):
+                raise ValueError("Storefront-Notizen müssen eindeutig und nicht leer sein")
 
     def _booking_id(self, number: int) -> str:
         config = self.manifest["booking_id"]
         return f"{config['prefix']}-{number:0{int(config['digits'])}d}"
 
     def _record(self, event_id: str) -> dict[str, Any] | None:
-        return next((record for record in self.persistence.read_records() if record["event_id"] == event_id), None)
+        return next(
+            (record for record in self.persistence.read_records() if record["event_id"] == event_id),
+            None,
+        )
 
     @staticmethod
     def _registered(world: WorldState, character_id: str) -> None:
@@ -763,7 +1143,11 @@ class WorldService:
 
     @staticmethod
     def _character_context(context: JournalContext, character_id: str) -> None:
-        if context.entity_type != "character" or context.entity_id != character_id or not context.command_id:
+        if (
+            context.entity_type != "character"
+            or context.entity_id != character_id
+            or not context.command_id
+        ):
             raise ValueError("World-Character-Command benötigt passenden Character-Kontext")
 
     @staticmethod
@@ -796,25 +1180,7 @@ class WorldService:
 
 
 def replay_world_event(derived_state: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]:
-    if not str(record.get("event_type", "")).startswith("world."):
-        return derived_state
-    payload = record.get("payload", {})
-    raw_world = payload.get("world")
-    if not isinstance(raw_world, dict):
-        return derived_state
-    target = WorldState.from_dict(raw_world)
-    state = deepcopy(derived_state)
-    current_raw = state.get("world")
-    if isinstance(current_raw, dict):
-        current = WorldState.from_dict(current_raw)
-        if current.revision > target.revision:
-            return state
-        if current.revision == target.revision:
-            if current.to_dict() != target.to_dict():
-                raise ValueError("World-Replay kollidiert mit Zustand derselben Revision")
-            return state
-    state["world"] = target.to_dict()
-    raw_character = payload.get("character")
-    if isinstance(raw_character, dict):
-        state["character"] = CharacterState.from_dict(raw_character).to_dict()
-    return state
+    """Compatibility export; canonical replay lives in world_recovery."""
+    from bunkerfrequenz.application.world_recovery import replay_world_event as canonical_replay
+
+    return canonical_replay(derived_state, record)
