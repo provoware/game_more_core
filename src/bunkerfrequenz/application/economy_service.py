@@ -50,12 +50,24 @@ class EconomyService:
         return EconomyCommitResult(economy, event, receipt.event_ids, False)
 
     def transact(
-        self, kind: str, item_id: str, quantity: int, *, context: JournalContext
+        self,
+        kind: str,
+        item_id: str,
+        quantity: int,
+        *,
+        context: JournalContext,
+        price_multiplier_bps: int = 10000,
     ) -> EconomyCommitResult:
         if kind not in {"buy", "sell", "consume", "reserve", "release"}:
             raise ValueError("Unbekannte Economy-Aktion")
         if isinstance(quantity, bool) or not isinstance(quantity, int) or quantity < 1:
             raise ValueError("quantity muss eine Ganzzahl >= 1 sein")
+        if (
+            isinstance(price_multiplier_bps, bool)
+            or not isinstance(price_multiplier_bps, int)
+            or not 1000 <= price_multiplier_bps <= 50000
+        ):
+            raise ValueError("price_multiplier_bps muss zwischen 1000 und 50000 liegen")
         self._validate_context(context)
         existing = self._existing(context.command_id)
         if existing is not None:
@@ -68,10 +80,18 @@ class EconomyService:
         self._assert_event_context(event, context)
         if item_id not in economy.catalog:
             raise ValueError("Equipment ist nicht katalogisiert")
-        updated_economy, budget_delta = self._apply(economy, kind, item_id, quantity, context.command_id)
+        updated_economy, budget_delta = self._apply(
+            economy,
+            kind,
+            item_id,
+            quantity,
+            context.command_id,
+            price_multiplier_bps=price_multiplier_bps,
+        )
         updated_event = self._resolve_event(event, updated_economy, budget_delta)
         payload = {
             "request": {"kind": kind, "item_id": item_id, "quantity": quantity},
+            "market_context": {"price_multiplier_bps": price_multiplier_bps},
             "economy": updated_economy.to_dict(),
             "event": updated_event.to_dict(),
         }
@@ -108,8 +128,13 @@ class EconomyService:
             raise ValueError("Transaktion wurde bereits kompensiert")
         inverse = "sell" if original["kind"] == "buy" else "buy"
         updated, delta = self._apply(
-            economy, inverse, original["item_id"], original["quantity"], context.command_id,
-            unit_price=original["unit_price_cents"], compensates=transaction_id,
+            economy,
+            inverse,
+            original["item_id"],
+            original["quantity"],
+            context.command_id,
+            unit_price=original["unit_price_cents"],
+            compensates=transaction_id,
         )
         updated_event = self._resolve_event(event, updated, delta)
         payload = {"transaction_id": transaction_id, "economy": updated.to_dict(), "event": updated_event.to_dict()}
@@ -123,12 +148,28 @@ class EconomyService:
         )
         return EconomyCommitResult(updated, updated_event, receipt.event_ids, False)
 
-    def _apply(self, state: EconomyState, kind: str, item_id: str, quantity: int, transaction_id: str,
-               *, unit_price: int | None = None, compensates: str | None = None) -> tuple[EconomyState, int]:
+    def _apply(
+        self,
+        state: EconomyState,
+        kind: str,
+        item_id: str,
+        quantity: int,
+        transaction_id: str,
+        *,
+        unit_price: int | None = None,
+        compensates: str | None = None,
+        price_multiplier_bps: int = 10000,
+    ) -> tuple[EconomyState, int]:
         data = state.to_dict()
         stock = data["inventory"].setdefault(item_id, {"owned": 0, "reserved": 0})
         item = data["catalog"][item_id]
-        price = unit_price if unit_price is not None else market_price(item["base_price_cents"], state.market_tick, item["volatility_bps"])
+        if unit_price is not None:
+            price = unit_price
+        else:
+            reference = market_price(
+                item["base_price_cents"], state.market_tick, item["volatility_bps"]
+            )
+            price = max(0, (reference * price_multiplier_bps + 5000) // 10000)
         delta = 0
         if kind == "buy":
             stock["owned"] += quantity
@@ -148,11 +189,16 @@ class EconomyService:
             stock["reserved"] += quantity
         else:
             if stock["reserved"] < quantity:
-                raise ValueError("Nicht genug reservierter Besitz zum Freigeben")
+                raise ValueError("Nicht genug reservierten Besitz zum Freigeben")
             stock["reserved"] -= quantity
         data["ledger"].append({
-            "transaction_id": transaction_id, "kind": kind, "item_id": item_id, "quantity": quantity,
-            "unit_price_cents": price, "budget_delta_cents": delta, "compensates": compensates,
+            "transaction_id": transaction_id,
+            "kind": kind,
+            "item_id": item_id,
+            "quantity": quantity,
+            "unit_price_cents": price,
+            "budget_delta_cents": delta,
+            "compensates": compensates,
         })
         data["market_tick"] += 1
         data["revision"] += 1
