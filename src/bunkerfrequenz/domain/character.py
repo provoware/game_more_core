@@ -101,7 +101,7 @@ class CharacterState:
             specialization=data.get("specialization"),
             energy=int(data.get("energy", 100)),
             stress=int(data.get("stress", 0)),
-            reputation=int(data.get("reputation", 0)),
+            reputation=data.get("reputation", 0),
         )
         state.validate()
         return state
