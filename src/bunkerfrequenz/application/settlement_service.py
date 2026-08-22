@@ -5,13 +5,12 @@ from dataclasses import dataclass
 from typing import Any
 
 from bunkerfrequenz.domain.character import CharacterState, RESOURCE_MAX, RESOURCE_MIN
-from bunkerfrequenz.domain.economy import EconomyState
+from bunkerfrequenz.domain.economy import EconomyState, SETTLEMENT_LEDGER_ITEM_ID
 from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.incident import IncidentState
 from bunkerfrequenz.domain.settlement import SettlementState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 
-SETTLEMENT_LEDGER_ITEM_ID = "__event_settlement__"
 _EFFECT_KEYS = (
     "budget_delta_cents",
     "reputation_delta",
@@ -256,7 +255,7 @@ class SettlementService:
         context: JournalContext,
     ) -> tuple[EventState, EconomyState, CharacterState, IncidentState, dict[str, Any]]:
         state = deepcopy(self.persistence.load_state() or {})
-        required = {"event", "economy", "character", "incidents"}
+        required = {"event", "economy", "character"}
         missing = sorted(required - set(state))
         if missing:
             raise PersistenceError(f"Settlement benötigt Zustandsblöcke: {', '.join(missing)}")
@@ -265,7 +264,11 @@ class SettlementService:
             raise ValueError("JournalContext.entity_id passt nicht zum bestätigten Event")
         economy = EconomyState.from_dict(state["economy"])
         character = CharacterState.from_dict(state["character"])
-        incidents = IncidentState.from_dict(state["incidents"])
+        incidents = (
+            IncidentState.from_dict(state["incidents"])
+            if "incidents" in state
+            else IncidentState(event_id=event.event_id)
+        )
         if incidents.event_id != event.event_id:
             raise PersistenceError("Incident-State gehört zu anderem Event")
         return event, economy, character, incidents, state
@@ -324,14 +327,18 @@ def replay_settlement_event(derived_state: dict[str, Any], record: dict[str, Any
             raise ValueError("event.completed kollidiert mit vorhandenem Settlement")
         return state
 
-    required = {"event", "economy", "character", "incidents"}
+    required = {"event", "economy", "character"}
     if not required.issubset(state):
-        raise ValueError("event.completed benötigt Event-, Economy-, Character- und Incident-State")
+        raise ValueError("event.completed benötigt Event-, Economy- und Character-State")
 
     current_event = EventState.from_dict(state["event"])
     current_economy = EconomyState.from_dict(state["economy"])
     current_character = CharacterState.from_dict(state["character"])
-    current_incidents = IncidentState.from_dict(state["incidents"])
+    current_incidents = (
+        IncidentState.from_dict(state["incidents"])
+        if "incidents" in state
+        else IncidentState(event_id=current_event.event_id)
+    )
 
     if current_event.to_dict() != target_event.to_dict():
         raise ValueError("event.completed passt nicht zum zuvor bestätigten Phasenwechsel")
