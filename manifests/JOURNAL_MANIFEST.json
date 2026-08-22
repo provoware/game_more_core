@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.3-b1",
+  "version": "0.8.3-c1",
   "append_only": true,
   "canonical_order_key": ["sequence", "event_id"],
   "hash_chain": true,
@@ -16,6 +16,7 @@
   "event_types": [
     "character.profile_updated",
     "character.resources_changed",
+    "character.reputation_changed",
     "character.skill_xp_gained",
     "character.skill_level_up",
     "character.trait_evidence_gained",
@@ -67,6 +68,7 @@
     ],
     "not_user_undoable": [
       "character.resources_changed",
+      "character.reputation_changed",
       "character.skill_xp_gained",
       "character.skill_level_up",
       "character.trait_unlocked",

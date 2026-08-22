@@ -1,0 +1,88 @@
+{
+  "version": "0.8.3-c1",
+  "iteration": "0.8.3-C",
+  "state_block": "settlement",
+  "required_state_blocks": ["event", "economy", "character"],
+  "optional_initial_state_blocks": ["incidents"],
+  "preconditions": {
+    "event_phase": "settlement",
+    "active_incident": null,
+    "character_must_be_event_crew": true,
+    "existing_settlement_forbidden": true,
+    "negative_final_budget_forbidden": true
+  },
+  "source_effects": [
+    "budget_delta_cents",
+    "reputation_delta",
+    "crew_stress_delta",
+    "stability_delta",
+    "heat_delta"
+  ],
+  "application": {
+    "budget_delta_cents": "economy_ledger_settlement_transaction",
+    "reputation_delta": "character.reputation_changed",
+    "crew_stress_delta": "character.resources_changed",
+    "stability_delta": "settlement_receipt_event_outcome_only",
+    "heat_delta": "settlement_receipt_event_outcome_only"
+  },
+  "receipt_invariants": {
+    "budget_delta_matches_effect": true,
+    "stress_delta_matches_effect": true,
+    "reputation_delta_matches_effect": true
+  },
+  "economy": {
+    "ledger_kind": "settlement",
+    "ledger_item_id": "__event_settlement__",
+    "market_tick_changes": false,
+    "compensatable": false
+  },
+  "character": {
+    "stress_bounds": [0, 100],
+    "legacy_signed_reputation_readable": true,
+    "new_settlement_reputation_bounds": [0, null],
+    "reputation_floor_behavior": "clamp_to_zero",
+    "biography_event": "character.biography_entry_added",
+    "biography_category": "event",
+    "biography_record_character_id_required": true,
+    "caller_character_id_if_present_must_match": true
+  },
+  "event": {
+    "required_start_phase": "settlement",
+    "final_phase": "completed",
+    "completion_event": "event.completed",
+    "phase_event": "event.phase_changed",
+    "phase_reason": "event_settlement:complete"
+  },
+  "incidents": {
+    "zero_incident_event_supported": true,
+    "missing_initial_state_means_empty_incident_state": true,
+    "pending_settlement_consumed_once": true,
+    "history_immutable": true,
+    "active_must_be_null": true,
+    "revision_increment": 1
+  },
+  "journal_sequence": [
+    "economy.transaction_posted",
+    "character.resources_changed",
+    "character.reputation_changed",
+    "character.biography_entry_added",
+    "event.phase_changed",
+    "event.completed"
+  ],
+  "recovery": {
+    "atomic_commit": true,
+    "event_completed_replay_validates_prior_economy_character_phase_records": true,
+    "receipt_effects_bound_to_applied_deltas": true,
+    "incident_free_replay_supported": true,
+    "same_command_id_idempotent": true,
+    "same_command_id_different_request_rejected": true
+  },
+  "scope_boundaries": {
+    "persistent_district_simulation": false,
+    "heat_is_district_state": false,
+    "stability_is_world_state": false,
+    "client_changes": false,
+    "property_changes": false,
+    "network_changes": false
+  }
+}

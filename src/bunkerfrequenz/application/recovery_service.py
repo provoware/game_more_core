@@ -30,6 +30,25 @@ def _replay_resource_change(character: CharacterState, payload: dict) -> None:
     character.stress = stress["new"]
 
 
+def _replay_reputation_change(character: CharacterState, payload: dict) -> None:
+    if set(payload) != {"old", "delta", "new", "reason"}:
+        raise ValueError("Reputation-Replay benötigt old/delta/new/reason")
+    old = payload["old"]
+    delta = payload["delta"]
+    new = payload["new"]
+    reason = payload["reason"]
+    if any(isinstance(value, bool) or not isinstance(value, int) for value in (old, delta, new)):
+        raise ValueError("Reputation-Replay benötigt Ganzzahlen")
+    if not isinstance(reason, str) or not reason.strip():
+        raise ValueError("Reputation-Replay benötigt reason")
+    if character.reputation != old:
+        raise ValueError("Reputation-Replay passt nicht zum bestätigten Ausgangswert")
+    expected = max(0, old + delta)
+    if new != expected:
+        raise ValueError("Reputation-Replay besitzt inkonsistenten Zielwert")
+    character.reputation = new
+
+
 def replay_character_event(derived_state: dict, record: dict) -> dict:
     if "character" not in derived_state:
         return derived_state
@@ -39,6 +58,8 @@ def replay_character_event(derived_state: dict, record: dict) -> dict:
 
     if event_type == "character.resources_changed":
         _replay_resource_change(character, payload)
+    elif event_type == "character.reputation_changed":
+        _replay_reputation_change(character, payload)
     elif event_type == "character.skill_xp_gained":
         apply_skill_xp(character, payload["skill_id"], int(payload["amount"]))
     elif event_type == "character.trait_evidence_gained":
@@ -49,8 +70,8 @@ def replay_character_event(derived_state: dict, record: dict) -> dict:
         for key, value in payload.get("new", {}).items():
             if key in {"display_name", "alias", "additional_nicknames", "motto"}:
                 setattr(character, key, value)
-    # Level-/trait-up events are consequences of the XP/evidence records above and
-    # are intentionally informational during replay to avoid applying twice.
+    # Level-/trait-up and biography events are consequences/information and are
+    # intentionally not applied a second time during replay.
     derived_state = dict(derived_state)
     derived_state["character"] = character.to_dict()
     return derived_state

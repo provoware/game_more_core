@@ -5,9 +5,10 @@
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
 - **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.3-B – Crisis Engine + Berlin Ops Map Foundation`
 - **0.8.3-B-Abnahme:** PR #63 · Head `4a83cecc7298078a9040ea94e7994ac0b2ab5558` · Runtime Core `32559629560` · Presentation Core `32559629773` · Repository Health `32559629667` · `SAFE MERGE PASS` · Merge `816a3f1dd83d9396550d702c0ac85ba98ed069dd`
-- **Nächster Pflichtblock:** `0.8.3-C – Settlement & Consequences`
-- **Fortschritt zum ersten spielbaren Alpha-Release:** `90 %` (Planungswert; Eventaktionen und Krisen validiert, Settlement und schreibender Client noch offen)
-- **Aktueller Release-Blocker:** 0.8.3-C Settlement/Folgen → vollständigen Event-Loop abnehmen → schreibenden A4-Client anbinden
+- **Aktive Implementierung:** `0.8.3-C – Settlement & Consequences` auf PR #65
+- **Erste 0.8.3-C-Produktabnahme:** Head `41b5ea7b294540b7f3a07ea9594906143e4afbe1` · Runtime Core `32565066147` · Presentation Core `32565066165` · Repository Health `32565066135` grün
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `94 %` (Planungswert; fachlicher Event-Loop implementiert, finale Remote-Abnahme/Review/Safe-Merge und schreibender Client noch offen)
+- **Aktueller Release-Blocker:** finalen PR-#65-Head abnehmen und sicher mergen → A4 als kleinsten schreibenden Client anbinden → First-Run/Save-Recovery-Smoke-Test
 
 ## Release-Ziel
 
@@ -15,7 +16,7 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 
 **Abnahme:** Aus einem frischen Checkout kann eine Person ohne Codewissen `Crew wählen → Event planen → Equipment beschaffen → Event starten → Krise lösen → abrechnen → speichern → neu laden` vollständig durchführen.
 
-**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik und native GitHub-Branch-Protection.
+**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau und native GitHub-Branch-Protection.
 
 ---
 
@@ -24,7 +25,6 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 ## 0.8.1 – Event State Foundation ✅
 
 - [x] EventState, Ort, Budget, Acts, Crew, Equipment-Readiness, Zeitfenster und Safety definiert
-- [x] Phasenmaschine `draft → planning → procurement → transport → setup → soundcheck → live/crisis → teardown → settlement → completed`
 - [x] Event-Journal, Revision, Idempotenz und Recovery implementiert
 - [x] PR #48 dreifach grün und gemergt
 
@@ -33,7 +33,6 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 - [x] Katalog, Besitz, Reservierung und Marktpreise getrennt modelliert
 - [x] Kaufen, Verkaufen, Verbrauchen und Kompensation journalfähig
 - [x] Event-Budget nur über bestätigte Economy-Transaktionen veränderbar
-- [x] Equipment-Readiness an bestätigte Reservierung gebunden
 - [x] Event-Kontext- und Same-Revision-Replay-Integrität gehärtet
 - [x] PR #61 dreifach grün und gemergt
 
@@ -43,83 +42,74 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 - [x] zentrale Voraussetzungen für Acts, Crew, Budget, Equipment, Ort, Zugang, Zeitfenster und Safety
 - [x] Availability-Projektion mit Blocker-IDs statt Client-Doppellogik
 - [x] persistierten Eventzustand als alleinige Autorität erzwingen
-- [x] normale Command-Replays auch nach Phasenwechsel idempotent
-- [x] PR #62 auf exaktem Head dreifach grün
-- [x] `/safe-merge` = PASS · Merge `8a5b08b5f44e334298cf226510f99abbc115b3df`
+- [x] PR #62 dreifach grün und über `/safe-merge` übernommen
 
 ## 0.8.3-B1 – Crisis / Incident Engine ✅
 
-### Implementierung
-
-- [x] eigenen `IncidentState` neben Event/Economy angelegt
-- [x] höchstens einen aktiven Incident zugelassen
-- [x] sechs Incident-Typen mit je drei Reaktionsoptionen katalogisiert
-- [x] Severity 1–5 deterministisch auf Einzeleffekte skaliert
-- [x] kumulierte Settlement-Summen dürfen mehrere Incidents ohne künstliche ±100-Grenze addieren
-- [x] `live → crisis` atomar mit `event.incident_started` committen
-- [x] Response-Auswahl + `crisis → live/teardown/cancelled` atomar auflösen
-- [x] `event.incident_resolved` journalfähig und replaybar gemacht
-- [x] Krisenfolgen als `pending_settlement` gesammelt, ohne Economy-/Character-Verträge zu umgehen
-- [x] falsche Response, parallelen Incident und falschen Event-Kontext fail-closed behandelt
-- [x] Open/Resolve auch nach State-Fortschritt idempotent
-- [x] Incident-Replay validiert Event-Kontext erneut
-- [x] offener Incident kann nicht mit abweichendem Vertragsstand aufgelöst werden
-- [x] Fault-Injection-Recovery für durable Incident-Commits getestet
-- [x] Incident-Replay in `GameRecoveryService` integriert
-
-### Abnahme
-
-- [x] finaler PR-#63-Head `4a83cecc7298078a9040ea94e7994ac0b2ab5558` dreifach grün
-- [x] Runtime Core `32559629560`
-- [x] Presentation Core `32559629773`
-- [x] Repository Health `32559629667`
-- [x] alle sechs Review-Threads gelöst
-- [x] `/safe-merge` = PASS
-- [x] Merge `816a3f1dd83d9396550d702c0ac85ba98ed069dd`
+- [x] eigener persistierter `IncidentState`
+- [x] sechs Incident-Typen mit je drei Reaktionen
+- [x] Severity 1–5 deterministisch
+- [x] `live → crisis → live/teardown/cancelled` atomar journalisiert
+- [x] `pending_settlement` als bestätigte, noch nicht direkt gebuchte Folgen
+- [x] Idempotenz, Vertragsversionsschutz und Recovery gehärtet
+- [x] PR #63 final dreifach grün, alle sechs Review-Threads gelöst und per `/safe-merge` übernommen
 
 ## 0.8.3-B2 – Berlin Ops Map Foundation ✅
 
-### Datenbasis
+- [x] 8 Bezirke, 12 Spielorte, 7 kaufbare Objekte und eine Hall of Tribute katalogisiert
+- [x] stilisierte 0–100-Karte statt Navigations-/Adresslogik
+- [x] Score-/Tier-Projektion und District-Metriken vorbereitet
+- [x] unbekannte District-Overrides und ungültige Ownership fail-closed
+- [x] Ausbau-Slots und Reduced-Motion-Vertrag vorbereitet
 
-- [x] `CITY_MAP_MANIFEST.json` als einzige Karten-Fachquelle angelegt
-- [x] stilisierte 0–100-Koordinaten verwendet; keine Navigation und keine exakten Adressen
-- [x] 8 Berliner Bezirke als Startzonen definiert
-- [x] 12 Spielorte mit Prestige, Audience Pull, Risk, Underground Factor und Utility angelegt
-- [x] 7 kaufbare Immobilien/Objekte mit Preisen und Ausbau-Slots vorbereitet
-- [x] genau eine `Hall of Tribute` als Ranking-/Prestige-Sonderort definiert
-- [x] Score- und Tier-System `standard / strong / prime / legendary` abgeleitet
-- [x] read-only `city_map_projection` mit Top-5, Ownership und Hall-of-Tribute-Projektion implementiert
-- [x] Heat, Prestige, Polizeidruck und Szeneaktivität als District-Metriken vorbereitet
-- [x] unbekannte District-Overrides werden fail-closed abgewiesen
-- [x] Ownership akzeptiert ausschließlich tatsächlich kaufbare Locations
-- [x] Schallschutz, Strom, Fluchtwege, Deko, Bühne, Bar, Lager und Sicherheitsraum als Ausbaugrundlage katalogisiert
-- [x] Reduced-Motion-Fallback im visuellen Vertrag festgelegt
+### Folgeausbau nach dem lokalen Alpha
 
-### Folgeausbau nach dem vollständigen Event-Loop
-
-- [ ] persistente Bezirksdynamik aus bestätigten Events ableiten
+- [ ] persistente Bezirksdynamik aus bestätigten Settlement-Ergebnissen ableiten
 - [ ] Immobilienkauf an EconomyService anbinden
 - [ ] Immobilien-Ausbauzustand + Kosten-/Nutzenregeln implementieren
-- [ ] hochwertige Kartenoberfläche/Renderer an die read-only Projection anbinden
+- [ ] hochwertigen Kartenrenderer an die read-only Projection anbinden
 - [ ] Hall-of-Tribute-Ranking aus bestätigten Statistiken speisen
-- [ ] saisonale Titel/Awards mit statischem Reduced-Motion-Fallback projizieren
 
-## 0.8.3-C – Settlement & Consequences ⏭️
+## 0.8.3-C – Settlement & Consequences 🚧
 
-- [ ] `pending_settlement` aus Incidents über zuständige Economy-/Character-Wege verbuchen
-- [ ] Einnahmen/Ausgaben ausschließlich aus bestätigten Event-/Economy-Daten ableiten
-- [ ] Ruf-, Stress-, Stabilitäts- und Heat-Folgen atomar anwenden
-- [ ] bedeutende Krisen-/Eventergebnisse in die dynamische Biografie übernehmen
-- [ ] `event.completed` erst nach vollständig bestätigtem Settlement erzeugen
-- [ ] vollständigen Pfad `Planung → Einkauf → Transport → Aufbau → Soundcheck → Event → Krise → Abbau → Abrechnung` testen
-- [ ] Fault-Injection-Test über Krise + Settlement + Recovery ergänzen
-- [ ] A4/A3 um Event-/Economy-/Incident-Projektionen erweitern, ohne Domain-State direkt zu schreiben
+### Implementierung
+
+- [x] eigenen validierten `SettlementState` + JSON-Schema angelegt
+- [x] `SETTLEMENT_MANIFEST.json` als maschinenlesbaren 0.8.3-C-Vertrag angelegt
+- [x] `pending_settlement` ausschließlich als bestätigte Quelle der fünf Krisenfolgen verwendet
+- [x] Budgetfolge als eigene nicht kompensierbare `settlement`-Buchung im Economy-Ledger umgesetzt
+- [x] Settlement-Buchung verändert den Markt-Tick nicht
+- [x] negatives Endbudget fail-closed behandelt; kein still erfundenes Schuldenmodell
+- [x] Crew-Stress über `character.resources_changed` auf `0..100` begrenzt angewandt
+- [x] Ruf über replaybares `character.reputation_changed` angewandt
+- [x] Settlement-Character muss bestätigtes Crewmitglied des Events sein
+- [x] bedeutenden Eventabschluss als bestätigten Biografieeintrag journalisiert
+- [x] Stabilität und Heat im Settlement-Receipt bestätigt, aber noch nicht als District-/World-State geschrieben
+- [x] Incident-Historie unverändert erhalten und `pending_settlement` nach erfolgreichem Abschluss genau einmal geleert
+- [x] direkten allgemeinen `settlement → completed`-Schreibweg gesperrt
+- [x] `event.completed` ausschließlich nach bestätigtem Settlement erzeugt
+- [x] Settlement in Combined Recovery integriert
+- [x] vollständigen Pfad `Planung → Beschaffung → Equipment → Transport → Aufbau → Soundcheck → Event → Krise → Abbau → Settlement → completed` als Runtime-Integrationstest aufgebaut
+- [x] Fault-Injection-Test für bereits durable Settlement-Journalrecords vor State-Write ergänzt
+- [x] Idempotenz und falschen Event-Kontext auch beim Settlement-Replay getestet
+
+### Abnahme
+
+- [x] erste Produkt-CI auf Head `41b5ea7b294540b7f3a07ea9594906143e4afbe1` dreifach grün
+- [x] Runtime Core `32565066147`
+- [x] Presentation Core `32565066165`
+- [x] Repository Health `32565066135`
+- [ ] finalen PR-#65-Head nach Dokumentations-/Review-Härtung erneut dreifach grün bestätigen
+- [ ] offene Review-Threads = 0 bestätigen
+- [ ] PR #65 ausschließlich über `/safe-merge` übernehmen
+- [ ] gemergten Status in README/TODO/PROJEKTSTATUS als Closeout nachführen
 
 ## Release-Kandidat – spielbarer lokaler Client ⏭️
 
-- [ ] vollständigen 0.8.3-Loop auf einem exakten Head lokal und remote bestätigen
-- [ ] A4 als kleinsten schreibenden Client an bestehende Application-Commands anbinden
-- [ ] keine zweite Domain-, Economy-, Incident- oder Persistenzlogik im Client
+- [ ] vollständigen 0.8.3-Loop auf `main` als validierte Fachbasis bestätigen
+- [ ] A4 als kleinsten schreibenden Client ausschließlich an bestehende Application-Commands anbinden
+- [ ] keine zweite Domain-, Economy-, Incident-, Settlement- oder Persistenzlogik im Client
+- [ ] Event-/Economy-/Incident-/Settlement-Projektionen als read-only Clientquelle ergänzen
 - [ ] Ersteinstieg `Crew → Event → Equipment → Krise → Settlement → Ergebnis` führen
 - [ ] verständliche Blocker-/Fehlermeldungen aus kanonischen IDs ableiten
 - [ ] Start aus frischem Checkout mit einem dokumentierten Befehl nachweisen
@@ -132,7 +122,7 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 # P1 – direkt nach dem lokalen Alpha
 
 1. **Dynamische Bezirkslage**
-   - Heat, Prestige, Polizeidruck und Szeneaktivität ausschließlich aus bestätigten Ereignissen verändern.
+   - Heat, Prestige, Polizeidruck und Szeneaktivität ausschließlich aus bestätigten Settlement-/Eventergebnissen verändern.
    - Auswirkungen auf Eventchancen, Kosten und Risiko datengetrieben ableiten.
 
 2. **Immobilien-Ausbaupfade**
@@ -152,7 +142,7 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 # Technische Folgeoptimierungen
 
 - [ ] Recovery-Receipt um maschinenlesbare Fehlerkategorie und Anzahl übersprungener Snapshots erweitern.
-- [ ] reproduzierbaren Economy-/Event-/Incident-Replay-Beleg mit festem Seed und Head-SHA erzeugen.
+- [ ] reproduzierbaren vollständigen Event-/Incident-/Settlement-Replay-Beleg mit festem Seed und Head-SHA erzeugen.
 - [ ] Repository Health um Abschlussabgleich gemergter Meilensteine zwischen Status/TODO/README erweitern.
 - [ ] A4/A3 übersetzen Event-/Incident-Blocker-IDs in sichtbare Hilfetexte, berechnen Regeln aber niemals neu.
 - [ ] Nach vollständigem 0.8.3 ein gemeinsames versioniertes Spielszenario `Planung → Beschaffung → Krise → Abrechnung` in beide Gesamtbeschreibungen aufnehmen.

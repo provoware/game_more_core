@@ -152,6 +152,8 @@ class EventStateService:
     ) -> EventCommitResult:
         event.validate()
         self._validate_context(event.event_id, context)
+        if new_phase == "completed":
+            raise ValueError("Eventphase completed darf ausschließlich SettlementService nach bestätigter Abrechnung erzeugen")
         normalized_reason = None
         if reason is not None:
             if not isinstance(reason, str) or not reason.strip():

@@ -1,0 +1,66 @@
+{
+  "report": "SETTLEMENT_VALIDATION_0.8.3-C",
+  "status": "INITIAL_PRODUCT_HEAD_GREEN_FINAL_HEAD_PENDING",
+  "repository": "provoware/game_more_core",
+  "pull_request": 65,
+  "contract_version": "0.8.3-c1",
+  "validated_product_head": "41b5ea7b294540b7f3a07ea9594906143e4afbe1",
+  "validation": {
+    "runtime_core": {
+      "run_id": 32565066147,
+      "conclusion": "success"
+    },
+    "presentation_core": {
+      "run_id": 32565066165,
+      "conclusion": "success"
+    },
+    "repository_health": {
+      "run_id": 32565066135,
+      "conclusion": "success"
+    }
+  },
+  "scenario": [
+    "character_and_event_initialized",
+    "economy_initialized",
+    "planning",
+    "procurement",
+    "equipment_bought_and_reserved",
+    "transport",
+    "setup",
+    "soundcheck",
+    "live",
+    "incident_opened",
+    "incident_resolved",
+    "teardown",
+    "settlement",
+    "consequences_committed",
+    "event_completed",
+    "fault_injection_recovery"
+  ],
+  "asserted_invariants": [
+    "settlement_uses_confirmed_pending_incident_effects",
+    "budget_change_recorded_in_economy_ledger",
+    "settlement_does_not_advance_market_tick",
+    "negative_final_budget_rejected",
+    "stress_clamped_0_100",
+    "reputation_replay_validates_old_delta_new",
+    "character_must_be_event_crew",
+    "incident_history_preserved",
+    "pending_settlement_consumed_once",
+    "generic_event_service_cannot_directly_complete",
+    "event_completed_only_after_settlement",
+    "same_command_id_idempotent",
+    "wrong_event_context_rejected_on_replay",
+    "durable_journal_crash_recovers_complete_state",
+    "heat_and_stability_remain_settlement_outcomes_not_district_state"
+  ],
+  "scope_excluded": [
+    "persistent_district_simulation",
+    "map_renderer",
+    "property_write_path",
+    "seasonal_ranking",
+    "connected_game_client",
+    "network_sync"
+  ],
+  "final_head_validation_required": true
+}

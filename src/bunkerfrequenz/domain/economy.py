@@ -4,6 +4,10 @@ from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import Any
 
+REGULAR_LEDGER_KINDS = frozenset({"buy", "sell", "consume", "reserve", "release"})
+SETTLEMENT_LEDGER_KIND = "settlement"
+SETTLEMENT_LEDGER_ITEM_ID = "__event_settlement__"
+
 
 def _positive_int(value: Any, name: str, *, allow_zero: bool = False) -> int:
     minimum = 0 if allow_zero else 1
@@ -19,6 +23,40 @@ def market_price(base_price_cents: int, market_tick: int, volatility_bps: int) -
     _positive_int(volatility_bps, "volatility_bps", allow_zero=True)
     cycle = (market_tick % 5) - 2
     return max(1, (base_price_cents * (10_000 + cycle * volatility_bps)) // 10_000)
+
+
+def _validate_ledger_entry(entry: dict[str, Any], seen: set[str]) -> None:
+    required = {
+        "transaction_id", "kind", "item_id", "quantity", "unit_price_cents",
+        "budget_delta_cents", "compensates",
+    }
+    if set(entry) != required:
+        raise ValueError("Ledger-Eintrag besitzt ungültige Felder")
+    transaction_id = entry["transaction_id"]
+    if not isinstance(transaction_id, str) or not transaction_id.strip() or transaction_id in seen:
+        raise ValueError("Ledger-Transaktions-ID ist ungültig oder doppelt")
+    seen.add(transaction_id)
+    kind = entry["kind"]
+    if kind not in REGULAR_LEDGER_KINDS | {SETTLEMENT_LEDGER_KIND}:
+        raise ValueError("Ledger-kind ist unbekannt")
+    if not isinstance(entry["item_id"], str) or not entry["item_id"].strip():
+        raise ValueError("Ledger-item_id muss nicht leerer Text sein")
+    _positive_int(entry["quantity"], "ledger.quantity")
+    if isinstance(entry["budget_delta_cents"], bool) or not isinstance(entry["budget_delta_cents"], int):
+        raise ValueError("ledger.budget_delta_cents muss Ganzzahl sein")
+    compensates = entry["compensates"]
+    if compensates is not None and (not isinstance(compensates, str) or not compensates.strip()):
+        raise ValueError("ledger.compensates muss Text oder null sein")
+
+    if kind == SETTLEMENT_LEDGER_KIND:
+        if entry["item_id"] != SETTLEMENT_LEDGER_ITEM_ID:
+            raise ValueError("Settlement-Ledger benötigt kanonische item_id")
+        if entry["quantity"] != 1 or entry["unit_price_cents"] != 0 or compensates is not None:
+            raise ValueError("Settlement-Ledger besitzt ungültige Buchungsfelder")
+    else:
+        _positive_int(entry["unit_price_cents"], "ledger.unit_price_cents")
+        if entry["item_id"] == SETTLEMENT_LEDGER_ITEM_ID:
+            raise ValueError("Normale Economy-Transaktion darf Settlement-item_id nicht verwenden")
 
 
 @dataclass(slots=True)
@@ -50,10 +88,9 @@ class EconomyState:
                 raise ValueError("Reservierung übersteigt Besitz")
         seen: set[str] = set()
         for entry in self.ledger:
-            required = {"transaction_id", "kind", "item_id", "quantity", "unit_price_cents", "budget_delta_cents", "compensates"}
-            if set(entry) != required or entry["transaction_id"] in seen:
-                raise ValueError("Ledger-Eintrag ist ungültig oder doppelt")
-            seen.add(entry["transaction_id"])
+            if not isinstance(entry, dict):
+                raise ValueError("Ledger-Eintrag muss Objekt sein")
+            _validate_ledger_entry(entry, seen)
 
     def to_dict(self) -> dict[str, Any]:
         self.validate()
