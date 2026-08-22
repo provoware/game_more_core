@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.3-c1",
+  "version": "0.8.5-c1",
   "append_only": true,
   "canonical_order_key": ["sequence", "event_id"],
   "hash_chain": true,
@@ -27,6 +27,7 @@
     "character.resonance_xp_gained",
     "character.resonance_rank_up",
     "character.biography_entry_added",
+    "street.encounter_resolved",
     "training.started",
     "training.completed",
     "training.cancelled",
@@ -76,6 +77,7 @@
       "character.level_up",
       "character.resonance_xp_gained",
       "character.resonance_rank_up",
+      "street.encounter_resolved",
       "mission.completed",
       "world.location_discovered",
       "event.created",
