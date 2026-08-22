@@ -4,6 +4,28 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### 0.8.5-D – Living City State
+
+- persistenten `WorldState` für Städte, Bezirke, Spielerpositionen, Housing, Trust-Folgen, Ehrenruf/Große Werke, Party-Checks, Schaufenster und lokale Minispiele ergänzt; `heat`, `prestige`, `police_pressure` und `scene_activity` werden je Stadt/Bezirk gespeichert und per Journal-Replay rekonstruiert.
+- bestätigte Settlement-Ergebnisse als einzige fachliche Quelle für District-Folgen angebunden; jedes `settlement_id` wird genau einmal angewandt. Ein explizites `district_applied` im World-Receipt macht auch Legacy-/Custom-Orte ohne Mapping transparent statt still eine Bezirkswirkung zu behaupten.
+- seltene Crash-Lücke zwischen durablem `event.completed` und noch nicht begonnenem World-Folgecommit geschlossen: Der lokale A4-Start erkennt ein bestätigtes, noch nicht in `applied_settlements` registriertes Settlement und zieht ausschließlich die fehlende World-Folge idempotent nach.
+- World-Recovery auf genau einen kanonischen Replay-Pfad vereinheitlicht; `world.*`-Replay rekonstruiert ausschließlich World-State und darf Character-State nicht eigenmächtig überschreiben. Stress/Ruf bleiben Autorität der katalogisierten `character.*`-Events.
+- monotone Einbuchungs-IDs `BF-000001…` eingeführt; Format, Eindeutigkeit und `next_booking_number > höchste bereits vergebene Nummer` werden beim Laden validiert, sodass ein zurückgesetzter Zähler keine alte ID wieder erreichbar macht.
+- absichtlichen Wohnungsengpass als harte Save-Invariante umgesetzt: Bei mindestens einer registrierten Figur existiert exakt eine Person ohne unabhängiges Zuhause (`homeless` oder `guest`); Gäste dürfen nur bei einer anderen, selbst unabhängig wohnenden Figur unterkommen.
+- persistente Bewegung zwischen Berlin, Leipzig und Hamburg mit katalogisierten Bezirken/Orten und unterschiedlichen Preisfaktoren ergänzt; der Browser kann keinen Preisfaktor mitsenden. Economy-Command-Idempotenz bindet nun auch den bestätigten `market_context`; alte Records ohne Kontext bleiben ausschließlich als historischer Faktor `10000` kompatibel.
+- gerichtete Misstrauensfolgen für `deception`, `betrayal` und `fraud` ergänzt: Täter→Betroffener wirkt für zwölf bestätigte Wirkzyklen mit `0 %`, die Gegenrichtung bleibt `100 %`. Der zwölfte Versuch bleibt für genau diesen bestätigten Versuch blockiert; Retry derselben Command-ID verbraucht keinen weiteren Zyklus.
+- World-Command-Idempotenz vereinheitlicht: gleiche Command-ID + gleicher Request ist Replay; dieselbe ID mit anderem Housing-Host, Trust-Inhalt, Bewegung, Party-Modus/-Entscheidung oder Minispielrequest wird fail-closed als Persistenzkonflikt abgewiesen.
+- dieselbe Request-Bindung für A4-Profiländerungen gehärtet; eine bereits bestätigte `profile.update`-Command-ID kann nicht mit anderen neuen Profilwerten still wiederverwendet werden.
+- persönliche Introgeschichte mit aktuellem bestätigtem Anzeigenamen sowie dauerhafte technische Einbuchungs-ID getrennt modelliert.
+- Ehrenruf-/Infamy-Titel und positive, negative oder ambivalente „große Werke“ aus bestätigten Settlement-Ergebnissen ergänzt; saisonale Hall-of-Tribute-Projektion bleibt ein separater Folgeblock.
+- Schaufensterhinweise als flache Textliste umgesetzt: wichtige Hinweise und belanglose Notizen werden gegenüber dem Client nicht durch eine Secret-Klassifikation unterscheidbar gemacht.
+- lokale Null-Einsatz-Minispiele ergänzt: 5-Karten-Poker, Punkteautomat und persistentes XOXO. Poker wertet jetzt vollständige 5-Karten-Kategorien inklusive Straight/Flush/Full House/Straight Flush, Wheel-Straight und Tie-Breaks; XOXO weist unmögliche Zug-/Gewinner-/Statuskombinationen beim Laden zurück.
+- reproduzierbaren Behörden-Risikocheck für bestätigte inoffizielle Events an katalogisierten Bunker/Open-Air/Wald-Orten ergänzt; genau drei abstrakte/deeskalierende Entscheidungen verändern bestätigte Spielwerte. Der Vertrag enthält keine reale Umgehungs-, Flucht- oder Verbergungsanleitung.
+- Party-Risikocheck an den bestätigten **Event-Ort** statt an die zufällige aktuelle Spielerposition gebunden; widersprüchliche `triggered/resolved/choice_id`-Zustände werden fail-closed abgewiesen.
+- `WORLD_MANIFEST.json`, `world_state.schema.json`, `world.py`, `WorldService`, `world_recovery`, read-only World-Projection, A4-Bridge und deutsche World-Texte als zusammenhängenden Vertrag registriert; `PROJEKTMANIFEST.json` referenziert diese kanonischen Zielstellen.
+- umfangreiche Runtime-/Presentation-/Release-Regressionen für Booking/Housing, Trust-Richtung und zwölf Zyklen, Stadtpreis-Kontext, Settlement→District/Titel, Minispiele, Schaufenster, Partyentscheidungen, Fault-Injection, Startup-Reconciliation und Profil-Replay ergänzt.
+- Produktversion bewusst **nicht** erhöht; `VERSION.json` und Release-Baseline bleiben `0.8.4-alpha.1`, bis 0.8.5-D vollständig remote abgenommen und eine eigene Releaseentscheidung getroffen wurde.
+
 ### 0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery
 
 - kleinsten schreibenden A4-Game-Client als lokale, frameworkfreie Oberfläche ergänzt; der Browser schreibt ausschließlich über einen dünnen `GameClientSession`-Adapter in bereits bestehende Application-Services und enthält keine zweite Event-, Economy-, Incident- oder Settlement-Logik.
@@ -398,4 +420,3 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Kein Laufzeitcode.
 - Keine Telegram-Implementierung.
 - Keine Wirtschaftssimulation.
-- Keine UI-Implementierung.
