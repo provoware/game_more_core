@@ -23,6 +23,7 @@ def build_living_district_projection(
     *,
     district_manifest: Mapping[str, Any],
     city_map_manifest: Mapping[str, Any],
+    owned_property_ids: set[str] | frozenset[str] = frozenset(),
 ) -> dict[str, Any]:
     version = district_manifest.get("version")
     if not isinstance(version, str) or not version:
@@ -63,6 +64,7 @@ def build_living_district_projection(
     ]
     city_map = build_city_map_projection(
         dict(city_map_manifest),
+        owned_property_ids=frozenset(owned_property_ids),
         district_metrics=state.metrics,
     )
     return {
