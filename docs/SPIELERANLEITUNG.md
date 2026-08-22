@@ -1,10 +1,10 @@
 # BUNKERFREQUENZ – Spieleranleitung
 
-> **Stand: 0.8.3-B Spiellogik remote validiert · HTML-Blueprint weiterhin schreibgeschützt**
+> **Stand: 0.8.3-C Settlement implementiert · finale Remote-Abnahme in PR #65 · HTML-Blueprint weiterhin schreibgeschützt**
 
-Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Der Spielkern kann inzwischen Charakteraktionen, Eventphasen, Equipment/Economy und Krisen sicher speichern und wiederherstellen. Die anklickbare HTML-Ansicht ist trotzdem noch kein fertiger Game-Client und verändert keine Spielstände.
+Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Der Spielkern kann inzwischen Charakteraktionen, Eventphasen, Equipment/Economy, Krisen **und die abschließende Event-Abrechnung** sicher speichern und wiederherstellen. Die anklickbare HTML-Ansicht ist trotzdem noch kein fertiger Game-Client und verändert keine Spielstände.
 
-**Woran erkenne ich den Release-Stand?** Das erste spielbare Alpha ist erreicht, wenn du ohne Codewissen eine Crew wählen, ein Event planen, Equipment beschaffen, eine Krise lösen, abrechnen und den gespeicherten Stand nach einem Neustart wieder laden kannst. 0.8.3-B ist für Krisenlogik und Berlin-Kartenbasis bestätigt; Settlement und der schreibende Client fehlen noch.
+**Woran erkenne ich den Release-Stand?** Der fachliche Runtime-Pfad reicht jetzt von Crew/Event-Planung über Equipment und Krise bis zur Abrechnung und `event.completed`. Für das erste wirklich bequem spielbare lokale Alpha fehlt danach vor allem noch der schreibende A4-Client, der diese bereits vorhandenen Regeln bedienbar macht, ohne sie ein zweites Mal zu erfinden.
 
 ## 0. HTML-Ansicht starten – ohne Vorwissen
 
@@ -50,7 +50,7 @@ Ort oder Immobilie weiterentwickeln
 
 ### A4 Ops Deck
 
-A4 ist die klare Arbeitsansicht. Sie soll später der schnellste Weg sein, um Voraussetzungen, Aktionen, Krisen und Ergebnisse zu verstehen.
+A4 ist die klare Arbeitsansicht. Sie soll später der schnellste Weg sein, um Voraussetzungen, Aktionen, Krisen, Abrechnung und Ergebnisse zu verstehen.
 
 ### A3 Cinematic Forge
 
@@ -69,7 +69,7 @@ Aktionen trainieren Skills mit festen Gewichten. Traits entstehen aus wiederholt
 
 ## 5. Dynamische Biografie
 
-Bedeutende bestätigte Ereignisse können Biografieeinträge erzeugen. Die Oberfläche erfindet keine Geschichte; sie projiziert bestätigte Journal-Ereignisse.
+Bedeutende bestätigte Ereignisse können Biografieeinträge erzeugen. Die Oberfläche erfindet keine Geschichte; sie projiziert bestätigte Journal-Ereignisse. Auch ein vollständig abgerechnetes Event kann genau einen bestätigten Event-Eintrag in deiner Biografie erzeugen.
 
 ## 6. Speichern und Recovery
 
@@ -83,13 +83,13 @@ Der Schutz besteht aus:
 - Recovery aus dem letzten gültigen Stand,
 - Quarantäne eines beschädigten Journal-Endes.
 
-Eine ausgeführte Aktion oder Krise wird sofort bestätigt. Der 60-Sekunden-Autosave ist ein zusätzlicher Checkpoint und bedeutet nicht, dass Aktionen 60 Sekunden ungespeichert bleiben.
+Eine ausgeführte Aktion, Krise oder Abrechnung wird sofort bestätigt. Der 60-Sekunden-Autosave ist ein zusätzlicher Checkpoint und bedeutet nicht, dass Aktionen 60 Sekunden ungespeichert bleiben.
 
 Bei Recovery-Fehlern: Programm beenden, Spielstandsordner unverändert lassen und keine Journal-/Snapshot-Dateien löschen.
 
 ## 7. Undo
 
-Undo löscht keine bestätigte Geschichte. Erlaubte Rücknahmen werden durch neue kompensierende Ereignisse abgebildet. Gameplay-Actions und Krisen werden nicht pauschal halb zurückgedreht, weil sonst Budget, XP, Stress oder Biografie auseinanderlaufen könnten.
+Undo löscht keine bestätigte Geschichte. Erlaubte Rücknahmen werden durch neue kompensierende Ereignisse abgebildet. Gameplay-Actions, Krisen und ein abgeschlossenes Settlement werden nicht pauschal halb zurückgedreht, weil sonst Budget, XP, Stress, Ruf oder Biografie auseinanderlaufen könnten.
 
 ## 8. Character Forge – bereits validiert
 
@@ -172,7 +172,7 @@ Die Crisis Engine bestätigt zunächst Folgen für:
 - Event-Stabilität,
 - Heat.
 
-Diese Werte werden in 0.8.3-B **vorgemerkt**, aber noch nicht direkt gebucht. Warum? Weil Geld nur über die Economy verändert werden darf. 0.8.3-C übernimmt die bestätigten Krisenfolgen anschließend kontrolliert in Economy, Character und Ruf.
+Diese Werte werden während der Krise **vorgemerkt**, aber nicht direkt an Economy oder Character vorbeigeschrieben. Die Abrechnung aus 0.8.3-C übernimmt sie später kontrolliert.
 
 ### Sicherheitsregeln
 
@@ -183,7 +183,60 @@ Diese Werte werden in 0.8.3-B **vorgemerkt**, aber noch nicht direkt gebucht. Wa
 - ein offener Incident wird nicht mit einem nachträglich anderen Regelstand aufgelöst,
 - Crash nach Journal-Schreibvorgang kann per Recovery rekonstruiert werden.
 
-## 12. Berlin Ops Map – validierte Foundation in 0.8.3-B2
+## 12. Event abrechnen – neu in 0.8.3-C
+
+Nach dem Abbau landet das Event in der Phase **`settlement`**. Jetzt werden die bereits bestätigten Folgen in einem einzigen, zusammengehörigen Abschluss verbucht.
+
+Einfach gesagt:
+
+```text
+Abrechnung vorbereiten
+→ offene Krise? dann STOP
+→ bestätigte Folgen lesen
+→ Budget buchen
+→ Stress buchen
+→ Ruf buchen
+→ Biografieeintrag bestätigen
+→ Event auf completed setzen
+→ alles gemeinsam speichern
+```
+
+### Was wird tatsächlich verändert?
+
+- **Budget:** ausschließlich über das Economy-Ledger.
+- **Stress:** bleibt immer zwischen `0` und `100`.
+- **Ruf:** eine neue Abrechnung kann den Ruf höchstens bis `0` senken, nicht darunter.
+- **Stabilität und Heat:** werden als bestätigtes Ergebnis gespeichert, verändern aber noch keinen Bezirkszustand.
+- **Biografie:** der Abschluss wird eindeutig deinem Character zugeordnet.
+
+### Was passiert, wenn es gar keine Krise gab?
+
+Das Event kann trotzdem normal abgeschlossen werden. Dann sind die fünf Krisenfolgen einfach `0`. Du musst also **keine künstliche Krise auslösen**, nur um ein Event abrechnen zu können.
+
+### Was passiert bei einem alten Save mit negativem Ruf?
+
+Ältere Spielstände dürfen weiterhin geladen werden, auch wenn sie einen früher zulässigen negativen Rufwert besitzen. Die neue Abrechnung normalisiert erst beim Abschluss das Ergebnis auf mindestens `0`. Der alte Spielstand wird also nicht allein wegen seines Rufwerts unlesbar.
+
+### Warum ist die Abrechnung atomar?
+
+„Atomar“ bedeutet hier: **alles oder nichts**. Budget, Stress, Ruf, Eventabschluss und Settlement-Beleg gehören zu demselben Speichervorgang. Bei einem Absturz darf nicht beispielsweise das Geld schon verändert sein, während das Event noch als unabgerechnet gilt.
+
+Recovery prüft außerdem, ob die im Settlement-Beleg genannten Budget-, Stress- und Rufänderungen exakt zu den tatsächlich gebuchten Deltas passen. Widersprüche werden nicht geraten oder repariert, sondern kontrolliert abgewiesen.
+
+### Wichtige Sperren
+
+Die Abrechnung wird gestoppt, wenn:
+
+- das Event noch nicht in `settlement` ist,
+- noch eine Krise aktiv ist,
+- der betroffene Character nicht zur Event-Crew gehört,
+- das Endbudget negativ würde,
+- eine Command-ID mit anderem Inhalt wiederverwendet wird,
+- gespeicherte Folgen und tatsächlich angewandte Deltas widersprüchlich sind.
+
+Erst nach erfolgreichem Abschluss entsteht **`event.completed`**.
+
+## 13. Berlin Ops Map – validierte Foundation in 0.8.3-B2
 
 Die Berlin-Karte ist zunächst eine **stilisierte Handlungskarte**, keine echte Navigation. Sie verwendet eine eigene 0–100-Kartenfläche statt exakter Straßenadressen. Dadurch funktioniert sie offline und kann später auf kleinen wie großen Displays skaliert werden.
 
@@ -232,9 +285,9 @@ Jeder Bezirk kann später dynamische Werte bekommen:
 - Polizeidruck
 - Szeneaktivität
 
-0.8.3-B kann diese Werte bereits darstellen, verändert sie aber noch nicht dauerhaft. Unbekannte oder falsch geschriebene Bezirks-IDs werden nicht still ignoriert, sondern als Fehler abgewiesen.
+0.8.3-B kann diese Werte bereits darstellen, verändert sie aber noch nicht dauerhaft. Auch 0.8.3-C speichert Heat nur als bestätigtes Event-Ergebnis; die persistente Bezirksdynamik folgt später. Unbekannte oder falsch geschriebene Bezirks-IDs werden nicht still ignoriert, sondern als Fehler abgewiesen.
 
-## 13. Immobilien-Ausbaupfade
+## 14. Immobilien-Ausbaupfade
 
 Die Datenbasis kennt bereits mögliche Ausbau-Slots:
 
@@ -251,7 +304,7 @@ Die Datenbasis kennt bereits mögliche Ausbau-Slots:
 
 Kaufen und Ausbau sind noch nicht schreibend angebunden. Später müssen Kosten ausschließlich über bestätigte Economy-Transaktionen laufen. Besitz darf nur auf tatsächlich kaufbare Locations zeigen.
 
-## 14. Hall of Tribute
+## 15. Hall of Tribute
 
 Die Berlin Ops Map besitzt genau eine **Hall of Tribute**. Sie ist der spätere Prestige- und Ranking-Ort.
 
@@ -277,12 +330,10 @@ Vorbereitete satirische Titel:
 
 Spätere Effekte wie Pulse, Halo oder Ranking-Show sind **Darstellung**. Bei Reduced Motion bleibt die komplette Ranginformation statisch sichtbar.
 
-## 15. Was kann man noch nicht normal spielen?
+## 16. Was kann man noch nicht normal spielen?
 
 Noch offen:
 
-- vollständige Settlement-Buchung der Krisenfolgen,
-- `event.completed` nach bestätigter Abrechnung,
 - schreibender A4-Game-Client,
 - bedienbarer Kartenrenderer,
 - Immobilienkauf/-ausbau,
@@ -290,18 +341,21 @@ Noch offen:
 - saisonales Hall-of-Tribute-Ranking,
 - Telegram-/Server-Synchronisation.
 
-## 16. Was kann ich jetzt sinnvoll prüfen?
+Der fachliche Event-Loop einschließlich Settlement ist im Runtime-Kern implementiert; bis zum Merge von PR #65 gilt er noch als in finaler Remote-Abnahme.
+
+## 17. Was kann ich jetzt sinnvoll prüfen?
 
 1. Starte den HTML-Blueprint wie in Abschnitt 0.
 2. Prüfe Leseweg und Diagnose.
 3. Verwechsle die statische Ansicht nicht mit dem bereits getesteten Runtime-Kern.
 4. Für technische Details zu Krise und Berlin-Karte: [`CRISIS_CITY_0.8.3-B.md`](CRISIS_CITY_0.8.3-B.md).
+5. Für die technische Abrechnung: [`SETTLEMENT_0.8.3-C.md`](SETTLEMENT_0.8.3-C.md).
 
-## 17. Welche Beschreibung hilft mir weiter?
+## 18. Welche Beschreibung hilft mir weiter?
 
 - **Spielwelt verstehen:** [`SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](SPIELBESCHREIBUNG_OHNE_TECHNIK.md)
 - **aktuellen Prototyp starten:** diese Anleitung, Abschnitt 0
 - **programmieren/anbinden:** [`SPIELBESCHREIBUNG_TECHNISCH.md`](SPIELBESCHREIBUNG_TECHNISCH.md)
 - **nächste echte Aufgaben:** [`../TODO.md`](../TODO.md)
 
-Der nächste fachliche Pflichtschritt ist **0.8.3-C – Settlement & Consequences**. Erst danach wird der schreibende Client angebunden.
+Nach vollständig grüner Remote-Abnahme und Safe Merge von **0.8.3-C** ist der nächste fachliche Pflichtschritt der **schreibende A4-Client**, der den bereits vorhandenen Event-Loop bedienbar macht, ohne Domain-, Economy-, Incident- oder Settlement-Regeln zu duplizieren.
