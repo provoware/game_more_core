@@ -113,6 +113,8 @@ Ist eine einzelne Snapshot-Sicherung unvollständig oder stimmt ihre Prüfsumme 
 
 Der 60-Sekunden-Autosave bedeutet also **nicht**, dass eine ausgeführte Action bis zu 60 Sekunden ungespeichert bleibt. Er ist ein zusätzlicher Recovery-Checkpoint.
 
+Wenn die Wiederherstellung einen Fehler meldet, beende das Programm und bewahre den Spielstandsordner unverändert auf. Starte nicht mehrfach neu und lösche keine Journal-, Snapshot- oder Quarantänedatei. So bleiben die bestätigte Geschichte und die nötigen Hinweise für eine spätere Reparatur erhalten.
+
 ## 7. Undo – was kann rückgängig gemacht werden?
 
 Undo löscht keine Journalhistorie. Eine erlaubte Rücknahme wird als neues kompensierendes Ereignis gespeichert.
