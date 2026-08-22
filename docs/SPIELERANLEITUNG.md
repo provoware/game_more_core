@@ -1,10 +1,10 @@
 # BUNKERFREQUENZ – Spieleranleitung
 
-> **Stand: 0.8.3-C Settlement implementiert · finale Remote-Abnahme in PR #65 · HTML-Blueprint weiterhin schreibgeschützt**
+> **Stand: 0.8.3-C Settlement remote validiert und sicher gemergt · nächster Pflichtblock: schreibender A4-Client · HTML-Blueprint weiterhin schreibgeschützt**
 
 Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Der Spielkern kann inzwischen Charakteraktionen, Eventphasen, Equipment/Economy, Krisen **und die abschließende Event-Abrechnung** sicher speichern und wiederherstellen. Die anklickbare HTML-Ansicht ist trotzdem noch kein fertiger Game-Client und verändert keine Spielstände.
 
-**Woran erkenne ich den Release-Stand?** Der fachliche Runtime-Pfad reicht jetzt von Crew/Event-Planung über Equipment und Krise bis zur Abrechnung und `event.completed`. Für das erste wirklich bequem spielbare lokale Alpha fehlt danach vor allem noch der schreibende A4-Client, der diese bereits vorhandenen Regeln bedienbar macht, ohne sie ein zweites Mal zu erfinden.
+**Woran erkenne ich den Release-Stand?** Der fachliche Runtime-Pfad reicht jetzt von Crew/Event-Planung über Equipment und optionaler Krise bis zur Abrechnung und `event.completed` und wurde auf PR #65 remote validiert. Für das erste bequem spielbare lokale Alpha fehlt vor allem noch der schreibende A4-Client, der diese vorhandenen Regeln bedienbar macht, ohne sie ein zweites Mal zu erfinden.
 
 ## 0. HTML-Ansicht starten – ohne Vorwissen
 
@@ -37,7 +37,7 @@ Equipment beschaffen
   ↓
 Event aufbauen und starten
   ↓
-Krise erkennen und reagieren
+Krise erkennen und reagieren – falls eine auftritt
   ↓
 abbauen und abrechnen
   ↓
@@ -50,7 +50,7 @@ Ort oder Immobilie weiterentwickeln
 
 ### A4 Ops Deck
 
-A4 ist die klare Arbeitsansicht. Sie soll später der schnellste Weg sein, um Voraussetzungen, Aktionen, Krisen, Abrechnung und Ergebnisse zu verstehen.
+A4 ist die klare Arbeitsansicht. Sie soll als nächster Pflichtblock der schnellste Weg werden, um Voraussetzungen, Aktionen, Krisen, Abrechnung und Ergebnisse zu verstehen und die bereits vorhandenen Application-Commands sicher auszulösen.
 
 ### A3 Cinematic Forge
 
@@ -172,7 +172,7 @@ Die Crisis Engine bestätigt zunächst Folgen für:
 - Event-Stabilität,
 - Heat.
 
-Diese Werte werden während der Krise **vorgemerkt**, aber nicht direkt an Economy oder Character vorbeigeschrieben. Die Abrechnung aus 0.8.3-C übernimmt sie später kontrolliert.
+Diese Werte werden während der Krise **vorgemerkt**, aber nicht direkt an Economy oder Character vorbeigeschrieben. Die Abrechnung aus 0.8.3-C übernimmt sie kontrolliert.
 
 ### Sicherheitsregeln
 
@@ -183,7 +183,7 @@ Diese Werte werden während der Krise **vorgemerkt**, aber nicht direkt an Econo
 - ein offener Incident wird nicht mit einem nachträglich anderen Regelstand aufgelöst,
 - Crash nach Journal-Schreibvorgang kann per Recovery rekonstruiert werden.
 
-## 12. Event abrechnen – neu in 0.8.3-C
+## 12. Event abrechnen – 0.8.3-C remote validiert
 
 Nach dem Abbau landet das Event in der Phase **`settlement`**. Jetzt werden die bereits bestätigten Folgen in einem einzigen, zusammengehörigen Abschluss verbucht.
 
@@ -235,6 +235,8 @@ Die Abrechnung wird gestoppt, wenn:
 - gespeicherte Folgen und tatsächlich angewandte Deltas widersprüchlich sind.
 
 Erst nach erfolgreichem Abschluss entsteht **`event.completed`**.
+
+Die finale 0.8.3-C-Abnahme erfolgte auf PR #65 / Head `ccfb145547b241a179bd0135d34a7470d690821c` mit Runtime Core `32568683844`, Presentation Core `32568683898` und Repository Health `32568683863`; der Merge erfolgte ausschließlich über `/safe-merge` als `5ae811333878ae67947417ccb72e791caafe4ba9`.
 
 ## 13. Berlin Ops Map – validierte Foundation in 0.8.3-B2
 
@@ -341,7 +343,7 @@ Noch offen:
 - saisonales Hall-of-Tribute-Ranking,
 - Telegram-/Server-Synchronisation.
 
-Der fachliche Event-Loop einschließlich Settlement ist im Runtime-Kern implementiert; bis zum Merge von PR #65 gilt er noch als in finaler Remote-Abnahme.
+Der fachliche Event-Loop einschließlich Settlement ist auf `main` remote validiert. Für das erste lokale Alpha ist jetzt der schreibende A4-Client der nächste Pflichtschritt; Welt-/Map-Ausbau bleibt bewusst danach.
 
 ## 17. Was kann ich jetzt sinnvoll prüfen?
 
@@ -358,4 +360,4 @@ Der fachliche Event-Loop einschließlich Settlement ist im Runtime-Kern implemen
 - **programmieren/anbinden:** [`SPIELBESCHREIBUNG_TECHNISCH.md`](SPIELBESCHREIBUNG_TECHNISCH.md)
 - **nächste echte Aufgaben:** [`../TODO.md`](../TODO.md)
 
-Nach vollständig grüner Remote-Abnahme und Safe Merge von **0.8.3-C** ist der nächste fachliche Pflichtschritt der **schreibende A4-Client**, der den bereits vorhandenen Event-Loop bedienbar macht, ohne Domain-, Economy-, Incident- oder Settlement-Regeln zu duplizieren.
+Der nächste fachliche Pflichtschritt ist nun der **schreibende A4-Client**, der den validierten 0.8.3-Event-Loop bedienbar macht, ohne Domain-, Economy-, Incident- oder Settlement-Regeln zu duplizieren.
