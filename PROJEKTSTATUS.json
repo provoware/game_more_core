@@ -2,21 +2,21 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.8.2",
-  "status": "0_8_2_equipment_economy_locally_validated_remote_validation_pending",
-  "current_focus": "0_8_2_remote_vertical_slice_validation",
-  "last_validated_feature_iteration": "0.8.1",
+  "active_iteration": "0.8.3",
+  "status": "0_8_3a_event_execution_engine_implemented_remote_validation_pending",
+  "current_focus": "0_8_3a_remote_validation_and_safe_merge",
+  "last_validated_feature_iteration": "0.8.2",
   "last_validated_release": "0.5.2-alpha.1",
-  "validation_reference": "PR #48 / head 79cc26bec0a780322874ea6f3ced458e8ee72bd6 / merge 9ed0dbd8928014777fa4b100a7c65ba4c30ca04e",
+  "validation_reference": "PR #61 / head cee782476dccc9d57470f6522e4f77ed1473cdeb / merge 9cfa107f0256587bf5a440c64c3e0af6c482fed2",
   "remote_validation": {
-    "status": "success_for_0.8.1_initial_head",
-    "pull_request": 48,
-    "validated_head": "79cc26bec0a780322874ea6f3ced458e8ee72bd6",
-    "runtime_core_workflow_run": 32537531324,
-    "presentation_core_workflow_run": 32537531305,
-    "repository_health_workflow_run": 32537531303,
+    "status": "success_for_0.8.2_hardened_head",
+    "pull_request": 61,
+    "validated_head": "cee782476dccc9d57470f6522e4f77ed1473cdeb",
+    "runtime_core_workflow_run": 32557685040,
+    "presentation_core_workflow_run": 32557685042,
+    "repository_health_workflow_run": 32557685108,
     "final_information_head_revalidation_required": false,
-    "merged_commit": "9ed0dbd8928014777fa4b100a7c65ba4c30ca04e"
+    "merged_commit": "9cfa107f0256587bf5a440c64c3e0af6c482fed2"
   },
   "presentation_application_boundary": {
     "status": "validated_and_merged",
@@ -194,11 +194,11 @@
     "physical_phase_safety_gate": true,
     "character_event_state_blocks_preserved": true,
     "fault_injection_recovery_test_passed": true,
-    "economy_ledger_implemented": false,
-    "inventory_ownership_implemented": false
+    "economy_ledger_implemented": true,
+    "inventory_ownership_implemented": true
   },
   "equipment_economy": {
-    "status": "locally_validated_remote_validation_pending",
+    "status": "remote_validated_and_merged",
     "iteration": "0.8.2",
     "state_block": "economy",
     "domain_module": "src/bunkerfrequenz/domain/economy.py",
@@ -212,19 +212,48 @@
     "reservation_drives_event_readiness": true,
     "compensation_preconditions": true,
     "combined_economy_event_recovery": true,
-    "local_validation": {
+    "event_context_bound": true,
+    "same_revision_replay_conflict_rejected": true,
+    "remote_validation": {
       "status": "success",
-      "validated_at": "2026-08-22",
-      "gates": [
-        "runtime-core",
-        "presentation-core",
-        "repository-health"
-      ]
+      "pull_request": 61,
+      "validated_head": "cee782476dccc9d57470f6522e4f77ed1473cdeb",
+      "runtime_core_workflow_run": 32557685040,
+      "presentation_core_workflow_run": 32557685042,
+      "repository_health_workflow_run": 32557685108,
+      "merged_commit": "9cfa107f0256587bf5a440c64c3e0af6c482fed2"
     },
     "client_changes": false,
     "network_changes": false,
     "club_changes": false,
-    "remote_validation_pending": true
+    "remote_validation_pending": false
+  },
+  "event_execution_engine": {
+    "status": "implemented_remote_validation_pending",
+    "iteration": "0.8.3-A",
+    "pull_request": 62,
+    "application_service": "src/bunkerfrequenz/application/event_execution_service.py",
+    "manifest": "manifests/EVENT_ACTION_MANIFEST.json",
+    "canonical_actions": 8,
+    "path_start": "draft",
+    "path_end": "settlement",
+    "journal_event": "event.phase_changed",
+    "journal_reason_prefix": "event_action:",
+    "availability_projection": true,
+    "central_prerequisite_gates": [
+      "confirmed_act",
+      "confirmed_acts",
+      "confirmed_crew",
+      "positive_budget",
+      "equipment_ready",
+      "location_required",
+      "verified_access_required",
+      "time_window_required",
+      "safety_clearance_required"
+    ],
+    "crisis_resolution_in_scope": false,
+    "settlement_consequences_in_scope": false,
+    "client_domain_writes": false
   },
   "repository_repair": {
     "status": "recovered_and_remote_validated",
@@ -294,11 +323,11 @@
       21
     ]
   },
-  "next_iteration": "0.8.2",
-  "next_goal": "0.8.2 auf einem Head lokal und mit allen drei Remote-Gates abnehmen; vor diesem Nachweis keine 0.8.3-, Client-, Netzwerk- oder Clubarbeit beginnen.",
+  "next_iteration": "0.8.3-B",
+  "next_goal": "Nach grüner Remote-Abnahme und Safe-Merge von 0.8.3-A Krisen/Incidents als eigenen journalfähigen Slice implementieren; Settlement-Folgen und Client bleiben getrennt.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-22T12:00:00+00:00"
+  "updated_at": "2026-08-22T06:50:00+00:00"
 }
