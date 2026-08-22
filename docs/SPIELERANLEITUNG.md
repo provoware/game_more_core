@@ -1,8 +1,20 @@
 # BUNKERFREQUENZ – Spieleranleitung
 
-> **Stand: 0.7.2 – Character-Forge-Vertical-Slice**
+> **Stand: HTML-Blueprint auf Basis des Character-Forge-Vertical-Slice**
 
-Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Noch gibt es keinen fertigen grafischen Client zum Anklicken; die hier beschriebene Spiellogik ist als getesteter Runtime-/Presentation-Kern vorhanden und bildet die Grundlage für die spätere Oberfläche.
+Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Es gibt jetzt eine anklickbare HTML-Ansicht zum Prüfen des Designs. Sie ist noch kein fertiger Game-Client: Die getestete Spiellogik bleibt getrennt und die Ansicht verändert keine Spielstände.
+
+## 0. HTML-Ansicht starten – ohne Vorwissen
+
+1. Öffne ein Terminal im Projektordner.
+2. Gib genau `python3 tools/start_web_blueprint.py` ein.
+3. Warte auf `STATUS: BEREIT`. Der Browser öffnet sich automatisch.
+4. Prüfe oben `● BEREIT` und unten den Bereich **Diagnose**.
+5. Beende den lokalen Server im Terminal mit `Strg+C`.
+
+Falls kein Browser aufgeht, kopiere die hinter `ADRESSE:` genannte Adresse in einen Browser. Für einen bewusst manuellen Start kann `python3 tools/start_web_blueprint.py --no-browser` verwendet werden. Meldet die Routine einen belegten Port, starte einmal mit `--port 0`; dann wird automatisch ein freier Port gewählt.
+
+**Was bedeutet die Ansicht?** **Pixelreferenz** zeigt die vorhandene Grafik unverändert. **Spielfluss** und **Ansichten** werden aus dem gültigen UI-Manifest aufgebaut. **Diagnose** zeigt getrennt, welche Dateien und Verträge geladen wurden. Mit **Prüfbericht kopieren** lassen sich die technischen Angaben weitergeben, ohne einen Spielstand offenzulegen.
 
 ## 1. Worum geht es?
 
@@ -130,7 +142,7 @@ Der validierte Implementierungsstand von PR #41 bestand auf Head `5f7ded400a5fca
 
 Noch offen sind insbesondere:
 
-- ein fertiger grafischer Desktop-/Web-/Game-Engine-Client,
+- ein fertiger, mit der Runtime verbundener Desktop-/Web-/Game-Engine-Client (der HTML-Blueprint ist nur eine schreibgeschützte Designauswertung),
 - vollständige Event- und Wirtschaftssimulation,
 - dynamischer Equipmentmarkt,
 - kompletter Clubbetrieb,

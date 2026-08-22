@@ -45,6 +45,8 @@
   "ui_ux_blueprint": "docs/UI_UX_BLUEPRINT.md",
   "presentation_contract": "docs/PRESENTATION_CONTRACT_0.6.md",
   "design_reference_asset": "docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp",
+  "html_blueprint": "web/index.html",
+  "html_blueprint_launcher": "tools/start_web_blueprint.py",
   "ui_manifest": "manifests/UI_MANIFEST.json",
   "animation_manifest": "manifests/ANIMATION_MANIFEST.json",
   "ranking_network_manifest": "manifests/RANKING_NETWORK_MANIFEST.json",

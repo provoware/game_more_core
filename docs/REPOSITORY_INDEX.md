@@ -37,6 +37,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 | `src/` | headless Spielkern und Presentation | `src/bunkerfrequenz/` |
 | `tests/` | Vertrags-, Runtime-, Simulation-, Presentation- und Repository-Tests | Unterordner nach Bereich |
 | `tools/` | kleine ausführbare Entwicklerwerkzeuge | `validate_action_contract.py`, `repository_health.py`, `github_merge_guard.py`, `github_merge_guard_retry.py` |
+| `web/` | statischer, schreibgeschützter HTML-Blueprint mit Browserdiagnose | `index.html` |
 
 ## Dokumentation
 
@@ -110,6 +111,10 @@ Weitere zentrale Presentation-Dateien:
 - `content/de/ui/character_forge.json` – Character-Forge-, Workflow-, Ranking- und Cinematic-Texte.
 - `manifests/ANIMATION_MANIFEST.json` – nicht blockierende Entwicklungsanimationen und Fallbacks.
 - `manifests/RANKING_NETWORK_MANIFEST.json` – Ranking-/Network-Regeln.
+- `web/index.html` – unveränderte Pixelreferenz plus semantische Auswertungsbereiche.
+- `web/app.js` – liest UI-Manifest und Textkatalog und stellt `window.blueprintReport` bereit.
+- `tools/start_web_blueprint.py` – prüft Dateien und startet den lokalen HTML-Server ohne Zusatzpakete.
+- `tests/presentation/test_web_blueprint.py` – gezielter Struktur- und Vertragscheck des HTML-Prototyps.
 
 `__init__.py`-Dateien exportieren vorhandene Funktionen; sie dürfen keine zweite Fachimplementierung enthalten.
 

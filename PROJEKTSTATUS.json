@@ -32,6 +32,16 @@
       "action.execute"
     ]
   },
+  "html_blueprint_evaluator": {
+    "status": "local_static_prototype",
+    "entrypoint": "web/index.html",
+    "launcher": "tools/start_web_blueprint.py",
+    "canonical_reference_asset": "docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp",
+    "manifest_driven_workflow": true,
+    "machine_readable_browser_report": "window.blueprintReport",
+    "domain_writes": false,
+    "full_game_client": false
+  },
   "presentation_local_state_feedback": {
     "status": "validated_and_merged",
     "pull_request": 26,

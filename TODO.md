@@ -186,6 +186,8 @@
 
 ## Später
 
+- [ ] Kanonisches Blueprint-WebP aus der dokumentierten Originalquelle reproduzierbar neu exportieren und die überwiegend transparente aktuelle Datei erst nach visueller Abnahme ersetzen; Nutzen: vollständige Pixelreferenz statt formal ladbarer, aber visuell unbrauchbarer Fläche.
+- [ ] HTML-Blueprint über einen schreibgeschützten Adapter mit fixture-basiertem Projection-JSON speisen und per Vertragstest nachweisen, dass fehlende oder unbestätigte Werte sichtbar leer bleiben; Nutzen: realistische UI-Auswertung ohne zweiten Domain-Schreibweg.
 - [ ] Recovery-Berichte um eine maschinenlesbare Fehlerkategorie ergänzen, damit eine spätere Oberfläche beschädigtes JSON, fehlende Felder und falsche Datentypen verständlich unterscheiden kann, ohne Fehlermeldungstext auszuwerten.
 - [ ] Recovery-Receipt um die Anzahl übersprungener Snapshot-Kandidaten ergänzen, damit Support und spätere Oberfläche einen erfolgreichen Rückfall auf einen älteren Checkpoint sichtbar machen können, ohne ungültige Inhalte offenzulegen.
 

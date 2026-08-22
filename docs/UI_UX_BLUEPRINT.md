@@ -9,6 +9,18 @@ Verbindliche Basis bleibt **Industrial Brutalist – Variante A**: schwarzer Bet
 
 Die Übersicht dient als gemeinsame visuelle Referenz für Persistence, die vier Character-Forge-Varianten und den Gameplay Action Contract. Bei Widersprüchen gelten die Text- und Manifestverträge; die Grafik ist bewusst übersichtlich und nicht selbst die Datenquelle.
 
+## Auswertbare HTML-Übertragung
+
+`web/index.html` lädt genau die oben referenzierte WebP-Datei als unveränderte Pixelreferenz. Daneben erzeugt `web/app.js` den fünfstufigen Workflow und die vier Ansichten aus `manifests/UI_MANIFEST.json`. So bleibt die Grafik optisch exakt vergleichbar, während Struktur und Vertragswerte als HTML, `data-*`-Attribute und maschinenlesbarer Bericht unter `window.blueprintReport` ausgewertet werden können.
+
+Der Renderer ist bewusst statisch und schreibgeschützt: Er ruft keine Domain-Aktion auf und behauptet keinen vollständigen Game-Client. Start und Vorprüfung übernimmt ohne Zusatzpakete:
+
+```bash
+python3 tools/start_web_blueprint.py
+```
+
+Die Diagnose prüft Originalasset, sichtbare Pixelfläche, Manifestbezug, fünf Workflowstufen, vier Ansichten sowie Tastatur-/Reduced-Motion-Vertrag. Browserabhängige Pixelabweichungen bei Schrift und Skalierung bleiben möglich; für den exakten Vergleich ist deshalb die Originalgrafik selbst eingebettet. Die aktuelle WebP-Datei lädt, weist in der Browser-Sichtprüfung aber überwiegend transparente Fläche auf; die Pipeline meldet deshalb ehrlich `EINGESCHRÄNKT`, bis das kanonische Asset fachlich ersetzt wurde.
+
 ## Vier Entwurfsvarianten
 ### A1 – CONTROL ROOM
 Crew links, Charakter/3D-Portrait und zentrale Werte in der Mitte, aktueller Kontext rechts, Journal/Status unten. Beste Gesamtübersicht für Desktop.
