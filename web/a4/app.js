@@ -259,6 +259,7 @@ function render() {
 
   renderProfile(p.character);
   renderDistricts(p.districts);
+  window.BunkerMapPro?.render(p.berlin_ops_map);
   renderProperties(p.properties, p.property_upgrades);
   renderHall(p.hall_of_tribute);
   $("phase-badge").textContent = event ? event.phase.toUpperCase() : "NOCH KEIN EVENT";

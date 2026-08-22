@@ -6,6 +6,7 @@
   <meta name="color-scheme" content="dark">
   <title>BUNKERFREQUENZ – A4 Game Client</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="map_pro.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -71,19 +72,61 @@
       <div id="district-last-change" class="notice" aria-live="polite">Noch keine persistente Bezirksänderung.</div>
     </section>
 
+    <section id="map-pro-panel" class="panel map-pro-panel hidden" aria-labelledby="map-pro-title">
+      <div class="panel-head map-pro-head">
+        <div>
+          <p class="eyebrow">05 // BERLIN OPS MAP PRO</p>
+          <h2 id="map-pro-title">Stadtlage auf einen Blick</h2>
+          <p>Stilisierte Spielkarte auf bestätigten District-, Property- und Ausbau-Projections. Keine Navigation, kein Geocoding, keine eigene Fachlogik.</p>
+        </div>
+        <div class="map-summary" aria-label="Kartenübersicht">
+          <div><span>Bezirke</span><strong id="map-district-count">0</strong></div>
+          <div><span>Orte</span><strong id="map-location-count">0</strong></div>
+          <div><span>Eigentum</span><strong id="map-owned-count">0</strong></div>
+        </div>
+      </div>
+
+      <div id="map-filters" class="map-filterbar" role="group" aria-label="Kartenfilter">
+        <button type="button" data-map-filter="all" aria-pressed="true">ALLE ORTE</button>
+        <button type="button" data-map-filter="owned" aria-pressed="false">MEIN EIGENTUM</button>
+        <button type="button" data-map-filter="prime" aria-pressed="false">PRIME + LEGENDARY</button>
+        <button type="button" data-map-filter="hall" aria-pressed="false">HALL OF TRIBUTE</button>
+      </div>
+
+      <div class="map-layout">
+        <div class="map-stage-wrap">
+          <div id="berlin-map-canvas" class="berlin-map-canvas" role="group" aria-label="Stilisierte Berlin Ops Spielkarte"></div>
+          <div class="map-legend" aria-label="Kartenlegende">
+            <span><i class="legend-dot tier-standard"></i>Standard</span>
+            <span><i class="legend-dot tier-strong"></i>Strong</span>
+            <span><i class="legend-dot tier-prime"></i>Prime</span>
+            <span><i class="legend-dot tier-legendary"></i>Legendary</span>
+            <span><i class="legend-ring"></i>Eigentum</span>
+            <span><i class="legend-hall">H</i>Hall</span>
+          </div>
+        </div>
+        <aside id="map-detail" class="map-detail" aria-live="polite" aria-label="Kartendetails">
+          <p class="eyebrow">MAP // DETAIL</p>
+          <h3 class="map-detail-title">Berlin Ops</h3>
+          <p class="map-detail-copy">Fokussiere einen Bezirk oder Ort, um bestätigte Werte zu sehen.</p>
+        </aside>
+      </div>
+      <div class="notice">Die Karte ist read-only. Kaufen und Ausbauen bleibt im Property-Panel und läuft weiterhin ausschließlich über die vorhandenen Application-Services.</div>
+    </section>
+
     <section id="property-panel" class="panel hidden" aria-labelledby="property-title">
       <div class="panel-head">
-        <div><p class="eyebrow">05 // PROPERTY</p><h2 id="property-title">Orte übernehmen & ausbauen</h2></div>
+        <div><p class="eyebrow">06 // PROPERTY</p><h2 id="property-title">Orte übernehmen & ausbauen</h2></div>
         <div class="metric"><span>Eigentum</span><strong id="property-owned-count">0 / 0</strong></div>
       </div>
       <p>Übernommene Berlin-Ops-Orte können über ihre katalogisierten Slots bis Level 3 ausgebaut werden. Kaufpreis, Ziellevel und Ausbaukosten kommen ausschließlich aus der Runtime; der Browser sendet nur Location- und Ausbau-ID.</p>
       <div id="property-list" class="equipment-list" aria-live="polite"></div>
-      <div class="notice">Ausbauten verändern bestätigte Standortwerte und damit den vorhandenen Map-Score/Tier. Verkauf, Miete und Rendite bleiben weiterhin außerhalb von 0.8.6-B.</div>
+      <div class="notice">Ausbauten verändern bestätigte Standortwerte und damit den vorhandenen Map-Score/Tier. Verkauf, Miete und Rendite bleiben weiterhin außerhalb von 0.8.6.</div>
     </section>
 
     <section id="hall-panel" class="panel hidden" aria-labelledby="hall-title">
       <div class="panel-head">
-        <div><p class="eyebrow">06 // HALL OF TRIBUTE</p><h2 id="hall-title">Top-10-Ranking</h2></div>
+        <div><p class="eyebrow">07 // HALL OF TRIBUTE</p><h2 id="hall-title">Top-10-Ranking</h2></div>
         <div class="metric"><span>Bestätigte Teilnehmer</span><strong id="hall-participants">0</strong></div>
       </div>
       <p id="hall-status">Ranking wird aus bestätigten Daten aufgebaut. Es werden keine Gegner oder Netzwerkwerte erfunden.</p>
@@ -97,7 +140,7 @@
 
     <section id="event-panel" class="panel hidden" aria-labelledby="event-title">
       <div class="panel-head">
-        <div><p class="eyebrow">07 // EVENT</p><h2 id="event-title">Event-Steuerung</h2></div>
+        <div><p class="eyebrow">08 // EVENT</p><h2 id="event-title">Event-Steuerung</h2></div>
         <div class="metric"><span>Budget</span><strong id="budget">–</strong></div>
       </div>
       <div class="summary-grid">
@@ -112,17 +155,17 @@
     </section>
 
     <section id="economy-panel" class="panel hidden" aria-labelledby="economy-title">
-      <div class="panel-head"><div><p class="eyebrow">08 // EQUIPMENT</p><h2 id="economy-title">Equipment & Economy</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">09 // EQUIPMENT</p><h2 id="economy-title">Equipment & Economy</h2></div></div>
       <div id="equipment-list" class="equipment-list"></div>
     </section>
 
     <section id="incident-panel" class="panel hidden" aria-labelledby="incident-title">
-      <div class="panel-head"><div><p class="eyebrow">09 // CRISIS</p><h2 id="incident-title">Krise</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">10 // CRISIS</p><h2 id="incident-title">Krise</h2></div></div>
       <div id="incident-content"></div>
     </section>
 
     <section id="settlement-panel" class="panel hidden" aria-labelledby="settlement-title">
-      <div class="panel-head"><div><p class="eyebrow">10 // SETTLEMENT</p><h2 id="settlement-title">Abrechnung</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">11 // SETTLEMENT</p><h2 id="settlement-title">Abrechnung</h2></div></div>
       <div id="settlement-content"></div>
     </section>
 
@@ -140,6 +183,6 @@
     </section>
   </main>
 
-  <footer>Schreibender A4 Alpha-Client · localhost-only · keine Domain-Regeln im Browser</footer>
+  <footer>Schreibender A4 Alpha-Client · localhost-only · Berlin Ops Map PRO read-only · keine Domain-Regeln im Browser</footer>
 </body>
 </html>

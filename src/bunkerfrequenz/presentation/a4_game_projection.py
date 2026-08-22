@@ -9,6 +9,7 @@ from bunkerfrequenz.domain.economy import EconomyState
 from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.incident import IncidentState
 from bunkerfrequenz.domain.settlement import SettlementState
+from bunkerfrequenz.presentation.berlin_ops_map_pro import build_berlin_ops_map_pro_projection
 from bunkerfrequenz.presentation.district_projection import build_living_district_projection
 from bunkerfrequenz.presentation.hall_of_tribute import build_hall_of_tribute_projection
 from bunkerfrequenz.presentation.property_projection import build_property_projection
@@ -45,6 +46,7 @@ def build_a4_game_projection(
     city_map_manifest: Mapping[str, Any] | None = None,
     property_manifest: Mapping[str, Any] | None = None,
     property_upgrade_manifest: Mapping[str, Any] | None = None,
+    map_pro_manifest: Mapping[str, Any] | None = None,
     hall_manifest: Mapping[str, Any] | None = None,
     ranking_manifest: Mapping[str, Any] | None = None,
     sync_manifest: Mapping[str, Any] | None = None,
@@ -60,13 +62,15 @@ def build_a4_game_projection(
         raise ValueError("property_manifest benötigt city_map_manifest")
     if property_upgrade_manifest is not None and (property_manifest is None or city_map_manifest is None):
         raise ValueError("property_upgrade_manifest benötigt Property- und City-Map-Vertrag")
+    if map_pro_manifest is not None and (district_manifest is None or city_map_manifest is None):
+        raise ValueError("map_pro_manifest benötigt District- und City-Map-Vertrag")
     hall_parts = (hall_manifest, ranking_manifest, sync_manifest, ranking_text_catalog, city_map_manifest)
     if any(part is not None for part in hall_parts[:4]) and not all(part is not None for part in hall_parts):
         raise ValueError("Hall of Tribute benötigt Hall-, Ranking-, Sync-, Text- und City-Map-Vertrag")
 
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.6-b1",
+        "view_model_version": "0.8.6-c1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
@@ -83,6 +87,7 @@ def build_a4_game_projection(
         "districts": None,
         "properties": None,
         "property_upgrades": None,
+        "berlin_ops_map": None,
         "hall_of_tribute": None,
         "incident_catalog": _incident_catalog_projection(incident_catalog),
     }
@@ -199,6 +204,13 @@ def build_a4_game_projection(
             city_map_manifest=city_map_manifest,
             owned_property_ids=owned_property_ids,
             location_value_overrides=location_value_overrides,
+        )
+
+    if map_pro_manifest is not None and projection["districts"] is not None:
+        projection["berlin_ops_map"] = build_berlin_ops_map_pro_projection(
+            projection["districts"],
+            property_upgrades=projection["property_upgrades"],
+            map_pro_manifest=map_pro_manifest,
         )
 
     if hall_manifest is not None:
