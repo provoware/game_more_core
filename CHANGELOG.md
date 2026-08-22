@@ -6,6 +6,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ### HTML-Blueprint-Auswertung
 
+- grafische Hierarchie des statischen Blueprints mit Control-Room-Orientierung, stärkerem Referenzrahmen, gerichteter Workflow-Linie, klarer Variantenstaffelung und ruhiger responsiver Anordnung verbessert; Reduced Motion, Tastaturfokus und der schreibgeschützte Modus bleiben erhalten.
 - statische, frameworkfreie HTML-Übertragung ergänzt: Die kanonische WebP-Grafik bleibt als unveränderte Pixelreferenz sichtbar, während Workflow und vier UI-Varianten aus dem bestehenden UI-Manifest auswertbar gerendert werden.
 - vollautomatische Standardbibliothek-Startroutine mit Dateivorprüfung, lokalem Server, Browseröffnung, verständlicher Statusausgabe und belegbarem Portfehler ergänzt.
 - kopierbarer Browser-Prüfbericht einschließlich Prüfung sichtbarer Pixelfläche, Tastaturfokus, Responsive Layout, Reduced Motion und High-Contrast-Fallback verbessern Diagnose und Zugänglichkeit; das aktuell überwiegend transparente WebP wird als eingeschränkt gemeldet und die Ansicht bleibt ausdrücklich ohne Domain-Schreibzugriff.

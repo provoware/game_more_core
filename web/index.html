@@ -11,15 +11,25 @@
 <body>
   <a class="skip-link" href="#workspace">Zum Inhalt</a>
   <header class="masthead">
-    <div>
+    <div class="masthead-copy">
       <p class="eyebrow">BUNKERFREQUENZ // HTML PIPELINE</p>
       <h1>BETON. BASS. BERLIN.</h1>
+      <p class="masthead-note">SYSTEMBLUEPRINT <span aria-hidden="true">/</span> LESEMODUS <span aria-hidden="true">/</span> KEIN SPIELSTAND-ZUGRIFF</p>
     </div>
-    <output id="system-status" class="status" role="status" aria-live="polite">PRÜFUNG LÄUFT</output>
+    <div class="signal-panel">
+      <span id="signal-label">SYSTEMSTATUS</span>
+      <output id="system-status" class="status" role="status" aria-labelledby="signal-label" aria-live="polite">PRÜFUNG LÄUFT</output>
+    </div>
   </header>
 
   <main id="workspace">
-    <section class="hero" aria-labelledby="reference-title">
+    <aside id="control-room" class="control-room" aria-label="Orientierung">
+      <p><strong>LESEWEG</strong> Folge den Sektoren 01 bis 04.</p>
+      <p><strong>MODUS</strong> Auswertung, keine Spielsteuerung.</p>
+      <p><strong>QUELLE</strong> Manifest + unveränderte Pixelreferenz.</p>
+    </aside>
+
+    <section class="hero sector" aria-labelledby="reference-title">
       <div class="section-heading">
         <div><p class="eyebrow">01 // ORIGINAL</p><h2 id="reference-title">PIXELREFERENZ</h2></div>
         <button id="toggle-reference" type="button" aria-pressed="false">REFERENZ VERGRÖSSERN</button>
@@ -31,7 +41,7 @@
       </figure>
     </section>
 
-    <section aria-labelledby="pipeline-title">
+    <section class="sector" aria-labelledby="pipeline-title">
       <div class="section-heading">
         <div><p class="eyebrow">02 // AUSWERTBAR</p><h2 id="pipeline-title">SPIELFLUSS</h2></div>
         <p class="legend"><span aria-hidden="true">■</span> Klartext + Form + Farbe</p>
@@ -39,14 +49,14 @@
       <ol id="workflow" class="workflow" aria-label="Ablauf"></ol>
     </section>
 
-    <section aria-labelledby="variants-title">
+    <section class="sector" aria-labelledby="variants-title">
       <div class="section-heading">
         <div><p class="eyebrow">03 // ANSICHTEN</p><h2 id="variants-title">VIER SYSTEME, EIN VERTRAG</h2></div>
       </div>
       <div id="variants" class="variant-grid"></div>
     </section>
 
-    <section class="diagnostics" aria-labelledby="debug-title">
+    <section class="diagnostics sector" aria-labelledby="debug-title">
       <div class="section-heading">
         <div><p class="eyebrow">04 // TRANSPARENT</p><h2 id="debug-title">DIAGNOSE</h2></div>
         <button id="copy-debug" type="button">PRÜFBERICHT KOPIEREN</button>

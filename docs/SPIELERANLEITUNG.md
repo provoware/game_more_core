@@ -14,7 +14,9 @@ Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Es gib
 
 Falls kein Browser aufgeht, kopiere die hinter `ADRESSE:` genannte Adresse in einen Browser. Für einen bewusst manuellen Start kann `python3 tools/start_web_blueprint.py --no-browser` verwendet werden. Meldet die Routine einen belegten Port, starte einmal mit `--port 0`; dann wird automatisch ein freier Port gewählt.
 
-**Was bedeutet die Ansicht?** **Pixelreferenz** zeigt die vorhandene Grafik unverändert. **Spielfluss** und **Ansichten** werden aus dem gültigen UI-Manifest aufgebaut. **Diagnose** zeigt getrennt, welche Dateien und Verträge geladen wurden. Mit **Prüfbericht kopieren** lassen sich die technischen Angaben weitergeben, ohne einen Spielstand offenzulegen.
+**Was bedeutet die Ansicht?** Der schmale Block **Leseweg** erklärt zuerst Reihenfolge, Modus und Datenquelle. Danach zeigen die nummerierten Sektoren **Pixelreferenz** die vorhandene Grafik unverändert, **Spielfluss** die fünf Schritte und **Ansichten** die vier Darstellungsvarianten aus dem gültigen UI-Manifest. **Diagnose** zeigt getrennt, welche Dateien und Verträge geladen wurden. Mit **Prüfbericht kopieren** lassen sich die technischen Angaben weitergeben, ohne einen Spielstand offenzulegen.
+
+**Einfache Sichtprüfung:** Lies zuerst nur die gelben Sektornummern von `01` bis `04`. Im Spielfluss zeigen gelbe Pfeile die Richtung. Ein roter Rand an **A4 Ops Deck** kennzeichnet die bevorzugte Einsteigeransicht. Wenn Text oder Grafik zu klein sind, vergrößere die Browseransicht mit `Strg` und `+`; die Blöcke ordnen sich auf schmalen Fenstern untereinander an.
 
 ## 1. Worum geht es?
 
