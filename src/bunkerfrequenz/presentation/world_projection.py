@@ -47,6 +47,9 @@ def build_world_projection(
         for item in locations_raw
         if isinstance(item, Mapping) and isinstance(item.get("location_id"), str)
     }
+    aliases = manifest.get("legacy_location_aliases", {})
+    if not isinstance(aliases, Mapping):
+        raise ValueError("WORLD_MANIFEST legacy_location_aliases ungültig")
 
     position = deepcopy(world.positions[character.character_id])
     city = cities.get(position["city_id"])
@@ -115,12 +118,19 @@ def build_world_projection(
     event = EventState.from_dict(state["event"]) if isinstance(state.get("event"), Mapping) else None
     party_check = deepcopy(world.party_checks.get(event.event_id)) if event is not None else None
     party_mode = world.party_modes.get(event.event_id, "official") if event is not None else None
+    event_location_id = None
+    event_location = None
+    if event is not None and event.location is not None:
+        raw_event_location_id = event.location.get("location_id")
+        if isinstance(raw_event_location_id, str):
+            event_location_id = str(aliases.get(raw_event_location_id, raw_event_location_id))
+            event_location = locations.get(event_location_id)
     party_eligible = bool(
         event is not None
         and event.phase == "live"
         and party_mode == "unofficial"
-        and current_location is not None
-        and current_location.get("party_risk_eligible")
+        and event_location is not None
+        and event_location.get("party_risk_eligible")
     )
     party_choices = [
         {
@@ -176,6 +186,7 @@ def build_world_projection(
         "mini_games": deepcopy(world.mini_games[character.character_id]),
         "party": {
             "mode": party_mode,
+            "event_location_id": event_location_id,
             "check": party_check,
             "eligible_to_check": party_eligible and party_check is None,
             "choices": party_choices if party_check and party_check.get("triggered") and not party_check.get("resolved") else [],
