@@ -35,6 +35,13 @@ class CityMapProjectionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_city_map_projection(self.manifest, district_metrics={"friedrichshain": {"heat": 101}})
 
+    def test_unknown_district_metric_override_fails_closed(self):
+        with self.assertRaises(ValueError):
+            build_city_map_projection(
+                self.manifest,
+                district_metrics={"friedrichshian": {"heat": 77}},
+            )
+
     def test_location_scores_and_tiers_are_deterministic(self):
         first = build_city_map_projection(self.manifest)
         second = build_city_map_projection(self.manifest)
@@ -46,9 +53,11 @@ class CityMapProjectionTests(unittest.TestCase):
             self.assertLessEqual(item["score"], 100)
             self.assertIn(item["tier"], {"legendary", "prime", "strong", "standard"})
 
-    def test_unknown_owned_property_fails_closed(self):
+    def test_unknown_or_non_purchasable_owned_property_fails_closed(self):
         with self.assertRaises(ValueError):
             build_city_map_projection(self.manifest, owned_property_ids={"does-not-exist"})
+        with self.assertRaises(ValueError):
+            build_city_map_projection(self.manifest, owned_property_ids={"hall_of_tribute"})
 
 
 if __name__ == "__main__":
