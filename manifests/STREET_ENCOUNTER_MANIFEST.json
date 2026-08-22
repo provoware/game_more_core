@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "version": "0.8.5-c1",
+  "selection": {
+    "method": "sha256_stable_weighted",
+    "weight_total": 100,
+    "system_time_as_seed": false
+  },
+  "policy": {
+    "neutral_weight": 25,
+    "positive_weight": 60,
+    "negative_weight": 15,
+    "positive_share_of_actual_encounters": 0.8,
+    "effects_are_small": true,
+    "inventory_changes": false,
+    "economy_changes": false
+  },
+  "encounters": [
+    {
+      "encounter_id": "street.none",
+      "polarity": "neutral",
+      "weight": 25,
+      "title_key": "street.none.title",
+      "body_key": "street.none.body",
+      "effects": {"energy_delta": 0, "stress_delta": 0, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.spaeti_water",
+      "polarity": "positive",
+      "weight": 10,
+      "title_key": "street.spaeti_water.title",
+      "body_key": "street.spaeti_water.body",
+      "effects": {"energy_delta": 4, "stress_delta": -2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.friendly_face",
+      "polarity": "positive",
+      "weight": 10,
+      "title_key": "street.friendly_face.title",
+      "body_key": "street.friendly_face.body",
+      "effects": {"energy_delta": 0, "stress_delta": -1, "reputation_delta": 2}
+    },
+    {
+      "encounter_id": "street.shortcut",
+      "polarity": "positive",
+      "weight": 10,
+      "title_key": "street.shortcut.title",
+      "body_key": "street.shortcut.body",
+      "effects": {"energy_delta": 3, "stress_delta": -1, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.crew_greeting",
+      "polarity": "positive",
+      "weight": 10,
+      "title_key": "street.crew_greeting.title",
+      "body_key": "street.crew_greeting.body",
+      "effects": {"energy_delta": 0, "stress_delta": -2, "reputation_delta": 1}
+    },
+    {
+      "encounter_id": "street.coffee_house",
+      "polarity": "positive",
+      "weight": 10,
+      "title_key": "street.coffee_house.title",
+      "body_key": "street.coffee_house.body",
+      "effects": {"energy_delta": 5, "stress_delta": 0, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.useful_find",
+      "polarity": "positive",
+      "weight": 10,
+      "title_key": "street.useful_find.title",
+      "body_key": "street.useful_find.body",
+      "effects": {"energy_delta": 1, "stress_delta": -1, "reputation_delta": 1}
+    },
+    {
+      "encounter_id": "street.puddle",
+      "polarity": "negative",
+      "weight": 5,
+      "title_key": "street.puddle.title",
+      "body_key": "street.puddle.body",
+      "effects": {"energy_delta": -1, "stress_delta": 2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.bike_splash",
+      "polarity": "negative",
+      "weight": 5,
+      "title_key": "street.bike_splash.title",
+      "body_key": "street.bike_splash.body",
+      "effects": {"energy_delta": -1, "stress_delta": 2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.sudden_rain",
+      "polarity": "negative",
+      "weight": 5,
+      "title_key": "street.sudden_rain.title",
+      "body_key": "street.sudden_rain.body",
+      "effects": {"energy_delta": -2, "stress_delta": 2, "reputation_delta": 0}
+    }
+  ]
+}
