@@ -21,6 +21,8 @@
   "canonical_status": "PROJEKTSTATUS.json",
   "canonical_todo": "TODO.md",
   "canonical_changelog": "CHANGELOG.md",
+  "game_description_nontechnical": "docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md",
+  "game_description_technical": "docs/SPIELBESCHREIBUNG_TECHNISCH.md",
   "player_guide": "docs/SPIELERANLEITUNG.md",
   "repository_index": "docs/REPOSITORY_INDEX.md",
   "repository_rules": "docs/REPOSITORY_RULES.md",

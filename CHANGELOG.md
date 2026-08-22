@@ -4,6 +4,12 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Spielbeschreibung und Entwicklerübergabe
+
+- eine ausführliche fachliche Spielbeschreibung ohne technische Vorkenntnisse ergänzt; sie erklärt Vision, Spielerrolle, Charakterentwicklung, Eventphasen, Economy, Folgen, Bedienvision und den klar abgegrenzten Produktstand.
+- eine getrennte technische Spielbeschreibung ergänzt; sie dokumentiert Architektur, Zustandsblöcke, Command-/Ereignisfluss, Persistenz, Recovery, Invarianten, Testarchitektur und sichere Erweiterungspunkte.
+- README, Repository-Index und Spieleranleitung um zielgruppengerechte Lesewege erweitert, ohne Runtime, Verträge oder Versionsbaseline zu verändern.
+
 ### 0.8.2 – Equipment & Economy
 
 - getrennten Equipment-Katalog und Inventarbesitz mit validierten Reservierungen als neuen Economy-State ergänzt.

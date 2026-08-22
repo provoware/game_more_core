@@ -172,3 +172,14 @@ Diese Systeme werden auf dem jetzt getesteten Character-, Persistence- und Prese
 Starte die HTML-Ansicht mit dem Befehl aus Abschnitt 0, prüfe den Leseweg und kopiere bei einem Problem den Prüfbericht. Erwarte dort noch keine speicherbare Eventplanung: So lässt sich der Prototyp testen, ohne ihn mit dem späteren Spiel zu verwechseln.
 
 Die nächste Stufe ist **0.8.3 – vollständiger Event-Loop**. Bis zu ihrer Abnahme bleiben Client-, Netzwerk- und Clubentwicklung bewusst ausgesetzt.
+
+## 12. Welche Beschreibung hilft mir weiter?
+
+Wähle nach deiner Frage, nicht nach deinem Vorwissen:
+
+- **Ich möchte Spielwelt, Ziele und Systeme vollständig verstehen:** Lies die [`Spielbeschreibung ohne Technik`](SPIELBESCHREIBUNG_OHNE_TECHNIK.md).
+- **Ich möchte den vorhandenen Prototyp jetzt starten:** Bleibe in dieser Anleitung und beginne mit Abschnitt 0.
+- **Ich möchte das Spiel programmieren oder anbinden:** Nutze die [`technische Spielbeschreibung`](SPIELBESCHREIBUNG_TECHNISCH.md).
+- **Ich möchte wissen, was als Nächstes wirklich gebaut wird:** Öffne [`../TODO.md`](../TODO.md).
+
+So bleibt klar getrennt, was die vollständige Spielvision beschreibt, was heute bereits bedienbar ist und was erst in einer späteren Entwicklungsstufe folgt.
