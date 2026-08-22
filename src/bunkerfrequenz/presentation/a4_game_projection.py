@@ -9,6 +9,7 @@ from bunkerfrequenz.domain.economy import EconomyState
 from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.incident import IncidentState
 from bunkerfrequenz.domain.settlement import SettlementState
+from bunkerfrequenz.presentation.world_projection import build_world_projection
 
 
 def _incident_catalog_projection(catalog: Mapping[str, Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -37,25 +38,29 @@ def build_a4_game_projection(
     state: Mapping[str, Any] | None,
     *,
     incident_catalog: Mapping[str, Mapping[str, Any]],
+    world_manifest: Mapping[str, Any] | None = None,
+    world_texts: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build a read-only A4 game projection from confirmed state blocks.
 
-    Event button availability delegates to EventExecutionService. This module
-    never changes state and never re-implements transition/prerequisite rules.
+    Event button availability delegates to EventExecutionService. Living-City
+    values delegate to world_projection. This module never changes state and
+    never re-implements transition, economy or world write rules.
     """
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.5-b1",
+        "view_model_version": "0.8.5-d1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
-            for key in ("character", "event", "economy", "incidents", "settlement")
+            for key in ("character", "event", "economy", "incidents", "settlement", "world")
         },
         "character": None,
         "event": None,
         "economy": None,
         "incidents": None,
         "settlement": None,
+        "world": None,
         "incident_catalog": _incident_catalog_projection(incident_catalog),
     }
 
@@ -132,5 +137,14 @@ def build_a4_game_projection(
     if "settlement" in raw:
         settlement = SettlementState.from_dict(raw["settlement"])
         projection["settlement"] = settlement.to_dict()
+
+    if world_manifest is not None or world_texts is not None:
+        if world_manifest is None or world_texts is None:
+            raise ValueError("world_manifest und world_texts müssen gemeinsam gesetzt werden")
+        projection["world"] = build_world_projection(
+            raw,
+            manifest=world_manifest,
+            texts=world_texts,
+        )
 
     return projection
