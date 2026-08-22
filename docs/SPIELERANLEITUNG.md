@@ -155,6 +155,8 @@ Die Spiellogik für **0.8.2 – Equipment & Economy** arbeitet jetzt wie eine ge
 
 Der aktuelle HTML-Blueprint kann diese Schritte noch nicht auslösen. Die Regeln sind im Spielkern prüfbar; die Bedienoberfläche folgt bewusst erst nach dem vollständigen Event-Loop.
 
+**Was bedeutet „lokal geprüft“?** Die automatischen Prüfungen für Spiellogik, Darstellung und Repository-Zustand laufen auf dem Entwicklungsstand fehlerfrei. Das ist noch keine Freigabe: Erst dieselben drei grünen Prüfungen auf dem exakten Pull-Request-Stand bestätigen 0.8.2 für die nächste Ausbaustufe.
+
 ## 10. Was kann man noch nicht normal spielen?
 
 Noch offen sind insbesondere:

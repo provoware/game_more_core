@@ -8,8 +8,8 @@
 - **0.8.1-Remote-Abnahme:** Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` grün
 - **Aktive Iteration:** `0.8.2 – Equipment & Economy`
 - **0.8.1-Abschluss:** PR #48 gemergt als `9ed0dbd8928014777fa4b100a7c65ba4c30ca04e`
-- **Fortschritt zum ersten spielbaren Alpha-Release:** `78 %` (Planungswert; Remote-Gate und Release-Gate noch nicht erfüllt)
-- **Aktueller Release-Blocker:** 0.8.2-Remote-Abnahme, vollständiger 0.8.3-Event-Loop und danach ein verbundener Client
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `80 %` (Planungswert; 0.8.2 lokal geprüft, Remote-Gate und Release-Gate noch nicht erfüllt)
+- **Aktueller Release-Blocker:** 0.8.2-Remote-Abnahme auf dem exakten PR-Head, vollständiger 0.8.3-Event-Loop und danach ein verbundener Client
 
 ## Release-Ziel und Abnahme
 
@@ -185,7 +185,8 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 - [x] Kompensationsregeln für reversible Economy-Transaktionen konkretisieren
 - [x] Event-Equipment-Anforderungen gegen bestätigten Besitz/Reservierung auflösen
 - [x] Save/Recovery/Idempotenz für Economy und Inventar testen
-- [ ] gesamten Economy-Vertical-Slice auf demselben Head lokal und mit allen drei Remote-Gates abnehmen
+- [x] gesamten Economy-Vertical-Slice mit den lokalen Entsprechungen von Runtime Core, Presentation Core und Repository Health gemeinsam abnehmen
+- [ ] denselben Economy-Vertical-Slice auf dem exakten PR-Head mit `runtime-core`, `presentation-core` und `repository-health` remote abnehmen
 
 ### 0.8.3 – Vollständiger Event-Loop
 
@@ -222,7 +223,7 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 - [ ] Recovery-Berichte um eine maschinenlesbare Fehlerkategorie ergänzen, damit eine spätere Oberfläche beschädigtes JSON, fehlende Felder und falsche Datentypen verständlich unterscheiden kann, ohne Fehlermeldungstext auszuwerten.
 - [ ] Recovery-Receipt um die Anzahl übersprungener Snapshot-Kandidaten ergänzen, damit Support und spätere Oberfläche einen erfolgreichen Rückfall auf einen älteren Checkpoint sichtbar machen können, ohne ungültige Inhalte offenzulegen.
 - [ ] Einen geführten Fünf-Minuten-First-Run mit anonymem lokalem Abschlussbeleg ergänzen; Nutzen: Der Release kann nicht nur technisch starten, sondern wird auch ohne Vorwissen überprüfbar verstanden.
-- [ ] Einen maschinenlesbaren Economy-Replay-Abnahmebeleg mit festem Seed definieren; Nutzen: Katalog, Besitz, Reservierung, Transaktion und Recovery bleiben bei späteren Erweiterungen als zusammenhängender Slice nachweisbar.
+- [ ] `reports/ECONOMY_REPLAY_VALIDATION_0.8.2.json` mit festem Seed, geprüftem Head-SHA sowie Kauf-, Reservierungs-, Budget- und Recovery-Receipt erzeugen und den Erzeugungsbefehl dokumentieren; Nutzen: Der Economy-Slice bleibt bei späteren Releases reproduzierbar und maschinenlesbar nachweisbar.
 - [ ] Nach 0.8.3 Lieferzeit und Verfügbarkeit je Anbieter datengetrieben ergänzen; Nutzen: Beschaffung erhält echte Zeit-/Preisentscheidungen, ohne den bestätigten Economy-Kern zu verdoppeln.
 - [ ] Repository Health um einen Abschlussabgleich zwischen gemergten Meilensteinen in `PROJEKTSTATUS.json`, `TODO.md` und `README.md` erweitern; Nutzen: bereits erledigte Freigabeschritte blockieren die Folgeiteration nicht erneut und Statuspflege verursacht weniger Nacharbeit.
 - [ ] Nach Abnahme von 0.8.3 beide Gesamtbeschreibungen mit einem gemeinsamen, versionierten Spielszenario `Planung → Beschaffung → Krise → Abrechnung` ergänzen; Nutzen: Fachdesign, Cliententwicklung und QA erhalten dieselbe prüfbare Referenz, ohne geplantes Verhalten vorzeitig als fertig zu dokumentieren.

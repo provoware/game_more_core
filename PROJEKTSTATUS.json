@@ -3,8 +3,8 @@
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
   "active_iteration": "0.8.2",
-  "status": "0_8_2_equipment_economy_implemented_local_validation_pending",
-  "current_focus": "0_8_2_local_and_remote_vertical_slice_validation",
+  "status": "0_8_2_equipment_economy_locally_validated_remote_validation_pending",
+  "current_focus": "0_8_2_remote_vertical_slice_validation",
   "last_validated_feature_iteration": "0.8.1",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "PR #48 / head 79cc26bec0a780322874ea6f3ced458e8ee72bd6 / merge 9ed0dbd8928014777fa4b100a7c65ba4c30ca04e",
@@ -198,7 +198,7 @@
     "inventory_ownership_implemented": false
   },
   "equipment_economy": {
-    "status": "implemented_local_validation_pending",
+    "status": "locally_validated_remote_validation_pending",
     "iteration": "0.8.2",
     "state_block": "economy",
     "domain_module": "src/bunkerfrequenz/domain/economy.py",
@@ -212,6 +212,15 @@
     "reservation_drives_event_readiness": true,
     "compensation_preconditions": true,
     "combined_economy_event_recovery": true,
+    "local_validation": {
+      "status": "success",
+      "validated_at": "2026-08-22",
+      "gates": [
+        "runtime-core",
+        "presentation-core",
+        "repository-health"
+      ]
+    },
     "client_changes": false,
     "network_changes": false,
     "club_changes": false,
