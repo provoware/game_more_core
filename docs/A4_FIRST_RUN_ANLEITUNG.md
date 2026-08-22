@@ -4,25 +4,53 @@ Diese Anleitung gilt für den **lokalen schreibenden A4-Alpha-Client**. Sie ver�
 
 ## 1. A4 starten
 
+### Am einfachsten: Klick-/Direktstart
+
+Im Projektordner gibt es jetzt:
+
+```text
+START_BUNKERFREQUENZ.sh
+```
+
+Unter Ubuntu/Kubuntu kannst du diese ausführbare Datei direkt starten. Falls der Dateimanager fragt, wähle **Ausführen**.
+
+### Alternativ im Terminal
+
 Öffne ein Terminal im Projektordner und gib ein:
+
+```bash
+./START_BUNKERFREQUENZ.sh
+```
+
+oder direkt:
 
 ```bash
 python3 tools/start_a4_game_client.py
 ```
 
-Danach öffnet sich der Browser. Im Terminal muss `STATUS: BEREIT` stehen.
+Danach öffnet sich normalerweise der Browser. Im Terminal muss `STATUS: BEREIT` stehen.
 
 Falls der Standard-Port belegt ist:
 
 ```bash
-python3 tools/start_a4_game_client.py --port 0
+./START_BUNKERFREQUENZ.sh --port 0
 ```
+
+`--port 0` bedeutet: Das Programm sucht automatisch einen freien lokalen Port.
 
 Für einen komplett getrennten Test-Spielstand:
 
 ```bash
-python3 tools/start_a4_game_client.py --port 0 --save-dir /tmp/bunkerfrequenz-a4-test
+./START_BUNKERFREQUENZ.sh --port 0 --save-dir /tmp/bunkerfrequenz-a4-test
 ```
+
+Wenn du den Browser bewusst selbst öffnen möchtest:
+
+```bash
+./START_BUNKERFREQUENZ.sh --port 0 --no-browser
+```
+
+Kopiere danach die hinter `ADRESSE:` angezeigte lokale Adresse in Firefox oder Chrome.
 
 Beenden: im Terminal `Strg+C` drücken.
 
@@ -93,9 +121,51 @@ Mit **CHECKPOINT SPEICHERN** legst du zusätzlich einen Snapshot an. Dieser Snap
 
 Wenn Journal und aktueller State nicht zusammenpassen, versucht A4 beim Start die vorhandene Recovery-Funktion. Dabei wird kein neuer Spielverlauf erfunden: Wiederhergestellt wird ausschließlich aus gültigem Snapshot und Journal.
 
+Auch der Fall **„aktueller State fehlt, gültiger Snapshot und Journal sind aber vorhanden“** ist regressionsgetestet. Der Start darf diesen Zustand nicht fälschlich als gesund behandeln, sondern muss den bestätigten State wiederherstellen.
+
 Wenn sichere Recovery nicht möglich ist, bricht der Start mit einer verständlichen Fehlermeldung ab. Lösche dann **keine** Journal-, State- oder Snapshot-Dateien von Hand.
 
-## 9. Wo liegt der Spielstand?
+## 9. Verständliche Startfehler
+
+### Port ist schon belegt
+
+Beispiel:
+
+```text
+START FEHLGESCHLAGEN – Port 8044 ist belegt; nutze --port 0 für automatische freie Portwahl
+```
+
+Lösung:
+
+```bash
+./START_BUNKERFREQUENZ.sh --port 0
+```
+
+### Spielstandordner kann nicht beschrieben werden
+
+Beispiel:
+
+```text
+START FEHLGESCHLAGEN – Spielstandordner ist nicht beschreibbar: ...
+```
+
+Wähle einen Ordner, in dem dein Benutzer schreiben darf, zum Beispiel:
+
+```bash
+./START_BUNKERFREQUENZ.sh --save-dir "$HOME/BUNKERFREQUENZ-SAVE"
+```
+
+### Eine erforderliche Programmdatei fehlt
+
+Der Start nennt die fehlende Datei hinter:
+
+```text
+START FEHLGESCHLAGEN – fehlt: ...
+```
+
+In diesem Fall nicht einzelne Dateien aus verschiedenen Versionen zusammenkopieren. Nutze einen vollständigen Checkout bzw. später das vollständige Release-Paket.
+
+## 10. Wo liegt der Spielstand?
 
 Standardmäßig unter:
 
@@ -105,15 +175,14 @@ Standardmäßig unter:
 
 Mit `--save-dir` kannst du für Tests einen anderen Ordner verwenden.
 
-## 10. Was dieser Alpha-Client noch nicht ist
+## 11. Was dieser Alpha-Client noch nicht ist
 
 Noch nicht enthalten sind unter anderem:
 
-- fertiger Release-/Installer-Klickstart,
+- final versioniertes Release-Paket/Installer,
 - Berlin-Kartenrenderer als Hauptspielansicht,
 - Immobilienkauf/-ausbau,
 - persistente Bezirksdynamik,
-- Netzwerk-/Telegram-Sync,
-- finales Release-Artefakt.
+- Netzwerk-/Telegram-Sync.
 
-Diese Punkte werden **nicht** vorgetäuscht. Der aktuelle A4-Schritt dient zuerst dazu, den bereits validierten fachlichen Loop wirklich bedienbar und nach Neustart reproduzierbar zu machen.
+Der **Klick-/Direktstart selbst ist jetzt vorhanden und wird in der Release-Abnahme aus einem frischen Checkout als echter Prozess getestet**. Erst wenn diese Release-Abnahme vollständig grün ist, werden Produktversion und reproduzierbares Release-Artefakt festgelegt.
