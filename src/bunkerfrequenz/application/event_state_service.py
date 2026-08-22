@@ -105,6 +105,9 @@ class EventStateService:
             raise ValueError(f"Nicht editierbare Eventfelder: {', '.join(sorted(unknown))}")
         if not changes:
             raise ValueError("Event-Planungsupdate benötigt mindestens eine Änderung")
+        current_state = self.persistence.load_state() or {}
+        if "budget_cents" in changes and "economy" in current_state:
+            raise ValueError("Budget darf nach Economy-Start nur durch bestätigte Transaktionen geändert werden")
 
         existing_record = self._existing_record(context)
         if existing_record is not None:

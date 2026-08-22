@@ -5,9 +5,9 @@
 Dieser Index beantwortet: **Wo liegt was und welche Datei ist zuständig?**
 
 - Runtime-Baseline: `0.5.2-alpha.1`
-- zuletzt validierte Feature-Iteration: `0.7.2 – kompletter Character-Forge-Vertical-Slice`
-- aktive Feature-Iteration: `0.8.1 – Event State Foundation`
-- nächster Feature-Schritt: `0.8.2 – Equipment & Economy`
+- zuletzt remote validierte Feature-Iteration: `0.8.1 – Event State Foundation`
+- lokal implementierte, remote noch offene Iteration: `0.8.2 – Equipment & Economy`
+- nächster Feature-Schritt nach Remote-Abnahme: `0.8.3 – vollständiger Event-Loop`
 - Repository-Sicherheit: `/safe-merge` + Main Integrity End-to-End validiert
 
 Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben Iteration angepasst.
@@ -30,10 +30,10 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 |---|---|---|
 | `.github/workflows/` | stabile Remote-CI-/Merge-/Integritäts-Gates | `runtime-core.yml`, `presentation-core.yml`, `repository-health.yml`, `safe-merge.yml`, `main-integrity.yml` |
 | `content/` | lokalisierte sichtbare Inhalte | `content/de/` |
-| `docs/` | Spieleranleitung, Fachverträge, Erklärungen und Navigation | `SPIELERANLEITUNG.md`, `EVENT_STATE_0.8.1.md`, `GAME_SCHEMA.md` |
-| `manifests/` | kanonische Kataloge und maschinenlesbare Regeln | `EVENT_STATE_MANIFEST.json`, `ARCHITEKTUR_MANIFEST.json` |
+| `docs/` | Spieleranleitung, Fachverträge, Erklärungen und Navigation | `SPIELERANLEITUNG.md`, `ECONOMY_0.8.2.md`, `EVENT_STATE_0.8.1.md` |
+| `manifests/` | kanonische Kataloge und maschinenlesbare Regeln | `ECONOMY_MANIFEST.json`, `EVENT_STATE_MANIFEST.json` |
 | `reports/` | reproduzierbare Prüfnachweise | `RUNTIME_VALIDATION_0.5.2.json` |
-| `schemas/` | JSON-Strukturverträge | `event_state.schema.json`, `character_state.schema.json` |
+| `schemas/` | JSON-Strukturverträge | `economy_state.schema.json`, `event_state.schema.json` |
 | `src/` | headless Spielkern und Presentation | `src/bunkerfrequenz/` |
 | `tests/` | Vertrags-, Runtime-, Simulation-, Presentation- und Repository-Tests | Unterordner nach Bereich |
 | `tools/` | kleine ausführbare Entwicklerwerkzeuge | `validate_action_contract.py`, `repository_health.py`, `github_merge_guard.py`, `github_merge_guard_retry.py` |
@@ -45,6 +45,7 @@ Bei neuen oder entfernten öffentlichen Bereichen wird dieser Index in derselben
 |---|---|
 | `docs/SPIELERANLEITUNG.md` | laienfreundlicher Spielablauf, Energie/Stress, Progression, Autosave, Undo und aktuelle Grenzen |
 | `docs/EVENT_STATE_0.8.1.md` | EventState, Phasenmaschine, Safety-Gate, Journal, Blockkoexistenz und 0.8.2/0.8.3-Grenze |
+| `docs/ECONOMY_0.8.2.md` | Katalog, Besitz, Reservierung, Preise, Transaktionen, Kompensation und Recovery |
 | `docs/GAME_SCHEMA.md` | Gesamtbild von Spiel, Daten und Ereignisfluss |
 | `docs/REPOSITORY_RULES.md` | Ablage, Informationshierarchie und PR-Lebenszyklus |
 | `docs/REPOSITORY_GUARD.md` | Merge-Guard, Repository Health, `/safe-merge`, Main Integrity und Zielpolicy für `main` |

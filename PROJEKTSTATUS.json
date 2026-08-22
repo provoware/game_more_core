@@ -3,8 +3,8 @@
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
   "active_iteration": "0.8.2",
-  "status": "0_8_1_event_state_foundation_merged_0_8_2_planned",
-  "current_focus": "0_8_2_equipment_economy_vertical_slice",
+  "status": "0_8_2_equipment_economy_implemented_local_validation_pending",
+  "current_focus": "0_8_2_local_and_remote_vertical_slice_validation",
   "last_validated_feature_iteration": "0.8.1",
   "last_validated_release": "0.5.2-alpha.1",
   "validation_reference": "PR #48 / head 79cc26bec0a780322874ea6f3ced458e8ee72bd6 / merge 9ed0dbd8928014777fa4b100a7c65ba4c30ca04e",
@@ -197,6 +197,26 @@
     "economy_ledger_implemented": false,
     "inventory_ownership_implemented": false
   },
+  "equipment_economy": {
+    "status": "implemented_local_validation_pending",
+    "iteration": "0.8.2",
+    "state_block": "economy",
+    "domain_module": "src/bunkerfrequenz/domain/economy.py",
+    "application_service": "src/bunkerfrequenz/application/economy_service.py",
+    "manifest": "manifests/ECONOMY_MANIFEST.json",
+    "schema": "schemas/economy_state.schema.json",
+    "contract": "docs/ECONOMY_0.8.2.md",
+    "catalog_inventory_separated": true,
+    "deterministic_market_prices": true,
+    "confirmed_transaction_budget_changes": true,
+    "reservation_drives_event_readiness": true,
+    "compensation_preconditions": true,
+    "combined_economy_event_recovery": true,
+    "client_changes": false,
+    "network_changes": false,
+    "club_changes": false,
+    "remote_validation_pending": true
+  },
   "repository_repair": {
     "status": "recovered_and_remote_validated",
     "repair_pull_request": 33,
@@ -266,10 +286,10 @@
     ]
   },
   "next_iteration": "0.8.2",
-  "next_goal": "Equipment-Katalog, Inventarbesitz und dynamische Economy über bestätigte Inventory-/Economy-Events an den validierten EventState anbinden.",
+  "next_goal": "0.8.2 auf einem Head lokal und mit allen drei Remote-Gates abnehmen; vor diesem Nachweis keine 0.8.3-, Client-, Netzwerk- oder Clubarbeit beginnen.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-22T03:10:00+02:00"
+  "updated_at": "2026-08-22T12:00:00+00:00"
 }

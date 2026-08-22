@@ -144,20 +144,31 @@ Der validierte Implementierungsstand von PR #41 bestand auf Head `5f7ded400a5fca
 - Presentation Core `32533954387` ✅
 - Repository Health `32533954406` ✅
 
-## 9. Was kann man noch nicht normal spielen?
+## 9. Equipment und Budget einfach verstehen
+
+Die Spiellogik für **0.8.2 – Equipment & Economy** arbeitet jetzt wie eine gemeinsame Kasse mit Lagerliste:
+
+1. **Kaufen:** Das Equipment kommt ins Lager, und erst die bestätigte Buchung zieht Geld vom Event-Budget ab.
+2. **Reservieren:** Besitz allein reicht nicht. Equipment muss für das Event zurückgelegt sein, bevor die Anforderung als bereit gilt.
+3. **Verbrauchen oder verkaufen:** Nur nicht reservierte Mengen können das Lager verlassen.
+4. **Wiederherstellen:** Nach einem Abbruch werden Lager, Buchungen, Budget und Bereitschaft gemeinsam aus dem Journal aufgebaut.
+
+Der aktuelle HTML-Blueprint kann diese Schritte noch nicht auslösen. Die Regeln sind im Spielkern prüfbar; die Bedienoberfläche folgt bewusst erst nach dem vollständigen Event-Loop.
+
+## 10. Was kann man noch nicht normal spielen?
 
 Noch offen sind insbesondere:
 
 - ein fertiger, mit der Runtime verbundener Desktop-/Web-/Game-Engine-Client (der HTML-Blueprint ist nur eine schreibgeschützte Designauswertung),
-- vollständige Event- und Wirtschaftssimulation,
-- dynamischer Equipmentmarkt,
+- vollständiger Event-Ablauf von Planung bis Abrechnung,
+- bedienbarer Equipmentmarkt im Client,
 - kompletter Clubbetrieb,
 - Telegram-/Server-Synchronisation.
 
 Diese Systeme werden auf dem jetzt getesteten Character-, Persistence- und Presentation-Kern aufgebaut.
 
-## 10. Was kann ich jetzt sinnvoll prüfen?
+## 11. Was kann ich jetzt sinnvoll prüfen?
 
 Starte die HTML-Ansicht mit dem Befehl aus Abschnitt 0, prüfe den Leseweg und kopiere bei einem Problem den Prüfbericht. Erwarte dort noch keine speicherbare Eventplanung: So lässt sich der Prototyp testen, ohne ihn mit dem späteren Spiel zu verwechseln.
 
-Als nächste Stufe wird **0.8.2 – Equipment & Economy** umgesetzt. Katalog, Besitz, Reservierung, Transaktion und Recovery werden dabei gemeinsam geprüft, damit kein unfertiges Teilsystem als spielbereit erscheint.
+Die nächste Stufe ist **0.8.3 – vollständiger Event-Loop**. Bis zu ihrer Abnahme bleiben Client-, Netzwerk- und Clubentwicklung bewusst ausgesetzt.

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.1-alpha.1",
+  "version": "0.8.2-alpha.1",
   "append_only": true,
   "canonical_order_key": [
     "sequence",
@@ -58,6 +58,7 @@
     "mission.failed",
     "inventory.item_acquired",
     "inventory.item_removed",
+    "economy.catalog_initialized",
     "economy.transaction_posted",
     "economy.transaction_compensated",
     "club.created",
