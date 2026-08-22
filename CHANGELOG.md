@@ -21,6 +21,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Main-Integrity-Incident #40 zum direkten `fb96a489...`-Commit analysiert und geschlossen: Guard reagierte korrekt auf fehlende PR-Provenienz; der betroffene AGENTS-Inhalt wurde in PR #41 erneut dreifach grün validiert.
 
 ### Behoben
+- Journal-Recovery weist strukturell ungültige JSON-Datensätze kontrolliert zurück und quarantänisiert den vollständigen ungültigen Rest, statt interne Python-Fehler weiterzugeben.
 - `/safe-merge` behandelt GitHubs verzögerte Commit→PR-Zuordnung robust: Der Merge wird exakt einmal ausgeführt; nur die nachgelagerte Provenienz-Leseprüfung wird begrenzt nach `0/1/2/4/8` Sekunden wiederholt.
 - Der erste echte `/safe-merge`-Smoke-Test PR #36 wurde korrekt gemergt, meldete wegen GitHub-Eventual-Consistency aber zunächst fälschlich `SAFE MERGE BLOCKED`; PR #37 trennt jetzt sauber Vor-Merge-Blockade von bereits geschriebenem Merge mit noch nicht bestätigter Nachprüfung.
 - Der versehentliche Merge von PR #32 aus einem alten `0.6.4`-Branch wurde vollständig aus dem Repository-Baum zurückgenommen; wiederhergestellt wurde der letzte grüne Stand nach PR #31 (`888be18146197272578f4baa5516f78a894d9464`).

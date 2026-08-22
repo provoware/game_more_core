@@ -89,6 +89,8 @@ Der Schutz besteht aus:
 - Recovery aus dem letzten gültigen Stand,
 - Quarantäne eines beschädigten Journal-Endes.
 
+Enthält eine Journalzeile keinen vollständigen Datensatz oder falsche Datentypen, wird sie nicht teilweise übernommen. Die Wiederherstellung legt diese Zeile und den gesamten folgenden Rest getrennt in Quarantäne ab und arbeitet nur mit den davor bestätigten Einträgen weiter.
+
 Der 60-Sekunden-Autosave bedeutet also **nicht**, dass eine ausgeführte Action bis zu 60 Sekunden ungespeichert bleibt. Er ist ein zusätzlicher Recovery-Checkpoint.
 
 ## 7. Undo – was kann rückgängig gemacht werden?

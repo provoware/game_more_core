@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -92,6 +93,35 @@ class RecoveryTest(unittest.TestCase):
             self.assertTrue((Path(tmp) / "recovery" / "RECOVERY_RECEIPT.json").exists())
             reopened = PersistenceKernel(tmp, ALLOWED)
             self.assertIsNotNone(reopened.load_state())
+
+    def test_invalid_record_shapes_are_quarantined_for_recovery(self):
+        invalid_records = {
+            "JSON-Liste": [],
+            "fehlendes Pflichtfeld": {"sequence": 1},
+            "nichtnumerische Sequenz": {
+                "sequence": "2", "event_id": "bad-sequence", "event_type": "character.profile_updated",
+                "previous_event_hash": "GENESIS", "event_hash": "hash", "payload": {},
+            },
+            "Payload mit falschem Typ": {
+                "sequence": 2, "event_id": "bad-payload", "event_type": "character.profile_updated",
+                "previous_event_hash": "GENESIS", "event_hash": "hash", "payload": [],
+            },
+        }
+        for label, invalid_record in invalid_records.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as tmp:
+                kernel = PersistenceKernel(tmp, ALLOWED)
+                kernel.initialize_state({"character": CharacterState("c-r", "R").to_dict()})
+                invalid_tail = (json.dumps(invalid_record) + "\n" + '{"ungeprüfter_rest": true}\n').encode("utf-8")
+                with kernel.journal_path.open("ab") as handle:
+                    handle.write(invalid_tail)
+
+                with self.assertRaisesRegex(PersistenceError, "Journal-Datensatz ungültig in Zeile 1"):
+                    PersistenceKernel(tmp, ALLOWED)
+                recovering = PersistenceKernel.open_for_recovery(tmp, ALLOWED)
+                receipt = CharacterRecoveryService(recovering).recover(context=CTX)
+
+                self.assertIsNotNone(receipt.quarantined_path)
+                self.assertEqual((Path(tmp) / receipt.quarantined_path).read_bytes(), invalid_tail)
 
     def test_snapshot_plus_journal_replay_recovers_corrupt_state(self):
         with tempfile.TemporaryDirectory() as tmp:
