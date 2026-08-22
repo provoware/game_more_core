@@ -3,10 +3,10 @@
   "canonical_name": "BUNKERFREQUENZ",
   "repository": "provoware/game_more_core",
   "lineage_id": "e59052dd-e910-4405-9a06-1db621d818e7",
-  "version": "0.5.2-alpha.1",
-  "release_baseline": "0.5.2-alpha.1",
+  "version": "0.8.4-alpha.1",
+  "release_baseline": "0.8.4-alpha.1",
   "active_development_phase": "0.8",
-  "active_iteration": "0.8.3",
+  "active_iteration": "0.8.4",
   "design_direction": "industrial_brutalist_variant_a",
   "architecture_layers": ["domain", "application", "infrastructure", "presentation", "content"],
   "runtime_code_present": true,
@@ -69,6 +69,8 @@
     "runtime": ".github/workflows/runtime-core.yml",
     "presentation": ".github/workflows/presentation-core.yml",
     "repository_health": ".github/workflows/repository-health.yml",
+    "release_acceptance": ".github/workflows/release-acceptance.yml",
+    "release_package": ".github/workflows/release-package.yml",
     "safe_merge": ".github/workflows/safe-merge.yml",
     "main_integrity": ".github/workflows/main-integrity.yml"
   }
