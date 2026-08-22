@@ -6,7 +6,7 @@
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
   "active_development_phase": "0.8",
-  "active_iteration": "0.8.2",
+  "active_iteration": "0.8.3",
   "design_direction": "industrial_brutalist_variant_a",
   "architecture_layers": [
     "domain",
@@ -44,6 +44,8 @@
   "event_state_contract": "docs/EVENT_STATE_0.8.1.md",
   "event_state_manifest": "manifests/EVENT_STATE_MANIFEST.json",
   "event_state_schema": "schemas/event_state.schema.json",
+  "event_action_manifest": "manifests/EVENT_ACTION_MANIFEST.json",
+  "event_execution_service": "src/bunkerfrequenz/application/event_execution_service.py",
   "ui_ux_blueprint": "docs/UI_UX_BLUEPRINT.md",
   "presentation_contract": "docs/PRESENTATION_CONTRACT_0.6.md",
   "design_reference_asset": "docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp",
