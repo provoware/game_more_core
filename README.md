@@ -9,8 +9,8 @@
 <p>
   <img alt="Runtime Baseline 0.5.2 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.5.2--alpha.1-ff4d00">
   <img alt="Character Forge 0.7.2 validiert" src="https://img.shields.io/badge/Character_Forge-0.7.2_validiert-7dff00">
-  <img alt="Event State 0.8.1 remote validiert" src="https://img.shields.io/badge/Event_State-0.8.1_remote_validiert-f2c744">
-  <img alt="Runtime Python Standardbibliothek" src="https://img.shields.io/badge/Runtime-Python_Standardbibliothek-00c2ff">
+  <img alt="Economy 0.8.2 remote validiert" src="https://img.shields.io/badge/Economy-0.8.2_remote_validiert-f2c744">
+  <img alt="Event Loop 0.8.3 A in Abnahme" src="https://img.shields.io/badge/Event_Loop-0.8.3--A_in_Abnahme-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -28,13 +28,13 @@
 | | Aktueller Stand |
 |---|---|
 | **Runtime-Baseline** | `0.5.2-alpha.1` |
-| **Letzte remote validierte Feature-Stufe** | `0.8.1 – Event State Foundation` |
-| **0.8.1-Abnahme** | PR #48 · Head `79cc26bec0a7...` · Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` grün |
-| **Aktive Iteration** | `0.8.2 – Equipment & Economy` |
-| **0.8.1-Abschluss** | PR #48 · Merge `9ed0dbd89280...` |
-| **Weg zum ersten spielbaren Release** | `0.8.2 Economy → 0.8.3 Event-Loop → Release-Kandidat` |
+| **Letzte remote validierte Feature-Basis** | `0.8.2 – Equipment & Economy` inklusive Integritätshärtung |
+| **0.8.2-Abnahme** | PR #61 · Head `cee782476dccc...` · Runtime Core `32557685040`, Presentation Core `32557685042`, Repository Health `32557685108` grün · Merge `9cfa107f0256...` |
+| **Aktive Iteration** | `0.8.3-A – Event Execution Engine` |
+| **0.8.3-A** | 8 kanonische Aktionen von `draft` bis `settlement`; finaler PR-Head #62 wird remote abgenommen |
+| **Weg zum ersten spielbaren Release** | `0.8.3-A Aktionen → 0.8.3-B Krisen → 0.8.3-C Settlement/Folgen → Release-Kandidat` |
 | **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
-| **Event Foundation** | Ort, Budgetrahmen, Acts, Crew, Equipment-Readiness, Zeitfenster, Sicherheit, Phasen und Revision |
+| **Event Foundation** | Ort, Budget, Acts, Crew, Equipment-Readiness, Zeitfenster, Sicherheit, Phasen und Revision |
 | **Persistenz** | Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
 | **Grafischer Renderer** | auswertbarer statischer HTML-Blueprint vorhanden; noch kein schreibender Game-Client |
@@ -47,10 +47,10 @@
 
 ## 🚦 Was bis zum Release noch fehlt
 
-Der aktuelle Stand ist eine validierte Spiellogik mit statischer, schreibgeschützter HTML-Auswertung – noch kein auslieferbarer Game-Client. Für das erste **spielbare Alpha-Release** sind drei Schritte verpflichtend:
+Der aktuelle Stand ist eine validierte Spiellogik mit statischer, schreibgeschützter HTML-Auswertung – noch kein auslieferbarer Game-Client. Für das erste **spielbare Alpha-Release** sind jetzt drei Schritte verpflichtend:
 
-1. **0.8.2 Equipment & Economy als einen Vertical Slice abnehmen:** Katalog, Besitz, Reservierung, Transaktionen und Recovery werden zusammen umgesetzt und bestätigt; es gibt keine fachliche Teilfreigabe.
-2. **0.8.3 vollständiger Event-Loop:** Planung bis Abrechnung einschließlich Krisen, Folgen und A4/A3-Projektionen durchgängig spielbar machen.
+1. **0.8.3-A Event Execution Engine abschließen:** verbindliche Phasenaktionen und ihre zentralen Voraussetzungen auf dem exakten PR-Head remote bestätigen und regelkonform mergen.
+2. **0.8.3-B/C vollständigen Event-Loop schließen:** Krisen/Incidents sowie Settlement, Ruf- und Character-Folgen journalfähig ergänzen und den Gesamtpfad inklusive Recovery testen.
 3. **Release-Kandidat abnehmen:** Erst nach bestätigtem 0.8.3 den schreibenden A4-Client an die Runtime anbinden, dann Ersteinstieg, Start aus frischem Checkout und Save/Recovery-Smoke-Test nachweisen; danach erst Version und Release-Artefakt festlegen.
 
 **Nicht blockierend für das erste lokale Alpha-Release:** Telegram-/Netzwerk-Sync und native GitHub-Branch-Protection. Beides bleibt wichtig, ist aber kein Bestandteil des lokalen Spielkerns.
@@ -165,13 +165,13 @@ identische Projektion in A4 und A3
 
 0.8.1 setzt neben den Character-Zustand einen eigenen, journalfähigen `event`-Block. Character- und Eventdaten ersetzen sich beim Speichern nicht gegenseitig; Recovery kann beide Blöcke gemeinsam aus dem Journal rekonstruieren.
 
-| Eventbereich | Vertrag in 0.8.1 |
+| Eventbereich | Vertrag |
 |---|---|
 | **Ort** | technische ID, Anzeigename, Region und Zugangsstatus |
-| **Budget** | Event-Budgetrahmen in Cent; noch kein Zahlungsledger |
+| **Budget** | Event-Budget in Cent; Änderungen laufen seit 0.8.2 über bestätigte Economy-Transaktionen |
 | **Acts** | geplant / bestätigt / abgesagt |
 | **Crew** | Character-ID, Rolle und Verfügbarkeit |
-| **Equipment** | Anforderung und Readiness; Besitz/Markt folgt in 0.8.2 |
+| **Equipment** | Anforderung und Readiness aus bestätigtem Besitz/Reservierung |
 | **Zeitfenster** | ISO-8601 mit UTC-Offset und Zeitzone |
 | **Sicherheit** | `unreviewed`, `cleared`, `restricted`, `blocked` |
 | **Revision** | monotone Revision; veraltete Schreibversuche werden abgewiesen |
@@ -202,6 +202,35 @@ completed
 > Ab `transport` verlangt der Domain-Vertrag einen gesetzten Ort, verifizierten Zugangsstatus, ein gültiges Zeitfenster und `safety_status=cleared`. Aus einem real klingenden Ortsnamen wird niemals automatisch eine Berechtigung abgeleitet.
 
 Details: [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
+
+---
+
+## ⚙️ 0.8.3-A – Event Execution Engine
+
+Die Phasenmaschine ist jetzt nicht mehr nur ein frei adressierbarer technischer Übergang. `EventExecutionService` stellt einen verbindlichen Aktionspfad bereit und liefert für spätere Clients dieselben Blocker, die beim Execute tatsächlich geprüft werden.
+
+```text
+begin_planning
+→ begin_procurement
+→ start_transport
+→ begin_setup
+→ confirm_soundcheck
+→ start_live
+→ finish_live
+→ finish_teardown
+→ settlement
+```
+
+Dabei gelten unter anderem:
+
+- bestätigte Acts/Crew und positives Budget vor der Beschaffung,
+- vollständige Crew-/Act-Bestätigung und Equipment-Readiness vor Transport bzw. Live,
+- Ort, Zugang, Zeitfenster und Sicherheitsfreigabe für physische Phasen,
+- append-only Journal über `event.phase_changed` mit `reason=event_action:<action_id>`,
+- idempotente Wiederholung desselben Commands,
+- kein Abschluss zu `completed`, bevor 0.8.3-C die Settlement-Folgen definiert.
+
+Maschinenlesbarer Vertrag: [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json)
 
 ---
 
@@ -240,6 +269,7 @@ Die Startroutine prüft zuerst alle benötigten Dateien, bindet den lokalen Serv
 | aktuellen Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
 | nächste Aufgaben | [`TODO.md`](TODO.md) |
 | Event State 0.8.1 | [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md) |
+| Event Actions 0.8.3-A | [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json) |
 | Architektur und Grenzen | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
 | Spiel-/Datenfluss | [`docs/GAME_SCHEMA.md`](docs/GAME_SCHEMA.md) |
 | Character Forge | [`docs/CHARACTER_FORGE.md`](docs/CHARACTER_FORGE.md) |
@@ -261,7 +291,7 @@ Die Startroutine prüft zuerst alle benötigten Dateien, bindet den lokalen Serv
 ```text
 Domain: CharacterState + EventState
   ↓
-Application: Character-/Event-Services
+Application: Character-/Event-/Economy-/Execution-Services
   ↓
 Persistence / bestätigte Events
   ↓
@@ -278,7 +308,7 @@ PresentationState
 | Bereich | Verantwortung | Grenze |
 |---|---|---|
 | `domain` | Charakter, Progression, Traits, Eventzustand | kennt keine UI/Infrastruktur |
-| `application` | Use Cases, Commands, Capabilities, State-Block-Koordination | umgeht Persistenz nicht |
+| `application` | Use Cases, Commands, Capabilities, Event-/Economy-Aktionen | umgeht Persistenz nicht |
 | `infrastructure` | Journal, Save, Snapshot, Recovery | verwaltet keine sichtbaren UI-Texte |
 | `presentation` | Projection, Komponenten, Inszenierung | schreibt Domain-/Save-State nicht direkt |
 | `content` | sichtbare/lokalisierte Texte | ersetzt keine technischen Regeln |
@@ -370,7 +400,8 @@ Fachliche Prüfungen bleiben risikobasiert. Pull Requests nach `main` benötigen
 - 0.7.2 / PR #41, validierter Head `5f7ded400a5f...`: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406`
 - 0.7.2 Closeout / PR #45: Runtime Core `32534969250`, Presentation Core `32534969199`, Repository Health `32534969209`; `SAFE MERGE PASS`
 - Integrity-Reparatur / PR #47: Runtime Core `32536504014`, Presentation Core `32536504089`, Repository Health `32536504068`; `SAFE MERGE PASS`
-- 0.8.1 / PR #48, initial validierter Head `79cc26bec0a7...`: Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303`
+- 0.8.1 / PR #48: Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303`
+- 0.8.2 Economy-Hardening / PR #61: Runtime Core `32557685040`, Presentation Core `32557685042`, Repository Health `32557685108`; Merge `9cfa107f0256...`
 
 Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Reparatur-PR #33 aus dem kanonischen Baum entfernt. Spätere direkte `main`-Änderungen wurden vom Main-Integrity-Guard erkannt und über validierte PRs bereinigt. Repository Guard und `/safe-merge` bleiben der vorgeschriebene normale Mergeweg.
 
@@ -384,6 +415,7 @@ Der versehentliche PR #32 wurde trotz roter Compile-Gates gemergt und durch Repa
 - [`docs/PROGRESSION_CONTRACT.md`](docs/PROGRESSION_CONTRACT.md)
 - [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md)
 - [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md)
+- [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json)
 - [`docs/CHARACTER_CORE_0.5.md`](docs/CHARACTER_CORE_0.5.md)
 - [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
 - [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
