@@ -16,14 +16,14 @@
     "players": {"type": "object", "additionalProperties": {"$ref": "#/$defs/player"}},
     "positions": {"type": "object", "additionalProperties": {"$ref": "#/$defs/position"}},
     "housing": {"type": "object", "additionalProperties": {"$ref": "#/$defs/housing"}},
-    "districts": {"type": "object", "additionalProperties": {"type": "object", "additionalProperties": {"$ref": "#/$defs/metrics"}}},
+    "districts": {"type": "object", "additionalProperties": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/metrics"}}},
     "trust_blocks": {"type": "array", "items": {"$ref": "#/$defs/trust"}},
     "honors": {"type": "object", "additionalProperties": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}},
     "great_deeds": {"type": "array", "items": {"$ref": "#/$defs/deed"}},
     "party_modes": {"type": "object", "additionalProperties": {"enum": ["official", "unofficial"]}},
     "party_checks": {"type": "object", "additionalProperties": {"$ref": "#/$defs/partyCheck"}},
     "storefront_reads": {"type": "object", "additionalProperties": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}},
-    "mini_games": {"type": "object", "additionalProperties": {"type": "object"}},
+    "mini_games": {"type": "object", "additionalProperties": {"$ref": "#/$defs/miniGames"}},
     "applied_settlements": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
   },
   "$defs": {
@@ -69,8 +69,8 @@
       "properties": {
         "offender_id": {"type": "string", "minLength": 1},
         "target_id": {"type": "string", "minLength": 1},
-        "violation_type": {"type": "string", "minLength": 1},
-        "remaining_cycles": {"type": "integer", "minimum": 1}
+        "violation_type": {"enum": ["deception", "betrayal", "fraud"]},
+        "remaining_cycles": {"type": "integer", "minimum": 1, "maximum": 1000}
       }
     },
     "deed": {
@@ -91,6 +91,30 @@
         "triggered": {"type": "boolean"},
         "resolved": {"type": "boolean"},
         "choice_id": {"type": ["string", "null"]}
+      }
+    },
+    "miniGames": {
+      "type": "object", "additionalProperties": false,
+      "required": ["poker_score", "slot_score", "xoxo"],
+      "properties": {
+        "poker_score": {"type": "integer", "minimum": 0},
+        "slot_score": {"type": "integer", "minimum": 0},
+        "xoxo": {"$ref": "#/$defs/xoxo"}
+      }
+    },
+    "xoxo": {
+      "type": "object", "additionalProperties": false,
+      "required": ["board", "status", "round", "wins", "losses", "draws"],
+      "properties": {
+        "board": {
+          "type": "array", "minItems": 9, "maxItems": 9,
+          "items": {"enum": ["", "X", "O"]}
+        },
+        "status": {"enum": ["ready", "playing", "won", "lost", "draw"]},
+        "round": {"type": "integer", "minimum": 0},
+        "wins": {"type": "integer", "minimum": 0},
+        "losses": {"type": "integer", "minimum": 0},
+        "draws": {"type": "integer", "minimum": 0}
       }
     }
   }
