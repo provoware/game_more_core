@@ -3,12 +3,12 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.3-C – Settlement & Consequences`
-- **0.8.3-C-Abnahme:** PR #65 · Head `ccfb145547b241a179bd0135d34a7470d690821c` · Runtime Core `32568683844` · Presentation Core `32568683898` · Repository Health `32568683863` · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `5ae811333878ae67947417ccb72e791caafe4ba9`
-- **Repository-Hygiene danach:** versehentliche leere Markerdatei ausschließlich über PR #67 entfernt · Runtime `32568910870` · Presentation `32568910892` · Repository Health `32568910865` · `SAFE MERGE PASS` · Merge `057b5131dfd5bfaf1c26ddd0a3e862fb52c0675f`; Produktbaum wieder exakt ohne Markerdatei
-- **Nächster Pflichtblock:** kleinster schreibender **A4-Game-Client** auf den vorhandenen Application-Commands
-- **Fortschritt zum ersten spielbaren Alpha-Release:** `96 %` (Planungswert; fachlicher Event-Loop vollständig remote validiert, Client-Anbindung und First-Run/Save-Recovery-Smoke-Test noch offen)
-- **Aktueller Release-Blocker:** A4 schreibend anbinden → kompletter First-Run/Save-Recovery-Smoke-Test → erst danach Version und Release-Artefakt festlegen
+- **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery`
+- **0.8.4-Abnahme:** PR #69 · Head `3d61e9d6385a0b79069132df24d655fef42b0451` · Runtime Core `32575062624` · Presentation Core `32575062602` · Repository Health `32575062620` · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
+- **Recovery-Härtung:** der vollständige A4-Smoke deckte einen fehlenden-State-Randfall auf; ein Snapshot am Journal-Head darf einen fehlenden `state/current.json` nicht mehr fälschlich als `healthy` deklarieren. Der zentrale Recovery-Kern stellt den State nun korrekt aus dem gültigen Snapshot wieder her und besitzt dafür eine Regression.
+- **Nächster Pflichtblock:** **Release-Abnahme** des lokalen Alpha aus frischem Checkout; erst danach Produktversion und reproduzierbares Release-Artefakt festlegen
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `98 %` (Planungswert; Fachloop, schreibender A4-Client und vollständiger Save/Restart/Recovery-Smoke remote validiert; Release-/Klickstart-Abnahme noch offen)
+- **Aktueller Release-Blocker:** frischer Checkout + Klickstart + verständliche Fehlerpfade + Release-Evidence → anschließend Version und reproduzierbares Paket
 
 ## Release-Ziel
 
@@ -111,18 +111,44 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 - [x] Merge `5ae811333878ae67947417ccb72e791caafe4ba9`
 - [x] nachgelagerte leere Markerdatei über separaten PR #67 dreifach grün entfernt und per `/safe-merge` übernommen
 
-## Release-Kandidat – spielbarer lokaler Client ⏭️
+## 0.8.4 – Schreibender lokaler A4-Client ✅
 
-- [x] vollständigen 0.8.3-Fachloop auf `main` als validierte Fachbasis bestätigt
-- [ ] A4 als kleinsten schreibenden Client ausschließlich an bestehende Application-Commands anbinden
-- [ ] keine zweite Domain-, Economy-, Incident-, Settlement- oder Persistenzlogik im Client
-- [ ] Event-/Economy-/Incident-/Settlement-Projektionen als read-only Clientquelle ergänzen
-- [ ] Ersteinstieg `Crew → Event → Equipment → optional Krise → Settlement → Ergebnis` führen
-- [ ] verständliche Blocker-/Fehlermeldungen aus kanonischen IDs ableiten
-- [ ] Start aus frischem Checkout mit einem dokumentierten Befehl nachweisen
-- [ ] deterministischen Smoke-Test `neues Spiel → kompletter Event-Loop → Save → Neustart → Recovery` ergänzen
-- [ ] Runtime Core + Presentation Core + Repository Health + 0 Review-Threads abnehmen
-- [ ] erst danach Version, Release Notes und reproduzierbares Release-Artefakt festlegen
+- [x] A4 als kleinsten schreibenden Client ausschließlich an bestehende Application-Services anbinden
+- [x] keine zweite Domain-, Economy-, Incident-, Settlement- oder Persistenzlogik im Browser erzeugen
+- [x] Event-/Economy-/Incident-/Settlement-Daten ausschließlich über read-only Projection an den Client geben
+- [x] Event-Availability und Blocker direkt aus `EventExecutionService.available_actions(...)` übernehmen
+- [x] unbekannte Commands und unbekannte Command-Felder vor jedem Write fail-closed ablehnen
+- [x] First Run `Crew → Event → Equipment → optional Krise → Settlement → Ergebnis` führen
+- [x] kanonische Event-Blocker als verständliche deutsche Hilfetexte darstellen
+- [x] lokalen Server ausschließlich an `127.0.0.1` binden und statisch nur `web/a4/` ausliefern
+- [x] First Run nur auf leerem Journal/GENESIS erlauben und vorhandene Saves niemals überschreiben
+- [x] dokumentierten Ein-Befehl-Start in `docs/A4_FIRST_RUN_ANLEITUNG.md` ergänzen
+- [x] deterministischen Smoke-Test `neues Spiel → kompletter Event-Loop → Save/Snapshot → Neustart → Recovery → identischer Zustand` ergänzen
+- [x] durch den Smoke gefundenen fehlenden-State/Head-Snapshot-Recovery-Randfall im zentralen Persistence-Kern beheben
+- [x] eigenständige Regression für fehlenden `state/current.json` bei gültigem Snapshot ergänzen
+- [x] finalen PR-#69-Head `3d61e9d6385a0b79069132df24d655fef42b0451` dreifach grün bestätigen
+- [x] Runtime Core `32575062624`
+- [x] Presentation Core `32575062602`
+- [x] Repository Health `32575062620`
+- [x] ungelöste Review-Threads = 0
+- [x] zusätzlicher Codex-Code-Review angefordert; wegen externem Nutzungslimit nicht ausgeführt und nicht als Review-Pass gewertet
+- [x] PR #69 ausschließlich per `/safe-merge` übernehmen
+- [x] `SAFE MERGE PASS` + Main-Provenienz bestätigen
+- [x] Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
+
+## Release-Abnahme – erstes lokales Alpha ⏭️
+
+- [ ] frischen Checkout ohne vorhandenen Save als reale Release-Ausgangslage prüfen
+- [ ] Klickstart/Ein-Befehl-Start des A4-Clients auf unterstütztem Ubuntu/Kubuntu prüfen
+- [ ] automatisches Browseröffnen, `--no-browser` und freien Port über `--port 0` abnehmen
+- [ ] verständliche Startfehler für fehlende Dateien, belegten Port und nicht beschreibbaren Save-Pfad prüfen
+- [ ] First Run im Browser von einer leeren Umgebung bis `completed` manuell gegen den automatisierten Smoke abgleichen
+- [ ] Save schließen, Prozess neu starten und identischen bestätigten Zustand prüfen
+- [ ] kontrollierten Recovery-Fall im Release-Szenario auslösen und Recovery-Receipt prüfen
+- [ ] Release-Evidence mit Quell-Commit, Tree, Python-Version, Gate-Runs, Smoke-Ergebnis und Paket-Hash erzeugen
+- [ ] erst nach vollständig grüner Release-Abnahme die nächste Produktversion in `VERSION.json` festlegen
+- [ ] Release Notes und reproduzierbares ZIP/Artefakt einschließlich SHA-256 erzeugen
+- [ ] erzeugtes Paket in frischem Zielordner erneut starten und Kernpfad smoke-testen
 
 ---
 
@@ -150,8 +176,10 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 
 - [ ] Recovery-Receipt um maschinenlesbare Fehlerkategorie und Anzahl übersprungener Snapshots erweitern.
 - [x] reproduzierbaren vollständigen Event-/Incident-/Settlement-Replay-Beleg mit exaktem Head, CI-Runs und Safe-Merge-Provenienz in `reports/SETTLEMENT_VALIDATION_0.8.3-C.json` festgeschrieben.
+- [x] A4 übersetzt die kanonischen Event-Blocker-IDs in sichtbare Hilfetexte, berechnet die Gates aber niemals neu.
+- [x] fehlenden State bei gültigem Snapshot am Journal-Head als echte Recovery statt falschem `healthy` regressionsgetestet.
 - [ ] Repository Health um Abschlussabgleich gemergter Meilensteine zwischen Status/TODO/README erweitern.
-- [ ] A4/A3 übersetzen Event-/Incident-Blocker-IDs in sichtbare Hilfetexte, berechnen Regeln aber niemals neu.
-- [ ] Nach vollständigem 0.8.3 ein gemeinsames versioniertes Spielszenario `Planung → Beschaffung → Krise → Abrechnung` in beide Gesamtbeschreibungen aufnehmen.
+- [ ] A3 Event-/Incident-Blocker-IDs später ebenfalls über denselben sichtbaren Hilfetextvertrag darstellen, ohne Regeln neu zu berechnen.
+- [ ] gemeinsames versioniertes Spielszenario `Planung → Beschaffung → Krise → Abrechnung → Neustart` nach der Release-Abnahme in beide Gesamtbeschreibungen aufnehmen.
 
 ---
