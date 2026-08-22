@@ -16,6 +16,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - grafische Hierarchie des statischen Blueprints mit Control-Room-Orientierung, stärkerem Referenzrahmen, gerichteter Workflow-Linie, klarer Variantenstaffelung und ruhiger responsiver Anordnung verbessert; Reduced Motion, Tastaturfokus und der schreibgeschützte Modus bleiben erhalten.
 - statische, frameworkfreie HTML-Übertragung ergänzt: Die kanonische WebP-Grafik bleibt als unveränderte Pixelreferenz sichtbar, während Workflow und vier UI-Varianten aus dem bestehenden UI-Manifest auswertbar gerendert werden.
 - vollautomatische Standardbibliothek-Startroutine mit Dateivorprüfung, lokalem Server, Browseröffnung, verständlicher Statusausgabe und belegbarem Portfehler ergänzt.
+- lokalen Serverstart atomar gebunden, Portbereich vor dem Start validiert und die sofort ausgegebene Adresse bei automatischer Portwahl aus dem tatsächlich gestarteten Server abgeleitet.
 - kopierbarer Browser-Prüfbericht einschließlich Prüfung sichtbarer Pixelfläche, Tastaturfokus, Responsive Layout, Reduced Motion und High-Contrast-Fallback verbessern Diagnose und Zugänglichkeit; das aktuell überwiegend transparente WebP wird als eingeschränkt gemeldet und die Ansicht bleibt ausdrücklich ohne Domain-Schreibzugriff.
 - Spieleranleitung um einen laiengerechten Ein-Befehl-Start, Stopp, manuellen Browserweg und Port-Fehlerhilfe erweitert.
 
