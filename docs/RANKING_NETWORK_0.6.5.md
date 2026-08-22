@@ -1,8 +1,10 @@
-# Ranking / Network Foundation 0.6.5
+# Ranking / Network Foundation 0.6.5 – historischer Vertrag
 
-## Ziel
+> **Hinweis:** Dieses Dokument beschreibt die ursprüngliche 0.6.5-Foundation. Der aktuelle Rankingvertrag ab 0.8.5-A steht in [`RANKING_COMPETITION_0.8.5-A.md`](RANKING_COMPETITION_0.8.5-A.md). Insbesondere die frühere Competition-Ranking-Regel mit gemeinsamen Rangnummern wurde durch eindeutige Plätze und den Verdrängungszyklus ersetzt.
 
-0.6.5 bereitet die gemeinsame Ranking-/Network-Anzeige für beliebig viele Spieler vor. Die Schicht bleibt reine Presentation und besitzt noch keinen Telegram-Transport, keine Presence-Abfrage und keinen eigenen Online-State.
+## Ziel von 0.6.5
+
+0.6.5 bereitete die gemeinsame Ranking-/Network-Anzeige für beliebig viele Spieler vor. Die Schicht blieb reine Presentation und besaß noch keinen Telegram-Transport, keine Presence-Abfrage und keinen eigenen Online-State.
 
 ## Quellen
 
@@ -42,11 +44,11 @@ Fehlt ein bestätigter Network-Datensatz, gilt:
 - `events`
 - `clubs`
 
-Sortierung: verfügbare Werte zuerst, Wert absteigend, danach stabile `character_id`.
+Diese Metriken bleiben auch im 0.8.5-A-Vertrag erhalten.
 
-## Gleichstände
+## Historische Gleichstandsregel
 
-Competition Ranking:
+0.6.5 verwendete Competition Ranking:
 
 ```text
 100 → Rang 1
@@ -54,15 +56,15 @@ Competition Ranking:
  90 → Rang 3
 ```
 
-Ein fehlender Wert erhält keinen Rang.
+Diese Regel ist **nicht mehr aktuell**. Ab 0.8.5-A sind Rangnummern eindeutig; ein aufsteigender Teilnehmer kann bei gleichem aktuellen Wert einen stehengebliebenen Teilnehmer verdrängen.
 
 ## Top 10 / Alle
 
-Die Quellliste besitzt keine künstliche Spielerobergrenze. Standardmäßig zeigt die Projection die ersten 10 Einträge. `show_all=true` liefert die vollständige sortierte Liste.
+Die Quellliste besitzt keine künstliche Spielerobergrenze. Standardmäßig zeigt die Projection die ersten 10 Einträge. `show_all=true` liefert die vollständige sortierte Liste. Diese Anzeigegrenze bleibt bestehen; 0.8.5-A ergänzt zusätzlich den stärkeren Konkurrenzdruck innerhalb der Top 10.
 
 ## Identität und Integrität
 
-Abgewiesen werden:
+Weiterhin abgewiesen werden:
 
 - doppelte `player_id`
 - doppelte `character_id`
@@ -73,30 +75,6 @@ Abgewiesen werden:
 - unbekannte Network-Metriken
 - nicht katalogisierte Sync-Statuswerte
 
-## Textvertrag
-
-Sichtbare Begriffe werden ausschließlich über `content/de/ui/character_forge.json` referenziert. Neu relevant sind unter anderem:
-
-- Rankingmetriken Level/Ruf/Resonanz/Events/Clubs
-- `ALLE ANZEIGEN`
-- `NICHT BESTÄTIGT`
-- `ui.sync.unknown`
-
-Skill-Rankings verwenden die vorhandenen `skill.<id>.label`-Schlüssel.
-
 ## Telegram-Grenze
 
-Telegram bleibt Transport-/Identity-Bridge und ist ausdrücklich **nicht** Primärspeicher. 0.6.5 verarbeitet nur bereits bestätigte Datenobjekte; Abruf, Upload, Konfliktlösung und Serverbetrieb folgen in der späteren Sync-Phase.
-
-## Abnahme
-
-```bash
-PYTHONPATH=src python3 -m compileall -q src
-PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
-PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
-```
-
-Remote auf demselben Implementierungs-Head:
-
-- Runtime Core
-- Presentation Core
+Telegram bleibt Transport-/Identity-Bridge und ist ausdrücklich **nicht** Primärspeicher. Der Ranking-Code verarbeitet nur bereits bestätigte Datenobjekte; Abruf, Upload, Konfliktlösung und Serverbetrieb folgen in einer späteren Sync-Phase.

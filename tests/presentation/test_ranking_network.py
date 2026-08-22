@@ -82,12 +82,14 @@ class RankingNetworkTest(unittest.TestCase):
 
         self.assertEqual(top["view"]["total_players"], 37)
         self.assertEqual(top["view"]["shown_players"], 10)
+        self.assertEqual(top["view"]["competitive_top_limit"], 10)
         self.assertEqual(len(top["entries"]), 10)
         self.assertEqual(all_players["view"]["shown_players"], 37)
         self.assertEqual(len(all_players["entries"]), 37)
         self.assertEqual(top["entries"][0]["level"], 37)
+        self.assertEqual([entry["rank"] for entry in all_players["entries"]], list(range(1, 38)))
 
-    def test_competition_ranking_handles_ties_and_stable_tiebreaker(self):
+    def test_equal_values_never_share_rank_without_history(self):
         players = [
             participant(3, level=9),
             participant(1, level=10),
@@ -100,11 +102,78 @@ class RankingNetworkTest(unittest.TestCase):
             [(entry["character_id"], entry["rank"], entry["level"]) for entry in result["entries"]],
             [
                 ("char.test-001", 1, 10),
-                ("char.test-002", 1, 10),
+                ("char.test-002", 2, 10),
                 ("char.test-003", 3, 9),
                 ("char.test-004", 4, 8),
             ],
         )
+        self.assertFalse(result["competition_policy"]["shared_ranks_allowed"])
+
+    def test_rising_challenger_displaces_stationary_player_on_equal_value(self):
+        first = self.build(
+            [participant(1, level=10), participant(2, level=9)],
+            show_all=True,
+        )
+        second = self.build(
+            [participant(1, level=10), participant(2, level=10)],
+            show_all=True,
+            previous_cycle=first["cycle_snapshot"],
+        )
+
+        self.assertEqual(
+            [(entry["character_id"], entry["rank"]) for entry in second["entries"]],
+            [("char.test-002", 1), ("char.test-001", 2)],
+        )
+        by_character = {entry["character_id"]: entry for entry in second["entries"]}
+        self.assertEqual(by_character["char.test-002"]["history"]["metric_delta"], 1)
+        self.assertEqual(by_character["char.test-002"]["history"]["movement"], "up")
+        self.assertEqual(by_character["char.test-001"]["history"]["metric_delta"], 0)
+        self.assertEqual(by_character["char.test-001"]["history"]["movement"], "down")
+
+    def test_rank_11_and_below_use_one_tenth_momentum_pressure(self):
+        previous = {
+            "sort_by": "level",
+            "skill_id": None,
+            "entries": [
+                {"character_id": "char.test-010", "rank": 10, "value": 9},
+                {"character_id": "char.test-011", "rank": 11, "value": 5},
+            ],
+        }
+        result = self.build(
+            [participant(10, level=10), participant(11, level=10)],
+            show_all=True,
+            previous_cycle=previous,
+        )
+        by_character = {entry["character_id"]: entry for entry in result["entries"]}
+
+        self.assertEqual(result["competition_policy"]["top_pressure_factor"], 1.0)
+        self.assertEqual(result["competition_policy"]["outer_pressure_factor"], 0.1)
+        self.assertEqual(by_character["char.test-010"]["history"]["momentum_factor"], 1.0)
+        self.assertEqual(by_character["char.test-010"]["history"]["effective_momentum"], 1.0)
+        self.assertEqual(by_character["char.test-011"]["history"]["momentum_factor"], 0.1)
+        self.assertEqual(by_character["char.test-011"]["history"]["effective_momentum"], 0.5)
+        self.assertEqual(result["entries"][0]["character_id"], "char.test-010")
+
+    def test_previous_cycle_must_match_metric_and_have_unique_ranks(self):
+        players = [participant(1)]
+        wrong_metric = {
+            "sort_by": "reputation",
+            "skill_id": None,
+            "entries": [{"character_id": "char.test-001", "rank": 1, "value": 1}],
+        }
+        with self.assertRaises(ValueError):
+            self.build(players, previous_cycle=wrong_metric)
+
+        duplicate_rank = {
+            "sort_by": "level",
+            "skill_id": None,
+            "entries": [
+                {"character_id": "char.test-001", "rank": 1, "value": 1},
+                {"character_id": "char.test-002", "rank": 1, "value": 1},
+            ],
+        }
+        with self.assertRaises(ValueError):
+            self.build([participant(1), participant(2)], previous_cycle=duplicate_rank)
 
     def test_level_reputation_resonance_and_skill_sorting(self):
         players = [
@@ -161,6 +230,7 @@ class RankingNetworkTest(unittest.TestCase):
         self.assertIsNone(entry["selected_metric"]["value"])
         self.assertEqual(entry["selected_metric"]["value_label_key"], "ui.ranking.unavailable")
         self.assertIsNone(entry["rank"])
+        self.assertEqual(entry["competition"]["zone"], "unranked")
         self.assertFalse(result["network_policy"]["online_presence_inferred"])
         self.assertFalse(result["network_policy"]["unconfirmed_metrics_are_displayed"])
 
@@ -198,19 +268,27 @@ class RankingNetworkTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.build([first], [network(1, events=1), network(1, events=2)])
 
-    def test_projection_is_detached_from_participant_and_network_inputs(self):
+    def test_projection_is_detached_from_participant_network_and_cycle_inputs(self):
         players = [participant(1)]
         records = [network(1, events=4, clubs=2)]
+        previous = {
+            "sort_by": "events",
+            "skill_id": None,
+            "entries": [{"character_id": "char.test-001", "rank": 1, "value": 3}],
+        }
         before_players = deepcopy(players)
         before_records = deepcopy(records)
+        before_previous = deepcopy(previous)
 
-        result = self.build(players, records, sort_by="events", show_all=True)
+        result = self.build(players, records, sort_by="events", show_all=True, previous_cycle=previous)
         result["entries"][0]["display_name"] = "changed"
         result["entries"][0]["network_metrics"]["events"] = 999
         result["entries"][0]["skills"]["skill.technik"] = 1
+        result["cycle_snapshot"]["entries"][0]["value"] = 999
 
         self.assertEqual(players, before_players)
         self.assertEqual(records, before_records)
+        self.assertEqual(previous, before_previous)
 
     def test_missing_visible_text_key_fails_closed(self):
         broken = dict(self.catalog)
