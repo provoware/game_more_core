@@ -225,6 +225,7 @@ class A4ReleaseAcceptanceTests(unittest.TestCase):
 
         process.terminate()
         process.wait(timeout=3)
+        process.stdout.close()
         self.assertIsNotNone(process.returncode)
 
 
