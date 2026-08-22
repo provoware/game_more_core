@@ -48,6 +48,7 @@ REQUIRED = (
     "manifests/CITY_MAP_MANIFEST.json",
     "manifests/PROPERTY_MANIFEST.json",
     "manifests/PROPERTY_UPGRADE_MANIFEST.json",
+    "manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json",
     "manifests/HALL_OF_TRIBUTE_MANIFEST.json",
     "manifests/RANKING_NETWORK_MANIFEST.json",
     "manifests/SYNC_MANIFEST.json",
@@ -115,6 +116,7 @@ class A4ClientRuntime:
         self.city_map_manifest = _load_json(ROOT / "manifests" / "CITY_MAP_MANIFEST.json")
         self.property_manifest = _load_json(ROOT / "manifests" / "PROPERTY_MANIFEST.json")
         self.property_upgrade_manifest = _load_json(ROOT / "manifests" / "PROPERTY_UPGRADE_MANIFEST.json")
+        self.map_pro_manifest = _load_json(ROOT / "manifests" / "BERLIN_OPS_MAP_PRO_MANIFEST.json")
         self.hall_manifest = _load_json(ROOT / "manifests" / "HALL_OF_TRIBUTE_MANIFEST.json")
         self.ranking_manifest = _load_json(ROOT / "manifests" / "RANKING_NETWORK_MANIFEST.json")
         self.sync_manifest = _load_json(ROOT / "manifests" / "SYNC_MANIFEST.json")
@@ -188,6 +190,7 @@ class A4ClientRuntime:
                 city_map_manifest=self.city_map_manifest,
                 property_manifest=self.property_manifest,
                 property_upgrade_manifest=self.property_upgrade_manifest,
+                map_pro_manifest=self.map_pro_manifest,
                 hall_manifest=self.hall_manifest,
                 ranking_manifest=self.ranking_manifest,
                 sync_manifest=self.sync_manifest,
@@ -344,7 +347,7 @@ class A4ClientRuntime:
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.6-b1"
+    server_version = "BunkerfrequenzA4/0.8.6-c1"
 
     @property
     def runtime(self) -> A4ClientRuntime:
