@@ -32,7 +32,7 @@ def _triplet(
     field: str,
     *,
     bounded_0_100: bool = False,
-    nonnegative: bool = False,
+    nonnegative_result: bool = False,
 ) -> dict[str, int]:
     if not isinstance(value, dict) or set(value) != {"old", "delta", "new"}:
         raise ValueError(f"{field} benötigt old/delta/new")
@@ -43,10 +43,13 @@ def _triplet(
         expected = min(100, max(0, old + delta))
         if not 0 <= old <= 100 or new != expected:
             raise ValueError(f"{field} ist außerhalb 0..100 oder inkonsistent")
-    elif nonnegative:
+    elif nonnegative_result:
+        # Legacy saves may contain signed reputation values. Settlement is the
+        # normalization boundary: the old value remains readable, the result
+        # follows the canonical ranking floor at zero.
         expected = max(0, old + delta)
-        if old < 0 or new != expected:
-            raise ValueError(f"{field} ist negativ oder inkonsistent")
+        if new != expected:
+            raise ValueError(f"{field} ist inkonsistent")
     elif new != old + delta:
         raise ValueError(f"{field} ist inkonsistent")
     return {"old": old, "delta": delta, "new": new}
@@ -85,11 +88,27 @@ class SettlementState:
             raise ValueError("Settlement-Effekte besitzen ungültige Felder")
         for key in _EFFECT_KEYS:
             _int(self.effects[key], f"effects.{key}")
+
         budget = _triplet(self.budget, "budget")
         if budget["old"] < 0 or budget["new"] < 0:
             raise ValueError("Settlement-Budget darf nicht negativ sein")
-        _triplet(self.stress, "stress", bounded_0_100=True)
-        _triplet(self.reputation, "reputation", nonnegative=True)
+        stress = _triplet(self.stress, "stress", bounded_0_100=True)
+        reputation = _triplet(self.reputation, "reputation", nonnegative_result=True)
+
+        # A receipt may not describe one set of incident consequences while
+        # proving different Economy/Character deltas. This cross-binding makes
+        # imported/corrupt journals fail closed during recovery.
+        expected_deltas = {
+            "budget_delta_cents": budget["delta"],
+            "crew_stress_delta": stress["delta"],
+            "reputation_delta": reputation["delta"],
+        }
+        for effect_key, applied_delta in expected_deltas.items():
+            if self.effects[effect_key] != applied_delta:
+                raise ValueError(
+                    f"Settlement-Effekt {effect_key} stimmt nicht mit dem angewandten Delta überein"
+                )
+
         self._revision_triplet(self.event_revision, "event_revision", steps=2)
         self._revision_triplet(self.economy_revision, "economy_revision", steps=1)
         self._revision_triplet(self.incident_revision, "incident_revision", steps=1)
