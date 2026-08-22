@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "product": "BUNKERFREQUENZ",
+  "version": "0.8.4-alpha.1",
+  "status": "released_remote_validated_safe_merged",
+  "release_type": "first_playable_local_alpha",
+  "release_acceptance": {
+    "pull_request": 72,
+    "validated_head": "7fe1a39c6b69ec819fefe064a48d1647a5fa7c93",
+    "merged_commit": "72bb3024272797b27632a96559ae8abb665fff8a",
+    "runtime_core": 32576362896,
+    "presentation_core": 32576362890,
+    "repository_health": 32576362810,
+    "release_acceptance": 32576362827,
+    "safe_merge_pass": true
+  },
+  "release_pr": {
+    "pull_request": 73,
+    "validated_head": "ece6c145bb07dbb2eb87170887374c4124a871f1",
+    "merged_commit": "3fdb5cc3d57e73734d1f594603cafdd6d06c5210",
+    "runtime_core": 32576855723,
+    "presentation_core": 32576855749,
+    "repository_health": 32576855738,
+    "release_acceptance": 32576855720,
+    "release_package": 32576855768,
+    "unresolved_review_threads": 0,
+    "safe_merge_pass": true
+  },
+  "package": {
+    "name": "BUNKERFREQUENZ-0.8.4-alpha.1.zip",
+    "game_zip_sha256": "fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146",
+    "game_zip_size_bytes": 299300,
+    "file_count": 145,
+    "candidate_merge_ref_commit": "74d1f76e39909fc4b449bf741374f700b254a1a0",
+    "candidate_tree": "089dd6cf5a595347c8e43163097047f48541e4ab",
+    "byte_reproducible_two_builds": true,
+    "unpacked_launcher_smoke": true,
+    "health_endpoint_smoke": true,
+    "first_run_to_completed_smoke": true,
+    "checkpoint_after_completed": true,
+    "sha256_sidecar_matches": true,
+    "contains_git_metadata": false,
+    "contains_ci_configuration": false,
+    "contains_tests": false
+  },
+  "github_actions_artifact": {
+    "artifact_id": 9476765229,
+    "name": "BUNKERFREQUENZ-0.8.4-alpha.1",
+    "outer_archive_size_bytes": 279751,
+    "outer_archive_digest": "sha256:5bf864f4999d3f096c3af68ff219e199d8bdd038d1db7466817355adf5ac81b7",
+    "expires_at": "2026-09-21T13:48:56Z",
+    "note": "Der Actions-Digest gehört zum äußeren CI-Artefaktarchiv. game_zip_sha256 ist der Hash des eigentlichen Spiel-ZIPs."
+  },
+  "known_non_blocking_limits": [
+    "no_network_or_telegram_transport",
+    "berlin_map_renderer_not_high_end_yet",
+    "district_metrics_not_persistent_gameplay_state_yet",
+    "property_purchase_and_upgrade_write_path_not_implemented",
+    "hall_of_tribute_seasonal_ranking_not_implemented"
+  ],
+  "recommended_next_iteration": "dynamic_district_state_from_confirmed_settlement_results"
+}
