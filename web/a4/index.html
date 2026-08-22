@@ -126,7 +126,7 @@
 
     <section id="hall-panel" class="panel hidden" aria-labelledby="hall-title">
       <div class="panel-head">
-        <div><p class="eyebrow">07 // HALL OF TRIBUTE</p><h2 id="hall-title">Top-10-Ranking</h2></div>
+        <div><p class="eyebrow">07 // HALL OF TRIBUTE</p><h2 id="hall-title">Top-10 & Saison</h2></div>
         <div class="metric"><span>Bestätigte Teilnehmer</span><strong id="hall-participants">0</strong></div>
       </div>
       <p id="hall-status">Ranking wird aus bestätigten Daten aufgebaut. Es werden keine Gegner oder Netzwerkwerte erfunden.</p>
@@ -135,6 +135,20 @@
         <button id="hall-mode-level" type="button">LEVEL</button>
         <button id="hall-mode-resonance" type="button">RESONANZ</button>
       </div>
+
+      <div class="hall-season" aria-labelledby="hall-season-title">
+        <div class="panel-head hall-season-head">
+          <div><p class="eyebrow">SAISON // BESTÄTIGTER ZYKLUS</p><h3 id="hall-season-title">Wochen- und Monatswertung</h3></div>
+          <div class="hall-cycle-switch" role="group" aria-label="Saisonzyklus wählen">
+            <button id="hall-cycle-weekly" type="button" aria-pressed="true">WOCHE</button>
+            <button id="hall-cycle-monthly" type="button" aria-pressed="false">MONAT</button>
+          </div>
+        </div>
+        <div id="hall-season-status" class="notice" aria-live="polite">Noch kein bestätigter Saisonzyklus.</div>
+        <div id="hall-season-title-status" class="hall-season-title-status" aria-live="polite"></div>
+        <p class="hall-season-policy">Systemzeit allein bestimmt niemals eine Saison. Ein lokaler Zyklus entsteht erst aus bestätigter Spielweltzeit; endgültige Titel benötigen einen bestätigten geschlossenen Zyklus und echte bestätigte Konkurrenz.</p>
+      </div>
+
       <div id="hall-ranking" class="equipment-list" aria-live="polite"></div>
     </section>
 
