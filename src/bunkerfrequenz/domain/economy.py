@@ -7,6 +7,8 @@ from typing import Any
 REGULAR_LEDGER_KINDS = frozenset({"buy", "sell", "consume", "reserve", "release"})
 PROPERTY_PURCHASE_LEDGER_KIND = "property_purchase"
 PROPERTY_LEDGER_ITEM_PREFIX = "property:"
+PROPERTY_UPGRADE_LEDGER_KIND = "property_upgrade"
+PROPERTY_UPGRADE_LEDGER_ITEM_PREFIX = "property_upgrade:"
 SETTLEMENT_LEDGER_KIND = "settlement"
 SETTLEMENT_LEDGER_ITEM_ID = "__event_settlement__"
 
@@ -39,7 +41,8 @@ def _validate_ledger_entry(entry: dict[str, Any], seen: set[str]) -> None:
         raise ValueError("Ledger-Transaktions-ID ist ungültig oder doppelt")
     seen.add(transaction_id)
     kind = entry["kind"]
-    if kind not in REGULAR_LEDGER_KINDS | {PROPERTY_PURCHASE_LEDGER_KIND, SETTLEMENT_LEDGER_KIND}:
+    fixed_property_kinds = {PROPERTY_PURCHASE_LEDGER_KIND, PROPERTY_UPGRADE_LEDGER_KIND}
+    if kind not in REGULAR_LEDGER_KINDS | fixed_property_kinds | {SETTLEMENT_LEDGER_KIND}:
         raise ValueError("Ledger-kind ist unbekannt")
     item_id = entry["item_id"]
     if not isinstance(item_id, str) or not item_id.strip():
@@ -70,7 +73,17 @@ def _validate_ledger_entry(entry: dict[str, Any], seen: set[str]) -> None:
         if entry["budget_delta_cents"] != -entry["unit_price_cents"]:
             raise ValueError("Property-Kauf muss exakt den bestätigten Kaufpreis abbuchen")
         if compensates is not None:
-            raise ValueError("Property-Kauf ist in 0.8.6-A nicht kompensierbar")
+            raise ValueError("Property-Kauf ist nicht kompensierbar")
+
+    if kind == PROPERTY_UPGRADE_LEDGER_KIND:
+        if not item_id.startswith(PROPERTY_UPGRADE_LEDGER_ITEM_PREFIX) or len(item_id) <= len(PROPERTY_UPGRADE_LEDGER_ITEM_PREFIX):
+            raise ValueError("Property-Ausbau benötigt kanonische property_upgrade:item_id")
+        if entry["quantity"] != 1:
+            raise ValueError("Property-Ausbau benötigt quantity=1")
+        if entry["budget_delta_cents"] != -entry["unit_price_cents"]:
+            raise ValueError("Property-Ausbau muss exakt die bestätigten Ausbaukosten abbuchen")
+        if compensates is not None:
+            raise ValueError("Property-Ausbau ist nicht kompensierbar")
 
 
 @dataclass(slots=True)
