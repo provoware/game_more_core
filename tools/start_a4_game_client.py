@@ -41,6 +41,7 @@ REQUIRED = (
     "web/a4/styles.css",
     "web/a4/app.js",
     "web/a4/map_pro.js",
+    "web/a4/ui_prefs.js",
     "web/a4/starter.json",
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/INCIDENT_MANIFEST.json",
@@ -114,7 +115,7 @@ class A4ClientRuntime:
     def __init__(self, save_dir: Path) -> None:
         journal_manifest = _load_json(ROOT / "manifests" / "JOURNAL_MANIFEST.json")
         incident_manifest = _load_json(ROOT / "manifests" / "INCIDENT_MANIFEST.json")
-        street_manifest = _load_json(ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json")
+        self.street_manifest = _load_json(ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json")
         self.district_manifest = _load_json(ROOT / "manifests" / "DISTRICT_STATE_MANIFEST.json")
         self.city_map_manifest = _load_json(ROOT / "manifests" / "CITY_MAP_MANIFEST.json")
         self.property_manifest = _load_json(ROOT / "manifests" / "PROPERTY_MANIFEST.json")
@@ -127,13 +128,20 @@ class A4ClientRuntime:
         self.zeit_manifest = _load_json(ROOT / "manifests" / "ZEIT_MANIFEST.json")
         self.ranking_text_catalog = _load_json(ROOT / "content" / "de" / "ui" / "character_forge.json")
         self.street_texts = _load_json(ROOT / "content" / "de" / "ui" / "street_encounters.json")
-        for encounter in street_manifest.get("encounters", ()):
+        for encounter in self.street_manifest.get("encounters", ()):
             if not isinstance(encounter, dict):
                 raise SystemExit("START FEHLGESCHLAGEN – Street-Katalog ist ungültig")
             for field in ("title_key", "body_key"):
                 key = encounter.get(field)
                 if not isinstance(key, str) or key not in self.street_texts:
                     raise SystemExit(f"START FEHLGESCHLAGEN – Street-Text fehlt: {key}")
+        for approach in self.street_manifest.get("approaches", ()):
+            if not isinstance(approach, dict):
+                raise SystemExit("START FEHLGESCHLAGEN – Street-Ansatz ist ungültig")
+            for field in ("label_key", "description_key"):
+                key = approach.get(field)
+                if not isinstance(key, str) or key not in self.street_texts:
+                    raise SystemExit(f"START FEHLGESCHLAGEN – Street-Ansatztext fehlt: {key}")
 
         allowed = set(journal_manifest.get("event_types", ()))
         if not allowed:
@@ -176,7 +184,7 @@ class A4ClientRuntime:
             self.kernel,
             incident_catalog=self.incident_catalog,
             incident_contract_version=incident_manifest["version"],
-            street_manifest=street_manifest,
+            street_manifest=self.street_manifest,
             street_world_seed=STREET_WORLD_SEED,
             district_manifest=self.district_manifest,
             city_map_manifest=self.city_map_manifest,
@@ -202,6 +210,8 @@ class A4ClientRuntime:
                 ranking_text_catalog=self.ranking_text_catalog,
                 hall_season_manifest=self.hall_season_manifest,
                 zeit_manifest=self.zeit_manifest,
+                street_manifest=self.street_manifest,
+                street_text_catalog=self.street_texts,
             )
 
     def _context(
@@ -354,7 +364,7 @@ class A4ClientRuntime:
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.7-a1"
+    server_version = "BunkerfrequenzA4/0.8.7-b1"
 
     @property
     def runtime(self) -> A4ClientRuntime:
