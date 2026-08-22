@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "version": "0.8.3-b2-foundation",
+  "map_id": "berlin_ops",
+  "geography_mode": "stylized_game_map_not_navigation",
+  "coordinate_system": {"min": 0, "max": 100},
+  "visual_style": {
+    "direction": "retro_road_atlas_meets_modern_control_room",
+    "base": "desaturated_cartography",
+    "district_overlay": "translucent_value_zones",
+    "location_markers": "high_contrast_neon_symbols",
+    "premium_effects": ["halo", "pulse", "rank_badge"],
+    "reduced_motion_fallback": "static_halo_and_badge"
+  },
+  "district_metric_defaults": {"heat": 20, "prestige": 20, "police_pressure": 15, "scene_activity": 30},
+  "highlight_thresholds": [
+    {"tier": "legendary", "minimum_score": 85},
+    {"tier": "prime", "minimum_score": 70},
+    {"tier": "strong", "minimum_score": 55},
+    {"tier": "standard", "minimum_score": 0}
+  ],
+  "districts": [
+    {"district_id": "mitte", "label_key": "district.mitte", "map_box": {"x": 43, "y": 30, "w": 18, "h": 18}},
+    {"district_id": "friedrichshain", "label_key": "district.friedrichshain", "map_box": {"x": 59, "y": 38, "w": 17, "h": 17}},
+    {"district_id": "kreuzberg", "label_key": "district.kreuzberg", "map_box": {"x": 48, "y": 50, "w": 18, "h": 15}},
+    {"district_id": "neukoelln", "label_key": "district.neukoelln", "map_box": {"x": 52, "y": 66, "w": 20, "h": 18}},
+    {"district_id": "wedding", "label_key": "district.wedding", "map_box": {"x": 34, "y": 20, "w": 17, "h": 17}},
+    {"district_id": "lichtenberg", "label_key": "district.lichtenberg", "map_box": {"x": 76, "y": 38, "w": 18, "h": 22}},
+    {"district_id": "treptow", "label_key": "district.treptow", "map_box": {"x": 68, "y": 62, "w": 20, "h": 20}},
+    {"district_id": "charlottenburg", "label_key": "district.charlottenburg", "map_box": {"x": 19, "y": 37, "w": 21, "h": 19}}
+  ],
+  "locations": [
+    {"location_id": "hall_of_tribute", "label_key": "location.hall_of_tribute", "district_id": "friedrichshain", "category": "tribute_hall", "position": {"x": 64, "y": 43}, "values": {"prestige": 100, "audience_pull": 95, "risk": 10, "underground_factor": 92, "utility": 90}, "purchasable": false, "ranking_enabled": true, "special_effect": "tribute_crown_pulse"},
+    {"location_id": "concrete_orbit", "label_key": "location.concrete_orbit", "district_id": "lichtenberg", "category": "bunker", "position": {"x": 80, "y": 45}, "values": {"prestige": 86, "audience_pull": 82, "risk": 58, "underground_factor": 96, "utility": 78}, "purchasable": true, "purchase_price_cents": 7800000, "upgrade_slots": ["power", "soundproofing", "stage", "security", "storage"]},
+    {"location_id": "signalwerk", "label_key": "location.signalwerk", "district_id": "friedrichshain", "category": "warehouse", "position": {"x": 70, "y": 48}, "values": {"prestige": 76, "audience_pull": 84, "risk": 52, "underground_factor": 88, "utility": 82}, "purchasable": true, "purchase_price_cents": 6200000, "upgrade_slots": ["power", "soundproofing", "stage", "bar"]},
+    {"location_id": "sublevel_44", "label_key": "location.sublevel_44", "district_id": "wedding", "category": "basement", "position": {"x": 38, "y": 27}, "values": {"prestige": 61, "audience_pull": 62, "risk": 44, "underground_factor": 91, "utility": 64}, "purchasable": true, "purchase_price_cents": 3100000, "upgrade_slots": ["soundproofing", "power", "bar", "security"]},
+    {"location_id": "neon_hof", "label_key": "location.neon_hof", "district_id": "kreuzberg", "category": "courtyard", "position": {"x": 55, "y": 56}, "values": {"prestige": 68, "audience_pull": 79, "risk": 60, "underground_factor": 80, "utility": 57}, "purchasable": false, "ranking_enabled": false},
+    {"location_id": "frequenzdach", "label_key": "location.frequenzdach", "district_id": "neukoelln", "category": "rooftop", "position": {"x": 59, "y": 72}, "values": {"prestige": 72, "audience_pull": 75, "risk": 72, "underground_factor": 73, "utility": 48}, "purchasable": true, "purchase_price_cents": 5400000, "upgrade_slots": ["power", "stage", "security"]},
+    {"location_id": "plattenstudio", "label_key": "location.plattenstudio", "district_id": "mitte", "category": "studio", "position": {"x": 50, "y": 37}, "values": {"prestige": 65, "audience_pull": 48, "risk": 18, "underground_factor": 68, "utility": 88}, "purchasable": true, "purchase_price_cents": 4300000, "upgrade_slots": ["studio", "storage", "power"]},
+    {"location_id": "ringlager", "label_key": "location.ringlager", "district_id": "treptow", "category": "warehouse", "position": {"x": 74, "y": 70}, "values": {"prestige": 55, "audience_pull": 58, "risk": 38, "underground_factor": 76, "utility": 84}, "purchasable": true, "purchase_price_cents": 3900000, "upgrade_slots": ["storage", "power", "stage", "soundproofing"]},
+    {"location_id": "west_kontor", "label_key": "location.west_kontor", "district_id": "charlottenburg", "category": "office_floor", "position": {"x": 27, "y": 45}, "values": {"prestige": 74, "audience_pull": 55, "risk": 20, "underground_factor": 38, "utility": 92}, "purchasable": true, "purchase_price_cents": 6900000, "upgrade_slots": ["studio", "office", "storage", "security"]},
+    {"location_id": "kanal_null", "label_key": "location.kanal_null", "district_id": "treptow", "category": "open_air", "position": {"x": 66, "y": 76}, "values": {"prestige": 64, "audience_pull": 86, "risk": 78, "underground_factor": 89, "utility": 32}, "purchasable": false, "ranking_enabled": false},
+    {"location_id": "tape_kiosk", "label_key": "location.tape_kiosk", "district_id": "neukoelln", "category": "record_store", "position": {"x": 48, "y": 70}, "values": {"prestige": 48, "audience_pull": 42, "risk": 8, "underground_factor": 72, "utility": 76}, "purchasable": false, "ranking_enabled": false},
+    {"location_id": "generator_ost", "label_key": "location.generator_ost", "district_id": "lichtenberg", "category": "infrastructure", "position": {"x": 87, "y": 51}, "values": {"prestige": 36, "audience_pull": 20, "risk": 32, "underground_factor": 49, "utility": 98}, "purchasable": false, "ranking_enabled": false}
+  ],
+  "property_upgrade_catalog": [
+    {"upgrade_id": "soundproofing", "label_key": "upgrade.soundproofing"},
+    {"upgrade_id": "power", "label_key": "upgrade.power"},
+    {"upgrade_id": "escape_routes", "label_key": "upgrade.escape_routes"},
+    {"upgrade_id": "decor", "label_key": "upgrade.decor"},
+    {"upgrade_id": "stage", "label_key": "upgrade.stage"},
+    {"upgrade_id": "bar", "label_key": "upgrade.bar"},
+    {"upgrade_id": "storage", "label_key": "upgrade.storage"},
+    {"upgrade_id": "security", "label_key": "upgrade.security"},
+    {"upgrade_id": "studio", "label_key": "upgrade.studio"},
+    {"upgrade_id": "office", "label_key": "upgrade.office"}
+  ]
+}
