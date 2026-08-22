@@ -43,7 +43,7 @@
     "budget": {"$ref": "#/$defs/unboundedTriplet"},
     "character_id": {"type": "string", "minLength": 1},
     "stress": {"$ref": "#/$defs/resourceTriplet"},
-    "reputation": {"$ref": "#/$defs/nonnegativeTriplet"},
+    "reputation": {"$ref": "#/$defs/reputationTriplet"},
     "event_revision": {"$ref": "#/$defs/revisionPair"},
     "economy_revision": {"$ref": "#/$defs/revisionPair"},
     "incident_revision": {"$ref": "#/$defs/revisionPair"},
@@ -61,11 +61,11 @@
       },
       "additionalProperties": false
     },
-    "nonnegativeTriplet": {
+    "reputationTriplet": {
       "type": "object",
       "required": ["old", "delta", "new"],
       "properties": {
-        "old": {"type": "integer", "minimum": 0},
+        "old": {"type": "integer"},
         "delta": {"type": "integer"},
         "new": {"type": "integer", "minimum": 0}
       },
