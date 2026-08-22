@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "version": "0.8.3-a",
+  "goal": "Verbindliche Event-Phasenaktionen mit zentral geprüften Voraussetzungen vor Client-Anbindung",
+  "execution_service": "bunkerfrequenz.application.event_execution_service.EventExecutionService",
+  "journal_event": "event.phase_changed",
+  "journal_reason_format": "event_action:<action_id>",
+  "actions": [
+    {
+      "action_id": "begin_planning",
+      "source_phase": "draft",
+      "target_phase": "planning",
+      "prerequisites": []
+    },
+    {
+      "action_id": "begin_procurement",
+      "source_phase": "planning",
+      "target_phase": "procurement",
+      "prerequisites": ["confirmed_act", "confirmed_crew", "positive_budget"]
+    },
+    {
+      "action_id": "start_transport",
+      "source_phase": "procurement",
+      "target_phase": "transport",
+      "prerequisites": ["confirmed_acts", "confirmed_crew", "equipment_ready"]
+    },
+    {
+      "action_id": "begin_setup",
+      "source_phase": "transport",
+      "target_phase": "setup",
+      "prerequisites": []
+    },
+    {
+      "action_id": "confirm_soundcheck",
+      "source_phase": "setup",
+      "target_phase": "soundcheck",
+      "prerequisites": ["confirmed_crew", "equipment_ready"]
+    },
+    {
+      "action_id": "start_live",
+      "source_phase": "soundcheck",
+      "target_phase": "live",
+      "prerequisites": ["confirmed_acts", "confirmed_crew", "equipment_ready"]
+    },
+    {
+      "action_id": "finish_live",
+      "source_phase": "live",
+      "target_phase": "teardown",
+      "prerequisites": []
+    },
+    {
+      "action_id": "finish_teardown",
+      "source_phase": "teardown",
+      "target_phase": "settlement",
+      "prerequisites": []
+    }
+  ],
+  "physical_target_gate": {
+    "targets": ["transport", "setup", "soundcheck", "live", "teardown", "settlement"],
+    "blockers": [
+      "location_required",
+      "verified_access_required",
+      "time_window_required",
+      "safety_clearance_required"
+    ]
+  },
+  "out_of_scope": [
+    "crisis/incident resolution (0.8.3-B)",
+    "settlement consequences and event.completed (0.8.3-C)",
+    "client-side domain mutation",
+    "balance changes"
+  ]
+}
