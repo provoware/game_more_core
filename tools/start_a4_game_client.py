@@ -46,7 +46,11 @@ REQUIRED = (
     "manifests/STREET_ENCOUNTER_MANIFEST.json",
     "manifests/DISTRICT_STATE_MANIFEST.json",
     "manifests/CITY_MAP_MANIFEST.json",
+    "manifests/HALL_OF_TRIBUTE_MANIFEST.json",
+    "manifests/RANKING_NETWORK_MANIFEST.json",
+    "manifests/SYNC_MANIFEST.json",
     "content/de/ui/street_encounters.json",
+    "content/de/ui/character_forge.json",
 )
 
 
@@ -107,6 +111,10 @@ class A4ClientRuntime:
         street_manifest = _load_json(ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json")
         self.district_manifest = _load_json(ROOT / "manifests" / "DISTRICT_STATE_MANIFEST.json")
         self.city_map_manifest = _load_json(ROOT / "manifests" / "CITY_MAP_MANIFEST.json")
+        self.hall_manifest = _load_json(ROOT / "manifests" / "HALL_OF_TRIBUTE_MANIFEST.json")
+        self.ranking_manifest = _load_json(ROOT / "manifests" / "RANKING_NETWORK_MANIFEST.json")
+        self.sync_manifest = _load_json(ROOT / "manifests" / "SYNC_MANIFEST.json")
+        self.ranking_text_catalog = _load_json(ROOT / "content" / "de" / "ui" / "character_forge.json")
         self.street_texts = _load_json(ROOT / "content" / "de" / "ui" / "street_encounters.json")
         for encounter in street_manifest.get("encounters", ()):
             if not isinstance(encounter, dict):
@@ -172,6 +180,10 @@ class A4ClientRuntime:
                 incident_catalog=self.incident_catalog,
                 district_manifest=self.district_manifest,
                 city_map_manifest=self.city_map_manifest,
+                hall_manifest=self.hall_manifest,
+                ranking_manifest=self.ranking_manifest,
+                sync_manifest=self.sync_manifest,
+                ranking_text_catalog=self.ranking_text_catalog,
             )
 
     def _context(
@@ -324,7 +336,7 @@ class A4ClientRuntime:
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.5-d1"
+    server_version = "BunkerfrequenzA4/0.8.5-e1"
 
     @property
     def runtime(self) -> A4ClientRuntime:
