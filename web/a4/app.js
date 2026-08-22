@@ -27,6 +27,12 @@ const BLOCKER_LABELS = {
   safety_clearance_required: "Sicherheitsfreigabe fehlt"
 };
 
+const POLARITY_LABELS = {
+  positive: "GLÜCK",
+  negative: "PECH",
+  neutral: "RUHIG"
+};
+
 function commandId(prefix) {
   const suffix = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   return `${prefix}:${suffix}`;
@@ -39,6 +45,11 @@ function log(message, payload = null) {
 
 function money(cents) {
   return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format((cents || 0) / 100);
+}
+
+function signed(value) {
+  if (!value) return "0";
+  return value > 0 ? `+${value}` : String(value);
 }
 
 async function request(path, options = {}) {
@@ -93,11 +104,30 @@ function renderProfile(character) {
   $("profile-id").textContent = character.character_id;
 }
 
+function renderStreetEncounter(encounter) {
+  const host = $("street-result");
+  host.replaceChildren();
+  if (!encounter) {
+    host.textContent = "Keine bestätigte Straßenrunde erhalten.";
+    return;
+  }
+  host.dataset.polarity = encounter.polarity || "neutral";
+  const heading = document.createElement("strong");
+  heading.textContent = `${POLARITY_LABELS[encounter.polarity] || "RUNDE"} // ${encounter.title || encounter.encounter_id}`;
+  const body = document.createElement("p");
+  body.textContent = encounter.body || "";
+  const effects = document.createElement("span");
+  effects.className = "street-effects";
+  effects.textContent = `Energie ${signed(encounter.effects?.energy_delta)} · Stress ${signed(encounter.effects?.stress_delta)} · Ruf ${signed(encounter.effects?.reputation_delta)}`;
+  host.append(heading, body, effects);
+}
+
 function render() {
   const p = state.projection || {};
   const event = p.event;
   setHidden("first-run", Boolean(p.character));
   setHidden("profile-panel", !p.character);
+  setHidden("street-panel", !p.character);
   setHidden("event-panel", !event);
   setHidden("economy-panel", !p.economy);
   setHidden("incident-panel", !event || !["live", "crisis"].includes(event.phase));
@@ -122,9 +152,7 @@ function renderEventActions(actions) {
   const host = $("event-actions");
   host.replaceChildren();
   const blockers = [];
-  if (!actions.length) {
-    host.textContent = "Für diese Phase gibt es keine normale Event-Aktion.";
-  }
+  if (!actions.length) host.textContent = "Für diese Phase gibt es keine normale Event-Aktion.";
   for (const action of actions) {
     const button = document.createElement("button");
     button.textContent = ACTION_LABELS[action.action_id] || action.action_id;
@@ -198,7 +226,6 @@ function renderIncidents(p) {
     host.append(actions);
     return;
   }
-
   if (p.event?.phase !== "live") {
     host.textContent = "Keine aktive Krise.";
     return;
@@ -260,6 +287,7 @@ async function sendCommand(command) {
     log(`${command.type}: bestätigt${payload.idempotent_replay ? " (Replay)" : ""}`, payload.committed_event_ids);
     state.projection = payload.state;
     render();
+    if (command.type === "street.walk") renderStreetEncounter(payload.metadata?.street_encounter);
   } catch (error) {
     log(`${command.type}: ABGEWIESEN – ${error.message}`);
   }
@@ -300,6 +328,11 @@ $("save-profile").addEventListener("click", () => {
     }
   });
 });
+
+$("street-walk").addEventListener("click", () => sendCommand({
+  type: "street.walk",
+  command_id: commandId("street-walk")
+}));
 
 $("checkpoint").addEventListener("click", async () => {
   try {
