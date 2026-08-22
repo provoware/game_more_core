@@ -33,6 +33,12 @@ const POLARITY_LABELS = {
   neutral: "RUHIG"
 };
 
+const HOUSING_LABELS = {
+  independent: "Eigenes Zuhause",
+  guest: "Bei jemandem untergekommen",
+  homeless: "Ohne feste Unterkunft"
+};
+
 function commandId(prefix) {
   const suffix = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   return `${prefix}:${suffix}`;
@@ -91,7 +97,7 @@ function setInputIfIdle(id, value) {
   if (document.activeElement !== input) input.value = value ?? "";
 }
 
-function renderProfile(character) {
+function renderProfile(character, world) {
   if (!character) return;
   setInputIfIdle("profile-display-name", character.display_name);
   setInputIfIdle("profile-alias", character.alias);
@@ -102,6 +108,7 @@ function renderProfile(character) {
   $("profile-energy").textContent = String(character.energy);
   $("profile-stress").textContent = String(character.stress);
   $("profile-id").textContent = character.character_id;
+  $("booking-id").textContent = world?.booking_id || "–";
 }
 
 function renderStreetEncounter(encounter) {
@@ -122,18 +129,189 @@ function renderStreetEncounter(encounter) {
   host.append(heading, body, effects);
 }
 
+function fillSelect(select, values, selected, labelFor = (value) => value) {
+  select.replaceChildren();
+  for (const value of values) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = labelFor(value);
+    option.selected = value === selected;
+    select.append(option);
+  }
+}
+
+function citySpec(cityId) {
+  return (state.projection?.world?.cities || []).find((city) => city.city_id === cityId) || null;
+}
+
+function updateMoveDistricts() {
+  const city = citySpec($("move-city").value);
+  if (!city) return;
+  const currentDistrict = $("move-district").value;
+  const district = city.districts.includes(currentDistrict) ? currentDistrict : city.districts[0];
+  fillSelect($("move-district"), city.districts, district);
+  updateMoveLocations();
+}
+
+function updateMoveLocations() {
+  const city = citySpec($("move-city").value);
+  if (!city) return;
+  const district = $("move-district").value;
+  const locations = city.locations.filter((item) => item.district_id === district);
+  const select = $("move-location");
+  select.replaceChildren();
+  const districtOnly = document.createElement("option");
+  districtOnly.value = "";
+  districtOnly.textContent = "Nur Bezirk / unterwegs";
+  select.append(districtOnly);
+  for (const item of locations) {
+    const option = document.createElement("option");
+    option.value = item.location_id;
+    option.textContent = `${item.location_id} · ${item.category || "Ort"}`;
+    select.append(option);
+  }
+}
+
+function renderMoveSelectors(world) {
+  const cities = world.cities || [];
+  fillSelect($("move-city"), cities.map((item) => item.city_id), world.position.city_id, (id) => citySpec(id)?.label || id);
+  const currentCity = citySpec(world.position.city_id);
+  fillSelect($("move-district"), currentCity?.districts || [], world.position.district_id);
+  updateMoveLocations();
+  $("move-location").value = world.position.location_id || "";
+}
+
+function renderMiniGames(world) {
+  const actions = $("minigame-actions");
+  actions.replaceChildren();
+  const games = world.current_location?.mini_games || [];
+  for (const gameId of games) {
+    if (gameId === "xoxo") continue;
+    const button = document.createElement("button");
+    button.textContent = gameId === "poker" ? "POKER – 5 KARTEN" : "CASINOAUTOMAT – PUNKTE";
+    button.addEventListener("click", () => sendCommand({
+      type: "world.minigame",
+      command_id: commandId(`minigame-${gameId}`),
+      game_id: gameId,
+      cell: null
+    }));
+    actions.append(button);
+  }
+  if (!games.length) actions.textContent = "An diesem Ort gibt es kein kleines Spiel.";
+
+  const board = $("xoxo-board");
+  board.replaceChildren();
+  if (!games.includes("xoxo")) return;
+  const xoxo = world.mini_games?.xoxo;
+  for (let index = 0; index < 9; index += 1) {
+    const button = document.createElement("button");
+    button.textContent = xoxo?.board?.[index] || "·";
+    button.disabled = Boolean(xoxo?.board?.[index]);
+    button.setAttribute("aria-label", `XOXO Feld ${index + 1}`);
+    button.addEventListener("click", () => sendCommand({
+      type: "world.minigame",
+      command_id: commandId("minigame-xoxo"),
+      game_id: "xoxo",
+      cell: index
+    }));
+    board.append(button);
+  }
+}
+
+function renderMiniGameResult(result) {
+  const host = $("minigame-result");
+  if (!result) return;
+  if (result.game_id === "poker") {
+    host.textContent = `Poker: ${result.outcome.toUpperCase()} · deine Karten ${result.player_hand.join(" ")} · Haus ${result.house_hand.join(" ")} · Punkte +${result.points}`;
+  } else if (result.game_id === "slot") {
+    host.textContent = `Automat: ${result.reels.join(" | ")} · ${result.outcome.toUpperCase()} · Punkte +${result.points}`;
+  } else {
+    host.textContent = `XOXO: ${result.status.toUpperCase()} · Punkte +${result.points}`;
+  }
+}
+
+function renderWorld(world) {
+  if (!world) return;
+  $("intro-story").textContent = world.intro?.text || "";
+  setHidden("intro-panel", Boolean(world.intro?.acknowledged));
+  $("world-city").textContent = world.city?.label || world.position.city_id;
+  $("world-district").textContent = world.position.district_id;
+  $("world-location").textContent = world.position.location_id || "unterwegs";
+  $("world-housing").textContent = HOUSING_LABELS[world.housing?.status] || world.housing?.status || "–";
+  $("city-price-factor").textContent = `${((world.city?.price_multiplier_bps || 10000) / 100).toFixed(0)} %`;
+  $("city-customs").textContent = world.city?.description || (world.city?.customs || []).join(" · ");
+  $("metric-heat").textContent = String(world.district_metrics?.heat ?? "–");
+  $("metric-prestige").textContent = String(world.district_metrics?.prestige ?? "–");
+  $("metric-police").textContent = String(world.district_metrics?.police_pressure ?? "–");
+  $("metric-scene").textContent = String(world.district_metrics?.scene_activity ?? "–");
+  renderMoveSelectors(world);
+  $("inspect-storefront").disabled = !world.current_location?.storefront_available;
+  renderMiniGames(world);
+  $("honor-list").textContent = world.honors?.length
+    ? `Titel: ${world.honors.map((item) => `${item.label} [${item.kind}]`).join(" · ")}`
+    : "Noch keine Titel.";
+  $("deed-list").textContent = world.great_deeds?.length
+    ? world.great_deeds.map((item) => `${item.label} [${item.valence}]`).join(" · ")
+    : "Noch keine großen Werke.";
+  renderParty(world.party);
+}
+
+function renderParty(party) {
+  const host = $("party-status");
+  const choices = $("party-choices");
+  choices.replaceChildren();
+  if (!party) {
+    host.textContent = "Living-City-Partyvertrag nicht verfügbar.";
+    return;
+  }
+  const check = party.check;
+  host.textContent = check?.triggered && !check.resolved
+    ? "Gesetzeshüter sind eingetroffen. Wähle eine von genau drei bestätigten Reaktionen."
+    : check?.triggered && check.resolved
+      ? `Begegnung abgeschlossen: ${check.choice_id}`
+      : check?.resolved
+        ? "Risikocheck abgeschlossen: keine Begegnung."
+        : `Party-Modus: ${party.mode || "official"}`;
+  $("party-check").disabled = !party.eligible_to_check;
+  for (const choice of party.choices || []) {
+    const button = document.createElement("button");
+    button.textContent = choice.label || choice.choice_id;
+    button.addEventListener("click", () => sendCommand({
+      type: "world.party_resolve",
+      command_id: commandId("party-resolve"),
+      choice_id: choice.choice_id
+    }));
+    choices.append(button);
+  }
+}
+
+function renderStorefront(storefront) {
+  const host = $("storefront-result");
+  const notes = storefront?.notes;
+  if (!Array.isArray(notes)) return;
+  host.replaceChildren();
+  for (const note of notes) {
+    const p = document.createElement("p");
+    p.textContent = note;
+    host.append(p);
+  }
+}
+
 function render() {
   const p = state.projection || {};
   const event = p.event;
   setHidden("first-run", Boolean(p.character));
   setHidden("profile-panel", !p.character);
   setHidden("street-panel", !p.character);
+  setHidden("world-panel", !p.world);
+  setHidden("intro-panel", !p.world || Boolean(p.world?.intro?.acknowledged));
   setHidden("event-panel", !event);
   setHidden("economy-panel", !p.economy);
   setHidden("incident-panel", !event || !["live", "crisis"].includes(event.phase));
   setHidden("settlement-panel", !event || !["settlement", "completed"].includes(event.phase));
 
-  renderProfile(p.character);
+  renderProfile(p.character, p.world);
+  if (p.world) renderWorld(p.world);
   $("phase-badge").textContent = event ? event.phase.toUpperCase() : "NOCH KEIN EVENT";
   if (!event) return;
 
@@ -182,7 +360,7 @@ function renderEconomy(economy) {
     const title = document.createElement("strong");
     title.textContent = item.label;
     const detail = document.createElement("span");
-    detail.textContent = `Besitz ${item.owned} · reserviert ${item.reserved} · Basis ${money(item.base_price_cents)}`;
+    detail.textContent = `Besitz ${item.owned} · reserviert ${item.reserved} · Basis ${money(item.base_price_cents)} · tatsächlicher Preis folgt bestätigtem Stadt-/Marktkontext`;
     info.append(title, detail);
     const actions = document.createElement("div");
     actions.className = "inline-actions";
@@ -231,7 +409,7 @@ function renderIncidents(p) {
     return;
   }
   const intro = document.createElement("p");
-  intro.textContent = "Optional: Für den Smoke-Pfad kann während LIVE eine Krise ausgelöst werden.";
+  intro.textContent = "Optional: Während LIVE kann eine katalogisierte Krise ausgelöst werden.";
   host.append(intro);
   const actions = document.createElement("div");
   actions.className = "action-grid";
@@ -288,6 +466,8 @@ async function sendCommand(command) {
     state.projection = payload.state;
     render();
     if (command.type === "street.walk") renderStreetEncounter(payload.metadata?.street_encounter);
+    if (command.type === "world.inspect_storefront") renderStorefront(payload.metadata?.storefront);
+    if (command.type === "world.minigame") renderMiniGameResult(payload.metadata?.minigame);
   } catch (error) {
     log(`${command.type}: ABGEWIESEN – ${error.message}`);
   }
@@ -312,6 +492,11 @@ $("new-game").addEventListener("click", async () => {
   }
 });
 
+$("intro-ack").addEventListener("click", () => sendCommand({
+  type: "world.intro_acknowledge",
+  command_id: commandId("intro")
+}));
+
 $("save-profile").addEventListener("click", () => {
   const nicknames = $("profile-nicknames").value
     .split(",")
@@ -332,6 +517,36 @@ $("save-profile").addEventListener("click", () => {
 $("street-walk").addEventListener("click", () => sendCommand({
   type: "street.walk",
   command_id: commandId("street-walk")
+}));
+
+$("move-city").addEventListener("change", updateMoveDistricts);
+$("move-district").addEventListener("change", updateMoveLocations);
+$("world-move").addEventListener("click", () => sendCommand({
+  type: "world.move",
+  command_id: commandId("world-move"),
+  city_id: $("move-city").value,
+  district_id: $("move-district").value,
+  location_id: $("move-location").value || null
+}));
+
+$("inspect-storefront").addEventListener("click", () => sendCommand({
+  type: "world.inspect_storefront",
+  command_id: commandId("storefront")
+}));
+
+$("party-official").addEventListener("click", () => sendCommand({
+  type: "world.party_mode",
+  command_id: commandId("party-mode"),
+  mode: "official"
+}));
+$("party-unofficial").addEventListener("click", () => sendCommand({
+  type: "world.party_mode",
+  command_id: commandId("party-mode"),
+  mode: "unofficial"
+}));
+$("party-check").addEventListener("click", () => sendCommand({
+  type: "world.party_check",
+  command_id: commandId("party-check")
 }));
 
 $("checkpoint").addEventListener("click", async () => {
