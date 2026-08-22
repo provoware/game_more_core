@@ -8,10 +8,10 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.6 B validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.6--B_validiert-7dff00">
-  <img alt="Living Districts validiert" src="https://img.shields.io/badge/Living_Districts-validiert-00c2ff">
+  <img alt="Feature Stand 0.8.6 C validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.6--C_validiert-7dff00">
   <img alt="Property Purchase validiert" src="https://img.shields.io/badge/Property_Purchase-0.8.6--A_validiert-f2c744">
   <img alt="Property Upgrades validiert" src="https://img.shields.io/badge/Property_Upgrades-0.8.6--B_validiert-e840ff">
+  <img alt="Berlin Ops Map PRO validiert" src="https://img.shields.io/badge/Berlin_Ops_Map_PRO-0.8.6--C_validiert-00c2ff">
   <img alt="Hall of Tribute validiert" src="https://img.shields.io/badge/Hall_of_Tribute-validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -29,48 +29,45 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.6-B` |
+| **Validierter Feature-Stand** | ✅ `0.8.6-C` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Event-Loop** | ✅ Planung → Beschaffung → Aufbau → Live → Krise optional → Abbau → Settlement → completed |
 | **Living World** | ✅ Street Encounters + persistente District-Metriken |
 | **Ranking** | ✅ Competitive Top 10 + Hall of Tribute |
 | **Immobilien** | ✅ 7 kaufbare Orte, bestätigtes Eigentum |
-| **Ausbau** | ✅ 10 Ausbauarten, Level 1–3, atomare Kostenbuchung, Map-Wertwirkung |
+| **Ausbau** | ✅ 10 Ausbauarten, Level 1–3, atomare Kostenbuchung, Kartenwirkung |
+| **Berlin Ops Map PRO** | ✅ 8 Districts · 12 Locations · Eigentum/Ausbau · vier Sichtfilter · read-only |
 | **Recovery** | ✅ Combined Replay für Character, Event, Economy, Incident, Settlement, District, Property und PropertyUpgrade |
-| **Nächster Block** | `0.8.6-C – Berlin Ops Map PRO` |
+| **Nächster Block** | `0.8.7-A – Saisonale Hall of Tribute` |
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.6-B` ist **Feature-Fortschritt**, kein stiller Produktrelease. Die veröffentlichte Runtime-Baseline bleibt `0.8.4-alpha.1`, bis eine neue eigene Release-Abnahme durchgeführt wird.
+> `0.8.6-C` ist **validierter Feature-Fortschritt**, kein stiller Produktrelease. Die veröffentlichte Runtime-Baseline bleibt `0.8.4-alpha.1`, bis eine neue eigene Release-Abnahme durchgeführt wird.
 
 ---
 
-## 🎮 In 60 Sekunden: Was ist das Spiel?
+## 🎮 Was ist BUNKERFREQUENZ?
 
-BUNKERFREQUENZ ist ein lokales Techno-/FreeTekno-Crew-RPG, in dem nicht eine starre Klasse, sondern bestätigtes Verhalten den Charakter und die Spielwelt formt.
+BUNKERFREQUENZ ist ein lokales Techno-/FreeTekno-Crew-RPG. Nicht eine starre Klasse, sondern bestätigtes Verhalten formt Charakter, Crew und Stadt.
 
 ```text
 STRASSE / ENTDECKEN
       ↓
 CHARAKTER & CREW ENTWICKELN
       ↓
-EVENT PLANEN
+EVENT PLANEN UND VORBEREITEN
       ↓
-EQUIPMENT / CREW / ORT VORBEREITEN
-      ↓
-EVENT DURCHFÜHREN
-      ↓
-KRISE? → ENTSCHEIDUNG
+EVENT / KRISE / ENTSCHEIDUNG
       ↓
 SETTLEMENT
       ↓
 RUF · SKILLS · TRAITS · BIOGRAFIE
       ↓
-DISTRICT-WERTE VERÄNDERN
+LIVING DISTRICTS
       ↓
-IMMOBILIEN ÜBERNEHMEN
+IMMOBILIEN ÜBERNEHMEN UND AUSBAUEN
       ↓
-IMMOBILIEN AUSBAUEN
+BERLIN OPS MAP PRO
       ↓
 HALL OF TRIBUTE / LANGZEITPROGRESSION
 ```
@@ -78,7 +75,7 @@ HALL OF TRIBUTE / LANGZEITPROGRESSION
 ### Character Forge
 
 - **16 Skills** statt fester Klassen
-- **165 Trait-Namen** auf gemeinsamen, kontrollierbaren Effektfamilien
+- **165 Trait-Namen** auf kontrollierten Effektfamilien
 - Level 1–50, danach offene Resonanzränge
 - Energie und Stress `0..100`
 - Profilname, Alias, Spitznamen und Motto editierbar
@@ -88,28 +85,25 @@ HALL OF TRIBUTE / LANGZEITPROGRESSION
 
 - 8 stilisierte Berliner Bezirke
 - 12 katalogisierte Spielorte
-- `heat`, `prestige`, `police_pressure`, `scene_activity` persistent je Bezirk
+- persistente Bezirkswerte `heat`, `prestige`, `police_pressure`, `scene_activity`
 - deterministische Street Encounters ohne Reload-Reroll
 - Hall of Tribute mit bestätigtem Ranking
+- 7 kaufbare Properties und 10 Ausbauarten
 
 ---
 
-## 🏢 0.8.6 – Property Progression ✅
+## 🏢 0.8.6-A/B – Property Progression ✅
 
-Mit 0.8.6 wird aus der bisher read-only vorbereiteten Immobilienbasis erstmals echte langfristige Progression.
+### Immobilien kaufen
 
-### 0.8.6-A – Immobilien kaufen
-
-Sieben City-Map-Orte besitzen einen kanonischen Kaufpreis. Der Client darf diesen Preis **nicht** mitsenden oder ändern.
+Der Client sendet nur die `location_id`. Preis, Eigentümer und Budgetdelta stammen aus der Runtime.
 
 ```text
 A4
  ↓ property.purchase(location_id)
 GameClientSession
  ↓
-PropertyService
- ↓
-EconomyService – Geldautorität
+PropertyService + EconomyService
  ↓
 EIN atomarer Persistence-Commit
  ├─ economy.transaction_posted
@@ -121,145 +115,119 @@ Economy + Event-Budget + PropertyState
 Garantien:
 
 - Kaufpreis ausschließlich aus `CITY_MAP_MANIFEST`
-- bestätigter Character wird Eigentümer
-- nicht kaufbare Orte fail-closed
-- Doppelkäufe fail-closed
+- keine Client-Preisautorität
+- nicht kaufbare Orte und Doppelkäufe fail-closed
 - kein Zwischenzustand „Geld weg, Eigentum fehlt“
-- Property-Käufe sind nicht über den Equipment-Undo kompensierbar
 - Combined Recovery rekonstruiert Geld und Eigentum gemeinsam
-- dieselbe Ownership-Quelle markiert den Ort in der Berlin-Ops-Projection
 
-**Remote-Abnahme:** PR #82 · Head `af582597fa2a899ab0cc0d062e128ec6b0e7dc1a` · Merge `192b3eb4ad9dc4272eafeddc8604f7265bdd30fa`.
+**0.8.6-A:** PR #82 · Merge `192b3eb4ad9dc4272eafeddc8604f7265bdd30fa`.
 
-### 0.8.6-B – Immobilien ausbauen
+### Immobilien ausbauen
 
-Eigentum bleibt rückwärtskompatibel im bestehenden `PropertyState`. Ausbau besitzt bewusst einen **separaten `PropertyUpgradeState`**.
+Ausbau besitzt einen separaten `PropertyUpgradeState`. Der Browser sendet nur `location_id + upgrade_id`.
 
-```text
-A4
- ↓ property.upgrade(location_id, upgrade_id)
-GameClientSession
- ↓
-PropertyUpgradeService
- ├─ prüft Eigentum + erlaubten Slot + aktuelles Level
- ├─ liest bestätigten ursprünglichen Kaufpreis
- └─ nutzt EconomyService für die Geldmutation
- ↓
-EIN atomarer Commit
- ├─ economy.transaction_posted
- └─ world.property_upgraded
- ↓
-Economy + Event-Budget + PropertyUpgradeState
-```
+- 10 Ausbauarten
+- maximales Level **3**
+- Kostenmultiplikatoren **1,00× / 1,50× / 2,25×**
+- Kostenbasis: bestätigter ursprünglicher Immobilienkaufpreis
+- keine Client-Autorität über Kosten, Level, Wertdelta oder Menge
+- Economy + Event-Budget + Upgrade-State atomar
+- `world.property_upgraded` replaybar
+- Combined Recovery einschließlich Fault nach durablem Journal
+- effektive Werte bleiben `0..100`
+- vorhandene `city_map_projection` bleibt einzige Score-/Tier-Autorität
 
-#### Ausbauarten
-
-| Ausbau | Primäre Wirkung pro Level |
-|---|---|
-| Schallschutz | Risiko ↓, Utility ↑ |
-| Strom | Utility ↑, Risiko leicht ↓ |
-| Fluchtwege | Risiko deutlich ↓ |
-| Deko | Prestige + Audience Pull ↑ |
-| Bühne | Prestige + Audience Pull + Utility ↑ |
-| Bar | Audience Pull + Utility ↑, Risiko leicht ↑ |
-| Lager | Utility ↑ |
-| Security | Risiko ↓, Utility ↑ |
-| Studio | Prestige + Underground + Utility ↑ |
-| Office | Prestige + Utility ↑ |
-
-#### Level- und Kostenvertrag
-
-- maximales Ausbaulevel: **3**
-- Level-Multiplikatoren: **1,00× / 1,50× / 2,25×**
-- Basis ist der **bestätigte ursprüngliche Kaufpreis** des Ortes
-- jede Ausbauart besitzt zusätzlich einen manifestdefinierten Kostenfaktor
-- reine Ganzzahl-/Basispunktrechnung; kein Browser-Float und keine Rundungsdrift
-- Ausbaukosten verändern den Equipment-Markt-Tick nicht
-- Ausbaukäufe sind nicht kompensierbar
-
-Der Browser sendet ausschließlich:
-
-```text
-property.upgrade
-+ command_id
-+ location_id
-+ upgrade_id
-```
-
-Er darf **nicht** mitsenden:
-
-- Preis
-- Ziellevel
-- Budgetdelta
-- Wertdelta
-- Menge
-- Eigentümer
-
-Diese Felder werden bei Manipulationsversuchen vor jedem Write abgewiesen.
-
-#### Wirkung auf die Karte
-
-Ausbau erzeugt keine zweite Bewertungsengine. Die bestätigten Ausbaulevel werden read-only in effektive Standortwerte übersetzt und anschließend an dieselbe bestehende `city_map_projection` übergeben.
-
-```text
-PropertyUpgradeState
-      ↓
-effektive Location-Werte 0..100
-      ↓
-city_map_projection
-      ↓
-kanonischer Score
-      ↓
-standard / strong / prime / legendary
-```
-
-**Remote-Abnahme 0.8.6-B:**
-
-- PR #83
-- Head `acbf6b1c5615137664ed4ad84fb0535bea297030`
-- Runtime Core `32589287044` ✅
-- Presentation Core `32589287132` ✅
-- Repository Health `32589287056` ✅
-- Release Acceptance `32589287152` ✅
-- Release Package `32589287135` ✅
-- Review-Threads: `0`
-- `/safe-merge`: **PASS**
-- Merge `0b301bc9004f60dbc3ce221a7c6b3e462766b5b7`
+**0.8.6-B:** PR #83 · Head `acbf6b1c5615137664ed4ad84fb0535bea297030` · 5/5 Gates · Merge `0b301bc9004f60dbc3ce221a7c6b3e462766b5b7`.
 
 ---
 
-## 🗺️ Nächster Schritt: 0.8.6-C – Berlin Ops Map PRO
+## 🗺️ 0.8.6-C – Berlin Ops Map PRO ✅
 
-Jetzt ist der geeignete Zeitpunkt für den hochwertigen Kartenrenderer. Vorher wäre er nur eine hübsche Hülle um statische Daten gewesen. Jetzt existieren echte, bestätigte Quellen für:
-
-- District-Metriken
-- letzte District-Änderung
-- 12 Locations
-- Score und Tier
-- Eigentum
-- Ausbaulevel
-- effektive Ausbauwerte
-- Hall of Tribute
-
-### Zielbild
-
-**Retro-Autokarte × industrieller Berliner Control Room × taktische Aufbauspielkarte**.
-
-Der Renderer bleibt strikt read-only:
+Die Karte ist jetzt eine echte, hochwertige **read-only Handlungsebene** auf bereits bestätigten Daten.
 
 ```text
-Domain / Application / Journal
-            ↓
 bestätigter State
-            ↓
-District / Property / Upgrade Projections
-            ↓
-City Map Projection
-            ↓
-BERLIN OPS MAP PRO
+      ↓
+Living District / City Map / Property / Upgrade Projections
+      ↓
+BerlinOpsMapPro Projection
+      ↓
+map_pro.js – reine Darstellung
 ```
 
-Die Karte darf hervorheben, filtern, fokussieren und erklären – aber weder Heat, Eigentum, Kosten noch Score selbst erfinden.
+### Sichtbar auf der Karte
+
+- **8 District-Flächen** mit Heat, Prestige, Polizeidruck und Szeneaktivität
+- **12 Locations** mit Score, Tier und Rang
+- Eigentumsmarkierung
+- bestätigte Ausbaulevel
+- fünf effektive Standortwerte
+- Hall of Tribute als besonderer Marker
+- Detailpanel bei Fokus oder Klick
+
+### Vier reine Sichtfilter
+
+1. Alle Orte
+2. Mein Eigentum
+3. Prime + Legendary
+4. Hall of Tribute
+
+Filter verändern **keinen Spielzustand**.
+
+### Harte Sicherheitsgrenze
+
+`web/a4/map_pro.js` besitzt absichtlich:
+
+- kein `/api/command`
+- kein eigenes `fetch()`
+- keine Domain-/Save-Writes
+- kein `localStorage`/`sessionStorage` als Autorität
+- keine Geolocation
+- kein Google Maps, Mapbox oder Leaflet
+- kein Geocoding
+- keine Navigationslogik
+
+Score, Tier, Eigentum und Ausbau werden nicht im Renderer berechnet, sondern ausschließlich aus bestätigten Projections übernommen.
+
+### Bedienbarkeit
+
+- Tastaturfokus
+- sichtbarer Fokus
+- ARIA-Beschriftungen
+- Information nicht nur über Farbe: Tierformen, Eigentumsring und Hall-Form
+- Reduced-Motion-Fallback
+- responsive Desktop-/Tablet-/Mobilansicht
+
+### Remote-Abnahme 0.8.6-C
+
+- PR #85
+- Head `6c302ce9425b27e7a1175a1cdcf463a100fc7191`
+- Runtime Core `32592128107` ✅
+- Presentation Core `32592128117` ✅
+- Repository Health `32592128103` ✅
+- Release Acceptance `32592128147` ✅
+- Release Package `32592128113` ✅
+- Review-Threads: `0`
+- `/safe-merge`: **PASS**
+- Merge `10c7d6b5e04838b07ae6899b8b76580cd87de607`
+
+Vertrag: [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) · Projection: [`src/bunkerfrequenz/presentation/berlin_ops_map_pro.py`](src/bunkerfrequenz/presentation/berlin_ops_map_pro.py) · Renderer: [`web/a4/map_pro.js`](web/a4/map_pro.js)
+
+---
+
+## 🏆 Nächster Schritt: 0.8.7-A – Saisonale Hall of Tribute
+
+Die Hall, Competitive-Ranking-Engine und Bewegungsanzeige sind stabil. Der nächste Ausbau ergänzt bestätigte **Wochen-/Monatszyklen** und Prestige-Titel.
+
+Harte Vorgaben:
+
+- Systemzeit ist niemals alleinige Zyklusautorität.
+- Wiederholung desselben bestätigten Zyklus bleibt deterministisch.
+- Die bestehende Ranking-Engine wird wiederverwendet.
+- Lokale Hall-Daten erfinden weiterhin keine Gegner.
+- Titel entstehen nur aus bestätigtem Zyklus + bestätigtem Ranking.
+
+Vorgemerkte Titel: **Lärmadel, Bunkerbaron, Kabelkönig, Pegelpapst, Stromheiland, Betonlegende, Nachtminister**.
 
 Aktiver Plan: [`TODO.md`](TODO.md)
 
@@ -267,43 +235,27 @@ Aktiver Plan: [`TODO.md`](TODO.md)
 
 ## 🚀 Start für absolute Anfänger
 
-### 1. Repository öffnen
-
-Im Projektordner ein Terminal öffnen.
-
-### 2. Spiel starten
+Im Projektordner:
 
 ```bash
 ./START_BUNKERFREQUENZ.sh
 ```
 
-Für automatische freie Portwahl:
+Automatische freie Portwahl:
 
 ```bash
 ./START_BUNKERFREQUENZ.sh --port 0
 ```
 
-Oder direkt:
+Alternativ:
 
 ```bash
 python3 tools/start_a4_game_client.py
 ```
 
-Der lokale Server bindet ausschließlich an `127.0.0.1`.
+Der lokale Server bindet ausschließlich an `127.0.0.1`. Vorhandene Saves werden nicht still überschrieben.
 
-### 3. Was beim ersten Start passiert
-
-Der First Run legt kontrolliert an:
-
-1. GENESIS-Character
-2. vorbereitetes Event
-3. Economy-/Equipment-Katalog
-
-Vorhandene Saves werden nicht still überschrieben.
-
-### 4. Speichern
-
-Jeder bestätigte Command wird unmittelbar journalisiert. Zusätzlich kann der A4-Client einen manuellen Snapshot/Checkpoint erzeugen.
+Jeder bestätigte Command wird unmittelbar journalisiert; zusätzlich kann ein manueller Snapshot/Checkpoint erzeugt werden.
 
 ---
 
@@ -321,12 +273,8 @@ DOMAIN
 └─ PropertyUpgradeState
         ↓
 APPLICATION
-├─ Character / Profile
-├─ Street Encounter
-├─ Event State / Execution
-├─ Economy
-├─ Incident
-├─ Settlement
+├─ Character / Profile / Street
+├─ Event / Economy / Incident / Settlement
 ├─ District
 ├─ Property
 └─ Property Upgrade
@@ -343,12 +291,10 @@ READ-ONLY PROJECTIONS
 ├─ Ranking / Hall
 ├─ Living Districts
 ├─ Property / Upgrades
-└─ Berlin Ops Map
+└─ Berlin Ops Map PRO
         ↓
-A4 GAME CLIENT / SPÄTER MAP PRO
+A4 GAME CLIENT
 ```
-
-### Harte Grenzen
 
 | Ebene | Darf | Darf nicht |
 |---|---|---|
@@ -370,70 +316,13 @@ A4 GAME CLIENT / SPÄTER MAP PRO
 - Quarantäne beschädigter Journal-Tails
 - Fault-Injection-Tests für durable Journalrecords vor State-Write
 
-Combined Recovery kennt inzwischen:
+Combined Recovery kennt:
 
 ```text
-Character
-→ Event
-→ Economy
-→ Incident
-→ Settlement
-→ District
-→ Property
-→ PropertyUpgrade
+Character → Event → Economy → Incident → Settlement → District → Property → PropertyUpgrade
 ```
 
-Ein besonders wichtiger Vertrag für 0.8.6 lautet:
-
 > **Geld und Eigentum/Ausbau dürfen nach einem Crash niemals auf unterschiedlichen bestätigten Ständen verbleiben.**
-
----
-
-## 🏙️ Berlin Ops Datenbasis
-
-- **8 Bezirke:** Mitte, Friedrichshain, Kreuzberg, Neukölln, Wedding, Lichtenberg, Treptow, Charlottenburg
-- **12 Locations**
-- **7 kaufbare Properties**
-- **10 Upgrade-Arten**
-- exakt **1 Hall of Tribute**
-
-Die Karte ist eine **stilisierte Spielkarte**, keine reale Navigation. Sie verwendet 0–100-Spielkoordinaten und benötigt kein Geocoding.
-
-Location-Werte:
-
-- `prestige`
-- `audience_pull`
-- `risk`
-- `underground_factor`
-- `utility`
-
-District-Werte:
-
-- `heat`
-- `prestige`
-- `police_pressure`
-- `scene_activity`
-
----
-
-## 🏆 Hall of Tribute
-
-Die Hall verwendet dieselbe kanonische Ranking-Engine wie die übrige Presentation.
-
-Aktuell lokal verfügbar:
-
-- Ruf
-- Level
-- Resonanz
-- eindeutige Top-10-Plätze
-- Aufstieg `↑`
-- Abstieg `↓`
-- gehalten `→`
-- neu `★`
-
-Ohne bestätigte Netzwerkdaten werden keine Gegner konstruiert.
-
-Später vorbereitet: saisonale Titel wie **Lärmadel, Bunkerbaron, Kabelkönig, Pegelpapst, Stromheiland, Betonlegende und Nachtminister**.
 
 ---
 
@@ -449,14 +338,13 @@ Später vorbereitet: saisonale Titel wie **Lärmadel, Bunkerbaron, Kabelkönig, 
 | 0.8.5-C | Street Encounters | `38de9f42c290...` |
 | 0.8.5-D | Living Districts | `98c8b84715cc...` |
 | 0.8.5-E | Hall of Tribute | `d383a3f364c6...` |
-| **0.8.6-A** | **Property Purchase** | `192b3eb4ad9d...` |
-| **0.8.6-B** | **Property Upgrades** | `0b301bc9004f...` |
+| 0.8.6-A | Property Purchase | `192b3eb4ad9d...` |
+| 0.8.6-B | Property Upgrades | `0b301bc9004f...` |
+| **0.8.6-C** | **Berlin Ops Map PRO** | `10c7d6b5e048...` |
 
 ---
 
 ## 📦 Release-Baseline
-
-Aktueller bewusst freigegebener Release:
 
 ```text
 BUNKERFREQUENZ-0.8.4-alpha.1.zip
@@ -464,54 +352,35 @@ SHA-256:
 fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146
 ```
 
-Das Release-Paket wird reproduzierbar gebaut und aus einem frisch entpackten Zielordner smoke-getestet.
-
 0.8.5 und 0.8.6 sind danach validierte Feature-Entwicklung auf `main`. Eine neue Produktversion wird erst nach einer eigenen Release-Iteration festgelegt.
 
 ---
 
 ## 🧪 Qualitäts-Gates
 
-### Runtime Core
-
 ```bash
-PYTHONPATH=src python3 -m compileall -q src
 PYTHONPATH=src python3 -m unittest discover -s tests/runtime -v
-```
-
-### Presentation Core
-
-```bash
-PYTHONPATH=src python3 -m compileall -q src/bunkerfrequenz/presentation
 PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
-```
-
-### Repository Health
-
-```bash
 PYTHONPATH=src:. python3 -m unittest discover -s tests/repository -v
 PYTHONPATH=src python3 tools/repository_health.py
 ```
 
-Normale PRs werden erst übernommen, wenn der exakte Head aktuell zu `main` ist, die Required Checks grün sind und keine ungelösten Review-Threads verbleiben.
+Normaler Mergepfad:
 
 ```text
-PR
- ↓
+aktueller main enthalten
+        ↓
 Runtime Core ✅
 Presentation Core ✅
 Repository Health ✅
- ↓
-Release Acceptance / Package bei Featurepfaden ✅
- ↓
+Release Acceptance / Package ✅
+        ↓
 0 Review-Threads
- ↓
-aktueller main enthalten
- ↓
+        ↓
 /safe-merge
- ↓
+        ↓
 Main-Provenienz
- ↓
+        ↓
 SAFE MERGE PASS
 ```
 
@@ -526,11 +395,8 @@ SAFE MERGE PASS
 | Ausbauvorrat | [`FEATURE_POOL.md`](FEATURE_POOL.md) |
 | Projektmanifest | [`PROJEKTMANIFEST.json`](PROJEKTMANIFEST.json) |
 | A4 First Run | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
-| Event State | [`docs/EVENT_STATE_0.8.1.md`](docs/EVENT_STATE_0.8.1.md) |
-| Event Actions | [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EVENT_ACTION_MANIFEST.json) |
-| Incident | [`manifests/INCIDENT_MANIFEST.json`](manifests/INCIDENT_MANIFEST.json) |
-| Settlement | [`manifests/SETTLEMENT_MANIFEST.json`](manifests/SETTLEMENT_MANIFEST.json) |
 | City Map | [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json) |
+| Berlin Ops Map PRO | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |
 | Living Districts | [`manifests/DISTRICT_STATE_MANIFEST.json`](manifests/DISTRICT_STATE_MANIFEST.json) |
 | Property | [`manifests/PROPERTY_MANIFEST.json`](manifests/PROPERTY_MANIFEST.json) |
 | Property Upgrades | [`manifests/PROPERTY_UPGRADE_MANIFEST.json`](manifests/PROPERTY_UPGRADE_MANIFEST.json) |
