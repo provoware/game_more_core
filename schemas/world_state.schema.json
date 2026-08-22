@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://provoware.local/schemas/world_state.schema.json",
+  "title": "BUNKERFREQUENZ Living City WorldState",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "world_id", "revision", "next_booking_number", "players", "positions", "housing",
+    "districts", "trust_blocks", "honors", "great_deeds", "party_modes", "party_checks",
+    "storefront_reads", "mini_games", "applied_settlements"
+  ],
+  "properties": {
+    "world_id": {"type": "string", "minLength": 1},
+    "revision": {"type": "integer", "minimum": 0},
+    "next_booking_number": {"type": "integer", "minimum": 1},
+    "players": {"type": "object", "additionalProperties": {"$ref": "#/$defs/player"}},
+    "positions": {"type": "object", "additionalProperties": {"$ref": "#/$defs/position"}},
+    "housing": {"type": "object", "additionalProperties": {"$ref": "#/$defs/housing"}},
+    "districts": {"type": "object", "additionalProperties": {"type": "object", "additionalProperties": {"$ref": "#/$defs/metrics"}}},
+    "trust_blocks": {"type": "array", "items": {"$ref": "#/$defs/trust"}},
+    "honors": {"type": "object", "additionalProperties": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}},
+    "great_deeds": {"type": "array", "items": {"$ref": "#/$defs/deed"}},
+    "party_modes": {"type": "object", "additionalProperties": {"enum": ["official", "unofficial"]}},
+    "party_checks": {"type": "object", "additionalProperties": {"$ref": "#/$defs/partyCheck"}},
+    "storefront_reads": {"type": "object", "additionalProperties": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}},
+    "mini_games": {"type": "object", "additionalProperties": {"type": "object"}},
+    "applied_settlements": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  },
+  "$defs": {
+    "player": {
+      "type": "object", "additionalProperties": false,
+      "required": ["booking_id", "display_name", "intro_acknowledged"],
+      "properties": {
+        "booking_id": {"type": "string", "pattern": "^BF-[0-9]{6}$"},
+        "display_name": {"type": "string", "minLength": 1},
+        "intro_acknowledged": {"type": "boolean"}
+      }
+    },
+    "position": {
+      "type": "object", "additionalProperties": false,
+      "required": ["city_id", "district_id", "location_id"],
+      "properties": {
+        "city_id": {"type": "string", "minLength": 1},
+        "district_id": {"type": "string", "minLength": 1},
+        "location_id": {"type": ["string", "null"]}
+      }
+    },
+    "housing": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "host_character_id"],
+      "properties": {
+        "status": {"enum": ["independent", "guest", "homeless"]},
+        "host_character_id": {"type": ["string", "null"]}
+      }
+    },
+    "metrics": {
+      "type": "object", "additionalProperties": false,
+      "required": ["heat", "prestige", "police_pressure", "scene_activity"],
+      "properties": {
+        "heat": {"type": "integer", "minimum": 0, "maximum": 100},
+        "prestige": {"type": "integer", "minimum": 0, "maximum": 100},
+        "police_pressure": {"type": "integer", "minimum": 0, "maximum": 100},
+        "scene_activity": {"type": "integer", "minimum": 0, "maximum": 100}
+      }
+    },
+    "trust": {
+      "type": "object", "additionalProperties": false,
+      "required": ["offender_id", "target_id", "violation_type", "remaining_cycles"],
+      "properties": {
+        "offender_id": {"type": "string", "minLength": 1},
+        "target_id": {"type": "string", "minLength": 1},
+        "violation_type": {"type": "string", "minLength": 1},
+        "remaining_cycles": {"type": "integer", "minimum": 1}
+      }
+    },
+    "deed": {
+      "type": "object", "additionalProperties": false,
+      "required": ["record_id", "character_id", "deed_id", "source_event_id", "valence"],
+      "properties": {
+        "record_id": {"type": "string", "minLength": 1},
+        "character_id": {"type": "string", "minLength": 1},
+        "deed_id": {"type": "string", "minLength": 1},
+        "source_event_id": {"type": "string", "minLength": 1},
+        "valence": {"enum": ["positive", "negative", "ambiguous"]}
+      }
+    },
+    "partyCheck": {
+      "type": "object", "additionalProperties": false,
+      "required": ["triggered", "resolved", "choice_id"],
+      "properties": {
+        "triggered": {"type": "boolean"},
+        "resolved": {"type": "boolean"},
+        "choice_id": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
