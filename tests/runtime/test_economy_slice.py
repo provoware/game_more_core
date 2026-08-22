@@ -1,7 +1,8 @@
+from copy import deepcopy
 import tempfile
 import unittest
 
-from bunkerfrequenz.application.economy_service import EconomyService
+from bunkerfrequenz.application.economy_service import EconomyService, replay_economy_event
 from bunkerfrequenz.application.event_state_service import EventStateService
 from bunkerfrequenz.application.game_recovery import GameRecoveryService
 from bunkerfrequenz.domain.economy import EconomyState, market_price
@@ -21,10 +22,10 @@ ALLOWED = {
 }
 
 
-def context(command_id: str) -> JournalContext:
+def context(command_id: str, *, entity_id: str = "event-1") -> JournalContext:
     return JournalContext(
         "2026-08-22T12:00:00+00:00", "session-0.8.2", "player-1", "event",
-        "event-1", command_id, "runtime", "0.8.2-alpha.1",
+        entity_id, command_id, "runtime", "0.8.2-alpha.1",
     )
 
 
@@ -108,6 +109,34 @@ class EconomySliceTests(unittest.TestCase):
         state = recovering.load_state()
         self.assertEqual(state["economy"]["inventory"]["equipment.pa"]["owned"], 1)
         self.assertEqual(state["event"]["budget_cents"], 55_000)
+
+    def test_economy_commands_reject_context_for_another_event(self):
+        service = EconomyService(self.kernel)
+        wrong = context("wrong-event-buy", entity_id="event-2")
+        with self.assertRaisesRegex(ValueError, "entity_id"):
+            service.transact("buy", "equipment.pa", 1, context=wrong)
+
+        service.transact("buy", "equipment.pa", 1, context=context("replay-guard"))
+        with self.assertRaisesRegex(ValueError, "entity_id"):
+            service.transact(
+                "buy", "equipment.pa", 1,
+                context=context("replay-guard", entity_id="event-2"),
+            )
+
+    def test_replay_rejects_conflicting_state_at_same_economy_revision(self):
+        EconomyService(self.kernel).transact("buy", "equipment.pa", 1, context=context("buy-conflict"))
+        state = self.kernel.load_state()
+        conflicting_event = deepcopy(state["event"])
+        conflicting_event["budget_cents"] += 1
+        record = {
+            "event_type": "economy.transaction_posted",
+            "payload": {
+                "economy": deepcopy(state["economy"]),
+                "event": conflicting_event,
+            },
+        }
+        with self.assertRaisesRegex(ValueError, "derselben Revision"):
+            replay_economy_event(state, record)
 
 
 if __name__ == "__main__":
