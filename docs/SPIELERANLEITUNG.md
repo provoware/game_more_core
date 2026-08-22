@@ -18,7 +18,7 @@ Die Ansicht wird erst dann mit Schreibfunktionen verbunden, wenn der vollständi
 
 Falls kein Browser aufgeht, kopiere die hinter `ADRESSE:` genannte Adresse in einen Browser. Für einen bewusst manuellen Start kann `python3 tools/start_web_blueprint.py --no-browser` verwendet werden. Meldet die Routine `Port 8043 ist belegt`, starte einmal mit `python3 tools/start_web_blueprint.py --port 0`; die danach ausgegebene Adresse enthält den automatisch gewählten freien Port.
 
-**Was bedeutet die Ansicht?** Der schmale Block **Leseweg** erklärt zuerst Reihenfolge, Modus und Datenquelle. Danach zeigen die nummerierten Sektoren **Pixelreferenz** die vorhandene Grafik unverändert, **Spielfluss** die fünf Schritte und **Ansichten** die vier Darstellungsvarianten aus dem gültigen UI-Manifest. **Diagnose** zeigt getrennt, welche Dateien und Verträge geladen wurden. Mit **Prüfbericht kopieren** lassen sich die technischen Angaben weitergeben, ohne einen Spielstand offenzulegen.
+**Was bedeutet die Ansicht?** Der schmale Block **Leseweg** erklärt zuerst Reihenfolge, Modus und Datenquelle. Danach zeigen die nummerierten Sektoren **Pixelreferenz** die vorhandene Grafik unverändert, während Workflow und vier UI-Varianten aus dem bestehenden UI-Manifest auswertbar gerendert werden. **Diagnose** zeigt getrennt, welche Dateien und Verträge geladen wurden. Mit **Prüfbericht kopieren** lassen sich die technischen Angaben weitergeben, ohne einen Spielstand offenzulegen.
 
 **Einfache Sichtprüfung:** Lies zuerst nur die gelben Sektornummern von `01` bis `04`. Im Spielfluss zeigen gelbe Pfeile die Richtung. Ein roter Rand an **A4 Ops Deck** kennzeichnet die bevorzugte Einsteigeransicht. Wenn Text oder Grafik zu klein sind, vergrößere die Browseransicht mit `Strg` und `+`; die Blöcke ordnen sich auf schmalen Fenstern untereinander an.
 
@@ -157,27 +157,55 @@ Die Spiellogik für **0.8.2 – Equipment & Economy** arbeitet jetzt wie eine ge
 
 Der aktuelle HTML-Blueprint kann diese Schritte noch nicht auslösen. Die Regeln sind im Spielkern prüfbar; die Bedienoberfläche folgt bewusst erst nach dem vollständigen Event-Loop.
 
-**Was bedeutet „lokal geprüft“?** Die automatischen Prüfungen für Spiellogik, Darstellung und Repository-Zustand laufen auf dem Entwicklungsstand fehlerfrei. Das ist noch keine Freigabe: Erst dieselben drei grünen Prüfungen auf dem exakten Pull-Request-Stand bestätigen 0.8.2 für die nächste Ausbaustufe.
+**Was bedeutet „lokal geprüft“?** Die automatischen Prüfungen für Spiellogik, Darstellung und Repository-Zustand laufen auf dem Entwicklungsstand fehlerfrei. Das ist noch keine Freigabe: Erst dieselben drei grünen Prüfungen auf dem exakten Pull-Request-Stand bestätigen die jeweilige Stufe für den nächsten Ausbau.
 
-## 10. Was kann man noch nicht normal spielen?
+## 10. Event-Aktionen in 0.8.3-A
+
+Der Event-Kern besitzt jetzt einen verbindlichen Weg von der Planung bis zur Abrechnungsvorbereitung. Eine Oberfläche darf die Eventphase später nicht frei umschalten. Stattdessen fordert sie eine konkrete Aktion an; die Runtime prüft dieselben Voraussetzungen, die vorher als gesperrt oder verfügbar angezeigt werden können.
+
+Der aktuelle Pfad lautet:
+
+```text
+Planung beginnen
+→ Beschaffung beginnen
+→ Transport starten
+→ Aufbau beginnen
+→ Soundcheck bestätigen
+→ Event starten
+→ Event beenden
+→ Abbau beenden
+→ Abrechnung vorbereiten
+```
+
+Wichtige Sperren:
+
+- Für die Beschaffung müssen mindestens ein Act bestätigt, die Crew bestätigt und Budget vorhanden sein.
+- Vor dem Transport müssen alle geplanten Acts, die Crew und das benötigte Equipment bereit sein.
+- Physische Schritte benötigen weiterhin einen gültigen Ort, bestätigten Zugang, ein Zeitfenster und Sicherheitsfreigabe.
+- Soundcheck und Eventstart prüfen Crew und Equipment erneut. Damit kann ein später Client keinen veralteten Bereitschaftsstatus einfach überspringen.
+
+Die Engine endet in 0.8.3-A bewusst bei **Abrechnung vorbereiten (`settlement`)**. Krisenbehandlung folgt in 0.8.3-B; Geld-, Ruf-, Character- und Abschlussfolgen folgen in 0.8.3-C. Erst danach ist der vollständige Event-Loop fachlich geschlossen.
+
+## 11. Was kann man noch nicht normal spielen?
 
 Noch offen sind insbesondere:
 
 - ein fertiger, mit der Runtime verbundener Desktop-/Web-/Game-Engine-Client (der HTML-Blueprint ist nur eine schreibgeschützte Designauswertung),
-- vollständiger Event-Ablauf von Planung bis Abrechnung,
+- Krisen-/Incident-Auflösung im vollständigen Event-Ablauf,
+- Abrechnung mit Ruf- und Character-Folgen,
 - bedienbarer Equipmentmarkt im Client,
 - kompletter Clubbetrieb,
 - Telegram-/Server-Synchronisation.
 
-Diese Systeme werden auf dem jetzt getesteten Character-, Persistence- und Presentation-Kern aufgebaut.
+Diese Systeme werden auf dem jetzt getesteten Character-, Persistence-, Economy-, Event- und Presentation-Kern aufgebaut.
 
-## 11. Was kann ich jetzt sinnvoll prüfen?
+## 12. Was kann ich jetzt sinnvoll prüfen?
 
 Starte die HTML-Ansicht mit dem Befehl aus Abschnitt 0, prüfe den Leseweg und kopiere bei einem Problem den Prüfbericht. Erwarte dort noch keine speicherbare Eventplanung: So lässt sich der Prototyp testen, ohne ihn mit dem späteren Spiel zu verwechseln.
 
-Die nächste Stufe ist **0.8.3 – vollständiger Event-Loop**. Bis zu ihrer Abnahme bleiben Client-, Netzwerk- und Clubentwicklung bewusst ausgesetzt.
+Die aktive Stufe ist **0.8.3 – vollständiger Event-Loop**. 0.8.3-A stellt dafür die verbindlichen Phasenaktionen bereit. Bis zur Gesamt-Abnahme von 0.8.3 bleiben Client-, Netzwerk- und Clubentwicklung bewusst ausgesetzt.
 
-## 12. Welche Beschreibung hilft mir weiter?
+## 13. Welche Beschreibung hilft mir weiter?
 
 Wähle nach deiner Frage, nicht nach deinem Vorwissen:
 
