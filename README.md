@@ -13,6 +13,7 @@
   <img alt="Event Actions 0.8.3 A validiert" src="https://img.shields.io/badge/Event_Actions-0.8.3--A_validiert-00c2ff">
   <img alt="Crisis und Berlin Map 0.8.3 B validiert" src="https://img.shields.io/badge/Crisis_Map-0.8.3--B_validiert-e840ff">
   <img alt="Settlement 0.8.3 C remote validiert" src="https://img.shields.io/badge/Settlement-0.8.3--C_remote_validiert-2ee6a6">
+  <img alt="A4 Game Client 0.8.4 remote validiert" src="https://img.shields.io/badge/A4_Game_Client-0.8.4_remote_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -30,36 +31,39 @@
 | | Aktueller Stand |
 |---|---|
 | **Runtime-Baseline** | `0.5.2-alpha.1` |
-| **Letzte remote validierte Feature-Stufe** | `0.8.3-C – Settlement & Consequences` |
-| **0.8.3-C-Abnahme** | PR #65 · Head `ccfb145547b...` · Runtime Core `32568683844`, Presentation Core `32568683898`, Repository Health `32568683863` grün · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `5ae811333878...` |
-| **Nächster Pflichtblock** | schreibender **A4-Game-Client** auf den vorhandenen Application-Commands |
+| **Letzte remote validierte Feature-Stufe** | `0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery` |
+| **0.8.4-Abnahme** | PR #69 · Head `3d61e9d6385a...` · Runtime Core `32575062624`, Presentation Core `32575062602`, Repository Health `32575062620` grün · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `28459c197489...` |
+| **Nächster Pflichtblock** | **Release-Abnahme** aus frischem Checkout; erst danach Version + reproduzierbares Artefakt |
 | **0.8.3-A** | 8 kanonische Event-Aktionen und zentrale Blocker-/Voraussetzungslogik |
 | **0.8.3-B** | Crisis Engine + Berlin Ops Map Foundation |
 | **0.8.3-C** | atomare Abrechnung, Budget/Stress/Ruf, Biografie, `event.completed`, Recovery |
-| **Weg zum ersten spielbaren Release** | `A4 schreibend anbinden → First-Run/Save-Recovery-Smoke-Test → Version/Release-Artefakt` |
-| **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
-| **Persistenz** | append-only Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
+| **0.8.4** | lokaler schreibender A4-Client, First Run, kompletter Event-Smoke, Save/Restart/Recovery |
+| **Weg zum ersten spielbaren Release** | `frischer Checkout/Klickstart → Fehlerpfade → Release-Evidence → Version → reproduzierbares Paket` |
+| **Character Forge** | schreibender A4-Client + A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
+| **Persistenz** | append-only Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo; fehlender State bei gültigem Head-Snapshot regressionsgehärtet |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
-| **Grafischer Renderer** | statischer HTML-Blueprint vorhanden; Berlin Ops Map als getestete read-only Projection, noch kein schreibender Kartenclient |
+| **Grafischer Renderer** | A4 lokaler Game-Client vorhanden; Berlin Ops Map weiter als getestete read-only Projection, noch kein hochwertiger Kartenrenderer |
 | **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert |
 
 > [!IMPORTANT]
-> `VERSION.json` bezeichnet die letzte **versionierte Runtime-Baseline**. Feature-Meilensteine können weiter sein und werden getrennt in `PROJEKTSTATUS.json` und `TODO.md` geführt.
+> `VERSION.json` bezeichnet die letzte **versionierte Runtime-Baseline**. Feature-Meilensteine können weiter sein und werden getrennt in `PROJEKTSTATUS.json` und `TODO.md` geführt. Der 0.8.4-Merge erhöht die Produktversion bewusst noch nicht; das geschieht erst nach der Release-Abnahme.
 
 ---
 
 ## 🚦 Was bis zum Release noch fehlt
 
-Der fachliche Event-Loop ist jetzt vollständig remote validiert: Planung, Economy, Eventaktionen, Krise, Settlement, `event.completed` und Recovery sind miteinander verbunden. Noch fehlt ein **bedienbarer schreibender Client**.
+Der fachliche Event-Loop **und der kleinste schreibende A4-Client** sind jetzt vollständig remote validiert. Auch der automatisierte End-to-End-Pfad `First Run → Event → Equipment → optionale Krise → Settlement → Snapshot → Neustart → Recovery → identischer Zustand` ist Bestandteil der Runtime-Abnahme.
 
-Für das erste **spielbare Alpha-Release** bleibt deshalb ein zentraler Produktblock plus Abnahme:
+Für das erste **spielbare Alpha-Release** bleibt deshalb nur noch die Release-Qualifikation:
 
-1. **A4 als kleinsten schreibenden Game-Client anbinden:** ausschließlich bestehende Application-Commands verwenden; keine zweite Domain-, Economy-, Incident-, Settlement- oder Persistenzlogik im Client.
-2. **Release-Abnahme:** Ersteinstieg und deterministischen First-Run/Save-Recovery-Smoke-Test aus frischem Checkout nachweisen; erst danach Version und reproduzierbares Release-Artefakt festlegen.
+1. **Frischer Checkout / Klickstart:** lokalen A4-Client aus einer sauberen Umgebung mit dem dokumentierten Startbefehl prüfen, einschließlich Browserstart, alternativem freien Port und sauberem Stoppen.
+2. **Fehler- und Recovery-Abnahme:** verständliche Fehlertexte für fehlende Dateien, belegten Port und nicht beschreibbaren Save-Pfad sowie einen kontrollierten Recovery-Fall prüfen.
+3. **Release-Evidence:** Quell-Commit/Tree, Python-Version, Gate-Runs, Smoke-Ergebnis und Paket-Hash reproduzierbar festhalten.
+4. **Erst danach versionieren und paketieren:** `VERSION.json`, Release Notes und reproduzierbares ZIP/Artefakt erst nach grüner Abnahme festlegen.
 
 **Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau, Hall-of-Tribute-Saisons und native GitHub-Branch-Protection.
 
-Die genaue Reihenfolge steht in [`TODO.md`](TODO.md#p0--pflichtpfad-zum-ersten-spielbaren-alpha).
+Die genaue Reihenfolge steht in [`TODO.md`](TODO.md#release-abnahme--erstes-lokales-alpha-).
 
 ---
 
@@ -124,17 +128,20 @@ NEUE ORTE / IMMOBILIEN / MÖGLICHKEITEN
 - Recovery Receipt
 - Quarantäne beschädigter Tails
 - kompensierender Profil-Undo
+- Snapshot-basierte Wiederherstellung eines fehlenden State-Checkpoints
 
 </td>
 <td valign="top" width="33%">
 
-### Event / World
+### Event / Client / World
 
 - Event State + Economy
 - 8 kanonische Event-Aktionen
 - Crisis-/Incident-State
 - 6 Krisentypen mit Reaktionswegen
 - Settlement-State + atomarer Eventabschluss
+- **schreibender lokaler A4-Game-Client**
+- First Run + Save/Restart/Recovery-Smoke
 - Berlin Ops Map Foundation
 - Hall of Tribute
 - Immobilien-/Upgrade-Datenbasis
@@ -310,26 +317,71 @@ Vertrag: [`docs/SETTLEMENT_0.8.3-C.md`](docs/SETTLEMENT_0.8.3-C.md) · [`manifes
 
 ---
 
+## 🎮 0.8.4 – Schreibender A4-Game-Client ✅
+
+0.8.4 macht aus dem gehärteten Fachkern erstmals einen kleinen lokalen Spielclient. Die zentrale Regel bleibt erhalten: **Der Browser besitzt keine zweite Spiellogik.**
+
+```text
+A4 Browser
+  ↓ JSON-Command
+GameClientSession
+  ↓
+EventExecutionService / EconomyService / IncidentService / SettlementService
+  ↓
+PersistenceKernel
+  ↓
+Bestätigter State
+  ↓
+read-only a4_game_projection
+  ↓
+A4 Browser
+```
+
+Wesentliche Garantien:
+
+- Command-Allowlist und strikte erlaubte Felder; unerwartete Eingaben werden vor dem Write abgewiesen
+- Eventbuttons und Blocker stammen direkt aus der vorhandenen Runtime-Availability
+- Browser stellt kanonische Blocker-IDs in verständlichem Deutsch dar, berechnet die Regeln aber nicht selbst
+- lokaler Server bindet nur an `127.0.0.1` und liefert statisch ausschließlich `web/a4/` aus
+- First Run kann Character/Event/Economy nur auf einem leeren GENESIS-Stand anlegen und überschreibt keinen vorhandenen Save
+- manueller Snapshot/Checkpoint und normaler Neustart verwenden denselben persistierten Zustand
+- automatisierter End-to-End-Smoke deckt den kompletten Eventpfad einschließlich optionaler Krise, Settlement, Neustart und Recovery ab
+- der Smoke fand einen echten Recovery-Randfall: ein gültiger Snapshot am Journal-Head darf einen fehlenden `state/current.json` nicht als gesund tarnen; der Persistence-Kern stellt ihn nun korrekt wieder her
+- die Recovery-Regel besitzt eine eigene Regression und der strenge Smoke wurde nicht abgeschwächt
+
+Remote-Abnahme: PR #69 · Head `3d61e9d6385a0b79069132df24d655fef42b0451` · Runtime Core `32575062624` · Presentation Core `32575062602` · Repository Health `32575062620` · 0 ungelöste Review-Threads · `SAFE MERGE PASS` · Merge `28459c197489577923fadeb5f0a42d1ac1e39327`.
+
+Start-/Spielanleitung: [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) · technischer Vertrag: [`docs/A4_WRITING_CLIENT_0.8.4.md`](docs/A4_WRITING_CLIENT_0.8.4.md) · Evidence: [`reports/A4_CLIENT_VALIDATION_0.8.4.json`](reports/A4_CLIENT_VALIDATION_0.8.4.json)
+
+---
+
 ## 🧭 Einstieg ohne Vorwissen
 
 1. Spielidee: [`docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md)
-2. praktischer aktueller Einstieg: [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md)
-3. Entwicklergesamtbild: [`docs/SPIELBESCHREIBUNG_TECHNISCH.md`](docs/SPIELBESCHREIBUNG_TECHNISCH.md)
-4. aktueller Entwicklungsblock: [`TODO.md`](TODO.md)
+2. **A4-First-Run Schritt für Schritt:** [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md)
+3. allgemeiner Spieler-Einstieg: [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md)
+4. Entwicklergesamtbild: [`docs/SPIELBESCHREIBUNG_TECHNISCH.md`](docs/SPIELBESCHREIBUNG_TECHNISCH.md)
+5. aktueller Entwicklungsblock: [`TODO.md`](TODO.md)
 
 > [!NOTE]
-> Der vorhandene HTML-Blueprint ist weiterhin schreibgeschützt. Die Berlin Ops Map besitzt bereits einen getesteten Projection-Vertrag, aber noch keinen fertigen grafischen Renderer oder Domain-Schreibweg. Der nächste Produktblock ist der schreibende A4-Client für den bereits validierten Fachloop.
+> Der ältere HTML-Blueprint unter `web/` bleibt bewusst **schreibgeschützt und getrennt**. Der neue lokale A4-Game-Client befindet sich in `web/a4/` und schreibt ausschließlich über die Application-Grenze. Die Berlin Ops Map besitzt weiterhin einen getesteten read-only Projection-Vertrag, aber noch keinen hochwertigen Kartenrenderer oder eigenen Domain-Schreibweg.
 
-### HTML-Blueprint starten
+### Schreibenden A4-Game-Client starten
+
+```bash
+python3 tools/start_a4_game_client.py
+```
+
+Bei einem belegten Port bzw. für automatische freie Portwahl:
+
+```bash
+python3 tools/start_a4_game_client.py --port 0
+```
+
+Der alte schreibgeschützte Blueprint bleibt separat startbar:
 
 ```bash
 python3 tools/start_web_blueprint.py
-```
-
-Bei einem belegten Port:
-
-```bash
-python3 tools/start_web_blueprint.py --port 0
 ```
 
 ---
@@ -340,6 +392,8 @@ python3 tools/start_web_blueprint.py --port 0
 |---|---|
 | vollständige Spielidee ohne Technik | [`docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](docs/SPIELBESCHREIBUNG_OHNE_TECHNIK.md) |
 | technische Gesamtbeschreibung | [`docs/SPIELBESCHREIBUNG_TECHNISCH.md`](docs/SPIELBESCHREIBUNG_TECHNISCH.md) |
+| A4 First Run | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
+| A4 Schreibgrenze | [`docs/A4_WRITING_CLIENT_0.8.4.md`](docs/A4_WRITING_CLIENT_0.8.4.md) |
 | Spieler-Einstieg | [`docs/SPIELERANLEITUNG.md`](docs/SPIELERANLEITUNG.md) |
 | aktuellen Entwicklungsstand | [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) |
 | nächste Aufgaben | [`TODO.md`](TODO.md) |
@@ -352,7 +406,7 @@ python3 tools/start_web_blueprint.py --port 0
 | Architektur | [`docs/ARCHITEKTURVERTRAG.md`](docs/ARCHITEKTURVERTRAG.md) |
 | Gameplay Actions | [`docs/GAMEPLAY_ACTION_CONTRACT.md`](docs/GAMEPLAY_ACTION_CONTRACT.md) |
 | Persistence / Recovery | [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md) · [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md) |
-| A4 / A3 | [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md) · [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md) |
+| A4 / A3 Presentation | [`docs/A4_OPS_DECK_0.6.3.md`](docs/A4_OPS_DECK_0.6.3.md) · [`docs/A3_CINEMATIC_FORGE_0.6.4.md`](docs/A3_CINEMATIC_FORGE_0.6.4.md) |
 | Repository Guard | [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md) |
 | `/safe-merge` | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
 | Entwicklerübergabe | [`docs/ENTWICKLERHANDBUCH.md`](docs/ENTWICKLERHANDBUCH.md) |
@@ -366,21 +420,24 @@ python3 tools/start_web_blueprint.py --port 0
 Domain: CharacterState + EventState + EconomyState + IncidentState + SettlementState
   ↓
 Application: Character / Event / Economy / Execution / Incident / Settlement Services
-  ↓
+  ↑                     ↓
+  └──── GameClientSession (nur Routing/Orchestrierung, keine zweite Fachlogik)
+                        ↓
 Persistence: Journal + State + Snapshot + Recovery
-  ↓
+                        ↓
 Read-only Projections
   ├─→ Character / Feedback
   ├─→ Ranking
-  └─→ Berlin Ops Map
-  ↓
-A4 / A3 / spätere Kartenansicht
+  ├─→ Berlin Ops Map
+  └─→ A4 Game Projection
+                        ↓
+A4 Game Client / A3 / spätere Kartenansicht
 ```
 
 | Bereich | Verantwortung | Grenze |
 |---|---|---|
 | `domain` | Charakter, Progression, Event, Economy, Incident, Settlement | kennt keine UI/Infrastruktur |
-| `application` | Use Cases, Commands, atomare Orchestrierung | umgeht Persistenz nicht |
+| `application` | Use Cases, Commands, atomare Orchestrierung, GameClientSession-Routing | umgeht Persistenz nicht; dupliziert keine Domainregeln |
 | `infrastructure` | Journal, Save, Snapshot, Recovery | verwaltet keine sichtbaren UI-Texte |
 | `presentation` | Projection, Komponenten, Inszenierung | schreibt Domain-/Save-State nicht direkt |
 | `content` | sichtbare/lokalisierte Texte | ersetzt keine technischen Regeln |
@@ -462,6 +519,7 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - 0.8.3-B / PR #63: Runtime Core `32559629560`, Presentation Core `32559629773`, Repository Health `32559629667`; 6 Review-Threads gelöst; `SAFE MERGE PASS`; Merge `816a3f1dd83d9396550d702c0ac85ba98ed069dd`
 - 0.8.3-C / PR #65: Runtime Core `32568683844`, Presentation Core `32568683898`, Repository Health `32568683863`; 0 ungelöste Review-Threads; `SAFE MERGE PASS`; Merge `5ae811333878ae67947417ccb72e791caafe4ba9`
 - Repository-Hygiene / PR #67: Runtime Core `32568910870`, Presentation Core `32568910892`, Repository Health `32568910865`; `SAFE MERGE PASS`; Merge `057b5131dfd5bfaf1c26ddd0a3e862fb52c0675f`
+- 0.8.4 A4 Game Client / PR #69: Runtime Core `32575062624`, Presentation Core `32575062602`, Repository Health `32575062620`; 0 ungelöste Review-Threads; `SAFE MERGE PASS`; Merge `28459c197489577923fadeb5f0a42d1ac1e39327`
 
 </details>
 
@@ -478,6 +536,9 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - [`manifests/INCIDENT_MANIFEST.json`](manifests/INCIDENT_MANIFEST.json)
 - [`docs/SETTLEMENT_0.8.3-C.md`](docs/SETTLEMENT_0.8.3-C.md)
 - [`manifests/SETTLEMENT_MANIFEST.json`](manifests/SETTLEMENT_MANIFEST.json)
+- [`docs/A4_WRITING_CLIENT_0.8.4.md`](docs/A4_WRITING_CLIENT_0.8.4.md)
+- [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md)
+- [`reports/A4_CLIENT_VALIDATION_0.8.4.json`](reports/A4_CLIENT_VALIDATION_0.8.4.json)
 - [`manifests/CITY_MAP_MANIFEST.json`](manifests/CITY_MAP_MANIFEST.json)
 - [`docs/PERSISTENCE_CONTRACT.md`](docs/PERSISTENCE_CONTRACT.md)
 - [`docs/RECOVERY_0.5.1.md`](docs/RECOVERY_0.5.1.md)
