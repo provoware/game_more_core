@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://provoware.de/schemas/bunkerfrequenz/settlement_state.schema.json",
+  "title": "BUNKERFREQUENZ SettlementState",
+  "type": "object",
+  "required": [
+    "event_id",
+    "settlement_id",
+    "contract_version",
+    "incident_ids",
+    "effects",
+    "budget",
+    "character_id",
+    "stress",
+    "reputation",
+    "event_revision",
+    "economy_revision",
+    "incident_revision",
+    "status",
+    "revision"
+  ],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 1},
+    "settlement_id": {"type": "string", "minLength": 1},
+    "contract_version": {"const": "0.8.3-c1"},
+    "incident_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "effects": {
+      "type": "object",
+      "required": ["budget_delta_cents", "reputation_delta", "crew_stress_delta", "stability_delta", "heat_delta"],
+      "properties": {
+        "budget_delta_cents": {"type": "integer"},
+        "reputation_delta": {"type": "integer"},
+        "crew_stress_delta": {"type": "integer"},
+        "stability_delta": {"type": "integer"},
+        "heat_delta": {"type": "integer"}
+      },
+      "additionalProperties": false
+    },
+    "budget": {"$ref": "#/$defs/unboundedTriplet"},
+    "character_id": {"type": "string", "minLength": 1},
+    "stress": {"$ref": "#/$defs/resourceTriplet"},
+    "reputation": {"$ref": "#/$defs/unboundedTriplet"},
+    "event_revision": {"$ref": "#/$defs/revisionPair"},
+    "economy_revision": {"$ref": "#/$defs/revisionPair"},
+    "incident_revision": {"$ref": "#/$defs/revisionPair"},
+    "status": {"const": "completed"},
+    "revision": {"const": 1}
+  },
+  "$defs": {
+    "unboundedTriplet": {
+      "type": "object",
+      "required": ["old", "delta", "new"],
+      "properties": {
+        "old": {"type": "integer"},
+        "delta": {"type": "integer"},
+        "new": {"type": "integer"}
+      },
+      "additionalProperties": false
+    },
+    "resourceTriplet": {
+      "type": "object",
+      "required": ["old", "delta", "new"],
+      "properties": {
+        "old": {"type": "integer", "minimum": 0, "maximum": 100},
+        "delta": {"type": "integer"},
+        "new": {"type": "integer", "minimum": 0, "maximum": 100}
+      },
+      "additionalProperties": false
+    },
+    "revisionPair": {
+      "type": "object",
+      "required": ["old", "new"],
+      "properties": {
+        "old": {"type": "integer", "minimum": 0},
+        "new": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
