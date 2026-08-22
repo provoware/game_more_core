@@ -7,6 +7,17 @@ from bunkerfrequenz.domain.district import DistrictState
 from bunkerfrequenz.presentation.city_map_projection import build_city_map_projection
 
 
+def _json_stable(value: Any) -> Any:
+    """Normalize tuple-based presentation internals for A4 JSON/restart equality."""
+    if isinstance(value, tuple):
+        return [_json_stable(item) for item in value]
+    if isinstance(value, list):
+        return [_json_stable(item) for item in value]
+    if isinstance(value, dict):
+        return {key: _json_stable(item) for key, item in value.items()}
+    return deepcopy(value)
+
+
 def build_living_district_projection(
     raw_state: Mapping[str, Any] | None,
     *,
@@ -60,5 +71,5 @@ def build_living_district_projection(
         "revision": state.revision,
         "last_change": deepcopy(state.last_change),
         "entries": entries,
-        "city_map": city_map,
+        "city_map": _json_stable(city_map),
     }
