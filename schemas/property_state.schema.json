@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://provoware.local/schemas/property_state.schema.json",
+  "title": "BUNKERFREQUENZ PropertyState 0.8.6-A",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "revision", "owned"],
+  "properties": {
+    "contract_version": {"const": "0.8.6-a1"},
+    "revision": {"type": "integer", "minimum": 0},
+    "owned": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["location_id", "owner_character_id", "purchase_price_cents", "economy_transaction_id", "event_id"],
+        "properties": {
+          "location_id": {"type": "string", "minLength": 1},
+          "owner_character_id": {"type": "string", "minLength": 1},
+          "purchase_price_cents": {"type": "integer", "minimum": 1},
+          "economy_transaction_id": {"type": "string", "minLength": 1},
+          "event_id": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
