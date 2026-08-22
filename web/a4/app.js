@@ -116,7 +116,7 @@ function renderStreetEncounter(encounter) {
   heading.textContent = `${POLARITY_LABELS[encounter.polarity] || "RUNDE"} // ${encounter.title || encounter.encounter_id}`;
   const body = document.createElement("p");
   body.textContent = encounter.body || "";
-  const effects = document.createElement("span");
+  const effects = document.createElement("span", "street-effects");
   effects.className = "street-effects";
   effects.textContent = `Energie ${signed(encounter.effects?.energy_delta)} · Stress ${signed(encounter.effects?.stress_delta)} · Ruf ${signed(encounter.effects?.reputation_delta)}`;
   host.append(heading, body, effects);
@@ -259,6 +259,7 @@ function render() {
 
   renderProfile(p.character);
   renderDistricts(p.districts);
+  window.BunkerMapPro?.render(p.berlin_ops_map);
   renderProperties(p.properties, p.property_upgrades);
   renderHall(p.hall_of_tribute);
   $("phase-badge").textContent = event ? event.phase.toUpperCase() : "NOCH KEIN EVENT";
