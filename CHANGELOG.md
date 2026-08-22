@@ -4,6 +4,19 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Release-Abnahme 0.8.4 – lokales Alpha
+
+- ausführbaren `START_BUNKERFREQUENZ.sh` als Ubuntu-/Kubuntu-Klick-/Direktstart ergänzt; er startet ausschließlich den vorhandenen Python-A4-Launcher und erzeugt keine zweite Runtime.
+- A4-Launcher vor dem ersten Gameplay-Write um echten Save-Verzeichnis-Schreibtest gehärtet; unbrauchbare Ziele enden mit `START FEHLGESCHLAGEN` statt ungefiltertem Python-Traceback.
+- belegte Ports werden kontrolliert erkannt und verweisen ausdrücklich auf `--port 0` für automatische freie Portwahl.
+- Release-Acceptance-Test startet den Klickstart als separaten Prozess aus einem frischen GitHub-Actions-Checkout und bestätigt die tatsächlich ausgegebene localhost-Health-URL.
+- echter HTTP-End-to-End-Pfad ergänzt: First Run → Planung → Beschaffung → PA kaufen/reservieren → Transport → Aufbau → Soundcheck → Live → Krise → Reaktion → Abbau → Settlement → Snapshot → Neustart → Recovery → identischer Zustand.
+- statische A4-Webroot-Grenze und Fremd-Origin-Schreibschutz im Release-Pfad regressionsgeprüft.
+- fehlende Pflichtdateien, belegter Port und unbrauchbarer Save-Pfad als verständliche Startfehler abgenommen.
+- erster Acceptance-Produkthead `7cf8b5128333359da39f56a21614ea242ef2cd02`: Runtime Core `32575852960` mit 97/97 Tests, Presentation Core `32575852928` und Repository Health `32575852890` erfolgreich; eine ResourceWarning der Test-stdout-Pipe wurde anschließend ohne Produktänderung bereinigt und der endgültige Evidence-Head muss erneut alle drei Gates bestehen.
+- `docs/RELEASE_ACCEPTANCE_0.8.4.md` und `reports/RELEASE_ACCEPTANCE_0.8.4.json` als menschlicher Vertrag und maschinenlesbare Evidence ergänzt.
+- Produktversion und Release-Artefakt bleiben bewusst unverändert; beides darf erst nach sicher gemergter Release-Abnahme in einem eigenen Release-PR entstehen.
+
 ### 0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery
 
 - kleinsten schreibenden A4-Game-Client als lokale, frameworkfreie Oberfläche ergänzt; der Browser schreibt ausschließlich über einen dünnen `GameClientSession`-Adapter in bereits bestehende Application-Services und enthält keine zweite Event-, Economy-, Incident- oder Settlement-Logik.
@@ -125,7 +138,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - PR #41 wurde nach grüner Abnahme als Merge `a7544abd923787d20e174c9eced54f548753c801` übernommen, jedoch außerhalb des vorgeschriebenen `/safe-merge`-Kommandos. Folgende normale PRs verwenden wieder ausschließlich `/safe-merge`.
 - README visuell neu strukturiert; eigene laienfreundliche `docs/SPIELERANLEITUNG.md` für den Character-Forge-Ablauf ergänzt.
 - TODO, Projektstatus, Projektmanifest, Testmanifest und Repository-Index auf den abgeschlossenen 0.7.2-Stand und den nächsten Schritt 0.8 abgeglichen.
-- Main-Integrity-Incident #40 zum direkten `fb96a489...`-Commit analysiert und geschlossen: Guard reagierte korrekt auf fehlende PR-Provenienz; der betroffene AGENTS-Inhalt wurde in PR #41 erneut dreifach grün validiert.
+- Main-Integrity-Incident #40 zum direkten `fb96a489a56a3505a627964b018d4d9b18484e04`-Commit analysiert und geschlossen: Guard reagierte korrekt auf fehlende PR-Provenienz; der betroffene AGENTS-Inhalt wurde in PR #41 erneut dreifach grün validiert.
 
 ### Behoben
 - Snapshot-Recovery prüft Snapshot-Dateien und rekonstruierte Indexeinträge vollständig, überspringt strukturell beschädigte oder aus dem Snapshot-Verzeichnis führende Kandidaten einzeln und fällt kontrolliert auf den neuesten gültigen Checkpoint zurück.
@@ -174,7 +187,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - `Runtime Core` und `Presentation Core` laufen künftig auf jedem Pull Request ohne PR-Pfadfilter, damit ihre Check-IDs zuverlässig als Required Checks konfiguriert werden können.
 - Zielpolicy für `main`: Pull Request erforderlich, Branch aktuell, Conversation Resolution, keine Force Pushes/Branch-Löschung sowie `runtime-core`, `presentation-core`, `repository-health` verpflichtend. Die GitHub-Aktivierung bleibt extern, weil die verbundene Schnittstelle Branch-Protection nicht sicher schreiben kann.
 - README, TODO, Projektstatus, Repository Guard, Repository-Index und Testmanifest auf den validierten `/safe-merge`-/Main-Integrity-Stand abgeglichen; 0.7.2 ist danach für Gameplay-Entwicklung freigegeben.
-- README, TODO, Projektstatus, Projektmanifest, Repository-Index und Testmanifest auf den tatsächlich validierten Stand bis 0.7.1 und den nächsten Schritt 0.7.2 abgeglichen.
+- README, TODO, Projektstatus, Projektmanifest, Repository-Index und Testmanifest auf den tatsächlich implementierten Stand bis 0.7.1 und den nächsten Schritt 0.7.2 abgeglichen.
 - `PROJEKTMANIFEST.json` führt die aktive Entwicklungsphase jetzt als `0.7` und referenziert das Ranking-/Network-Manifest.
 - `TEST_MANIFEST.json` katalogisiert die 0.7.1-Action-Auswahl- und Review-Regressionen.
 - README, Projektstatus und Projektmanifest trennen klar die versionierte Runtime-Baseline `0.5.2-alpha.1` von der aktiven Entwicklung.
