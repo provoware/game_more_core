@@ -1,4 +1,12 @@
 {
+  "street.approach.balanced.label": "Ausgeglichen",
+  "street.approach.balanced.description": "Keine Spezialisierung. Die bekannte Straßenverteilung bleibt unverändert.",
+  "street.approach.recovery.label": "Runterkommen",
+  "street.approach.recovery.description": "Du suchst eher Ruhe, Wasser, Kaffee und kleine Erholung statt Szene-Kontakte.",
+  "street.approach.network.label": "Kontakte",
+  "street.approach.network.description": "Du hältst Ausschau nach bekannten Gesichtern und Crews. Ruf-Chancen werden wahrscheinlicher.",
+  "street.approach.scout.label": "Scout",
+  "street.approach.scout.description": "Du suchst Wege und nützliche Funde. Mehr Entdeckung, aber auch etwas mehr Ärger möglich.",
   "street.none.title": "Ruhige Runde",
   "street.none.body": "Diesmal passiert nichts Besonderes. Berlin lässt dich einfach durch.",
   "street.spaeti_water.title": "Wasser aufs Haus",
