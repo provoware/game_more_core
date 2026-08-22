@@ -2,12 +2,12 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
-  "active_iteration": "0.8.1",
-  "status": "0_8_1_event_state_foundation_remote_validated_merge_pending",
-  "current_focus": "0_8_1_event_state_foundation_closeout",
+  "active_iteration": "0.8.2",
+  "status": "0_8_1_event_state_foundation_merged_0_8_2_planned",
+  "current_focus": "0_8_2_equipment_economy_vertical_slice",
   "last_validated_feature_iteration": "0.8.1",
   "last_validated_release": "0.5.2-alpha.1",
-  "validation_reference": "PR #48 / head 79cc26bec0a780322874ea6f3ced458e8ee72bd6",
+  "validation_reference": "PR #48 / head 79cc26bec0a780322874ea6f3ced458e8ee72bd6 / merge 9ed0dbd8928014777fa4b100a7c65ba4c30ca04e",
   "remote_validation": {
     "status": "success_for_0.8.1_initial_head",
     "pull_request": 48,
@@ -15,7 +15,8 @@
     "runtime_core_workflow_run": 32537531324,
     "presentation_core_workflow_run": 32537531305,
     "repository_health_workflow_run": 32537531303,
-    "final_information_head_revalidation_required": true
+    "final_information_head_revalidation_required": false,
+    "merged_commit": "9ed0dbd8928014777fa4b100a7c65ba4c30ca04e"
   },
   "presentation_application_boundary": {
     "status": "validated_and_merged",
@@ -141,13 +142,14 @@
     "full_loop_pending": []
   },
   "event_state_foundation": {
-    "status": "remote_validated_merge_pending",
+    "status": "remote_validated_and_merged",
     "iteration": "0.8.1",
     "pull_request": 48,
     "validated_head": "79cc26bec0a780322874ea6f3ced458e8ee72bd6",
     "runtime_core_workflow_run": 32537531324,
     "presentation_core_workflow_run": 32537531305,
     "repository_health_workflow_run": 32537531303,
+    "merged_commit": "9ed0dbd8928014777fa4b100a7c65ba4c30ca04e",
     "state_block": "event",
     "domain_module": "src/bunkerfrequenz/domain/event.py",
     "application_service": "src/bunkerfrequenz/application/event_state_service.py",
@@ -269,5 +271,5 @@
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-22T01:38:00+02:00"
+  "updated_at": "2026-08-22T03:10:00+02:00"
 }

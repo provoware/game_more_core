@@ -6,8 +6,8 @@
 - **Zuletzt remote validierte Feature-Iteration:** `0.8.1 – Event State Foundation`
 - **0.8.1-Referenz:** PR #48, Head `79cc26bec0a780322874ea6f3ced458e8ee72bd6`
 - **0.8.1-Remote-Abnahme:** Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` grün
-- **Aktiver Abschluss:** finale Informationsänderungen erneut durch drei Gates schicken, danach `/safe-merge`
-- **Nächster Feature-Schritt nach 0.8.1:** `0.8.2 – Equipment & Economy`
+- **Aktive Iteration:** `0.8.2 – Equipment & Economy`
+- **0.8.1-Abschluss:** PR #48 gemergt als `9ed0dbd8928014777fa4b100a7c65ba4c30ca04e`
 - **Fortschritt zum ersten spielbaren Alpha-Release:** `70 %` (Planungswert; Release-Gate noch nicht erfüllt)
 - **Aktueller Release-Blocker:** kein mit der Runtime verbundener Client und noch kein vollständiger Event-/Economy-Loop
 
@@ -147,7 +147,7 @@
 
 ## P0 – Pflichtpfad zum ersten spielbaren Alpha-Release
 
-Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele Featurearbeit in dieser Reihenfolge abgeschlossen. Ein späteres Paket beginnt erst, wenn der exakte Head des vorherigen Pakets lokal geprüft, remote durch `runtime-core`, `presentation-core` und `repository-health` bestätigt und regelkonform übernommen wurde. Bis zum formalen Abschluss von 0.8.1 bleibt jede 0.8.2-Implementierung gesperrt.
+Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele Featurearbeit in dieser Reihenfolge abgeschlossen. Ein späteres Paket beginnt erst, wenn der exakte Head des vorherigen Pakets lokal geprüft, remote durch `runtime-core`, `presentation-core` und `repository-health` bestätigt und regelkonform übernommen wurde.
 
 ### 0.8.1 – Event State Foundation
 
@@ -171,9 +171,8 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 - [x] Runtime Core `32537531324` auf Head `79cc26bec0a780322874ea6f3ced458e8ee72bd6` grün
 - [x] Presentation Core `32537531305` auf demselben Head grün
 - [x] Repository Health `32537531303` auf demselben Head grün
-- [ ] finale Informationsänderungen auf dem neuen PR-Head erneut dreifach grün
-- [ ] 0 offene Review-Threads
-- [ ] Merge ausschließlich über `/safe-merge` + `SAFE MERGE PASS`
+- [x] PR #48 auf Head `79cc26bec0a780322874ea6f3ced458e8ee72bd6` mit allen drei Kern-Gates grün
+- [x] PR #48 als `9ed0dbd8928014777fa4b100a7c65ba4c30ca04e` nach `main` übernommen
 
 ### 0.8.2 – Equipment & Economy
 
@@ -224,6 +223,7 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 - [ ] Recovery-Receipt um die Anzahl übersprungener Snapshot-Kandidaten ergänzen, damit Support und spätere Oberfläche einen erfolgreichen Rückfall auf einen älteren Checkpoint sichtbar machen können, ohne ungültige Inhalte offenzulegen.
 - [ ] Einen geführten Fünf-Minuten-First-Run mit anonymem lokalem Abschlussbeleg ergänzen; Nutzen: Der Release kann nicht nur technisch starten, sondern wird auch ohne Vorwissen überprüfbar verstanden.
 - [ ] Einen maschinenlesbaren Economy-Replay-Abnahmebeleg mit festem Seed definieren; Nutzen: Katalog, Besitz, Reservierung, Transaktion und Recovery bleiben bei späteren Erweiterungen als zusammenhängender Slice nachweisbar.
+- [ ] Repository Health um einen Abschlussabgleich zwischen gemergten Meilensteinen in `PROJEKTSTATUS.json`, `TODO.md` und `README.md` erweitern; Nutzen: bereits erledigte Freigabeschritte blockieren die Folgeiteration nicht erneut und Statuspflege verursacht weniger Nacharbeit.
 
 ## Abgeschlossene Meilensteine
 
