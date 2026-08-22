@@ -183,7 +183,7 @@ class SettlementServiceTests(unittest.TestCase):
             )
 
     def test_settlement_requires_character_participation_and_settlement_phase(self):
-        with self.assertRaisesRegex(ValueError, "settlement"):
+        with self.assertRaisesRegex(ValueError, "completed|SettlementService"):
             EventStateService(self.kernel).transition_phase(
                 self.settlement_event,
                 "completed",
