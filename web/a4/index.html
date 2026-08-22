@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de" data-client="A4_WRITING_ALPHA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>BUNKERFREQUENZ – A4 Game Client</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Zum Spielbereich</a>
+  <header class="masthead">
+    <div>
+      <p class="eyebrow">BUNKERFREQUENZ // A4 OPS DECK</p>
+      <h1>BETON. BASS. BERLIN.</h1>
+      <p class="subline">Lokaler Alpha-Client · bestätigte Runtime statt Browser-Spielregeln</p>
+    </div>
+    <div class="status-stack">
+      <output id="connection-status" class="badge" role="status" aria-live="polite">VERBINDE …</output>
+      <span id="phase-badge" class="badge secondary">NOCH KEIN EVENT</span>
+    </div>
+  </header>
+
+  <main id="workspace" class="workspace">
+    <section id="first-run" class="panel hidden" aria-labelledby="first-run-title">
+      <div class="panel-head">
+        <div><p class="eyebrow">01 // FIRST RUN</p><h2 id="first-run-title">Neues lokales Spiel</h2></div>
+      </div>
+      <p>Der erste Alpha-Start legt einen lokalen GENESIS-Character, ein vorbereitetes Event und den Equipment-Katalog an. Danach werden alle Spieländerungen über die vorhandenen Application-Services bestätigt.</p>
+      <div class="form-grid">
+        <label>Dein Crew-/Charaktername<input id="character-name" value="Meine Crew" maxlength="60"></label>
+        <label>Eventname<input id="event-name" value="Erste Bunkerfrequenz" maxlength="80"></label>
+      </div>
+      <button id="new-game" class="primary">NEUES SPIEL ANLEGEN</button>
+    </section>
+
+    <section id="event-panel" class="panel hidden" aria-labelledby="event-title">
+      <div class="panel-head">
+        <div><p class="eyebrow">02 // EVENT</p><h2 id="event-title">Event-Steuerung</h2></div>
+        <div class="metric"><span>Budget</span><strong id="budget">–</strong></div>
+      </div>
+      <div class="summary-grid">
+        <div><span class="label">Event</span><strong id="event-name-view">–</strong></div>
+        <div><span class="label">Ort</span><strong id="location">–</strong></div>
+        <div><span class="label">Safety</span><strong id="safety">–</strong></div>
+        <div><span class="label">Revision</span><strong id="event-revision">–</strong></div>
+      </div>
+      <h3>Nächste bestätigte Event-Aktion</h3>
+      <div id="event-actions" class="action-grid"></div>
+      <div id="blockers" class="notice" aria-live="polite"></div>
+    </section>
+
+    <section id="economy-panel" class="panel hidden" aria-labelledby="economy-title">
+      <div class="panel-head"><div><p class="eyebrow">03 // EQUIPMENT</p><h2 id="economy-title">Equipment & Economy</h2></div></div>
+      <div id="equipment-list" class="equipment-list"></div>
+    </section>
+
+    <section id="incident-panel" class="panel hidden" aria-labelledby="incident-title">
+      <div class="panel-head"><div><p class="eyebrow">04 // CRISIS</p><h2 id="incident-title">Krise</h2></div></div>
+      <div id="incident-content"></div>
+    </section>
+
+    <section id="settlement-panel" class="panel hidden" aria-labelledby="settlement-title">
+      <div class="panel-head"><div><p class="eyebrow">05 // SETTLEMENT</p><h2 id="settlement-title">Abrechnung</h2></div></div>
+      <div id="settlement-content"></div>
+    </section>
+
+    <section class="panel compact" aria-labelledby="save-title">
+      <div class="panel-head">
+        <div><p class="eyebrow">SAVE // RECOVERY</p><h2 id="save-title">Spielstand</h2></div>
+        <button id="checkpoint">CHECKPOINT SPEICHERN</button>
+      </div>
+      <p>Jeder bestätigte Command wird sofort journalisiert. Der manuelle Checkpoint legt zusätzlich einen Snapshot an.</p>
+    </section>
+
+    <section class="panel compact diagnostics" aria-labelledby="log-title">
+      <div class="panel-head"><div><p class="eyebrow">TRANSPARENT</p><h2 id="log-title">Client-Protokoll</h2></div></div>
+      <pre id="log" tabindex="0">Start …</pre>
+    </section>
+  </main>
+
+  <footer>Schreibender A4 Alpha-Client · localhost-only · keine Domain-Regeln im Browser</footer>
+</body>
+</html>
