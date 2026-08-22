@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
-  "version": "0.8.6-a1",
+  "version": "0.8.6-b1",
   "state_block": "economy",
   "domain_type": "EconomyState",
   "catalog_fields": ["label", "base_price_cents", "volatility_bps", "consumable"],
   "inventory_fields": ["owned", "reserved"],
-  "transaction_kinds": ["buy", "sell", "consume", "reserve", "release", "property_purchase", "settlement"],
+  "transaction_kinds": ["buy", "sell", "consume", "reserve", "release", "property_purchase", "property_upgrade", "settlement"],
   "market_price_rule": "max(1, base_price_cents * (10000 + ((market_tick % 5) - 2) * volatility_bps) // 10000)",
   "property_purchase": {
     "kind": "property_purchase",
@@ -18,13 +18,25 @@
     "revision_changes": true,
     "budget_delta_rule": "-purchase_price_cents"
   },
+  "property_upgrade": {
+    "kind": "property_upgrade",
+    "item_id_prefix": "property_upgrade:",
+    "quantity": 1,
+    "price_authority": "PROPERTY_UPGRADE_MANIFEST cost formula over confirmed property purchase price",
+    "client_price_authority": false,
+    "client_level_authority": false,
+    "compensatable": false,
+    "market_tick_changes": false,
+    "revision_changes": true,
+    "budget_delta_rule": "-upgrade_cost_cents"
+  },
   "invariants": [
     "catalog and inventory are separate state sections",
     "reserved quantity never exceeds owned quantity",
     "budget changes only with confirmed economy transaction records",
     "event requirement readiness derives from confirmed reservation",
     "equipment market_tick increases only for market-sensitive equipment operations",
-    "settlement and property_purchase are fixed postings and do not advance market_tick",
+    "settlement, property_purchase and property_upgrade are fixed postings and do not advance market_tick",
     "economy revision increases once per confirmed economy mutation"
   ],
   "compensation": {
@@ -42,6 +54,6 @@
   ],
   "persistence": {
     "combined_replay": "bunkerfrequenz.application.game_recovery.replay_game_event",
-    "atomic_state_blocks": ["economy", "event", "properties"]
+    "atomic_state_blocks": ["economy", "event", "properties", "property_upgrades"]
   }
 }
