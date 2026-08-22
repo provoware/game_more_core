@@ -22,7 +22,7 @@
     "specialization": {"type": ["object", "null"]},
     "energy": {"type": "integer", "minimum": 0, "maximum": 100},
     "stress": {"type": "integer", "minimum": 0, "maximum": 100},
-    "reputation": {"type": "integer"}
+    "reputation": {"type": "integer", "minimum": 0}
   },
   "additionalProperties": false
 }
