@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "version": "0.8.5-e1",
+  "ranking_manifest_version": "0.8.5-a1",
+  "city_map_manifest_version": "0.8.3-b2-foundation",
+  "modes": ["reputation", "level", "resonance"],
+  "default_mode": "reputation",
+  "top_limit": 10,
+  "requires_hall_of_tribute_location": true,
+  "local_policy": {
+    "include_confirmed_local_character": true,
+    "invent_competitors": false,
+    "invent_network_metrics": false,
+    "show_network_unavailable_honestly": true
+  },
+  "movement_labels": {
+    "up": "AUFSTIEG",
+    "down": "ABSTIEG",
+    "same": "GEHALTEN",
+    "new": "NEU",
+    "unranked": "OHNE RANG"
+  }
+}

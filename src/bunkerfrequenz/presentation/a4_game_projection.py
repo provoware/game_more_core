@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from bunkerfrequenz.application.event_execution_service import EventExecutionService
 from bunkerfrequenz.domain.character import CharacterState
@@ -10,6 +10,7 @@ from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.incident import IncidentState
 from bunkerfrequenz.domain.settlement import SettlementState
 from bunkerfrequenz.presentation.district_projection import build_living_district_projection
+from bunkerfrequenz.presentation.hall_of_tribute import build_hall_of_tribute_projection
 
 
 def _incident_catalog_projection(catalog: Mapping[str, Mapping[str, Any]]) -> list[dict[str, Any]]:
@@ -40,17 +41,24 @@ def build_a4_game_projection(
     incident_catalog: Mapping[str, Mapping[str, Any]],
     district_manifest: Mapping[str, Any] | None = None,
     city_map_manifest: Mapping[str, Any] | None = None,
+    hall_manifest: Mapping[str, Any] | None = None,
+    ranking_manifest: Mapping[str, Any] | None = None,
+    sync_manifest: Mapping[str, Any] | None = None,
+    ranking_text_catalog: Mapping[str, str] | None = None,
+    confirmed_ranking_participants: Sequence[Mapping[str, Any]] = (),
+    confirmed_network_records: Sequence[Mapping[str, Any]] = (),
+    previous_ranking_cycles: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Build a read-only A4 game projection from confirmed state blocks.
-
-    Event button availability delegates to EventExecutionService. Districts
-    delegate to their read-only projection; this module never writes state.
-    """
+    """Build a read-only A4 game projection from confirmed state blocks."""
     if (district_manifest is None) != (city_map_manifest is None):
         raise ValueError("district_manifest und city_map_manifest müssen gemeinsam gesetzt werden")
+    hall_parts = (hall_manifest, ranking_manifest, sync_manifest, ranking_text_catalog, city_map_manifest)
+    if any(part is not None for part in hall_parts[:4]) and not all(part is not None for part in hall_parts):
+        raise ValueError("Hall of Tribute benötigt Hall-, Ranking-, Sync-, Text- und City-Map-Vertrag")
+
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.5-d1",
+        "view_model_version": "0.8.5-e1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
@@ -62,6 +70,7 @@ def build_a4_game_projection(
         "incidents": None,
         "settlement": None,
         "districts": None,
+        "hall_of_tribute": None,
         "incident_catalog": _incident_catalog_projection(incident_catalog),
     }
 
@@ -147,6 +156,19 @@ def build_a4_game_projection(
             raw_districts,
             district_manifest=district_manifest,
             city_map_manifest=city_map_manifest,
+        )
+
+    if hall_manifest is not None:
+        projection["hall_of_tribute"] = build_hall_of_tribute_projection(
+            raw,
+            hall_manifest=hall_manifest,
+            ranking_manifest=ranking_manifest,
+            sync_manifest=sync_manifest,
+            city_map_manifest=city_map_manifest,
+            text_catalog=ranking_text_catalog,
+            confirmed_participants=confirmed_ranking_participants,
+            confirmed_network_records=confirmed_network_records,
+            previous_cycles=previous_ranking_cycles,
         )
 
     return projection
