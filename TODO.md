@@ -3,12 +3,11 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.3-A – Event Execution Engine`
-- **0.8.3-A-Abnahme:** PR #62 · Head `710674a9e330636653c64d5e9593e0047449a2e5` · Runtime Core `32558175370` · Presentation Core `32558175365` · Repository Health `32558175382` · Merge `8a5b08b5f44e334298cf226510f99abbc115b3df`
-- **Aktive Iteration:** `0.8.3 – Vollständiger Event-Loop`, aktuell `0.8.3-B1 Crisis Engine + 0.8.3-B2 Berlin Ops Map Foundation`
-- **Aktiver PR:** #63
-- **Fortschritt zum ersten spielbaren Alpha-Release:** `88 %` (Planungswert; B1/B2 implementiert, finale Remote-Abnahme und Safe-Merge noch offen)
-- **Aktueller Release-Blocker:** 0.8.3-B final abnehmen → 0.8.3-C Settlement/Folgen → schreibenden A4-Client anbinden
+- **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.3-B – Crisis Engine + Berlin Ops Map Foundation`
+- **0.8.3-B-Abnahme:** PR #63 · Head `4a83cecc7298078a9040ea94e7994ac0b2ab5558` · Runtime Core `32559629560` · Presentation Core `32559629773` · Repository Health `32559629667` · `SAFE MERGE PASS` · Merge `816a3f1dd83d9396550d702c0ac85ba98ed069dd`
+- **Nächster Pflichtblock:** `0.8.3-C – Settlement & Consequences`
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `90 %` (Planungswert; Eventaktionen und Krisen validiert, Settlement und schreibender Client noch offen)
+- **Aktueller Release-Blocker:** 0.8.3-C Settlement/Folgen → vollständigen Event-Loop abnehmen → schreibenden A4-Client anbinden
 
 ## Release-Ziel
 
@@ -16,7 +15,7 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 
 **Abnahme:** Aus einem frischen Checkout kann eine Person ohne Codewissen `Crew wählen → Event planen → Equipment beschaffen → Event starten → Krise lösen → abrechnen → speichern → neu laden` vollständig durchführen.
 
-**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb und native GitHub-Branch-Protection.
+**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik und native GitHub-Branch-Protection.
 
 ---
 
@@ -48,52 +47,60 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 - [x] PR #62 auf exaktem Head dreifach grün
 - [x] `/safe-merge` = PASS · Merge `8a5b08b5f44e334298cf226510f99abbc115b3df`
 
-## 0.8.3-B1 – Crisis / Incident Engine 🚧
+## 0.8.3-B1 – Crisis / Incident Engine ✅
 
 ### Implementierung
 
-- [x] eigenen `IncidentState` neben Event/Economy anlegen
-- [x] höchstens einen aktiven Incident zulassen
-- [x] sechs Incident-Typen mit je drei Reaktionsoptionen katalogisieren
-- [x] Severity 1–5 deterministisch auf Effekte skalieren
+- [x] eigenen `IncidentState` neben Event/Economy angelegt
+- [x] höchstens einen aktiven Incident zugelassen
+- [x] sechs Incident-Typen mit je drei Reaktionsoptionen katalogisiert
+- [x] Severity 1–5 deterministisch auf Einzeleffekte skaliert
+- [x] kumulierte Settlement-Summen dürfen mehrere Incidents ohne künstliche ±100-Grenze addieren
 - [x] `live → crisis` atomar mit `event.incident_started` committen
 - [x] Response-Auswahl + `crisis → live/teardown/cancelled` atomar auflösen
-- [x] `event.incident_resolved` journalfähig und replaybar machen
-- [x] Krisenfolgen als `pending_settlement` sammeln, ohne Economy-/Character-Verträge zu umgehen
-- [x] falsche Response, parallelen Incident und falschen Event-Kontext fail-closed behandeln
-- [x] Open/Resolve idempotent machen
-- [x] Fault-Injection-Recovery für durable Incident-Commits testen
-- [x] Incident-Replay in `GameRecoveryService` integrieren
+- [x] `event.incident_resolved` journalfähig und replaybar gemacht
+- [x] Krisenfolgen als `pending_settlement` gesammelt, ohne Economy-/Character-Verträge zu umgehen
+- [x] falsche Response, parallelen Incident und falschen Event-Kontext fail-closed behandelt
+- [x] Open/Resolve auch nach State-Fortschritt idempotent
+- [x] Incident-Replay validiert Event-Kontext erneut
+- [x] offener Incident kann nicht mit abweichendem Vertragsstand aufgelöst werden
+- [x] Fault-Injection-Recovery für durable Incident-Commits getestet
+- [x] Incident-Replay in `GameRecoveryService` integriert
 
 ### Abnahme
 
-- [x] erste Runtime-/Presentation-/Repository-CI auf Implementierungsstand grün
-- [ ] finalen PR-#63-Head nach allen Informationsänderungen erneut dreifach grün bestätigen
-- [ ] offene Review-Threads = 0 bestätigen
-- [ ] PR #63 ausschließlich über `/safe-merge` übernehmen
+- [x] finaler PR-#63-Head `4a83cecc7298078a9040ea94e7994ac0b2ab5558` dreifach grün
+- [x] Runtime Core `32559629560`
+- [x] Presentation Core `32559629773`
+- [x] Repository Health `32559629667`
+- [x] alle sechs Review-Threads gelöst
+- [x] `/safe-merge` = PASS
+- [x] Merge `816a3f1dd83d9396550d702c0ac85ba98ed069dd`
 
-## 0.8.3-B2 – Berlin Ops Map Foundation 🚧
+## 0.8.3-B2 – Berlin Ops Map Foundation ✅
 
 ### Datenbasis
 
-- [x] `CITY_MAP_MANIFEST.json` als einzige Karten-Fachquelle anlegen
-- [x] stilisierte 0–100-Koordinaten verwenden; keine Navigation und keine exakten Adressen
-- [x] 8 Berliner Bezirke als Startzonen definieren
-- [x] 12 Spielorte mit Prestige, Audience Pull, Risk, Underground Factor und Utility anlegen
-- [x] 7 kaufbare Immobilien/Objekte mit Preisen und Ausbau-Slots vorbereiten
-- [x] genau eine `Hall of Tribute` als Ranking-/Prestige-Sonderort definieren
-- [x] Score- und Tier-System `standard / strong / prime / legendary` ableiten
-- [x] read-only `city_map_projection` mit Top-5, Ownership und Hall-of-Tribute-Projektion implementieren
-- [x] Heat, Prestige, Polizeidruck und Szeneaktivität als District-Metriken vorbereiten
-- [x] Schallschutz, Strom, Fluchtwege, Deko, Bühne, Bar, Lager und Sicherheitsraum als Ausbaugrundlage katalogisieren
-- [x] Reduced-Motion-Fallback im visuellen Vertrag festlegen
+- [x] `CITY_MAP_MANIFEST.json` als einzige Karten-Fachquelle angelegt
+- [x] stilisierte 0–100-Koordinaten verwendet; keine Navigation und keine exakten Adressen
+- [x] 8 Berliner Bezirke als Startzonen definiert
+- [x] 12 Spielorte mit Prestige, Audience Pull, Risk, Underground Factor und Utility angelegt
+- [x] 7 kaufbare Immobilien/Objekte mit Preisen und Ausbau-Slots vorbereitet
+- [x] genau eine `Hall of Tribute` als Ranking-/Prestige-Sonderort definiert
+- [x] Score- und Tier-System `standard / strong / prime / legendary` abgeleitet
+- [x] read-only `city_map_projection` mit Top-5, Ownership und Hall-of-Tribute-Projektion implementiert
+- [x] Heat, Prestige, Polizeidruck und Szeneaktivität als District-Metriken vorbereitet
+- [x] unbekannte District-Overrides werden fail-closed abgewiesen
+- [x] Ownership akzeptiert ausschließlich tatsächlich kaufbare Locations
+- [x] Schallschutz, Strom, Fluchtwege, Deko, Bühne, Bar, Lager und Sicherheitsraum als Ausbaugrundlage katalogisiert
+- [x] Reduced-Motion-Fallback im visuellen Vertrag festgelegt
 
-### Bewusst noch offen
+### Folgeausbau nach dem vollständigen Event-Loop
 
 - [ ] persistente Bezirksdynamik aus bestätigten Events ableiten
 - [ ] Immobilienkauf an EconomyService anbinden
 - [ ] Immobilien-Ausbauzustand + Kosten-/Nutzenregeln implementieren
-- [ ] echte Kartenoberfläche/Renderer an die read-only Projection anbinden
+- [ ] hochwertige Kartenoberfläche/Renderer an die read-only Projection anbinden
 - [ ] Hall-of-Tribute-Ranking aus bestätigten Statistiken speisen
 - [ ] saisonale Titel/Awards mit statischem Reduced-Motion-Fallback projizieren
 
@@ -165,3 +172,4 @@ Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-A
 - [x] **0.8.1** Event State Foundation
 - [x] **0.8.2** Equipment & Economy
 - [x] **0.8.3-A** Event Execution Engine
+- [x] **0.8.3-B** Crisis Engine + Berlin Ops Map Foundation
