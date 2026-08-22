@@ -64,6 +64,8 @@ def build_city_map_projection(
     district_ids: set[str] = set()
     district_projection = []
     overrides = district_metrics or {}
+    if not isinstance(overrides, dict):
+        raise ValueError("district_metrics muss ein Mapping sein")
     for district in districts:
         district_id = district.get("district_id")
         if not isinstance(district_id, str) or not district_id or district_id in district_ids:
@@ -78,7 +80,7 @@ def build_city_map_projection(
         metrics = dict(defaults)
         if district_id in overrides:
             override = overrides[district_id]
-            if set(override) - set(_DISTRICT_METRICS):
+            if not isinstance(override, dict) or set(override) - set(_DISTRICT_METRICS):
                 raise ValueError("Unbekannte District-Metrik")
             metrics.update(override)
         for key in _DISTRICT_METRICS:
@@ -89,8 +91,12 @@ def build_city_map_projection(
             "map_box": deepcopy(box),
             "metrics": metrics,
         })
+    unknown_districts = set(overrides) - district_ids
+    if unknown_districts:
+        raise ValueError("district_metrics enthält unbekannte District-ID")
 
     location_ids: set[str] = set()
+    purchasable_ids: set[str] = set()
     location_projection = []
     tribute_count = 0
     upgrade_ids = {item["upgrade_id"] for item in manifest.get("property_upgrade_catalog", [])}
@@ -116,6 +122,7 @@ def build_city_map_projection(
         purchase_price = location.get("purchase_price_cents")
         slots = list(location.get("upgrade_slots", []))
         if purchasable:
+            purchasable_ids.add(location_id)
             if isinstance(purchase_price, bool) or not isinstance(purchase_price, int) or purchase_price < 1:
                 raise ValueError("Kaufbare Location benötigt purchase_price_cents")
             if not slots or any(slot not in upgrade_ids for slot in slots):
@@ -143,9 +150,9 @@ def build_city_map_projection(
         })
     if tribute_count != 1:
         raise ValueError("Berlin Ops Map benötigt exakt eine Hall of Tribute")
-    unknown_owned = set(owned_property_ids) - location_ids
-    if unknown_owned:
-        raise ValueError("owned_property_ids enthält unbekannte Location")
+    invalid_owned = set(owned_property_ids) - purchasable_ids
+    if invalid_owned:
+        raise ValueError("owned_property_ids enthält unbekannte oder nicht kaufbare Location")
 
     ranked = sorted(location_projection, key=lambda item: (-item["score"], item["location_id"]))
     rank_by_id = {item["location_id"]: index + 1 for index, item in enumerate(ranked)}
