@@ -29,15 +29,36 @@
       </div>
       <p>Der erste Alpha-Start legt einen lokalen GENESIS-Character, ein vorbereitetes Event und den Equipment-Katalog an. Danach werden alle Spieländerungen über die vorhandenen Application-Services bestätigt.</p>
       <div class="form-grid">
-        <label>Dein Crew-/Charaktername<input id="character-name" value="Meine Crew" maxlength="60"></label>
-        <label>Eventname<input id="event-name" value="Erste Bunkerfrequenz" maxlength="80"></label>
+        <label>Dein Crew-/Charaktername<input id="character-name" value="Meine Crew"></label>
+        <label>Eventname<input id="event-name" value="Erste Bunkerfrequenz"></label>
       </div>
       <button id="new-game" class="primary">NEUES SPIEL ANLEGEN</button>
     </section>
 
+    <section id="profile-panel" class="panel hidden" aria-labelledby="profile-title">
+      <div class="panel-head">
+        <div><p class="eyebrow">02 // DEIN PROFIL</p><h2 id="profile-title">Personalisierung</h2></div>
+        <div class="metric"><span>Level</span><strong id="profile-level">–</strong></div>
+      </div>
+      <p>Name, Alias, zusätzliche Spitznamen und Motto sind persönliche Anzeigenwerte. Die technische Character-ID bleibt unverändert.</p>
+      <div class="form-grid">
+        <label>Anzeigename<input id="profile-display-name" autocomplete="off"></label>
+        <label>Alias<input id="profile-alias" autocomplete="off"></label>
+        <label>Spitznamen, durch Komma getrennt<input id="profile-nicknames" autocomplete="off"></label>
+        <label>Motto<input id="profile-motto" autocomplete="off"></label>
+      </div>
+      <div class="summary-grid profile-stats">
+        <div><span class="label">Ruf</span><strong id="profile-reputation">–</strong></div>
+        <div><span class="label">Energie</span><strong id="profile-energy">–</strong></div>
+        <div><span class="label">Stress</span><strong id="profile-stress">–</strong></div>
+        <div><span class="label">Technische ID</span><strong id="profile-id">–</strong></div>
+      </div>
+      <button id="save-profile" class="primary">PROFIL SPEICHERN</button>
+    </section>
+
     <section id="event-panel" class="panel hidden" aria-labelledby="event-title">
       <div class="panel-head">
-        <div><p class="eyebrow">02 // EVENT</p><h2 id="event-title">Event-Steuerung</h2></div>
+        <div><p class="eyebrow">03 // EVENT</p><h2 id="event-title">Event-Steuerung</h2></div>
         <div class="metric"><span>Budget</span><strong id="budget">–</strong></div>
       </div>
       <div class="summary-grid">
@@ -52,17 +73,17 @@
     </section>
 
     <section id="economy-panel" class="panel hidden" aria-labelledby="economy-title">
-      <div class="panel-head"><div><p class="eyebrow">03 // EQUIPMENT</p><h2 id="economy-title">Equipment & Economy</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">04 // EQUIPMENT</p><h2 id="economy-title">Equipment & Economy</h2></div></div>
       <div id="equipment-list" class="equipment-list"></div>
     </section>
 
     <section id="incident-panel" class="panel hidden" aria-labelledby="incident-title">
-      <div class="panel-head"><div><p class="eyebrow">04 // CRISIS</p><h2 id="incident-title">Krise</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">05 // CRISIS</p><h2 id="incident-title">Krise</h2></div></div>
       <div id="incident-content"></div>
     </section>
 
     <section id="settlement-panel" class="panel hidden" aria-labelledby="settlement-title">
-      <div class="panel-head"><div><p class="eyebrow">05 // SETTLEMENT</p><h2 id="settlement-title">Abrechnung</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">06 // SETTLEMENT</p><h2 id="settlement-title">Abrechnung</h2></div></div>
       <div id="settlement-content"></div>
     </section>
 
