@@ -33,9 +33,12 @@
   },
   "character": {
     "stress_bounds": [0, 100],
-    "reputation_bounds": null,
+    "reputation_bounds": [0, null],
+    "reputation_floor_behavior": "clamp_to_zero",
     "biography_event": "character.biography_entry_added",
-    "biography_category": "event"
+    "biography_category": "event",
+    "biography_record_character_id_required": true,
+    "caller_character_id_if_present_must_match": true
   },
   "event": {
     "required_start_phase": "settlement",
