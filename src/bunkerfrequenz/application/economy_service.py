@@ -28,13 +28,14 @@ class EconomyService:
         if existing is not None:
             if existing.get("payload", {}).get("economy") != economy.to_dict():
                 raise PersistenceError("Command-ID wurde mit anderem Katalog verwendet")
-            return self._current_result((), True)
+            return self._current_result((), True, context=context)
         state = deepcopy(self.persistence.load_state() or {})
         if "event" not in state:
             raise PersistenceError("Economy benötigt einen bestätigten Eventzustand")
         if "economy" in state:
             raise PersistenceError("Economy-Zustand ist bereits initialisiert")
         event = EventState.from_dict(state["event"])
+        self._assert_event_context(event, context)
         state["economy"] = economy.to_dict()
         receipt = self.persistence.commit(
             transaction_id=f"tx:{context.command_id}",
@@ -61,9 +62,10 @@ class EconomyService:
             payload = existing.get("payload", {})
             if payload.get("request") != {"kind": kind, "item_id": item_id, "quantity": quantity}:
                 raise PersistenceError("Command-ID wurde mit anderer Economy-Aktion verwendet")
-            return self._current_result((), True)
+            return self._current_result((), True, context=context)
 
         economy, event = self._load()
+        self._assert_event_context(event, context)
         if item_id not in economy.catalog:
             raise ValueError("Equipment ist nicht katalogisiert")
         updated_economy, budget_delta = self._apply(economy, kind, item_id, quantity, context.command_id)
@@ -96,8 +98,9 @@ class EconomyService:
         if existing is not None:
             if existing.get("payload", {}).get("transaction_id") != transaction_id:
                 raise PersistenceError("Command-ID wurde mit anderer Kompensation verwendet")
-            return self._current_result((), True)
+            return self._current_result((), True, context=context)
         economy, event = self._load()
+        self._assert_event_context(event, context)
         original = next((entry for entry in economy.ledger if entry["transaction_id"] == transaction_id), None)
         if original is None or original["kind"] not in {"buy", "sell"}:
             raise ValueError("Nur bestätigte Kauf-/Verkaufstransaktionen sind kompensierbar")
@@ -179,14 +182,28 @@ class EconomyService:
         event_id = f"{command_id}:{suffix}"
         return next((record for record in self.persistence.read_records() if record["event_id"] == event_id), None)
 
-    def _current_result(self, ids: tuple[str, ...], replay: bool) -> EconomyCommitResult:
+    def _current_result(
+        self,
+        ids: tuple[str, ...],
+        replay: bool,
+        *,
+        context: JournalContext,
+    ) -> EconomyCommitResult:
         economy, event = self._load()
+        self._assert_event_context(event, context)
         return EconomyCommitResult(economy, event, ids, replay)
 
     @staticmethod
     def _validate_context(context: JournalContext) -> None:
         if context.entity_type != "event" or not context.command_id:
             raise ValueError("Economy-Commit benötigt Event-Kontext und command_id")
+        if not context.entity_id:
+            raise ValueError("Economy-Commit benötigt eine Event-entity_id")
+
+    @staticmethod
+    def _assert_event_context(event: EventState, context: JournalContext) -> None:
+        if context.entity_id != event.event_id:
+            raise ValueError("JournalContext.entity_id passt nicht zum bestätigten Event")
 
 
 def replay_economy_event(derived_state: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]:
@@ -199,7 +216,14 @@ def replay_economy_event(derived_state: dict[str, Any], record: dict[str, Any]) 
     event = EventState.from_dict(payload["event"])
     state = deepcopy(derived_state)
     current = state.get("economy")
-    if current is not None and EconomyState.from_dict(current).revision >= economy.revision:
-        return state
+    if current is not None:
+        current_economy = EconomyState.from_dict(current)
+        if current_economy.revision > economy.revision:
+            return state
+        if current_economy.revision == economy.revision:
+            current_event = state.get("event")
+            if current_economy.to_dict() != economy.to_dict() or current_event != event.to_dict():
+                raise ValueError("Economy-Replay kollidiert mit Zustand derselben Revision")
+            return state
     state.update(economy=economy.to_dict(), event=event.to_dict())
     return state
