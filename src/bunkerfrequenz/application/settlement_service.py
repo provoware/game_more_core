@@ -48,6 +48,7 @@ class SettlementService:
             return self._current_result(context, replay=True)
 
         event, economy, character, incidents, state = self._load(context)
+        self._assert_character_context(context, character.character_id)
         if event.phase != "settlement":
             raise ValueError("Settlement kann nur aus Eventphase settlement abgeschlossen werden")
         if incidents.active is not None:
@@ -156,6 +157,7 @@ class SettlementService:
                 "heat_delta": effects["heat_delta"],
             },
         }
+        commit_context = self._with_character(context, character.character_id)
 
         receipt = self.persistence.commit(
             transaction_id=f"tx:{context.command_id}",
@@ -192,7 +194,7 @@ class SettlementService:
                 },
             ],
             derived_state=derived,
-            context=context,
+            context=commit_context,
         )
         return SettlementCommitResult(
             final_event,
@@ -240,7 +242,7 @@ class SettlementService:
             RESOURCE_MAX,
             max(RESOURCE_MIN, character.stress + effects["crew_stress_delta"]),
         )
-        data["reputation"] = character.reputation + effects["reputation_delta"]
+        data["reputation"] = max(0, character.reputation + effects["reputation_delta"])
         return CharacterState.from_dict(data)
 
     @staticmethod
@@ -288,10 +290,14 @@ class SettlementService:
         settlement = SettlementState.from_dict(state["settlement"])
         if settlement.event_id != event.event_id:
             raise PersistenceError("Settlement-State gehört zu anderem Event")
+        self._assert_character_context(context, settlement.character_id)
+        character = CharacterState.from_dict(state["character"])
+        if character.character_id != settlement.character_id:
+            raise PersistenceError("Settlement-Replay verweist auf anderen Character")
         return SettlementCommitResult(
             event,
             EconomyState.from_dict(state["economy"]),
-            CharacterState.from_dict(state["character"]),
+            character,
             IncidentState.from_dict(state["incidents"]),
             settlement,
             (),
@@ -302,6 +308,25 @@ class SettlementService:
     def _validate_context(context: JournalContext) -> None:
         if context.entity_type != "event" or not context.entity_id or not context.command_id:
             raise ValueError("Settlement benötigt Event-Kontext mit entity_id und command_id")
+
+    @staticmethod
+    def _assert_character_context(context: JournalContext, character_id: str) -> None:
+        if context.character_id is not None and context.character_id != character_id:
+            raise ValueError("JournalContext.character_id passt nicht zum Settlement-Character")
+
+    @staticmethod
+    def _with_character(context: JournalContext, character_id: str) -> JournalContext:
+        return JournalContext(
+            timestamp_local=context.timestamp_local,
+            session_id=context.session_id,
+            player_id=context.player_id,
+            entity_type=context.entity_type,
+            entity_id=context.entity_id,
+            command_id=context.command_id,
+            source=context.source,
+            game_version=context.game_version,
+            character_id=character_id,
+        )
 
 
 def replay_settlement_event(derived_state: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]:
@@ -316,17 +341,6 @@ def replay_settlement_event(derived_state: dict[str, Any], record: dict[str, Any
         raise ValueError("Settlement-Replay verweist auf widersprüchliche Event-IDs")
 
     state = deepcopy(derived_state)
-    existing = state.get("settlement")
-    if existing is not None:
-        current_settlement = SettlementState.from_dict(existing)
-        if (
-            current_settlement.to_dict() != target_settlement.to_dict()
-            or state.get("event") != target_event.to_dict()
-            or state.get("incidents") != target_incidents.to_dict()
-        ):
-            raise ValueError("event.completed kollidiert mit vorhandenem Settlement")
-        return state
-
     required = {"event", "economy", "character"}
     if not required.issubset(state):
         raise ValueError("event.completed benötigt Event-, Economy- und Character-State")
@@ -339,6 +353,21 @@ def replay_settlement_event(derived_state: dict[str, Any], record: dict[str, Any
         if "incidents" in state
         else IncidentState(event_id=current_event.event_id)
     )
+
+    existing = state.get("settlement")
+    if existing is not None:
+        current_settlement = SettlementState.from_dict(existing)
+        if (
+            current_settlement.to_dict() != target_settlement.to_dict()
+            or current_event.to_dict() != target_event.to_dict()
+            or current_incidents.to_dict() != target_incidents.to_dict()
+            or current_economy.revision != target_settlement.economy_revision["new"]
+            or current_character.character_id != target_settlement.character_id
+            or current_character.stress != target_settlement.stress["new"]
+            or current_character.reputation != target_settlement.reputation["new"]
+        ):
+            raise ValueError("event.completed kollidiert mit vorhandenem Settlement")
+        return state
 
     if current_event.to_dict() != target_event.to_dict():
         raise ValueError("event.completed passt nicht zum zuvor bestätigten Phasenwechsel")
