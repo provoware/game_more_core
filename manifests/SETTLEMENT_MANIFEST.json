@@ -25,6 +25,11 @@
     "stability_delta": "settlement_receipt_event_outcome_only",
     "heat_delta": "settlement_receipt_event_outcome_only"
   },
+  "receipt_invariants": {
+    "budget_delta_matches_effect": true,
+    "stress_delta_matches_effect": true,
+    "reputation_delta_matches_effect": true
+  },
   "economy": {
     "ledger_kind": "settlement",
     "ledger_item_id": "__event_settlement__",
@@ -33,7 +38,8 @@
   },
   "character": {
     "stress_bounds": [0, 100],
-    "reputation_bounds": [0, null],
+    "legacy_signed_reputation_readable": true,
+    "new_settlement_reputation_bounds": [0, null],
     "reputation_floor_behavior": "clamp_to_zero",
     "biography_event": "character.biography_entry_added",
     "biography_category": "event",
@@ -66,6 +72,7 @@
   "recovery": {
     "atomic_commit": true,
     "event_completed_replay_validates_prior_economy_character_phase_records": true,
+    "receipt_effects_bound_to_applied_deltas": true,
     "incident_free_replay_supported": true,
     "same_command_id_idempotent": true,
     "same_command_id_different_request_rejected": true
