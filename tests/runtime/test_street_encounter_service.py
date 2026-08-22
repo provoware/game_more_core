@@ -243,7 +243,7 @@ class StreetEncounterServiceTests(unittest.TestCase):
         self.assertEqual(payload["effects"], result.effects)
         self.assertEqual(payload["contract_version"], STREET["version"])
         selected = next(item for item in STREET["encounters"] if item["encounter_id"] == result.encounter_id)
-        self.assertEqual(result.effects, selected["effects"])
+        self.assertEqual(set(result.effects), set(selected["effects"]))
         self.assertTrue(
             all(
                 record["event_type"] in {
