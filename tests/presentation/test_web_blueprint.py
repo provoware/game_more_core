@@ -26,7 +26,10 @@ class WebBlueprintContractTests(unittest.TestCase):
         parser = BlueprintParser()
         parser.feed((ROOT / "web/index.html").read_text(encoding="utf-8"))
         self.assertIn("../docs/assets/BUNKERFREQUENZ_SYSTEM_BLUEPRINT_0.4.3.webp", parser.image_sources)
-        self.assertTrue({"workflow", "variants", "debug-output", "system-status"} <= parser.ids)
+        self.assertTrue(
+            {"control-room", "workflow", "variants", "debug-output", "signal-label", "system-status"}
+            <= parser.ids
+        )
 
     def test_renderer_consumes_canonical_manifest_contract(self):
         manifest = json.loads((ROOT / "manifests/UI_MANIFEST.json").read_text(encoding="utf-8"))
