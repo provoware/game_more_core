@@ -4,6 +4,21 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### 0.8.3-B – Crisis Engine + Berlin Ops Map Foundation
+
+- `IncidentState` als eigener, streng validierter Zustandsblock ergänzt; aktive Krise, Historie, monotone Revision und bestätigte `pending_settlement`-Folgen bleiben getrennt von Event-, Economy- und Character-State.
+- sechs Incident-Typen mit jeweils drei katalogisierten Reaktionen und Severity `1–5` eingeführt; die Auswirkungen werden deterministisch skaliert und nicht aus Systemzeit oder UI-Zustand abgeleitet.
+- Crisis-Lifecycle atomar an die Eventphase gebunden: `live → crisis` wird gemeinsam mit `event.incident_started`, die Auflösung gemeinsam mit `event.incident_resolved` und `crisis → live/teardown/cancelled` persistiert.
+- Incident-Commands an den bestätigten Event-Kontext gebunden, idempotente Open-/Resolve-Replays umgesetzt und falsche Reaktionen sowie parallele aktive Incidents fail-closed gesperrt.
+- `GameRecoveryService` um Incident-Replay erweitert und Fault-Injection-Regression für einen nach durablem Journal unterbrochenen Crisis-Commit ergänzt.
+- Krisenfolgen auf Budget, Ruf, Crew-Stress, Stabilität und Heat werden in 0.8.3-B nur bestätigt gesammelt; die eigentliche Buchung bleibt 0.8.3-C vorbehalten, damit der Economy-Vertrag aus 0.8.2 nicht umgangen wird.
+- `CITY_MAP_MANIFEST.json` als datengetriebene Berlin-Ops-Map-Foundation ergänzt: 8 Bezirke, 12 stilisierte Spielorte, 7 vorbereitete kaufbare Objekte, Ausbau-Slots und genau eine Hall of Tribute.
+- read-only Kartenprojektion mit normierten 0–100-Koordinaten, deterministischem Ortsscore, `standard/strong/prime/legendary`-Tiers, Top-5, Ownership-Markierung und District-Metriken für Heat, Prestige, Polizeidruck und Szeneaktivität ergänzt.
+- Kartenvertrag ausdrücklich als stilisierte Spielkarte statt Navigation definiert; visuelle Richtung `Retro-Autokarte × moderner Control Room`, Premium-Halo/Pulse/Ranking-Badges und vollständiger Reduced-Motion-Fallback sind vorbereitet, aber noch kein schreibender Renderer.
+- deutsche Incident-, Orts-, Ausbau- und Hall-of-Tribute-Texte ausgelagert; satirische Ranking-Titel wie `Lärmadel`, `Bunkerbaron`, `Kabelkönig`, `Pegelpapst` und `Nachtminister` vorbereitet.
+- README, TODO, Projektstatus, Projektmanifest, Spieleranleitung, Schemas und der gemeinsame 0.8.3-B-Vertrag auf denselben Scope abgeglichen; Runtime-Baseline bleibt `0.5.2-alpha.1`.
+- bewusst offen bleiben 0.8.3-C Settlement/Folgen, persistente Bezirksdynamik, Immobilienkauf/-ausbau, saisonales Ranking und der hochwertige Kartenrenderer.
+
 ### 0.8.3-A – Event Execution Engine
 
 - `EventExecutionService` als verbindliche Application-Grenze für acht kanonische Eventaktionen von `draft` bis `settlement` ergänzt; ein späterer Client muss keine freie Phasenmutation verwenden.
@@ -103,7 +118,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - Skill-Fortschritt wird für negative/überlaufende XP defensiv begrenzt und zeigt am Skillmaximum keinen falschen Restbedarf.
 
 ### Hinzugefügt
-- `/safe-merge` als operativer normaler Mergeweg: Berechtigung, aktueller `main`, exakter PR-Head, drei grüne Kern-Gates und ungelöste Review-Threads werden unmittelbar vor Merge erneut geprüft.
+- `/safe-merge` als operativer normaler Mergeweg: Berechtigung, aktuellen `main`, exakten PR-Head, drei grüne Kern-Gates und ungelöste Review-Threads werden unmittelbar vor Merge erneut geprüft.
 - `Main Integrity` als nachgelagerte Provenienzprüfung für Änderungen auf `main`; bei Fehler wird ein idempotenter `[MAIN-INTEGRITY]`-Incident erzeugt.
 - Schutz vor Selbständerung: normale `/safe-merge`-PRs dürfen die Guard-/CI-Sicherheitsdateien nicht selbst verändern; Security-Änderungen benötigen einen ausdrücklich auditierten Bootstrap-PR.
 - `tools/github_merge_guard.py` für Kandidatenprüfung, exakt-einmal-Merge und Main-Provenienz sowie `tools/github_merge_guard_retry.py` für begrenzte nachgelagerte GitHub-Lese-Retries.

@@ -3,35 +3,27 @@
   "version": "0.5.2-alpha.1",
   "release_baseline": "0.5.2-alpha.1",
   "active_iteration": "0.8.3",
-  "status": "0_8_3a_event_execution_engine_implemented_remote_validation_pending",
-  "current_focus": "0_8_3a_remote_validation_and_safe_merge",
-  "last_validated_feature_iteration": "0.8.2",
+  "status": "0_8_3b_crisis_engine_and_city_foundation_implemented_remote_validation_pending",
+  "current_focus": "0_8_3b_final_remote_validation_review_and_safe_merge",
+  "last_validated_feature_iteration": "0.8.3-A",
   "last_validated_release": "0.5.2-alpha.1",
-  "validation_reference": "PR #61 / head cee782476dccc9d57470f6522e4f77ed1473cdeb / merge 9cfa107f0256587bf5a440c64c3e0af6c482fed2",
+  "validation_reference": "PR #62 / head 710674a9e330636653c64d5e9593e0047449a2e5 / merge 8a5b08b5f44e334298cf226510f99abbc115b3df",
   "remote_validation": {
-    "status": "success_for_0.8.2_hardened_head",
-    "pull_request": 61,
-    "validated_head": "cee782476dccc9d57470f6522e4f77ed1473cdeb",
-    "runtime_core_workflow_run": 32557685040,
-    "presentation_core_workflow_run": 32557685042,
-    "repository_health_workflow_run": 32557685108,
+    "status": "success_for_0.8.3a_event_execution_engine",
+    "pull_request": 62,
+    "validated_head": "710674a9e330636653c64d5e9593e0047449a2e5",
+    "runtime_core_workflow_run": 32558175370,
+    "presentation_core_workflow_run": 32558175365,
+    "repository_health_workflow_run": 32558175382,
     "final_information_head_revalidation_required": false,
-    "merged_commit": "9cfa107f0256587bf5a440c64c3e0af6c482fed2"
+    "merged_commit": "8a5b08b5f44e334298cf226510f99abbc115b3df"
   },
   "presentation_application_boundary": {
     "status": "validated_and_merged",
     "pull_request": 24,
     "merged_commit": "25006d07d33199fea2db8208c192ca2f6fa1095d",
-    "capabilities": [
-      "can_edit_profile",
-      "can_undo_profile",
-      "can_execute_action"
-    ],
-    "write_commands": [
-      "profile.update",
-      "profile.undo_last",
-      "action.execute"
-    ]
+    "capabilities": ["can_edit_profile", "can_undo_profile", "can_execute_action"],
+    "write_commands": ["profile.update", "profile.undo_last", "action.execute"]
   },
   "html_blueprint_evaluator": {
     "status": "local_static_prototype",
@@ -47,18 +39,10 @@
     "status": "validated_and_merged",
     "pull_request": 26,
     "merged_commit": "5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a",
-    "local_commands": [
-      "view.select",
-      "biography.filter",
-      "feedback.dismiss"
-    ],
+    "local_commands": ["view.select", "biography.filter", "feedback.dismiss"],
     "feedback_events": [
-      "character.level_up",
-      "character.skill_level_up",
-      "character.trait_unlocked",
-      "character.trait_tier_up",
-      "character.specialization_changed",
-      "character.resonance_rank_up"
+      "character.level_up", "character.skill_level_up", "character.trait_unlocked",
+      "character.trait_tier_up", "character.specialization_changed", "character.resonance_rank_up"
     ],
     "reduced_motion": true,
     "persistent": false
@@ -93,18 +77,8 @@
     "presentation_core_workflow_run": 32517683263,
     "default_top_limit": 10,
     "unbounded_player_source": true,
-    "sort_modes": [
-      "level",
-      "reputation",
-      "resonance",
-      "skill",
-      "events",
-      "clubs"
-    ],
-    "network_metrics_require_server_confirmation": [
-      "events",
-      "clubs"
-    ],
+    "sort_modes": ["level", "reputation", "resonance", "skill", "events", "clubs"],
+    "network_metrics_require_server_confirmation": ["events", "clubs"],
     "online_presence_inferred": false,
     "telegram_transport_implemented": false
   },
@@ -119,16 +93,7 @@
     "implemented_step": "complete_character_forge_vertical_slice",
     "manifest_actions_selectable": 20,
     "manifest_actions_with_resource_effects": 20,
-    "resource_bounds": {
-      "energy": [
-        0,
-        100
-      ],
-      "stress": [
-        0,
-        100
-      ]
-    },
+    "resource_bounds": {"energy": [0, 100], "stress": [0, 100]},
     "resource_event": "character.resources_changed",
     "prerequisites_fail_closed": true,
     "dispatcher_command_built_only_with_runtime_ids": true,
@@ -158,37 +123,14 @@
     "schema": "schemas/event_state.schema.json",
     "contract": "docs/EVENT_STATE_0.8.1.md",
     "fields": [
-      "event_id",
-      "display_name",
-      "location",
-      "budget_cents",
-      "acts",
-      "crew",
-      "equipment",
-      "time_window",
-      "safety_status",
-      "phase",
-      "revision"
+      "event_id", "display_name", "location", "budget_cents", "acts", "crew",
+      "equipment", "time_window", "safety_status", "phase", "revision"
     ],
     "phases": [
-      "draft",
-      "planning",
-      "procurement",
-      "transport",
-      "setup",
-      "soundcheck",
-      "live",
-      "crisis",
-      "teardown",
-      "settlement",
-      "completed",
-      "cancelled"
+      "draft", "planning", "procurement", "transport", "setup", "soundcheck",
+      "live", "crisis", "teardown", "settlement", "completed", "cancelled"
     ],
-    "journal_events": [
-      "event.created",
-      "event.planning_updated",
-      "event.phase_changed"
-    ],
+    "journal_events": ["event.created", "event.planning_updated", "event.phase_changed"],
     "stale_revision_rejected": true,
     "idempotent_commands": true,
     "physical_phase_safety_gate": true,
@@ -229,9 +171,14 @@
     "remote_validation_pending": false
   },
   "event_execution_engine": {
-    "status": "implemented_remote_validation_pending",
+    "status": "remote_validated_and_merged",
     "iteration": "0.8.3-A",
     "pull_request": 62,
+    "validated_head": "710674a9e330636653c64d5e9593e0047449a2e5",
+    "merged_commit": "8a5b08b5f44e334298cf226510f99abbc115b3df",
+    "runtime_core_workflow_run": 32558175370,
+    "presentation_core_workflow_run": 32558175365,
+    "repository_health_workflow_run": 32558175382,
     "application_service": "src/bunkerfrequenz/application/event_execution_service.py",
     "manifest": "manifests/EVENT_ACTION_MANIFEST.json",
     "canonical_actions": 8,
@@ -241,19 +188,53 @@
     "journal_reason_prefix": "event_action:",
     "availability_projection": true,
     "central_prerequisite_gates": [
-      "confirmed_act",
-      "confirmed_acts",
-      "confirmed_crew",
-      "positive_budget",
-      "equipment_ready",
-      "location_required",
-      "verified_access_required",
-      "time_window_required",
-      "safety_clearance_required"
+      "confirmed_act", "confirmed_acts", "confirmed_crew", "positive_budget",
+      "equipment_ready", "location_required", "verified_access_required",
+      "time_window_required", "safety_clearance_required"
     ],
     "crisis_resolution_in_scope": false,
     "settlement_consequences_in_scope": false,
     "client_domain_writes": false
+  },
+  "incident_engine": {
+    "status": "implemented_remote_validation_pending",
+    "iteration": "0.8.3-B1",
+    "pull_request": 63,
+    "state_block": "incidents",
+    "domain_module": "src/bunkerfrequenz/domain/incident.py",
+    "application_service": "src/bunkerfrequenz/application/incident_service.py",
+    "manifest": "manifests/INCIDENT_MANIFEST.json",
+    "schema": "schemas/incident_state.schema.json",
+    "contract": "docs/CRISIS_CITY_0.8.3-B.md",
+    "incident_types": 6,
+    "responses_per_incident": 3,
+    "severity_range": [1, 5],
+    "trigger_phases": ["live"],
+    "atomic_event_phase_and_incident_commit": true,
+    "pending_settlement_effects": [
+      "budget_delta_cents", "reputation_delta", "crew_stress_delta", "stability_delta", "heat_delta"
+    ],
+    "direct_economy_character_mutation": false,
+    "idempotent_commands": true,
+    "combined_recovery": true
+  },
+  "city_map_foundation": {
+    "status": "foundation_implemented_remote_validation_pending",
+    "iteration": "0.8.3-B2",
+    "pull_request": 63,
+    "manifest": "manifests/CITY_MAP_MANIFEST.json",
+    "schema": "schemas/city_map.schema.json",
+    "projection": "src/bunkerfrequenz/presentation/city_map_projection.py",
+    "content": "content/de/city_map.json",
+    "geography_mode": "stylized_game_map_not_navigation",
+    "districts": 8,
+    "locations": 12,
+    "purchasable_locations": 7,
+    "hall_of_tribute_count": 1,
+    "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
+    "persistent_district_simulation": false,
+    "property_write_path": false,
+    "client_renderer": false
   },
   "repository_repair": {
     "status": "recovered_and_remote_validated",
@@ -282,23 +263,13 @@
     "presentation_core_workflow_run": 32528078992,
     "repository_health_workflow_run": 32528078926,
     "safe_merge_bot_result": "SAFE MERGE PASS",
-    "required_status_checks": [
-      "runtime-core",
-      "presentation-core",
-      "repository-health"
-    ],
+    "required_status_checks": ["runtime-core", "presentation-core", "repository-health"],
     "requires_current_main_in_pr_head": true,
     "requires_no_unresolved_review_threads": true,
     "stale_versioned_feature_branches_blocked": true,
     "normal_safe_merge_self_modification_blocked": true,
     "merge_api_call_exactly_once": true,
-    "post_merge_provenance_retry_seconds": [
-      0,
-      1,
-      2,
-      4,
-      8
-    ],
+    "post_merge_provenance_retry_seconds": [0, 1, 2, 4, 8],
     "main_integrity_enabled": true,
     "resolved_integrity_incident": 40,
     "resolved_integrity_incident_commit": "fb96a489a56a3505a627964b018d4d9b18484e04",
@@ -313,21 +284,13 @@
     "status": "closed",
     "repair_pull_request": 22,
     "merged_commit": "73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea",
-    "closed_competing_prs": [
-      15,
-      16,
-      17,
-      18,
-      19,
-      20,
-      21
-    ]
+    "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
-  "next_iteration": "0.8.3-B",
-  "next_goal": "Nach grüner Remote-Abnahme und Safe-Merge von 0.8.3-A Krisen/Incidents als eigenen journalfähigen Slice implementieren; Settlement-Folgen und Client bleiben getrennt.",
+  "next_iteration": "0.8.3-C",
+  "next_goal": "Nach grüner Remote-Abnahme und Safe-Merge von 0.8.3-B pending_settlement über bestehende Economy-/Character-Verträge buchen, event.completed erzeugen und den kompletten Event-Krisen-Abrechnungs-Recovery-Pfad testen.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-22T06:50:00+00:00"
+  "updated_at": "2026-08-22T07:17:00+00:00"
 }

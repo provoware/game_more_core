@@ -3,252 +3,165 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Zuletzt remote validierte Feature-Basis:** `0.8.2 – Equipment & Economy` inklusive Economy-Integritätshärtung
-- **0.8.2-Hardening-Referenz:** PR #61, Head `cee782476dccc9d57470f6522e4f77ed1473cdeb`
-- **0.8.2-Hardening-Remote-Abnahme:** Runtime Core `32557685040`, Presentation Core `32557685042`, Repository Health `32557685108` grün; Merge `9cfa107f0256587bf5a440c64c3e0af6c482fed2`
-- **Aktive Iteration:** `0.8.3 – Vollständiger Event-Loop`, aktuell Paket `0.8.3-A – Event Execution Engine`
-- **Fortschritt zum ersten spielbaren Alpha-Release:** `84 %` (Planungswert; 0.8.3-A implementiert, finale Remote-Abnahme des PR-Heads noch offen)
-- **Aktueller Release-Blocker:** 0.8.3-A remote abschließen, danach 0.8.3-B Krisen/Incidents, 0.8.3-C Settlement/Folgen und anschließend ein verbundener Client
+- **Zuletzt vollständig remote validierte Feature-Stufe:** `0.8.3-A – Event Execution Engine`
+- **0.8.3-A-Abnahme:** PR #62 · Head `710674a9e330636653c64d5e9593e0047449a2e5` · Runtime Core `32558175370` · Presentation Core `32558175365` · Repository Health `32558175382` · Merge `8a5b08b5f44e334298cf226510f99abbc115b3df`
+- **Aktive Iteration:** `0.8.3 – Vollständiger Event-Loop`, aktuell `0.8.3-B1 Crisis Engine + 0.8.3-B2 Berlin Ops Map Foundation`
+- **Aktiver PR:** #63
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `88 %` (Planungswert; B1/B2 implementiert, finale Remote-Abnahme und Safe-Merge noch offen)
+- **Aktueller Release-Blocker:** 0.8.3-B final abnehmen → 0.8.3-C Settlement/Folgen → schreibenden A4-Client anbinden
 
-## Release-Ziel und Abnahme
+## Release-Ziel
 
-**Ziel:** Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy und den vollständigen Event-Loop über bestätigte Journal-Ereignisse mit einer bedienbaren Oberfläche.
+Ein lokal startbares Alpha verbindet Character Forge, Equipment/Economy, Event-Aktionen, Krisen und Settlement über bestätigte Journal-Ereignisse mit einer bedienbaren Oberfläche.
 
-**Abnahme:** Aus einem frischen Checkout lässt sich der dokumentierte Startweg ausführen; eine Person ohne Codewissen kann ein Event planen, Equipment beschaffen, das Event samt Krise abschließen, das Ergebnis speichern und nach Neustart identisch wiederherstellen.
+**Abnahme:** Aus einem frischen Checkout kann eine Person ohne Codewissen `Crew wählen → Event planen → Equipment beschaffen → Event starten → Krise lösen → abrechnen → speichern → neu laden` vollständig durchführen.
 
-**Bewusste Nicht-Ziele des ersten lokalen Alpha-Releases:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb und native GitHub-Branch-Protection. Diese Punkte dürfen den lokalen Spielkern nicht verzögern.
+**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb und native GitHub-Branch-Protection.
 
-## Repository Guard
+---
 
-- [x] `REPOSITORY_GUARD_MANIFEST.json` als kanonische Merge-/Health-Policy angelegt
-- [x] `tools/repository_health.py` ohne externe Abhängigkeiten implementiert
-- [x] `Repository Health` als eigener PR-/main-/Merge-Group-Gate angelegt
-- [x] Runtime Core und Presentation Core liefern bei jedem PR einen Required-Check-Status
-- [x] Guard prüft JSON, Python-Struktur/Compile, Konfliktmarker, Status-/Versionskonsistenz, öffentliche Exporte und kanonische Symbole
-- [x] Guard blockiert veraltete versionsgebundene Feature-Branches
-- [x] Workflow blockiert PR-Heads, die den aktuellen `main` nicht enthalten
-- [x] `/safe-merge` prüft Berechtigung, aktuellen `main`, exakten PR-Head, drei grüne Kern-Gates und offene Review-Threads unmittelbar vor Merge
-- [x] normale `/safe-merge`-PRs dürfen den Guard-/CI-Sicherheitsrand nicht selbst verändern
-- [x] Main Integrity prüft Merge-Provenienz nach Änderungen auf `main`
-- [x] Eventual-Consistency-Hotfix: Merge exakt einmal; ausschließlich die nachgelagerte Provenienz-Leseprüfung nutzt begrenzten Retry
-- [x] PR #38 End-to-End: Runtime Core `32528078989`, Presentation Core `32528078992`, Repository Health `32528078926`, `SAFE MERGE PASS`
-- [x] Safety Receipt PR #39: Runtime Core `32528915005`, Presentation Core `32528914997`, Repository Health `32528915004`, `SAFE MERGE PASS`
-- [x] Main-Integrity-Incident #40 für Direkt-Commit `fb96a489...` analysiert: Guard reagierte korrekt auf fehlende PR-Provenienz; Inhalt später in PR #41 erneut grün validiert; Incident geschlossen
-- [x] versehentlichen leeren `tmp`-Direktcommit über gezielten PR #47 entfernt; Runtime Core `32536504014`, Presentation Core `32536504089`, Repository Health `32536504068`, `SAFE MERGE PASS`
+# P0 – Pflichtpfad zum ersten spielbaren Alpha
 
-## 0.6.0 – Repository-/Presentation-Reparatur
+## 0.8.1 – Event State Foundation ✅
 
-- [x] beschädigte doppelte `character_projection.py` auf eine kanonische Implementierung zurückgeführt
-- [x] widersprüchliche Projection-Tests konsolidiert
-- [x] eindeutige Presentation-Package-Exporte wiederhergestellt
-- [x] `Presentation Core` als eigener zielgerichteter CI-Gate angelegt
-- [x] Release-Baseline und aktive Entwicklungsiteration in den Info-Dateien getrennt
-- [x] PR #22 mit Runtime Core + Presentation Core grün gemergt
-- [x] konkurrierende Presentation-PRs #15–#21 mit Begründung geschlossen
+- [x] EventState, Ort, Budget, Acts, Crew, Equipment-Readiness, Zeitfenster und Safety definiert
+- [x] Phasenmaschine `draft → planning → procurement → transport → setup → soundcheck → live/crisis → teardown → settlement → completed`
+- [x] Event-Journal, Revision, Idempotenz und Recovery implementiert
+- [x] PR #48 dreifach grün und gemergt
 
-## 0.6.1 – Application-Grenze für Presentation
+## 0.8.2 – Equipment & Economy ✅
 
-- [x] `can_edit_profile`, `can_undo_profile`, `can_execute_action` ausschließlich aus der Application ableiten
-- [x] Profilupdate, Profil-Undo und Action-Ausführung über **einen** Command-Dispatcher routen
-- [x] notwendige IDs validieren und über die zuständigen bestehenden Services führen
-- [x] UI-gesteuerte Balanceparameter nicht freigeben
-- [x] Profilupdate, Undo und Action-Wiederholung idempotent testen
-- [x] Projection erhält bestätigte Capabilities als begrenzte defensive Kopie
-- [x] PR #24: Runtime Core `32510846508` + Presentation Core `32510846537` grün
-- [x] PR #24 gemergt (`25006d07d33199fea2db8208c192ca2f6fa1095d`)
+- [x] Katalog, Besitz, Reservierung und Marktpreise getrennt modelliert
+- [x] Kaufen, Verkaufen, Verbrauchen und Kompensation journalfähig
+- [x] Event-Budget nur über bestätigte Economy-Transaktionen veränderbar
+- [x] Equipment-Readiness an bestätigte Reservierung gebunden
+- [x] Event-Kontext- und Same-Revision-Replay-Integrität gehärtet
+- [x] PR #61 dreifach grün und gemergt
 
-## 0.6.2 – Lokaler Presentation-State + bestätigtes Feedback
+## 0.8.3-A – Event Execution Engine ✅
 
-- [x] unveränderlichen Zustand für `overview`, `skills_traits`, `biography` angelegt
-- [x] lokale View-/Filter-/Dismiss-Transitionen ohne Persistenzwirkung umgesetzt
-- [x] Biografie-Filter nutzt `BIOGRAFIE_MANIFEST.json`
-- [x] bestätigte Journalrecords über Application-Abfrage bereitgestellt
-- [x] Level-, Skill-, Trait-, Spezialisierungs- und Resonanzfeedback projiziert
-- [x] deterministische Feedback-IDs aus bestätigten Event-IDs
-- [x] sichtbare Feedbacktexte ausgelagert
-- [x] Reduced Motion fachlich zustandsneutral
-- [x] End-to-End `Command → Commit → Eventquery → Feedback → Projection`
-- [x] idempotenter Replay erzeugt kein doppeltes Feedback
-- [x] PR #26: Runtime Core `32511953788` + Presentation Core `32511953619` grün
-- [x] PR #26 gemergt (`5161cb42c2b0d38fcb69ea6bd20f9dc5ce1b283a`)
+- [x] acht kanonische Event-Aktionen von `draft` bis `settlement`
+- [x] zentrale Voraussetzungen für Acts, Crew, Budget, Equipment, Ort, Zugang, Zeitfenster und Safety
+- [x] Availability-Projektion mit Blocker-IDs statt Client-Doppellogik
+- [x] persistierten Eventzustand als alleinige Autorität erzwingen
+- [x] normale Command-Replays auch nach Phasenwechsel idempotent
+- [x] PR #62 auf exaktem Head dreifach grün
+- [x] `/safe-merge` = PASS · Merge `8a5b08b5f44e334298cf226510f99abbc115b3df`
 
-## 0.6.3 – Gemeinsame Komponenten + A4 Ops Deck
+## 0.8.3-B1 – Crisis / Incident Engine 🚧
 
-- [x] acht gemeinsame Komponenten implementiert
-- [x] Komponenten erhalten nur Projection-Blöcke und lokalen Presentation-State
-- [x] `ProfileEditor` nutzt ausschließlich den zentralen Command-Dispatcher-Vertrag
-- [x] `ProgressFeedback` nutzt bestätigte Feedback-Projektion und lokale Dismiss-/Reduced-Motion-Regeln
-- [x] A4 Ops Deck als Workflow `Ziel → Aktion → Ergebnis → Entwicklung → nächstes Ziel`
-- [x] maximal drei Primäraktionen; vierte Aktion wird abgewiesen
-- [x] 44-px-Ziele, 3-px-Fokus, High-Contrast und Farbe+Icon+Text aus Manifestvertrag
-- [x] leere optionale Bereiche erfinden keine Daten
-- [x] Profiländerungen laufen über den bestätigten Application-Weg
-- [x] PR #28: Runtime Core `32514970109` + Presentation Core `32514970398` grün
-- [x] PR #28 gemergt (`49603304960147c326953474174aafcff366dcd7`)
+### Implementierung
 
-## 0.6.4 – A3 Cinematic Forge
+- [x] eigenen `IncidentState` neben Event/Economy anlegen
+- [x] höchstens einen aktiven Incident zulassen
+- [x] sechs Incident-Typen mit je drei Reaktionsoptionen katalogisieren
+- [x] Severity 1–5 deterministisch auf Effekte skalieren
+- [x] `live → crisis` atomar mit `event.incident_started` committen
+- [x] Response-Auswahl + `crisis → live/teardown/cancelled` atomar auflösen
+- [x] `event.incident_resolved` journalfähig und replaybar machen
+- [x] Krisenfolgen als `pending_settlement` sammeln, ohne Economy-/Character-Verträge zu umgehen
+- [x] falsche Response, parallelen Incident und falschen Event-Kontext fail-closed behandeln
+- [x] Open/Resolve idempotent machen
+- [x] Fault-Injection-Recovery für durable Incident-Commits testen
+- [x] Incident-Replay in `GameRecoveryService` integrieren
 
-- [x] A3 verwendet dieselbe Projection und exakt dieselben acht Komponenten wie A4
-- [x] A3 übernimmt Primäraktionen direkt aus dem validierten A4-Interaktionsvertrag
-- [x] Character Stage, Live-Status, Skill-/Trait-Netz und Drawer definiert
-- [x] sechs Progressionsfeedbackarten an katalogisierte Animationen gebunden
-- [x] Reduced Motion und fail-soft statische Fallbacks
-- [x] Vertragstest A3↔A4 für Komponenten, Commands, Accessibility und Primäraktionslimit
-- [x] Runtime Core `32516833552` + Presentation Core `32516833514` auf PR #29 grün
-- [x] PR #29 gemergt (`53f0617ce0c00051c5fae481c43e4ff048dddf94`)
+### Abnahme
 
-## 0.6.5 – Ranking / Network Foundation
+- [x] erste Runtime-/Presentation-/Repository-CI auf Implementierungsstand grün
+- [ ] finalen PR-#63-Head nach allen Informationsänderungen erneut dreifach grün bestätigen
+- [ ] offene Review-Threads = 0 bestätigen
+- [ ] PR #63 ausschließlich über `/safe-merge` übernehmen
 
-- [x] Ranking-Projektion für beliebig viele Spieler
-- [x] Top 10 als Standard und `ALLE ANZEIGEN`
-- [x] Sortierung nach Level, Skills, Ruf, Events, Clubs und Resonanz
-- [x] Competition Ranking mit stabiler Gleichstandsregel
-- [x] Events/Clubs nur aus `server_confirmed_transaction`-Datensätzen
-- [x] fehlende Network-Metriken bleiben `null` und unranked
-- [x] fehlende Sync-Daten werden `unknown` / `NICHT BESTÄTIGT`, ohne Presence abzuleiten
-- [x] falsche Autorität, unbekannte Metriken, doppelte IDs und Character-Mismatch fail-closed
-- [x] sichtbare Ranking-/Sync-Texte ausgelagert
-- [x] Runtime Core `32517683276` + Presentation Core `32517683263` auf PR #30 grün
-- [x] PR #30 gemergt (`4090c3e2118e81d0927fbc7a5cfcdf48190631e9`)
+## 0.8.3-B2 – Berlin Ops Map Foundation 🚧
 
-## 0.7 – Spielbarer Character-Forge-Vertical-Slice
+### Datenbasis
 
-`Profil → Training/Aktion → Skill-/Trait-Fortschritt → Feedback → Biografie → Autosave → Undo → Reload`
+- [x] `CITY_MAP_MANIFEST.json` als einzige Karten-Fachquelle anlegen
+- [x] stilisierte 0–100-Koordinaten verwenden; keine Navigation und keine exakten Adressen
+- [x] 8 Berliner Bezirke als Startzonen definieren
+- [x] 12 Spielorte mit Prestige, Audience Pull, Risk, Underground Factor und Utility anlegen
+- [x] 7 kaufbare Immobilien/Objekte mit Preisen und Ausbau-Slots vorbereiten
+- [x] genau eine `Hall of Tribute` als Ranking-/Prestige-Sonderort definieren
+- [x] Score- und Tier-System `standard / strong / prime / legendary` ableiten
+- [x] read-only `city_map_projection` mit Top-5, Ownership und Hall-of-Tribute-Projektion implementieren
+- [x] Heat, Prestige, Polizeidruck und Szeneaktivität als District-Metriken vorbereiten
+- [x] Schallschutz, Strom, Fluchtwege, Deko, Bühne, Bar, Lager und Sicherheitsraum als Ausbaugrundlage katalogisieren
+- [x] Reduced-Motion-Fallback im visuellen Vertrag festlegen
 
-### 0.7.1 – A4 Action-Auswahl
+### Bewusst noch offen
 
-- [x] alle 20 Manifest-Actions als kanonische A4-Auswahlliste projiziert
-- [x] Dauer, Voraussetzungen und gewichtete erwartete Skillwirkung angezeigt
-- [x] nicht bestätigte Voraussetzungen sperren die Action fail-closed
-- [x] fehlende Energie-/Stresswerte ausdrücklich als nicht festgelegt markiert
-- [x] PR #31: Runtime Core `32519042006` + Presentation Core `32519041908` grün
-- [x] PR #31 gemergt (`888be18146197272578f4baa5516f78a894d9464`)
-- [x] Review-P1: Auswahl enthält kein scheinbar ausführbares Teil-Command mehr
-- [x] `build_action_execute_command(...)` erzeugt erst mit `command_id` und `action_instance_id` einen dispatcher-fertigen Command
-- [x] A4 prüft `can_execute_action` beim Zusammensetzen erneut und sperrt stale Auswahlzustände
+- [ ] persistente Bezirksdynamik aus bestätigten Events ableiten
+- [ ] Immobilienkauf an EconomyService anbinden
+- [ ] Immobilien-Ausbauzustand + Kosten-/Nutzenregeln implementieren
+- [ ] echte Kartenoberfläche/Renderer an die read-only Projection anbinden
+- [ ] Hall-of-Tribute-Ranking aus bestätigten Statistiken speisen
+- [ ] saisonale Titel/Awards mit statischem Reduced-Motion-Fallback projizieren
 
-### 0.7.2 – Ressourcenwirkung + vollständiger Ablauf
+## 0.8.3-C – Settlement & Consequences ⏭️
 
-- [x] Energie-/Stresswirkung fachlich für alle 20 Actions katalogisiert
-- [x] Energie-/Stresswirkung im Resolver deterministisch angewendet und auf `0–100` begrenzt
-- [x] `character.resources_changed` als katalogisiertes, replaybares Journal-Ereignis eingeführt
-- [x] Training/Aktion → Progression → bestätigtes Feedback verbunden
-- [x] Biografie-Eintrag aus bestätigten relevanten Actions deterministisch und atomar integriert
-- [x] 60-Sekunden-Autosave und Snapshot im Character-Forge-Session-Ablauf verwendet
-- [x] Undo nur über bestehende kompensierende Regeln angeboten; kein inkonsistentes pauschales Action-Undo
-- [x] Reload/Recovery inklusive Ressourcen-Replay im vollständigen Vertical-Slice getestet
-- [x] A4 und A3 auf denselben bestätigten Status-, Biografie- und Feedbackzustand zurückprojiziert
-- [x] Legacy-Testfixtures an den neuen Pflicht-Ressourcenvertrag angepasst, ohne Produktlogik aufzuweichen
-- [x] PR #41, Head `5f7ded400a5fca1ee25307797628ab2584de9812`: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406` grün
-- [x] PR #41 nach erfolgreicher Abnahme nach `main` übernommen (`a7544abd923787d20e174c9eced54f548753c801`)
-- [x] README visuell neu strukturiert und Einsteigerpfad verbessert
-- [x] eigene verständliche [`Spieleranleitung`](docs/SPIELERANLEITUNG.md) ergänzt
+- [ ] `pending_settlement` aus Incidents über zuständige Economy-/Character-Wege verbuchen
+- [ ] Einnahmen/Ausgaben ausschließlich aus bestätigten Event-/Economy-Daten ableiten
+- [ ] Ruf-, Stress-, Stabilitäts- und Heat-Folgen atomar anwenden
+- [ ] bedeutende Krisen-/Eventergebnisse in die dynamische Biografie übernehmen
+- [ ] `event.completed` erst nach vollständig bestätigtem Settlement erzeugen
+- [ ] vollständigen Pfad `Planung → Einkauf → Transport → Aufbau → Soundcheck → Event → Krise → Abbau → Abrechnung` testen
+- [ ] Fault-Injection-Test über Krise + Settlement + Recovery ergänzen
+- [ ] A4/A3 um Event-/Economy-/Incident-Projektionen erweitern, ohne Domain-State direkt zu schreiben
 
-## P0 – Pflichtpfad zum ersten spielbaren Alpha-Release
+## Release-Kandidat – spielbarer lokaler Client ⏭️
 
-Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele Featurearbeit in dieser Reihenfolge abgeschlossen. Ein späteres Paket beginnt erst, wenn der exakte Head des vorherigen Pakets lokal geprüft, remote durch `runtime-core`, `presentation-core` und `repository-health` bestätigt und regelkonform übernommen wurde.
+- [ ] vollständigen 0.8.3-Loop auf einem exakten Head lokal und remote bestätigen
+- [ ] A4 als kleinsten schreibenden Client an bestehende Application-Commands anbinden
+- [ ] keine zweite Domain-, Economy-, Incident- oder Persistenzlogik im Client
+- [ ] Ersteinstieg `Crew → Event → Equipment → Krise → Settlement → Ergebnis` führen
+- [ ] verständliche Blocker-/Fehlermeldungen aus kanonischen IDs ableiten
+- [ ] Start aus frischem Checkout mit einem dokumentierten Befehl nachweisen
+- [ ] deterministischen Smoke-Test `neues Spiel → kompletter Event-Loop → Save → Neustart → Recovery` ergänzen
+- [ ] Runtime Core + Presentation Core + Repository Health + 0 Review-Threads abnehmen
+- [ ] erst danach Version, Release Notes und reproduzierbares Release-Artefakt festlegen
 
-### 0.8.1 – Event State Foundation
+---
 
-- [x] `EventState` als eigener Domain-State neben `CharacterState` implementiert
-- [x] Ort mit `location_id`, Anzeigename, Region und explizitem Zugangsstatus definiert
-- [x] Event-Budgetrahmen in Cent ohne vorgezogene Economy-Ledger-Logik definiert
-- [x] Acts, Crew und Equipment-Readiness als streng validierte eindeutige Listen definiert
-- [x] offset-aware Zeitfenster mit `end > start` validiert
-- [x] Sicherheitsstatus `unreviewed / cleared / restricted / blocked` definiert
-- [x] Phasenmaschine `draft → planning → procurement → transport → setup → soundcheck → live/crisis → teardown → settlement → completed` implementiert
-- [x] physische Phasen an Ort, Zugangsstatus, Zeitfenster und `safety_status=cleared` gebunden
-- [x] `event.created`, `event.planning_updated`, `event.phase_changed` journalfähig gemacht
-- [x] monotone Eventrevision und Stale-Write-Schutz implementiert
-- [x] identische Event-Commands idempotent; gleiche Command-ID mit anderem Inhalt fail-closed
-- [x] Character-/Profil-Commits so gehärtet, dass sie den `event`-State-Block nicht überschreiben
-- [x] Event-Commits erhalten bestehende `character`-Daten
-- [x] kombiniertes Character+Event-Recovery-Replay implementiert
-- [x] Fault-Injection-Test für durable Eventänderung vor State-Write angelegt und remote bestanden
-- [x] Manifest-/Domain-Phasenabgleich als Regressionstest angelegt und remote bestanden
-- [x] Vertrag, Schema, Runtime-Manifest, README und Repository-Navigation ergänzt
-- [x] Runtime Core `32537531324` auf Head `79cc26bec0a780322874ea6f3ced458e8ee72bd6` grün
-- [x] Presentation Core `32537531305` auf demselben Head grün
-- [x] Repository Health `32537531303` auf demselben Head grün
-- [x] PR #48 auf Head `79cc26bec0a780322874ea6f3ced458e8ee72bd6` mit allen drei Kern-Gates grün
-- [x] PR #48 als `9ed0dbd8928014777fa4b100a7c65ba4c30ca04e` nach `main` übernommen
+# P1 – direkt nach dem lokalen Alpha
 
-### 0.8.2 – Equipment & Economy
+1. **Dynamische Bezirkslage**
+   - Heat, Prestige, Polizeidruck und Szeneaktivität ausschließlich aus bestätigten Ereignissen verändern.
+   - Auswirkungen auf Eventchancen, Kosten und Risiko datengetrieben ableiten.
 
-**Abnahmeeinheit:** Katalog, Besitz, Reservierung, Transaktion und Recovery bilden einen gemeinsamen Vertical Slice (durchgängiger Funktionsschnitt). Kein Bestandteil wird allein als fertige Economy-Stufe freigegeben.
+2. **Immobilien-Ausbaupfade**
+   - Schallschutz, Strom, Fluchtwege, Deko, Bühne, Bar, Lager und Sicherheitsraum mit Leveln, Kosten und Effekten versehen.
+   - Kauf/Upgrade ausschließlich über Economy-Transaktionen.
 
-- [x] Equipment-Katalog und Inventarbesitz als getrennte Zustände definieren
-- [x] dynamische Marktpreise datengetrieben und deterministisch modellieren
-- [x] Kaufen, Verkaufen und Verbrauchen über katalogisierte Inventory-/Economy-Events führen
-- [x] Budgetänderungen nur aus bestätigten Economy-Transaktionen ableiten
-- [x] Kompensationsregeln für reversible Economy-Transaktionen konkretisieren
-- [x] Event-Equipment-Anforderungen gegen bestätigten Besitz/Reservierung auflösen
-- [x] Save/Recovery/Idempotenz für Economy und Inventar testen
-- [x] gesamten Economy-Vertical-Slice mit den lokalen Entsprechungen von Runtime Core, Presentation Core und Repository Health gemeinsam abnehmen
-- [x] 0.8.2-Basis inklusive Event-Kontext- und Replay-Integrität auf PR #61 mit `runtime-core`, `presentation-core` und `repository-health` remote abgenommen und nach `main` übernommen
+3. **Hall of Tribute + saisonales Ranking**
+   - bestätigte Wochen-/Monatsstatistiken projizieren.
+   - satirische Titel wie `Lärmadel`, `Bunkerbaron`, `Kabelkönig`, `Pegelpapst` oder `Nachtminister` vergeben.
+   - Animation nur als Darstellung; Reduced Motion erhält vollständige statische Information.
 
-### 0.8.3 – Vollständiger Event-Loop
+4. Native GitHub-Branch-Protection/Ruleset aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist.
+5. `0.9 Network / Telegram Sync` als getrennten Server-/Transportvertrag planen.
 
-#### 0.8.3-A – Event Execution Engine
+---
 
-- [x] acht kanonische Phasenaktionen von `draft` bis `settlement` definiert
-- [x] Phasenaktionen über `EventExecutionService` statt frei wählbarer Client-Phasenmutation ausführbar gemacht
-- [x] bestätigte Acts/Crew, positives Budget und Equipment-Readiness als zentrale Voraussetzungen gebunden
-- [x] bestehende Ort-/Zugang-/Zeitfenster-/Safety-Gates auch als vorab projizierbare Blocker bereitgestellt
-- [x] Ausführung weiter append-only über `event.phase_changed` mit `reason=event_action:<action_id>` journalfähig gehalten
-- [x] Idempotenz und Manifest↔Runtime-Abgleich als Regressionstests ergänzt
-- [x] Spieleranleitung um den neuen verbindlichen Eventaktionspfad erweitert
-- [ ] exakten finalen PR-Head von #62 mit Runtime Core, Presentation Core und Repository Health remote abnehmen
-- [ ] PR #62 nach grünen Gates und `/safe-merge` nach `main` übernehmen
+# Technische Folgeoptimierungen
 
-#### 0.8.3-B – Krisen und Incidents
+- [ ] Recovery-Receipt um maschinenlesbare Fehlerkategorie und Anzahl übersprungener Snapshots erweitern.
+- [ ] reproduzierbaren Economy-/Event-/Incident-Replay-Beleg mit festem Seed und Head-SHA erzeugen.
+- [ ] Repository Health um Abschlussabgleich gemergter Meilensteine zwischen Status/TODO/README erweitern.
+- [ ] A4/A3 übersetzen Event-/Incident-Blocker-IDs in sichtbare Hilfetexte, berechnen Regeln aber niemals neu.
+- [ ] Nach vollständigem 0.8.3 ein gemeinsames versioniertes Spielszenario `Planung → Beschaffung → Krise → Abrechnung` in beide Gesamtbeschreibungen aufnehmen.
 
-- [ ] Krise aus `live`/`setup`/`soundcheck` als fachlichen Incident mit eigener Identität eröffnen
-- [ ] Incident-Zustand und zulässige Reaktionen definieren, ohne freie Phasenmutation einzuführen
-- [ ] `event.incident_resolved` deterministisch und replaybar umsetzen
-- [ ] Krisenauflösung inklusive Idempotenz, Save und Recovery testen
+---
 
-#### 0.8.3-C – Settlement und Folgen
+# Abgeschlossene Meilensteine
 
-- [ ] Abrechnung aus bestätigten Economy-/Eventdaten ableiten
-- [ ] Ruf- und Character-Folgen ausschließlich aus bestätigten Ergebnissen ableiten
-- [ ] `event.completed` erst nach erfolgreichem Settlement erzeugen
-- [ ] vollständigen Pfad `Planung → Einkauf → Transport → Aufbau → Soundcheck → Event/Krise → Abbau → Abrechnung` inklusive Save/Recovery testen
-- [ ] A4/A3 um Event-/Economy-Projektionen erweitern, ohne Domain-State direkt zu schreiben
-
-### Release-Kandidat – spielbarer lokaler Client
-
-- [ ] vor Client-Arbeit den vollständigen 0.8.3-Event-Loop auf demselben Head lokal und mit allen drei Remote-Gates bestätigen
-- [ ] erst danach A4 als kleinsten schreibenden Client an den bestehenden Command-Dispatcher anbinden; keine zweite Domain- oder Persistenzlogik im Client
-- [ ] laiengerechten Ersteinstieg `Crew wählen → Event planen → Equipment beschaffen → Event abschließen → Ergebnis prüfen` bereitstellen
-- [ ] Start aus frischem Checkout mit einem dokumentierten Befehl und ohne manuelle Datenreparatur nachweisen
-- [ ] deterministischen Smoke-Test `neues Spiel → Event-Loop → Save → Neustart → Recovery` mit festem Seed ergänzen
-- [ ] verständliche Fehlermeldungen für ungültige Eingaben, gesperrte Phasen und fehlgeschlagene Wiederherstellung anzeigen
-- [ ] Release-Checkliste auf exaktem Head abnehmen: Runtime Core, Presentation Core, Repository Health, 0 offene Review-Threads
-- [ ] erst nach grüner Abnahme Version, Release Notes und reproduzierbares Release-Artefakt festlegen
-
-## P1 – Härtung nach dem lokalen Alpha
-
-- [ ] Native GitHub-Branch-Protection/Ruleset aktivieren, sobald ein geeigneter Admin-Schreibweg verfügbar ist: `runtime-core`, `presentation-core`, `repository-health` verpflichtend + Branch aktuell + Conversation Resolution
-- [ ] 0.9 Network / Telegram Sync als eigenen Server-/Transportvertrag planen; gemeinsame Ressourcen bleiben bis zur Serverbestätigung unbekannt
-
-## Später
-
-- [ ] Persistenz-Orchestrierung nach der ausgelagerten Datei-/Journalgrenze in getrennte Commit- und Recovery-Komponenten teilen und deren bisherigen privaten Vertrag mit gezielten Tests sichern; Nutzen: Das verbleibende Kernmodul sinkt unter 500 Zeilen, ohne Speicherreihenfolge oder Datenformat anzutasten.
-- [ ] Optionalen Start-Selbsttest mit zeitlich begrenztem HTTP-Aufruf ergänzen; Nutzen: Support kann Dateivorprüfung, Serverbindung und erreichbare Startseite mit einem nicht blockierenden Befehl gemeinsam nachweisen.
-- [ ] Kanonisches Blueprint-WebP aus der dokumentierten Originalquelle reproduzierbar neu exportieren und die überwiegend transparente aktuelle Datei erst nach visueller Abnahme ersetzen; Nutzen: vollständige Pixelreferenz statt formal ladbarer, aber visuell unbrauchbarer Fläche.
-- [ ] HTML-Blueprint über einen schreibgeschützten Adapter mit fixture-basiertem Projection-JSON speisen und per Vertragstest nachweisen, dass fehlende oder unbestätigte Werte sichtbar leer bleiben; Nutzen: realistische UI-Auswertung ohne zweiten Domain-Schreibweg.
-- [ ] Für den HTML-Blueprint einen automatisierten visuellen Kontrast- und Viewport-Nachweis bei 390, 900 und 1440 Pixeln ergänzen; Nutzen: die neue Blickführung bleibt bei späteren UI-Erweiterungen lesbar und regressionssicher.
-- [ ] Recovery-Berichte um eine maschinenlesbare Fehlerkategorie ergänzen, damit eine spätere Oberfläche beschädigtes JSON, fehlende Felder und falsche Datentypen verständlich unterscheiden kann, ohne Fehlermeldungstext auszuwerten.
-- [ ] Recovery-Receipt um die Anzahl übersprungener Snapshot-Kandidaten ergänzen, damit Support und spätere Oberfläche einen erfolgreichen Rückfall auf einen älteren Checkpoint sichtbar machen können, ohne ungültige Inhalte offenzulegen.
-- [ ] Einen geführten Fünf-Minuten-First-Run mit anonymem lokalem Abschlussbeleg ergänzen; Nutzen: Der Release kann nicht nur technisch starten, sondern wird auch ohne Vorwissen überprüfbar verstanden.
-- [ ] `reports/ECONOMY_REPLAY_VALIDATION_0.8.2.json` mit festem Seed, geprüftem Head-SHA sowie Kauf-, Reservierungs-, Budget- und Recovery-Receipt erzeugen und den Erzeugungsbefehl dokumentieren; Nutzen: Der Economy-Slice bleibt bei späteren Releases reproduzierbar und maschinenlesbar nachweisbar.
-- [ ] Nach 0.8.3 Lieferzeit und Verfügbarkeit je Anbieter datengetrieben ergänzen; Nutzen: Beschaffung erhält echte Zeit-/Preisentscheidungen, ohne den bestätigten Economy-Kern zu verdoppeln.
-- [ ] Repository Health um einen Abschlussabgleich zwischen gemergten Meilensteinen in `PROJEKTSTATUS.json`, `TODO.md` und `README.md` erweitern; Nutzen: bereits erledigte Freigabeschritte blockieren die Folgeiteration nicht erneut und Statuspflege verursacht weniger Nacharbeit.
-- [ ] A4/A3 sollen Blocker-IDs aus `EventExecutionService.availability()` in sichtbare Hilfetexte übersetzen, statt Voraussetzungen im Client neu zu berechnen; Nutzen: eine einzige fachliche Wahrheit bei verständlicher Bedienhilfe.
-- [ ] Nach Abnahme von 0.8.3 beide Gesamtbeschreibungen mit einem gemeinsamen, versionierten Spielszenario `Planung → Beschaffung → Krise → Abrechnung` ergänzen; Nutzen: Fachdesign, Cliententwicklung und QA erhalten dieselbe prüfbare Referenz, ohne geplantes Verhalten vorzeitig als fertig zu dokumentieren.
-
-## Abgeschlossene Meilensteine
-
-- [x] **0.4.0** Architekturvertrag, Character-Forge-Foundation, 11 Figuren und gleiche Startwerte
-- [x] **0.4.1** Trait Engine, Progression, Spezialisierungen und deterministischer Simulator
+- [x] **0.4.0** Architekturvertrag + Character Forge Foundation
+- [x] **0.4.1** Trait Engine + Progression + Simulation
+- [x] **0.4.2** Persistence-Vertrag
+- [x] **0.4.3** UI/UX Blueprint
+- [x] **0.4.4** Gameplay Action Contract
+- [x] **0.5.0–0.5.2** Runtime, Recovery, Trait-/Resonanzwirkung
+- [x] **0.6.0–0.6.5** Presentation, A4/A3, Ranking-/Network-Foundation
+- [x] **0.7.1–0.7.2** spielbarer Character-Forge-Vertical-Slice
+- [x] **0.8.1** Event State Foundation
+- [x] **0.8.2** Equipment & Economy
+- [x] **0.8.3-A** Event Execution Engine

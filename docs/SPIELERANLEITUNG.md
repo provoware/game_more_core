@@ -1,101 +1,77 @@
 # BUNKERFREQUENZ – Spieleranleitung
 
-> **Stand: HTML-Blueprint auf Basis des Character-Forge-Vertical-Slice**
+> **Stand: 0.8.3-B Spiellogik in Abnahme · HTML-Blueprint weiterhin schreibgeschützt**
 
-Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Es gibt jetzt eine anklickbare HTML-Ansicht zum Prüfen des Designs. Sie ist noch kein fertiger Game-Client: Die getestete Spiellogik bleibt getrennt und die Ansicht verändert keine Spielstände.
+Diese Anleitung erklärt den aktuellen Spielablauf ohne Entwicklerwissen. Der Spielkern kann inzwischen Charakteraktionen, Eventphasen, Equipment/Economy und Krisen sicher speichern und wiederherstellen. Die anklickbare HTML-Ansicht ist trotzdem noch kein fertiger Game-Client und verändert keine Spielstände.
 
-**Woran erkenne ich den Release-Stand?** Aktuell kannst du die Oberfläche ansehen und ihre Diagnose prüfen, aber noch keinen vollständigen Eventablauf darin spielen. Das erste spielbare Alpha ist erreicht, wenn du ohne Codewissen eine Crew wählen, ein Event planen, Equipment beschaffen, das Event abschließen und den gespeicherten Stand nach einem Neustart wieder laden kannst. Bis dahin ist die HTML-Ansicht ausdrücklich ein Prototyp.
-
-Die Ansicht wird erst dann mit Schreibfunktionen verbunden, wenn der vollständige Eventablauf geprüft ist. Dadurch bleibt sie eine einfache Bedienoberfläche und baut keine zweite, abweichende Spiellogik auf.
+**Woran erkenne ich den Release-Stand?** Das erste spielbare Alpha ist erreicht, wenn du ohne Codewissen eine Crew wählen, ein Event planen, Equipment beschaffen, eine Krise lösen, abrechnen und den gespeicherten Stand nach einem Neustart wieder laden kannst. 0.8.3-B bringt dafür jetzt die Krisenlogik und die Datenbasis der Berlin-Karte; Settlement und der schreibende Client fehlen noch.
 
 ## 0. HTML-Ansicht starten – ohne Vorwissen
 
 1. Öffne ein Terminal im Projektordner.
-2. Gib genau `python3 tools/start_web_blueprint.py` ein.
-3. Warte auf `STATUS: BEREIT` und eine Zeile `ADRESSE:`. Erst dann ist der Start abgeschlossen; der Browser öffnet sich automatisch.
-4. Prüfe im Browser oben `● BEREIT` und unten den Bereich **Diagnose**. Damit sind Server und Oberfläche gemeinsam geprüft.
-5. Beende den lokalen Server im Terminal mit `Strg+C`.
+2. Gib `python3 tools/start_web_blueprint.py` ein.
+3. Warte auf `STATUS: BEREIT` und `ADRESSE:`.
+4. Prüfe im Browser `● BEREIT` und den Bereich **Diagnose**.
+5. Beende den Server mit `Strg+C`.
 
-Falls kein Browser aufgeht, kopiere die hinter `ADRESSE:` genannte Adresse in einen Browser. Für einen bewusst manuellen Start kann `python3 tools/start_web_blueprint.py --no-browser` verwendet werden. Meldet die Routine `Port 8043 ist belegt`, starte einmal mit `python3 tools/start_web_blueprint.py --port 0`; die danach ausgegebene Adresse enthält den automatisch gewählten freien Port.
+Falls kein Browser aufgeht, kopiere die hinter `ADRESSE:` genannte Adresse in den Browser. Bei belegtem Port hilft:
 
-**Was bedeutet die Ansicht?** Der schmale Block **Leseweg** erklärt zuerst Reihenfolge, Modus und Datenquelle. Danach zeigen die nummerierten Sektoren **Pixelreferenz** die vorhandene Grafik unverändert, während Workflow und vier UI-Varianten aus dem bestehenden UI-Manifest auswertbar gerendert werden. **Diagnose** zeigt getrennt, welche Dateien und Verträge geladen wurden. Mit **Prüfbericht kopieren** lassen sich die technischen Angaben weitergeben, ohne einen Spielstand offenzulegen.
+```bash
+python3 tools/start_web_blueprint.py --port 0
+```
 
-**Einfache Sichtprüfung:** Lies zuerst nur die gelben Sektornummern von `01` bis `04`. Im Spielfluss zeigen gelbe Pfeile die Richtung. Ein roter Rand an **A4 Ops Deck** kennzeichnet die bevorzugte Einsteigeransicht. Wenn Text oder Grafik zu klein sind, vergrößere die Browseransicht mit `Strg` und `+`; die Blöcke ordnen sich auf schmalen Fenstern untereinander an.
+Die Ansicht bleibt absichtlich **read-only**. Sie darf Spielregeln anzeigen, aber nicht selbst erfinden oder Zustände direkt schreiben.
 
 ## 1. Worum geht es?
 
-BUNKERFREQUENZ ist ein Crew-RPG rund um Techno, FreeTekno, Orte, Events, Aufbau und Charakterentwicklung. Die Figuren beginnen spielmechanisch gleich. Erst das, was du mit ihnen tust, verändert ihre Stärken, Schwächen und Biografie.
+BUNKERFREQUENZ ist ein Crew-RPG rund um Techno, FreeTekno, Orte, Events, Aufbau, Krisen und Charakterentwicklung. Alle Figuren beginnen spielmechanisch gleich. Erst deine Entscheidungen formen Stärken, Schwächen, Traits und Biografie.
 
-Der Grundablauf lautet:
+Der langfristige Grundablauf:
 
 ```text
-Ort / Ziel wählen
-      ↓
-Aktion auswählen
-      ↓
-Voraussetzungen + Energie/Stress prüfen
-      ↓
-Aktion ausführen
-      ↓
-Ergebnis erhalten
-      ↓
-Skills / Traits / Level / Biografie entwickeln sich
-      ↓
-Spielstand wird sicher gespeichert
-      ↓
-nächstes Ziel wählen
+Ort wählen
+  ↓
+Crew / Event planen
+  ↓
+Equipment beschaffen
+  ↓
+Event aufbauen und starten
+  ↓
+Krise erkennen und reagieren
+  ↓
+abbauen und abrechnen
+  ↓
+Skills / Traits / Ruf / Biografie entwickeln
+  ↓
+Ort oder Immobilie weiterentwickeln
 ```
 
-## 2. Die zwei Character-Forge-Ansichten
+## 2. A4 und A3
 
-### A4 Ops Deck – normaler Spielablauf
+### A4 Ops Deck
 
-A4 ist die sachliche Arbeitsansicht. Sie soll später der schnellste Weg sein, um eine Aktion auszuwählen, deren Voraussetzungen und Folgen zu sehen und anschließend das bestätigte Ergebnis zu prüfen.
+A4 ist die klare Arbeitsansicht. Sie soll später der schnellste Weg sein, um Voraussetzungen, Aktionen, Krisen und Ergebnisse zu verstehen.
 
-### A3 Cinematic Forge – Charakterentwicklung inszeniert
+### A3 Cinematic Forge
 
-A3 verwendet dieselben bestätigten Daten und dieselben acht Kernkomponenten wie A4. Es verändert nur die Darstellung: Level-Ups, Skill-Ups, Traits, Spezialisierung und Resonanz können stärker inszeniert werden. Die Animation entscheidet niemals über das Spielergebnis und blockiert keine Eingabe.
+A3 zeigt dieselben bestätigten Daten stärker inszeniert. Animation entscheidet niemals über das Spielergebnis und darf keine Eingabe blockieren.
 
 ## 3. Energie und Stress
 
-Jede der 20 Startaktionen besitzt seit 0.7.2 eine feste Energie-/Stresswirkung.
-
-- **Energie** liegt zwischen `0` und `100`.
-- **Stress** liegt zwischen `0` und `100`.
-- Eine Aktion kann Energie verbrauchen oder Stress erhöhen.
-- Einige ruhigere oder kreative Handlungen können Stress auch senken.
-- Die Werte werden von der Spiellogik berechnet und als bestätigte Zustandsänderung gespeichert. Die Oberfläche darf sie nicht selbst erfinden oder verändern.
-
-Beispiel:
-
-```text
-Vorher:   Energie 100 | Stress 0
-Aktion:   Event durchführen
-Wirkung:  Energie -28 | Stress +18
-Nachher:  Energie 72  | Stress 18
-```
+- Energie und Stress liegen zwischen `0` und `100`.
+- Aktionen können Energie verbrauchen oder Stress erhöhen/senken.
+- Die Runtime berechnet und speichert die Werte.
+- Die Oberfläche darf sie nicht selbst verändern.
 
 ## 4. Skills, Traits und Level
 
-Eine Aktion kann mehrere Skills gleichzeitig trainieren. Wie stark ein Skill beteiligt ist, steht im Action-Vertrag.
-
-Traits entstehen nicht durch eine Klassenwahl. Wiederholte Praxis, Training, Krisen, Erkundung, Teamplay, Erfolg und Scheitern liefern unterschiedliche Trait-Evidenz. Dadurch kann derselbe Startcharakter langfristig völlig unterschiedlich werden.
-
-Nach Level 50 endet die Entwicklung nicht: Fortschritt geht in offene **Resonanzränge** über.
+Aktionen trainieren Skills mit festen Gewichten. Traits entstehen aus wiederholter Praxis, Krisen, Teamplay, Entdeckung, Erfolg und Scheitern. Nach Level 50 geht die Entwicklung in offene Resonanzränge über.
 
 ## 5. Dynamische Biografie
 
-Bedeutende bestätigte Aktionen können einen Biografieeintrag erzeugen. Die Biografie wird nicht frei von der Oberfläche erfunden. Sie wird aus bestätigten Journal-Ereignissen abgeleitet.
+Bedeutende bestätigte Ereignisse können Biografieeinträge erzeugen. Die Oberfläche erfindet keine Geschichte; sie projiziert bestätigte Journal-Ereignisse.
 
-Dadurch gilt:
-
-- ein wichtiges Event kann dauerhaft Teil der Geschichte werden,
-- große Erfolge und Niederlagen können anders gewichtet werden,
-- dieselbe gespeicherte Historie wird in A4 und A3 gleich interpretiert.
-
-## 6. Speichern, Autosave und Recovery
-
-Eine ausgeführte Action wird sofort über den Persistence-Kern dauerhaft bestätigt. Zusätzlich verwendet der Character-Forge-Ablauf einen 60-Sekunden-Autosave-Checkpoint, wenn seit der letzten Sicherung Änderungen vorliegen.
+## 6. Speichern und Recovery
 
 Der Schutz besteht aus:
 
@@ -107,25 +83,17 @@ Der Schutz besteht aus:
 - Recovery aus dem letzten gültigen Stand,
 - Quarantäne eines beschädigten Journal-Endes.
 
-Enthält eine Journalzeile keinen vollständigen Datensatz oder falsche Datentypen, wird sie nicht teilweise übernommen. Die Wiederherstellung legt diese Zeile und den gesamten folgenden Rest getrennt in Quarantäne ab und arbeitet nur mit den davor bestätigten Einträgen weiter.
+Eine ausgeführte Aktion oder Krise wird sofort bestätigt. Der 60-Sekunden-Autosave ist ein zusätzlicher Checkpoint und bedeutet nicht, dass Aktionen 60 Sekunden ungespeichert bleiben.
 
-Ist eine einzelne Snapshot-Sicherung unvollständig oder stimmt ihre Prüfsumme nicht, bricht die Wiederherstellung nicht ab. Sie überspringt diesen beschädigten Stand und verwendet den neuesten älteren Snapshot, der vollständig geprüft werden kann. Gibt es gar keinen gültigen Checkpoint, meldet das Spiel einen kontrollierten Recovery-Fehler, statt mit einem internen Programmfehler weiterzulaufen.
+Bei Recovery-Fehlern: Programm beenden, Spielstandsordner unverändert lassen und keine Journal-/Snapshot-Dateien löschen.
 
-Der 60-Sekunden-Autosave bedeutet also **nicht**, dass eine ausgeführte Action bis zu 60 Sekunden ungespeichert bleibt. Er ist ein zusätzlicher Recovery-Checkpoint.
+## 7. Undo
 
-Wenn die Wiederherstellung einen Fehler meldet, beende das Programm und bewahre den Spielstandsordner unverändert auf. Starte nicht mehrfach neu und lösche keine Journal-, Snapshot- oder Quarantänedatei. So bleiben die bestätigte Geschichte und die nötigen Hinweise für eine spätere Reparatur erhalten.
+Undo löscht keine bestätigte Geschichte. Erlaubte Rücknahmen werden durch neue kompensierende Ereignisse abgebildet. Gameplay-Actions und Krisen werden nicht pauschal halb zurückgedreht, weil sonst Budget, XP, Stress oder Biografie auseinanderlaufen könnten.
 
-## 7. Undo – was kann rückgängig gemacht werden?
+## 8. Character Forge – bereits validiert
 
-Undo löscht keine Journalhistorie. Eine erlaubte Rücknahme wird als neues kompensierendes Ereignis gespeichert.
-
-Im aktuellen 0.7.2-Vertical-Slice ist der sichere Ein-Schritt-Undo für Profiländerungen vorhanden, zum Beispiel für Alias oder Motto.
-
-Eine bereits ausgeführte Gameplay-Action wird nicht pauschal zurückgedreht. Das verhindert widersprüchliche Zustände wie „Energie zurück, aber XP und Biografie bleiben erhalten“.
-
-## 8. Was ist in 0.7.2 bereits getestet?
-
-Der komplette Character-Forge-Pfad wird als Integration getestet:
+Der Character-Forge-Pfad verbindet:
 
 ```text
 Action
@@ -134,36 +102,25 @@ Action
 → bestätigte Events
 → Feedback
 → Biografie
-→ 60-Sekunden-Autosave + Snapshot
-→ sicherer Profil-Undo
-→ Reload
-→ gleiche bestätigte Daten in A4 und A3
+→ Autosave / Snapshot
+→ Reload / Recovery
+→ gleiche Daten in A4 und A3
 ```
 
-Der validierte Implementierungsstand von PR #41 bestand auf Head `5f7ded400a5fca1ee25307797628ab2584de9812`:
+## 9. Equipment und Budget
 
-- Runtime Core `32533954380` ✅
-- Presentation Core `32533954387` ✅
-- Repository Health `32533954406` ✅
+0.8.2 arbeitet wie eine gemeinsame Kasse mit Lager:
 
-## 9. Equipment und Budget einfach verstehen
+1. **Kaufen:** Besitz steigt, bestätigte Transaktion verändert das Event-Budget.
+2. **Reservieren:** Equipment muss für das Event reserviert sein, um als bereit zu gelten.
+3. **Verbrauchen/verkaufen:** nur freie, nicht reservierte Mengen.
+4. **Recovery:** Lager, Ledger, Budget und Readiness werden gemeinsam rekonstruiert.
 
-Die Spiellogik für **0.8.2 – Equipment & Economy** arbeitet jetzt wie eine gemeinsame Kasse mit Lagerliste:
-
-1. **Kaufen:** Das Equipment kommt ins Lager, und erst die bestätigte Buchung zieht Geld vom Event-Budget ab.
-2. **Reservieren:** Besitz allein reicht nicht. Equipment muss für das Event zurückgelegt sein, bevor die Anforderung als bereit gilt.
-3. **Verbrauchen oder verkaufen:** Nur nicht reservierte Mengen können das Lager verlassen.
-4. **Wiederherstellen:** Nach einem Abbruch werden Lager, Buchungen, Budget und Bereitschaft gemeinsam aus dem Journal aufgebaut.
-
-Der aktuelle HTML-Blueprint kann diese Schritte noch nicht auslösen. Die Regeln sind im Spielkern prüfbar; die Bedienoberfläche folgt bewusst erst nach dem vollständigen Event-Loop.
-
-**Was bedeutet „lokal geprüft“?** Die automatischen Prüfungen für Spiellogik, Darstellung und Repository-Zustand laufen auf dem Entwicklungsstand fehlerfrei. Das ist noch keine Freigabe: Erst dieselben drei grünen Prüfungen auf dem exakten Pull-Request-Stand bestätigen die jeweilige Stufe für den nächsten Ausbau.
+Wichtig: Das Budget darf nach Economy-Start nicht durch irgendeine andere Spiellogik direkt geändert werden.
 
 ## 10. Event-Aktionen in 0.8.3-A
 
-Der Event-Kern besitzt jetzt einen verbindlichen Weg von der Planung bis zur Abrechnungsvorbereitung. Eine Oberfläche darf die Eventphase später nicht frei umschalten. Stattdessen fordert sie eine konkrete Aktion an; die Runtime prüft dieselben Voraussetzungen, die vorher als gesperrt oder verfügbar angezeigt werden können.
-
-Der aktuelle Pfad lautet:
+Der verbindliche Weg lautet:
 
 ```text
 Planung beginnen
@@ -177,41 +134,172 @@ Planung beginnen
 → Abrechnung vorbereiten
 ```
 
-Wichtige Sperren:
+Die Runtime prüft dabei Acts, Crew, Budget, Equipment, Ort, Zugang, Zeitfenster und Sicherheitsfreigabe. Ein späterer Client zeigt diese Blockaden nur an; er berechnet sie nicht noch einmal selbst.
 
-- Für die Beschaffung müssen mindestens ein Act bestätigt, die Crew bestätigt und Budget vorhanden sein.
-- Vor dem Transport müssen alle geplanten Acts, die Crew und das benötigte Equipment bereit sein.
-- Physische Schritte benötigen weiterhin einen gültigen Ort, bestätigten Zugang, ein Zeitfenster und Sicherheitsfreigabe.
-- Soundcheck und Eventstart prüfen Crew und Equipment erneut. Damit kann ein später Client keinen veralteten Bereitschaftsstatus einfach überspringen.
+## 11. Krise erkennen und lösen – neu in 0.8.3-B1
 
-Die Engine endet in 0.8.3-A bewusst bei **Abrechnung vorbereiten (`settlement`)**. Krisenbehandlung folgt in 0.8.3-B; Geld-, Ruf-, Character- und Abschlussfolgen folgen in 0.8.3-C. Erst danach ist der vollständige Event-Loop fachlich geschlossen.
+Während `live` kann ein Incident eröffnet werden. Das Event wechselt dann atomar in `crisis`: Es gibt keinen Zustand „Krise gespeichert, Event aber noch live“ oder umgekehrt.
 
-## 11. Was kann man noch nicht normal spielen?
+### Startkatalog
 
-Noch offen sind insbesondere:
+- Stromausfall
+- Security-Probleme
+- Equipment-Ausfall
+- verspäteter Act
+- zu hoher Besucherandrang
+- Lärmdruck
 
-- ein fertiger, mit der Runtime verbundener Desktop-/Web-/Game-Engine-Client (der HTML-Blueprint ist nur eine schreibgeschützte Designauswertung),
-- Krisen-/Incident-Auflösung im vollständigen Event-Ablauf,
-- Abrechnung mit Ruf- und Character-Folgen,
-- bedienbarer Equipmentmarkt im Client,
-- kompletter Clubbetrieb,
+Jede Krise bietet **drei konkrete Reaktionen**. Beispiel Stromausfall:
+
+```text
+Strom frisst Bass
+├─ Notstrom anwerfen
+├─ Crew verkabelt neu
+└─ Event kontrolliert beenden
+```
+
+### Schweregrad
+
+Incidents besitzen Severity `1–5`. Je höher der Wert, desto stärker werden die katalogisierten Folgen. Die Skalierung ist deterministisch: gleicher bestätigter Zustand + gleiche Reaktion = gleiche Wirkung.
+
+### Was passiert nach deiner Entscheidung?
+
+Die Crisis Engine bestätigt zunächst Folgen für:
+
+- Budget,
+- Ruf,
+- Crew-Stress,
+- Event-Stabilität,
+- Heat.
+
+Diese Werte werden in 0.8.3-B **vorgemerkt**, aber noch nicht direkt gebucht. Warum? Weil Geld nur über die Economy verändert werden darf. 0.8.3-C übernimmt die bestätigten Krisenfolgen anschließend kontrolliert in Economy, Character und Ruf.
+
+### Sicherheitsregeln
+
+- höchstens eine aktive Krise gleichzeitig,
+- nur erlaubte Reaktionen werden angenommen,
+- wiederholter gleicher Command wirkt nicht doppelt,
+- Crash nach Journal-Schreibvorgang kann per Recovery rekonstruiert werden.
+
+## 12. Berlin Ops Map – neu in 0.8.3-B2
+
+Die Berlin-Karte ist zunächst eine **stilisierte Handlungskarte**, keine echte Navigation. Sie verwendet eine eigene 0–100-Kartenfläche statt exakter Straßenadressen. Dadurch funktioniert sie offline und kann später auf kleinen wie großen Displays skaliert werden.
+
+### Startbezirke
+
+- Mitte
+- Friedrichshain
+- Kreuzberg
+- Neukölln
+- Wedding
+- Lichtenberg
+- Treptow
+- Charlottenburg
+
+### Orte und Immobilien
+
+Die Foundation enthält 12 Spielorte, darunter 7 vorbereitete kaufbare Objekte. Beispiele:
+
+- Concrete Orbit
+- Signalwerk
+- Sublevel 44
+- Frequenzdach
+- Ringlager
+- West-Kontor
+
+Jeder Ort besitzt Werte für:
+
+- **Prestige** – wie angesehen der Ort ist,
+- **Audience Pull** – wie stark er Publikum zieht,
+- **Risk** – wie anspruchsvoll/riskant die Nutzung ist,
+- **Underground Factor** – Szenefaktor,
+- **Utility** – praktischer Nutzen.
+
+Aus diesen Werten entsteht ein sichtbares Tier:
+
+`standard → strong → prime → legendary`
+
+So werden starke Orte nicht einfach nur willkürlich bunt markiert, sondern wegen nachvollziehbarer Werte hervorgehoben.
+
+### Bezirkslage – vorbereitet
+
+Jeder Bezirk kann später dynamische Werte bekommen:
+
+- Heat
+- Prestige
+- Polizeidruck
+- Szeneaktivität
+
+0.8.3-B kann diese Werte bereits darstellen, verändert sie aber noch nicht dauerhaft. Das folgt nach dem kompletten Event-/Settlement-Kern.
+
+## 13. Immobilien-Ausbaupfade
+
+Die Datenbasis kennt bereits mögliche Ausbau-Slots:
+
+- Schallschutz
+- Stromversorgung
+- Fluchtwege
+- Deko
+- Bühne
+- Bar
+- Lager
+- Sicherheitsraum
+- Studio
+- Büro
+
+Kaufen und Ausbau sind noch nicht schreibend angebunden. Später müssen Kosten ausschließlich über bestätigte Economy-Transaktionen laufen.
+
+## 14. Hall of Tribute
+
+Die Berlin Ops Map besitzt genau eine **Hall of Tribute**. Sie ist der spätere Prestige- und Ranking-Ort.
+
+Vorgesehene Anzeigen:
+
+- beste Events,
+- stärkste Krisenlösungen,
+- Top-Orte,
+- wertvollste Immobilien,
+- Crew-/Karrierewerte,
+- Wochen-/Monatsranking.
+
+Vorbereitete satirische Titel:
+
+- Lärmadel
+- Bunkerbaron
+- Kabelkönig
+- Pegelpapst
+- Stromheiland
+- Bassbeauftragter
+- Betonlegende
+- Nachtminister
+
+Spätere Effekte wie Pulse, Halo oder Ranking-Show sind **Darstellung**. Bei Reduced Motion bleibt die komplette Ranginformation statisch sichtbar.
+
+## 15. Was kann man noch nicht normal spielen?
+
+Noch offen:
+
+- vollständige Settlement-Buchung der Krisenfolgen,
+- `event.completed` nach bestätigter Abrechnung,
+- schreibender A4-Game-Client,
+- bedienbarer Kartenrenderer,
+- Immobilienkauf/-ausbau,
+- persistente Bezirksdynamik,
+- saisonales Hall-of-Tribute-Ranking,
 - Telegram-/Server-Synchronisation.
 
-Diese Systeme werden auf dem jetzt getesteten Character-, Persistence-, Economy-, Event- und Presentation-Kern aufgebaut.
+## 16. Was kann ich jetzt sinnvoll prüfen?
 
-## 12. Was kann ich jetzt sinnvoll prüfen?
+1. Starte den HTML-Blueprint wie in Abschnitt 0.
+2. Prüfe Leseweg und Diagnose.
+3. Verwechsle die statische Ansicht nicht mit dem bereits getesteten Runtime-Kern.
+4. Für technische Details zu Krise und Berlin-Karte: [`CRISIS_CITY_0.8.3-B.md`](CRISIS_CITY_0.8.3-B.md).
 
-Starte die HTML-Ansicht mit dem Befehl aus Abschnitt 0, prüfe den Leseweg und kopiere bei einem Problem den Prüfbericht. Erwarte dort noch keine speicherbare Eventplanung: So lässt sich der Prototyp testen, ohne ihn mit dem späteren Spiel zu verwechseln.
+## 17. Welche Beschreibung hilft mir weiter?
 
-Die aktive Stufe ist **0.8.3 – vollständiger Event-Loop**. 0.8.3-A stellt dafür die verbindlichen Phasenaktionen bereit. Bis zur Gesamt-Abnahme von 0.8.3 bleiben Client-, Netzwerk- und Clubentwicklung bewusst ausgesetzt.
+- **Spielwelt verstehen:** [`SPIELBESCHREIBUNG_OHNE_TECHNIK.md`](SPIELBESCHREIBUNG_OHNE_TECHNIK.md)
+- **aktuellen Prototyp starten:** diese Anleitung, Abschnitt 0
+- **programmieren/anbinden:** [`SPIELBESCHREIBUNG_TECHNISCH.md`](SPIELBESCHREIBUNG_TECHNISCH.md)
+- **nächste echte Aufgaben:** [`../TODO.md`](../TODO.md)
 
-## 13. Welche Beschreibung hilft mir weiter?
-
-Wähle nach deiner Frage, nicht nach deinem Vorwissen:
-
-- **Ich möchte Spielwelt, Ziele und Systeme vollständig verstehen:** Lies die [`Spielbeschreibung ohne Technik`](SPIELBESCHREIBUNG_OHNE_TECHNIK.md).
-- **Ich möchte den vorhandenen Prototyp jetzt starten:** Bleibe in dieser Anleitung und beginne mit Abschnitt 0.
-- **Ich möchte das Spiel programmieren oder anbinden:** Nutze die [`technische Spielbeschreibung`](SPIELBESCHREIBUNG_TECHNISCH.md).
-- **Ich möchte wissen, was als Nächstes wirklich gebaut wird:** Öffne [`../TODO.md`](../TODO.md).
-
-So bleibt klar getrennt, was die vollständige Spielvision beschreibt, was heute bereits bedienbar ist und was erst in einer späteren Entwicklungsstufe folgt.
+Der nächste fachliche Pflichtschritt ist **0.8.3-C – Settlement & Consequences**. Erst danach wird der schreibende Client angebunden.
