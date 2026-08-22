@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.5-d1",
+  "version": "0.8.6-a1",
   "append_only": true,
   "canonical_order_key": ["sequence", "event_id"],
   "hash_chain": true,
@@ -46,6 +46,7 @@
     "world.location_discovered",
     "world.location_updated",
     "world.district_effect_applied",
+    "world.property_purchased",
     "event.created",
     "event.planning_updated",
     "event.phase_changed",
@@ -80,6 +81,7 @@
       "character.resonance_rank_up",
       "street.encounter_resolved",
       "world.district_effect_applied",
+      "world.property_purchased",
       "mission.completed",
       "world.location_discovered",
       "event.created",
@@ -94,6 +96,7 @@
   },
   "compensation": {
     "event_type": "economy.transaction_compensated",
+    "eligible_kinds": ["buy", "sell"],
     "must_reference_original": true,
     "must_be_idempotent": true
   }
