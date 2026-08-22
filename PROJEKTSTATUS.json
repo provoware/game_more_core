@@ -3,11 +3,11 @@
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
   "active_iteration": "0.8.4",
-  "status": "0_8_4_alpha_1_release_candidate_package_validation",
-  "current_focus": "release_package_reproducibility_smoke_and_evidence",
+  "status": "0_8_4_alpha_1_released_remote_validated_safe_merged",
+  "current_focus": "next_dynamic_district_state_from_confirmed_settlement_results",
   "last_validated_feature_iteration": "0.8.4",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "Release Acceptance PR #72 / head 7fe1a39c6b69ec819fefe064a48d1647a5fa7c93 / merge 72bb3024272797b27632a96559ae8abb665fff8a",
+  "validation_reference": "Release PR #73 / head ece6c145bb07dbb2eb87170887374c4124a871f1 / merge 3fdb5cc3d57e73734d1f594603cafdd6d06c5210",
   "remote_validation": {
     "status": "success_for_0.8.4_writing_a4_client_and_first_run_recovery",
     "pull_request": 69,
@@ -347,6 +347,24 @@
     "error_paths_tested": true,
     "full_restart_recovery_smoke_tested": true
   },
+  "release_package": {
+    "status": "remote_validated_and_safe_merged",
+    "version": "0.8.4-alpha.1",
+    "pull_request": 73,
+    "validated_head": "ece6c145bb07dbb2eb87170887374c4124a871f1",
+    "merged_commit": "3fdb5cc3d57e73734d1f594603cafdd6d06c5210",
+    "runtime_core_workflow_run": 32576855723,
+    "presentation_core_workflow_run": 32576855749,
+    "repository_health_workflow_run": 32576855738,
+    "release_acceptance_workflow_run": 32576855720,
+    "release_package_workflow_run": 32576855768,
+    "safe_merge_pass": true,
+    "game_zip_sha256": "fccf16ee3728827ba4eba0dfd0e3cbaf844dd68c382b3c29c766f94a7ef85146",
+    "game_zip_size_bytes": 299300,
+    "github_actions_artifact_id": 9476765229,
+    "byte_reproducible": true,
+    "unpacked_package_smoke_tested": true
+  },
   "repository_repair": {
     "status": "recovered_and_remote_validated",
     "repair_pull_request": 33,
@@ -403,11 +421,11 @@
     "merged_commit": "73f9bb6aa2a10b30b4b2ba4b410a4b4451eea2ea",
     "closed_competing_prs": [15, 16, 17, 18, 19, 20, 21]
   },
-  "next_iteration": "release_package",
-  "next_goal": "0.8.4-alpha.1 reproduzierbar paketieren, SHA-256 erzeugen, entpacktes Paket aus frischem Zielordner bis completed smoke-testen und den finalen Release-Head remote validieren.",
+  "next_iteration": "0.8.5-dynamic-district-state",
+  "next_goal": "Heat, Prestige, Polizeidruck und Szeneaktivität als persistente Bezirkswerte ausschließlich aus bestätigten Settlement-/Event-Ergebnissen ableiten und über read-only Projection an A4/Map ausgeben.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-22T13:45:00+00:00"
+  "updated_at": "2026-08-22T13:53:00+00:00"
 }
