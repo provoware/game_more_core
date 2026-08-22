@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "character": {
+    "character_id": "player-local",
+    "display_name": "Meine Crew",
+    "alias": "",
+    "motto": "",
+    "additional_nicknames": [],
+    "energy": 100,
+    "stress": 0,
+    "reputation": 0
+  },
+  "event": {
+    "event_id": "event-local-1",
+    "display_name": "Erste Bunkerfrequenz",
+    "location": {
+      "location_id": "loc-a4-demo",
+      "display_name": "A4 Testlocation",
+      "region": "Berlin",
+      "access_status": "authorized"
+    },
+    "budget_cents": 100000,
+    "acts": [
+      {"act_id": "act-a4-1", "display_name": "Resident Act", "status": "confirmed"}
+    ],
+    "crew": [
+      {"character_id": "player-local", "role": "leitung", "status": "confirmed"}
+    ],
+    "equipment": [
+      {"equipment_id": "equipment.pa", "label": "PA", "quantity": 1, "status": "required"}
+    ],
+    "time_window": {
+      "start_local": "2026-08-22T20:00:00+02:00",
+      "end_local": "2026-08-23T06:00:00+02:00",
+      "timezone": "Europe/Berlin"
+    },
+    "safety_status": "cleared",
+    "phase": "draft",
+    "revision": 0
+  },
+  "economy": {
+    "catalog": {
+      "equipment.pa": {
+        "label": "PA",
+        "base_price_cents": 10000,
+        "volatility_bps": 0,
+        "consumable": false
+      }
+    },
+    "inventory": {},
+    "ledger": [],
+    "market_tick": 0,
+    "revision": 0
+  }
+}

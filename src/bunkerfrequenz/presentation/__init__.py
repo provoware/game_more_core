@@ -1,6 +1,7 @@
 """Read-only projections, shared components and local Character Forge view state."""
 
 from bunkerfrequenz.presentation.a3_cinematic_forge import build_a3_cinematic_forge
+from bunkerfrequenz.presentation.a4_game_projection import build_a4_game_projection
 from bunkerfrequenz.presentation.a4_ops_deck import build_a4_ops_deck
 from bunkerfrequenz.presentation.action_selection import (
     build_action_execute_command,
@@ -38,6 +39,7 @@ __all__ = [
     "PresentationState",
     "PresentationStateError",
     "build_a3_cinematic_forge",
+    "build_a4_game_projection",
     "build_a4_ops_deck",
     "build_action_execute_command",
     "build_action_selection",
