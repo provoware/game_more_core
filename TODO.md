@@ -3,13 +3,12 @@
 ## Aktueller Stand
 
 - **Versionierte Runtime-Baseline:** `0.5.2-alpha.1`
-- **Zuletzt remote validierte Feature-Iteration:** `0.8.1 – Event State Foundation`
-- **0.8.1-Referenz:** PR #48, Head `79cc26bec0a780322874ea6f3ced458e8ee72bd6`
-- **0.8.1-Remote-Abnahme:** Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` grün
-- **Aktive Iteration:** `0.8.2 – Equipment & Economy`
-- **0.8.1-Abschluss:** PR #48 gemergt als `9ed0dbd8928014777fa4b100a7c65ba4c30ca04e`
-- **Fortschritt zum ersten spielbaren Alpha-Release:** `80 %` (Planungswert; 0.8.2 lokal geprüft, Remote-Gate und Release-Gate noch nicht erfüllt)
-- **Aktueller Release-Blocker:** 0.8.2-Remote-Abnahme auf dem exakten PR-Head, vollständiger 0.8.3-Event-Loop und danach ein verbundener Client
+- **Zuletzt remote validierte Feature-Basis:** `0.8.2 – Equipment & Economy` inklusive Economy-Integritätshärtung
+- **0.8.2-Hardening-Referenz:** PR #61, Head `cee782476dccc9d57470f6522e4f77ed1473cdeb`
+- **0.8.2-Hardening-Remote-Abnahme:** Runtime Core `32557685040`, Presentation Core `32557685042`, Repository Health `32557685108` grün; Merge `9cfa107f0256587bf5a440c64c3e0af6c482fed2`
+- **Aktive Iteration:** `0.8.3 – Vollständiger Event-Loop`, aktuell Paket `0.8.3-A – Event Execution Engine`
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `84 %` (Planungswert; 0.8.3-A implementiert, finale Remote-Abnahme des PR-Heads noch offen)
+- **Aktueller Release-Blocker:** 0.8.3-A remote abschließen, danach 0.8.3-B Krisen/Incidents, 0.8.3-C Settlement/Folgen und anschließend ein verbundener Client
 
 ## Release-Ziel und Abnahme
 
@@ -186,17 +185,36 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 - [x] Event-Equipment-Anforderungen gegen bestätigten Besitz/Reservierung auflösen
 - [x] Save/Recovery/Idempotenz für Economy und Inventar testen
 - [x] gesamten Economy-Vertical-Slice mit den lokalen Entsprechungen von Runtime Core, Presentation Core und Repository Health gemeinsam abnehmen
-- [ ] denselben Economy-Vertical-Slice auf dem exakten PR-Head mit `runtime-core`, `presentation-core` und `repository-health` remote abnehmen
+- [x] 0.8.2-Basis inklusive Event-Kontext- und Replay-Integrität auf PR #61 mit `runtime-core`, `presentation-core` und `repository-health` remote abgenommen und nach `main` übernommen
 
 ### 0.8.3 – Vollständiger Event-Loop
 
-- [ ] `Planung → Einkauf → Transport → Aufbau → Soundcheck → Event → Krise → Abbau → Abrechnung` als zusammenhängenden Ablauf implementieren
-- [ ] Phasenaktionen und Voraussetzungen an EventState anbinden
-- [ ] Krisen und Incident-Auflösung journalfähig machen
-- [ ] Abrechnung, Ruf- und Character-Folgen aus bestätigten Ergebnissen ableiten
+#### 0.8.3-A – Event Execution Engine
+
+- [x] acht kanonische Phasenaktionen von `draft` bis `settlement` definiert
+- [x] Phasenaktionen über `EventExecutionService` statt frei wählbarer Client-Phasenmutation ausführbar gemacht
+- [x] bestätigte Acts/Crew, positives Budget und Equipment-Readiness als zentrale Voraussetzungen gebunden
+- [x] bestehende Ort-/Zugang-/Zeitfenster-/Safety-Gates auch als vorab projizierbare Blocker bereitgestellt
+- [x] Ausführung weiter append-only über `event.phase_changed` mit `reason=event_action:<action_id>` journalfähig gehalten
+- [x] Idempotenz und Manifest↔Runtime-Abgleich als Regressionstests ergänzt
+- [x] Spieleranleitung um den neuen verbindlichen Eventaktionspfad erweitert
+- [ ] exakten finalen PR-Head von #62 mit Runtime Core, Presentation Core und Repository Health remote abnehmen
+- [ ] PR #62 nach grünen Gates und `/safe-merge` nach `main` übernehmen
+
+#### 0.8.3-B – Krisen und Incidents
+
+- [ ] Krise aus `live`/`setup`/`soundcheck` als fachlichen Incident mit eigener Identität eröffnen
+- [ ] Incident-Zustand und zulässige Reaktionen definieren, ohne freie Phasenmutation einzuführen
+- [ ] `event.incident_resolved` deterministisch und replaybar umsetzen
+- [ ] Krisenauflösung inklusive Idempotenz, Save und Recovery testen
+
+#### 0.8.3-C – Settlement und Folgen
+
+- [ ] Abrechnung aus bestätigten Economy-/Eventdaten ableiten
+- [ ] Ruf- und Character-Folgen ausschließlich aus bestätigten Ergebnissen ableiten
+- [ ] `event.completed` erst nach erfolgreichem Settlement erzeugen
+- [ ] vollständigen Pfad `Planung → Einkauf → Transport → Aufbau → Soundcheck → Event/Krise → Abbau → Abrechnung` inklusive Save/Recovery testen
 - [ ] A4/A3 um Event-/Economy-Projektionen erweitern, ohne Domain-State direkt zu schreiben
-- [ ] vollständigen Event-Loop inklusive Save/Recovery testen
-- [ ] Spieleranleitung um Eventplanung und Wirtschaft erweitern
 
 ### Release-Kandidat – spielbarer lokaler Client
 
@@ -227,27 +245,10 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 - [ ] `reports/ECONOMY_REPLAY_VALIDATION_0.8.2.json` mit festem Seed, geprüftem Head-SHA sowie Kauf-, Reservierungs-, Budget- und Recovery-Receipt erzeugen und den Erzeugungsbefehl dokumentieren; Nutzen: Der Economy-Slice bleibt bei späteren Releases reproduzierbar und maschinenlesbar nachweisbar.
 - [ ] Nach 0.8.3 Lieferzeit und Verfügbarkeit je Anbieter datengetrieben ergänzen; Nutzen: Beschaffung erhält echte Zeit-/Preisentscheidungen, ohne den bestätigten Economy-Kern zu verdoppeln.
 - [ ] Repository Health um einen Abschlussabgleich zwischen gemergten Meilensteinen in `PROJEKTSTATUS.json`, `TODO.md` und `README.md` erweitern; Nutzen: bereits erledigte Freigabeschritte blockieren die Folgeiteration nicht erneut und Statuspflege verursacht weniger Nacharbeit.
+- [ ] A4/A3 sollen Blocker-IDs aus `EventExecutionService.availability()` in sichtbare Hilfetexte übersetzen, statt Voraussetzungen im Client neu zu berechnen; Nutzen: eine einzige fachliche Wahrheit bei verständlicher Bedienhilfe.
 - [ ] Nach Abnahme von 0.8.3 beide Gesamtbeschreibungen mit einem gemeinsamen, versionierten Spielszenario `Planung → Beschaffung → Krise → Abrechnung` ergänzen; Nutzen: Fachdesign, Cliententwicklung und QA erhalten dieselbe prüfbare Referenz, ohne geplantes Verhalten vorzeitig als fertig zu dokumentieren.
 
 ## Abgeschlossene Meilensteine
 
 - [x] **0.4.0** Architekturvertrag, Character-Forge-Foundation, 11 Figuren und gleiche Startwerte
 - [x] **0.4.1** Trait Engine, Progression, Spezialisierungen und deterministischer Simulator
-- [x] **0.4.2** Persistence Contract, Autosave, Undo, Snapshot-/Recovery-Regeln
-- [x] **0.4.3** vier Industrial-Brutalist-UI/UX-Blueprints
-- [x] **0.4.4** 20 datengetriebene Gameplay Actions
-- [x] **0.5.0** Headless Character-/Action-/Persistence-Core
-- [x] **0.5.1** Snapshot-Replay, Recovery, Fault Injection und Profil-Undo
-- [x] **0.5.2** Trait-Auswirkungen, Soft-Konflikte und Open-End-Resonanz
-- [x] **0.6 Foundation** Presentation-Vertrag und Character-/Biografieprojektion
-- [x] **0.6.1** Application-Capabilities + zentraler Command-Dispatcher
-- [x] **0.6.2** lokaler Presentation-State + bestätigtes Progressionsfeedback
-- [x] **0.6.3** gemeinsame Komponenten + A4 Ops Deck
-- [x] **0.6.4** A3 Cinematic Forge
-- [x] **0.6.5** Ranking / Network Foundation
-- [x] **0.7.1** A4 Action-Auswahl
-- [x] **0.7.2** Ressourcenwirkung + kompletter Character-Forge-Vertical-Slice
-
-## PR-Regel
-
-Für dieselbe Zielstelle wird nur **ein aktiver Implementierungs-PR** geführt. Normale PRs nach `main` werden ausschließlich über `/safe-merge` übernommen. Dafür müssen `runtime-core`, `presentation-core` und `repository-health` auf exakt dem aktuellen PR-Head vorhanden und grün sein; der Branch muss aktuellen `main` enthalten und alle Review-Threads müssen gelöst sein. Änderungen an Guard-/CI-Sicherheitsdateien benötigen einen ausdrücklich auditierten Security-Bootstrap-PR. Native GitHub-Branch-Protection bleibt eine zusätzliche noch offene serverseitige Härtung.
