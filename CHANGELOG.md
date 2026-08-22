@@ -4,6 +4,18 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### 0.8.3-C – Settlement & Consequences
+
+- `SettlementState` und `SettlementService.complete(...)` als verbindlichen atomaren Abschlussweg von `settlement` nach `completed` ergänzt; der allgemeine Event-Service darf `completed` nicht mehr direkt erzeugen.
+- bestätigte Incident-Folgen werden genau einmal über die zuständigen Verträge verbucht: Budget im Economy-Ledger, Crew-Stress über `character.resources_changed`, Ruf über `character.reputation_changed`; `stability_delta` und `heat_delta` bleiben als bestätigte Event-Ergebnisse im Settlement-Receipt und erzeugen noch keinen Bezirkszustand.
+- Settlement-Ledgerbuchungen als nicht kompensierbare `settlement`-Transaktion ergänzt; sie verändern den Markt-Tick nicht und ein negatives Endbudget wird fail-closed abgewiesen, statt ein nicht definiertes Schuldenmodell zu erfinden.
+- `event.completed` sowie Settlement-Replay in den kombinierten Recovery-Pfad integriert; Fault-Injection deckt einen Crash nach durablem Journal und die vollständige Rekonstruktion von Economy, Character, Event, Incident und Settlement ab.
+- krisenfreie Events ausdrücklich unterstützt: Fehlt vor der Abrechnung ein Incident-State, wird deterministisch ein leerer `IncidentState` verwendet und anschließend als abgeschlossener leerer Folgenzustand persistiert.
+- Settlement-Biografieeinträge werden mit der bestätigten Top-Level-`character_id` journalisiert, damit die bestehende Biografieprojektion sie dem richtigen Character zuordnet.
+- Ruf-Kompatibilität gehärtet: ältere Saves mit früher zulässigem negativem Ruf bleiben lesbar; ein neu erzeugtes Settlement normalisiert nur sein Ergebnis auf `max(0, old + delta)`, damit die bestehende Ranking-Projektion weiterhin gültige Werte erhält.
+- Settlement-Receipt gegen widersprüchliche Folgen gehärtet: Budget-, Stress- und Ruf-Triplet-Deltas müssen exakt den jeweiligen bestätigten `effects` entsprechen; manipulierte oder beschädigte Replays brechen fail-closed ab.
+- Schemas, Settlement-Manifest, technische Settlement-Dokumentation, Runtime-/Presentation-Regressionen und Spieleranleitung auf denselben 0.8.3-C-Vertrag abgeglichen; Kartenrenderer, persistente Bezirksdynamik, Immobilienpfad, saisonales Ranking und schreibender A4-Client bleiben ausdrücklich außerhalb dieses PRs.
+
 ### 0.8.3-B – Crisis Engine + Berlin Ops Map Foundation
 
 - `IncidentState` als eigener, streng validierter Zustandsblock ergänzt; aktive Krise, Historie, monotone Revision und bestätigte `pending_settlement`-Folgen bleiben getrennt von Event-, Economy- und Character-State.
