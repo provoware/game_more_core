@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
 import hashlib
@@ -88,6 +89,40 @@ def _payload_fingerprint(event_type: str, payload: dict) -> str:
 
 def _hash_data(data: dict) -> str:
     return hashlib.sha256(_canonical_json(data).encode("utf-8")).hexdigest()
+
+
+def _snapshot_path_is_safe(path: Path, snapshot_dir: Path) -> bool:
+    try:
+        path.resolve().relative_to(snapshot_dir.resolve())
+    except (OSError, ValueError):
+        return False
+    return True
+
+
+def _validated_snapshot(data: object, entry: object, path: Path, snapshot_dir: Path) -> dict | None:
+    if not isinstance(data, Mapping) or not isinstance(entry, Mapping):
+        return None
+    for field in ("snapshot_id", "journal_head_hash", "state_hash"):
+        if not isinstance(data.get(field), str) or not data[field]:
+            return None
+    sequence = data.get("journal_sequence")
+    if isinstance(sequence, bool) or not isinstance(sequence, int) or sequence < 0:
+        return None
+    state = data.get("state")
+    if not isinstance(state, dict) or data["state_hash"] != _hash_data(state):
+        return None
+    for field in ("snapshot_id", "journal_head_hash", "path"):
+        if not isinstance(entry.get(field), str) or not entry[field]:
+            return None
+    entry_sequence = entry.get("journal_sequence")
+    if isinstance(entry_sequence, bool) or not isinstance(entry_sequence, int) or entry_sequence < 0:
+        return None
+    if not _snapshot_path_is_safe(path, snapshot_dir):
+        return None
+    identity_fields = ("snapshot_id", "journal_sequence", "journal_head_hash")
+    if path.name != entry["path"] or any(entry[field] != data[field] for field in identity_fields):
+        return None
+    return dict(data)
 
 
 def _atomic_write_json(path: Path, data: dict) -> None:
@@ -465,18 +500,21 @@ class PersistenceKernel:
         entries = []
         self.snapshot_dir.mkdir(parents=True, exist_ok=True)
         for path in sorted(self.snapshot_dir.glob("snap-*.json")):
+            if not _snapshot_path_is_safe(path, self.snapshot_dir):
+                continue
             try:
                 data = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, json.JSONDecodeError):
                 continue
-            if data.get("state_hash") != _hash_data(data.get("state", {})):
-                continue
-            entries.append({
-                "snapshot_id": data["snapshot_id"],
-                "journal_sequence": int(data["journal_sequence"]),
-                "journal_head_hash": data["journal_head_hash"],
+            entry = {
+                "snapshot_id": data.get("snapshot_id") if isinstance(data, Mapping) else None,
+                "journal_sequence": data.get("journal_sequence") if isinstance(data, Mapping) else None,
+                "journal_head_hash": data.get("journal_head_hash") if isinstance(data, Mapping) else None,
                 "path": path.name,
-            })
+            }
+            if _validated_snapshot(data, entry, path, self.snapshot_dir) is None:
+                continue
+            entries.append(entry)
         entries.sort(key=lambda entry: (entry["journal_sequence"], entry["snapshot_id"]))
         _atomic_write_json(self.snapshot_index_path, {"schema_version": 1, "snapshots": entries})
 
@@ -487,16 +525,26 @@ class PersistenceKernel:
         except (OSError, json.JSONDecodeError):
             return []
         valid = []
-        for entry in index.get("snapshots", []):
-            expected_head = _head_for_sequence(records, int(entry["journal_sequence"]))
-            if expected_head != entry["journal_head_hash"]:
+        if not isinstance(index, Mapping) or not isinstance(index.get("snapshots"), list):
+            return valid
+        for entry in index["snapshots"]:
+            if not isinstance(entry, Mapping):
                 continue
-            path = self.snapshot_dir / entry["path"]
+            path_value = entry.get("path")
+            if not isinstance(path_value, str) or not path_value:
+                continue
+            path = self.snapshot_dir / path_value
+            if not _snapshot_path_is_safe(path, self.snapshot_dir):
+                continue
             try:
                 data = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, json.JSONDecodeError):
                 continue
-            if data.get("state_hash") != _hash_data(data.get("state", {})):
+            data = _validated_snapshot(data, entry, path, self.snapshot_dir)
+            if data is None:
+                continue
+            expected_head = _head_for_sequence(records, entry["journal_sequence"])
+            if expected_head != entry["journal_head_hash"]:
                 continue
             valid.append(data)
         return valid

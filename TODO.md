@@ -187,6 +187,7 @@
 ## Später
 
 - [ ] Recovery-Berichte um eine maschinenlesbare Fehlerkategorie ergänzen, damit eine spätere Oberfläche beschädigtes JSON, fehlende Felder und falsche Datentypen verständlich unterscheiden kann, ohne Fehlermeldungstext auszuwerten.
+- [ ] Recovery-Receipt um die Anzahl übersprungener Snapshot-Kandidaten ergänzen, damit Support und spätere Oberfläche einen erfolgreichen Rückfall auf einen älteren Checkpoint sichtbar machen können, ohne ungültige Inhalte offenzulegen.
 
 ### 0.9 – Network / Telegram Sync
 
