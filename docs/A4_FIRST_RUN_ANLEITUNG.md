@@ -1,135 +1,202 @@
-# A4 – Erste spielbare Runde für absolute Anfänger
+# A4 Control Deck – Erste spielbare Runde für absolute Anfänger
 
-Diese Anleitung gilt für den **lokalen schreibenden A4-Alpha-Client**. Sie verändert nicht den bisherigen schreibgeschützten Blueprint.
+Diese Anleitung gilt für den **lokalen schreibenden BUNKERFREQUENZ-Client**. Fachbegriffe werden möglichst vermieden; alle Gameplay-Änderungen laufen weiterhin durch den vorhandenen Spielkern.
 
-## 1. A4 starten
+## 1. Spiel starten
 
-### Am einfachsten: Klick-/Direktstart
-
-Im Projektordner gibt es jetzt:
-
-```text
-START_BUNKERFREQUENZ.sh
-```
-
-Unter Ubuntu/Kubuntu kannst du diese ausführbare Datei direkt starten. Falls der Dateimanager fragt, wähle **Ausführen**.
-
-### Alternativ im Terminal
-
-Öffne ein Terminal im Projektordner und gib ein:
+Im Projektordner:
 
 ```bash
 ./START_BUNKERFREQUENZ.sh
 ```
 
-oder direkt:
-
-```bash
-python3 tools/start_a4_game_client.py
-```
-
-Danach öffnet sich normalerweise der Browser. Im Terminal muss `STATUS: BEREIT` stehen.
-
-Falls der Standard-Port belegt ist:
+Wenn der Port belegt ist:
 
 ```bash
 ./START_BUNKERFREQUENZ.sh --port 0
 ```
 
-`--port 0` bedeutet: Das Programm sucht automatisch einen freien lokalen Port.
-
-Für einen komplett getrennten Test-Spielstand:
+Für einen getrennten Test-Spielstand:
 
 ```bash
-./START_BUNKERFREQUENZ.sh --port 0 --save-dir /tmp/bunkerfrequenz-a4-test
+./START_BUNKERFREQUENZ.sh --port 0 --save-dir /tmp/bunkerfrequenz-test
 ```
 
-Wenn du den Browser bewusst selbst öffnen möchtest:
+Im Terminal muss anschließend stehen:
 
-```bash
-./START_BUNKERFREQUENZ.sh --port 0 --no-browser
+```text
+STATUS: BEREIT
 ```
 
-Kopiere danach die hinter `ADRESSE:` angezeigte lokale Adresse in Firefox oder Chrome.
-
-Beenden: im Terminal `Strg+C` drücken.
+Beenden: `Strg+C`.
 
 ## 2. Neues Spiel anlegen
 
-Beim ersten Start siehst du **FIRST RUN**.
+Beim ersten Start erscheint **FIRST RUN**:
 
 1. Crew-/Charaktername eintragen.
 2. Eventname eintragen.
 3. **NEUES SPIEL ANLEGEN** drücken.
 
-Der Client legt nur einen kleinen Starter an. Danach werden alle Änderungen vom vorhandenen Spielkern geprüft und gespeichert.
+Ein vorhandener Spielstand wird nicht still überschrieben.
 
-## 3. Was bedeuten ausgegraute Event-Buttons?
+## 3. Das neue Control Deck verstehen
 
-Ein ausgegrauter Button ist kein Fehler. Direkt darunter steht, was noch fehlt. Diese Blockade stammt aus derselben Runtime-Regel, die beim echten Ausführen geprüft wird.
+Oben findest du den aktuellen Spielstatus. Das HUD zeigt kompakt:
 
-Beispiel:
+- Eventphase
+- Budget
+- Energie
+- Stress
+- Ruf
+- Anzahl eigener Orte
+
+Darunter liegt die Schnellnavigation:
 
 ```text
-TRANSPORT STARTEN – ausgegraut
-Blockiert: Equipment ist noch nicht bereit
+STRASSE · MAP · PROPERTY · HALL · EVENT · EQUIPMENT · SAVE
 ```
 
-Dann zuerst im Bereich **Equipment & Economy** die benötigte PA kaufen und reservieren.
+Damit springst du direkt zum gewünschten Bereich, ohne den kompletten Bildschirm durchsuchen zu müssen.
 
-## 4. Erste komplette Runde
+## 4. Ansicht anpassen
 
-Der kleinste Testweg ist:
+Oben rechts gibt es **ANSICHT**. Dort stehen drei reine Anzeigeoptionen zur Verfügung:
+
+### Kompakt
+Weniger Abstände und kleinere Flächen. Sinnvoll, wenn du viel gleichzeitig sehen möchtest.
+
+### Hoher Kontrast
+Stärkere Linien und deutlichere Flächen. Sinnvoll bei schlechter Erkennbarkeit.
+
+### Große Schrift
+Vergrößert die Grunddarstellung.
+
+Wichtig: Diese Optionen verändern **nur die Oberfläche dieses Browsers**. Sie verändern keinen Spielstand, keine Chancen, kein Budget und keine Regeln.
+
+## 5. Straßenrunde – jetzt mit echter Auswahl
+
+Vor einer Straßenrunde wählst du einen Ansatz:
+
+| Ansatz | Bedeutung |
+|---|---|
+| **Ausgeglichen** | bekannte Standardverteilung |
+| **Runterkommen** | eher Ruhe, Wasser, Kaffee und Erholung |
+| **Kontakte** | eher bekannte Gesichter und Crew-Kontakte |
+| **Scout** | eher Wege und nützliche Funde, mit etwas mehr möglichem Ärger |
+
+Danach **RUNDE STARTEN** drücken.
+
+### Was die Auswahl wirklich macht
+
+Sie verändert nur die **Wahrscheinlichkeit**, welche bereits katalogisierte Begegnung gezogen wird. Sie garantiert kein bestimmtes Ergebnis.
+
+Der Browser darf nicht selbst sagen: „Gib mir +10 Ruf“. Er sendet lediglich beispielsweise:
+
+```text
+approach_id = network
+```
+
+Der Spielkern wählt deterministisch eine erlaubte Begegnung und übernimmt deren bestätigte Effekte.
+
+### Wichtig für Reload/Retry
+
+Eine bereits bestätigte Straßenrunde kann nicht durch Reload neu gewürfelt werden. Derselbe Walk behält auch seinen bestätigten Ansatz.
+
+## 6. Berlin Ops Map PRO
+
+Die Map zeigt die vorhandene Spielwelt:
+
+- 8 Districts
+- 12 Orte
+- District-Werte
+- Score/Tier
+- Eigentum
+- Ausbauten
+- Hall of Tribute
+
+Du kannst filtern und Orte/Bezirke fokussieren. Die Karte selbst schreibt **keine** Gameplaywerte.
+
+Kaufen und Ausbauen erfolgt weiterhin im Property-Bereich.
+
+## 7. Immobilien und Ausbau
+
+Bei kaufbaren Orten gibt es **ÜBERNEHMEN**. Preis und Eigentümer bestimmt der Spielkern.
+
+Eigene Orte können über katalogisierte Ausbauarten bis Level 3 verbessert werden. Der Browser darf weder Preis noch Ziellevel erfinden.
+
+## 8. Hall of Tribute und Saison
+
+Die Hall zeigt Ruf, Level und Resonanz sowie Woche/Monat.
+
+Wichtig:
+
+- Ein lokaler Rang 1 bedeutet nicht automatisch einen Championtitel.
+- Endgültige Titel benötigen einen bestätigten abgeschlossenen Zyklus.
+- Für echte Konkurrenz-Titel müssen bestätigte Konkurrenten vorhanden sein.
+- Die Systemuhr allein bestimmt niemals eine Saison.
+
+## 9. Event spielen
+
+Der kleinste vollständige Weg ist:
 
 ```text
 PLANUNG BEGINNEN
 → BESCHAFFUNG BEGINNEN
-→ PA KAUFEN
-→ PA RESERVIEREN
+→ benötigtes Equipment kaufen/reservieren
 → TRANSPORT STARTEN
 → AUFBAU BEGINNEN
 → SOUNDCHECK BESTÄTIGEN
 → EVENT STARTEN
-→ optional eine Krise auslösen und lösen
+→ optional Krise
 → EVENT BEENDEN
 → ABBAU BEENDEN
 → SETTLEMENT ABSCHLIESSEN
 ```
 
-Danach muss die Eventphase `COMPLETED` anzeigen.
+Danach muss die Eventphase `COMPLETED` sein.
 
-## 5. Krise ausprobieren
+## 10. Warum manche Event-Buttons ausgegraut sind
 
-Während `LIVE` erscheint der Krisenbereich. Für den Alpha-Test kannst du dort eine katalogisierte Krise öffnen und anschließend eine angebotene Reaktion wählen.
+Das ist normalerweise kein Fehler. Unter den Buttons steht der Blocker, z. B.:
 
-Wichtig: Der Browser berechnet die Folgen nicht. Er sendet nur deine Auswahl an die vorhandene Crisis Engine und zeigt danach den bestätigten Zustand.
+```text
+Blockiert: Equipment ist noch nicht bereit
+```
 
-## 6. Speichern
+Dann zuerst die fehlende Voraussetzung erfüllen.
 
-Jede bestätigte Aktion wird sofort im Journal gesichert. Du musst also nicht bis zum manuellen Speichern warten.
+## 11. Krise entscheiden – Folgen vorher sehen
 
-Mit **CHECKPOINT SPEICHERN** legst du zusätzlich einen Snapshot an. Dieser Snapshot hilft bei Recovery.
+Während `LIVE` kann eine katalogisierte Krise geöffnet werden. Bei einer aktiven Krise erscheinen Antwortkarten.
 
-## 7. Neustart prüfen
+Jede Karte zeigt vor der Wahl die **bereits katalogisierten** Auswirkungen, zum Beispiel:
 
-1. A4 mit `Strg+C` beenden.
-2. Mit demselben Befehl erneut starten.
-3. Der vorhandene Spielstand muss direkt erscheinen.
-4. Die bestätigte Eventphase, Budget-/Equipmentdaten und Settlement-Ergebnisse müssen erhalten sein.
+```text
+Budget −50,00 € · Ruf +2 · Crew-Stress +1 · Stabilität +2
+```
 
-## 8. Recovery
+Das ist eine Vorschau des vorhandenen Crisis-Vertrags. Der Browser berechnet die Folgen nicht neu. Beim Klick sendet er nur die `response_id` an die Crisis Engine.
 
-Wenn Journal und aktueller State nicht zusammenpassen, versucht A4 beim Start die vorhandene Recovery-Funktion. Dabei wird kein neuer Spielverlauf erfunden: Wiederhergestellt wird ausschließlich aus gültigem Snapshot und Journal.
+## 12. Speichern
 
-Auch der Fall **„aktueller State fehlt, gültiger Snapshot und Journal sind aber vorhanden“** ist regressionsgetestet. Der Start darf diesen Zustand nicht fälschlich als gesund behandeln, sondern muss den bestätigten State wiederherstellen.
+Jede bestätigte Aktion wird sofort journalisiert.
 
-Wenn sichere Recovery nicht möglich ist, bricht der Start mit einer verständlichen Fehlermeldung ab. Lösche dann **keine** Journal-, State- oder Snapshot-Dateien von Hand.
+Mit **CHECKPOINT SPEICHERN** legst du zusätzlich einen Snapshot an.
 
-## 9. Verständliche Startfehler
+## 13. Neustart und Recovery
 
-### Port ist schon belegt
+1. Client mit `Strg+C` beenden.
+2. Mit demselben Spielstandordner neu starten.
+3. Bestätigte Werte und Eventphase müssen wieder erscheinen.
 
-Beispiel:
+Wenn aktueller State und Journal nicht zusammenpassen, versucht der Client die vorhandene Recovery. Er erfindet dabei keinen neuen Spielverlauf, sondern verwendet bestätigte Snapshots und Journalrecords.
+
+Wenn sichere Recovery nicht möglich ist, stoppt der Start mit einer verständlichen Fehlermeldung. Journal-, State- oder Snapshot-Dateien dann nicht von Hand löschen.
+
+## 14. Häufige Startfehler
+
+### Port belegt
 
 ```text
 START FEHLGESCHLAGEN – Port 8044 ist belegt; nutze --port 0 für automatische freie Portwahl
@@ -141,48 +208,40 @@ Lösung:
 ./START_BUNKERFREQUENZ.sh --port 0
 ```
 
-### Spielstandordner kann nicht beschrieben werden
-
-Beispiel:
-
-```text
-START FEHLGESCHLAGEN – Spielstandordner ist nicht beschreibbar: ...
-```
-
-Wähle einen Ordner, in dem dein Benutzer schreiben darf, zum Beispiel:
+### Spielstandordner nicht beschreibbar
 
 ```bash
 ./START_BUNKERFREQUENZ.sh --save-dir "$HOME/BUNKERFREQUENZ-SAVE"
 ```
 
-### Eine erforderliche Programmdatei fehlt
+### Programmdatei fehlt
 
-Der Start nennt die fehlende Datei hinter:
+Bei:
 
 ```text
 START FEHLGESCHLAGEN – fehlt: ...
 ```
 
-In diesem Fall nicht einzelne Dateien aus verschiedenen Versionen zusammenkopieren. Nutze einen vollständigen Checkout bzw. später das vollständige Release-Paket.
+keine einzelnen Dateien verschiedener Versionen zusammenkopieren. Einen vollständigen Checkout bzw. ein vollständiges Release-Paket benutzen.
 
-## 10. Wo liegt der Spielstand?
+## 15. Wo liegt der Spielstand?
 
-Standardmäßig unter:
+Standard:
 
 ```text
 ~/.local/share/bunkerfrequenz/a4-alpha
 ```
 
-Mit `--save-dir` kannst du für Tests einen anderen Ordner verwenden.
+Die lokalen **Ansichtseinstellungen** liegen getrennt im Browser und sind kein Bestandteil des Spielstands.
 
-## 11. Was dieser Alpha-Client noch nicht ist
+## 16. Was noch nicht enthalten ist
 
-Noch nicht enthalten sind unter anderem:
+Noch nicht Teil dieses Slices sind unter anderem:
 
-- final versioniertes Release-Paket/Installer,
-- Berlin-Kartenrenderer als Hauptspielansicht,
-- Immobilienkauf/-ausbau,
-- persistente Bezirksdynamik,
-- Netzwerk-/Telegram-Sync.
+- bezirksbezogene Welt-Ereignisse als eigenes System,
+- Property-Miete/Verkauf/laufende Rendite,
+- echtes Netzwerk-/Telegram-Sync,
+- echte Remote-Gegner ohne bestätigte Netzwerkquelle,
+- neuer Produktrelease oberhalb `0.8.4-alpha.1`.
 
-Der **Klick-/Direktstart selbst ist jetzt vorhanden und wird in der Release-Abnahme aus einem frischen Checkout als echter Prozess getestet**. Erst wenn diese Release-Abnahme vollständig grün ist, werden Produktversion und reproduzierbares Release-Artefakt festgelegt.
+Die aktive Entwicklungsiteration ist **0.8.7-B – Control Deck & Player Choices**. Sie gilt erst nach vollständiger Remote-Abnahme und `/safe-merge` als validiert.
