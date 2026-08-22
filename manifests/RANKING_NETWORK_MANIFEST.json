@@ -1,8 +1,11 @@
 {
-  "schema_version": 1,
-  "version": "0.6.5-alpha.1",
+  "schema_version": 2,
+  "version": "0.8.5-a1",
   "default_top_limit": 10,
-  "ranking_style": "competition",
+  "competitive_top_limit": 10,
+  "ranking_style": "competitive_displacement",
+  "top_pressure_factor": 1.0,
+  "outer_pressure_factor": 0.1,
   "sort_modes": [
     "level",
     "reputation",
@@ -25,7 +28,10 @@
   "missing_metric_policy": "null_unranked_after_confirmed_values",
   "presence_policy": "no_online_presence_inference_without_confirmed_source",
   "player_count_policy": "unbounded_source_list_top10_default_show_all_optional",
-  "tie_policy": "same_value_same_rank_next_rank_skips_positions",
-  "stable_tiebreaker": "character_id",
+  "tie_policy": "rising_challenger_wins_no_shared_rank",
+  "cycle_history_policy": "optional_previous_cycle_same_metric_only",
+  "momentum_policy": "current_metric_primary_then_pressure_weighted_delta",
+  "stable_tiebreaker": "previous_rank_then_character_id",
+  "rank_numbers_unique": true,
   "visible_text_catalog": "content/de/ui/character_forge.json"
 }
