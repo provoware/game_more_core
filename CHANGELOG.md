@@ -4,6 +4,16 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### 0.8.2 – Equipment & Economy
+
+- getrennten Equipment-Katalog und Inventarbesitz mit validierten Reservierungen als neuen Economy-State ergänzt.
+- dynamische Marktpreise deterministisch aus Grundpreis, Schwankung und bestätigtem Markt-Takt abgeleitet; Systemzeit und Zufall bleiben ausgeschlossen.
+- Kaufen, Verkaufen, Verbrauchen, Reservieren und Freigeben über einen atomaren Service mit katalogisierten Journal-Ereignissen umgesetzt.
+- Event-Budget wird nur durch bestätigte Käufe, Verkäufe oder Kompensationen verändert; Equipment-Readiness folgt vollständiger bestätigter Reservierung.
+- Kauf-/Verkaufskompensation auf ursprünglichen Stückpreis, einmalige Anwendung und erneut gültige Bestandsbedingungen begrenzt.
+- kombiniertes Economy-/Event-Replay samt Fault-Injection-Test ergänzt; Client, Netzwerk, Clubs und 0.8.3-Event-Loop bleiben unverändert.
+- Spieleranleitung erklärt Lager, Reservierung, Budget und Wiederherstellung in einfacher Sprache.
+
 ### Release-Planung
 
 - veralteten 0.8.1-Mergevorbehalt nach dem belegten Merge von PR #48 entfernt, 0.8.2 als aktive Iteration gesetzt und den Pflichtpfad auf die drei tatsächlich offenen Release-Pakete reduziert.

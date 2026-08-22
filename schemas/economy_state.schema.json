@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://provoware.de/schemas/bunkerfrequenz/economy_state.schema.json",
+  "title": "BUNKERFREQUENZ EconomyState",
+  "type": "object",
+  "required": ["catalog", "inventory", "ledger", "market_tick", "revision"],
+  "properties": {
+    "catalog": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["label", "base_price_cents", "volatility_bps", "consumable"],
+        "properties": {
+          "label": {"type": "string", "minLength": 1},
+          "base_price_cents": {"type": "integer", "minimum": 1},
+          "volatility_bps": {"type": "integer", "minimum": 0},
+          "consumable": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["owned", "reserved"],
+        "properties": {
+          "owned": {"type": "integer", "minimum": 0},
+          "reserved": {"type": "integer", "minimum": 0}
+        },
+        "additionalProperties": false
+      }
+    },
+    "ledger": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["transaction_id", "kind", "item_id", "quantity", "unit_price_cents", "budget_delta_cents", "compensates"],
+        "properties": {
+          "transaction_id": {"type": "string", "minLength": 1},
+          "kind": {"enum": ["buy", "sell", "consume", "reserve", "release"]},
+          "item_id": {"type": "string", "minLength": 1},
+          "quantity": {"type": "integer", "minimum": 1},
+          "unit_price_cents": {"type": "integer", "minimum": 1},
+          "budget_delta_cents": {"type": "integer"},
+          "compensates": {"type": ["string", "null"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "market_tick": {"type": "integer", "minimum": 0},
+    "revision": {"type": "integer", "minimum": 0}
+  },
+  "additionalProperties": false
+}

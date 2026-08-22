@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "version": "0.8.2-alpha.1",
+  "state_block": "economy",
+  "domain_type": "EconomyState",
+  "catalog_fields": ["label", "base_price_cents", "volatility_bps", "consumable"],
+  "inventory_fields": ["owned", "reserved"],
+  "transaction_kinds": ["buy", "sell", "consume", "reserve", "release"],
+  "market_price_rule": "max(1, base_price_cents * (10000 + ((market_tick % 5) - 2) * volatility_bps) // 10000)",
+  "invariants": [
+    "catalog and inventory are separate state sections",
+    "reserved quantity never exceeds owned quantity",
+    "budget changes only with confirmed buy, sell or compensation transactions",
+    "event requirement readiness derives from confirmed reservation",
+    "market_tick and revision increase once per confirmed operation"
+  ],
+  "compensation": {
+    "eligible_kinds": ["buy", "sell"],
+    "uses_original_unit_price": true,
+    "single_compensation_per_transaction": true,
+    "inventory_preconditions_apply": true
+  },
+  "journal_events": [
+    "economy.catalog_initialized",
+    "inventory.item_acquired",
+    "inventory.item_removed",
+    "economy.transaction_posted",
+    "economy.transaction_compensated"
+  ],
+  "persistence": {
+    "combined_replay": "bunkerfrequenz.application.game_recovery.replay_game_event",
+    "atomic_state_blocks": ["economy", "event"]
+  }
+}

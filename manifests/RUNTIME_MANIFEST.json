@@ -6,11 +6,13 @@
   "modules": {
     "character_state": "src/bunkerfrequenz/domain/character.py",
     "event_state": "src/bunkerfrequenz/domain/event.py",
+    "economy_state": "src/bunkerfrequenz/domain/economy.py",
     "progression": "src/bunkerfrequenz/domain/progression.py",
     "trait_effects": "src/bunkerfrequenz/domain/trait_effects.py",
     "action_resolver": "src/bunkerfrequenz/application/action_resolver.py",
     "character_action_service": "src/bunkerfrequenz/application/character_action_service.py",
     "event_state_service": "src/bunkerfrequenz/application/event_state_service.py",
+    "economy_service": "src/bunkerfrequenz/application/economy_service.py",
     "state_blocks": "src/bunkerfrequenz/application/state_blocks.py",
     "profile_service": "src/bunkerfrequenz/application/profile_service.py",
     "recovery_service": "src/bunkerfrequenz/application/recovery_service.py",
@@ -22,6 +24,7 @@
     "manifests/TRAIT_ENGINE_MANIFEST.json",
     "manifests/ACTION_MANIFEST.json",
     "manifests/EVENT_STATE_MANIFEST.json",
+    "manifests/ECONOMY_MANIFEST.json",
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/PERSISTENCE_MANIFEST.json"
   ],
@@ -39,7 +42,8 @@
     "one_step_profile_undo": true,
     "corrupt_tail_quarantine": true,
     "snapshot_plus_journal_replay": true,
-    "combined_character_event_replay": true
+    "combined_character_event_replay": true,
+    "combined_economy_event_replay": true
   },
   "invariants": [
     "all_characters_start_with_equal_skill_values",
@@ -58,7 +62,9 @@
     "level_50_continues_as_open_ended_journaled_resonance",
     "character_and_event_state_blocks_preserve_each_other",
     "event_revision_is_monotonic_and_stale_writes_are_rejected",
-    "physical_event_phases_require_verified_location_time_window_and_safety_clearance"
+    "physical_event_phases_require_verified_location_time_window_and_safety_clearance",
+    "economy_budget_changes_require_confirmed_transactions",
+    "event_equipment_readiness_requires_confirmed_reservation"
   ],
   "validation": {
     "compile_command": "PYTHONPATH=src python3 -m compileall -q src",

@@ -8,8 +8,8 @@
 - **0.8.1-Remote-Abnahme:** Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303` grün
 - **Aktive Iteration:** `0.8.2 – Equipment & Economy`
 - **0.8.1-Abschluss:** PR #48 gemergt als `9ed0dbd8928014777fa4b100a7c65ba4c30ca04e`
-- **Fortschritt zum ersten spielbaren Alpha-Release:** `70 %` (Planungswert; Release-Gate noch nicht erfüllt)
-- **Aktueller Release-Blocker:** kein mit der Runtime verbundener Client und noch kein vollständiger Event-/Economy-Loop
+- **Fortschritt zum ersten spielbaren Alpha-Release:** `78 %` (Planungswert; Remote-Gate und Release-Gate noch nicht erfüllt)
+- **Aktueller Release-Blocker:** 0.8.2-Remote-Abnahme, vollständiger 0.8.3-Event-Loop und danach ein verbundener Client
 
 ## Release-Ziel und Abnahme
 
@@ -178,13 +178,13 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 
 **Abnahmeeinheit:** Katalog, Besitz, Reservierung, Transaktion und Recovery bilden einen gemeinsamen Vertical Slice (durchgängiger Funktionsschnitt). Kein Bestandteil wird allein als fertige Economy-Stufe freigegeben.
 
-- [ ] Equipment-Katalog und Inventarbesitz als getrennte Zustände definieren
-- [ ] dynamische Marktpreise datengetrieben und deterministisch modellieren
-- [ ] Kaufen, Verkaufen und Verbrauchen über katalogisierte Inventory-/Economy-Events führen
-- [ ] Budgetänderungen nur aus bestätigten Economy-Transaktionen ableiten
-- [ ] Kompensationsregeln für reversible Economy-Transaktionen konkretisieren
-- [ ] Event-Equipment-Anforderungen gegen bestätigten Besitz/Reservierung auflösen
-- [ ] Save/Recovery/Idempotenz für Economy und Inventar testen
+- [x] Equipment-Katalog und Inventarbesitz als getrennte Zustände definieren
+- [x] dynamische Marktpreise datengetrieben und deterministisch modellieren
+- [x] Kaufen, Verkaufen und Verbrauchen über katalogisierte Inventory-/Economy-Events führen
+- [x] Budgetänderungen nur aus bestätigten Economy-Transaktionen ableiten
+- [x] Kompensationsregeln für reversible Economy-Transaktionen konkretisieren
+- [x] Event-Equipment-Anforderungen gegen bestätigten Besitz/Reservierung auflösen
+- [x] Save/Recovery/Idempotenz für Economy und Inventar testen
 - [ ] gesamten Economy-Vertical-Slice auf demselben Head lokal und mit allen drei Remote-Gates abnehmen
 
 ### 0.8.3 – Vollständiger Event-Loop
@@ -223,6 +223,7 @@ Die folgenden Pakete der 0.8-Event-/Wirtschaftsintegration werden ohne parallele
 - [ ] Recovery-Receipt um die Anzahl übersprungener Snapshot-Kandidaten ergänzen, damit Support und spätere Oberfläche einen erfolgreichen Rückfall auf einen älteren Checkpoint sichtbar machen können, ohne ungültige Inhalte offenzulegen.
 - [ ] Einen geführten Fünf-Minuten-First-Run mit anonymem lokalem Abschlussbeleg ergänzen; Nutzen: Der Release kann nicht nur technisch starten, sondern wird auch ohne Vorwissen überprüfbar verstanden.
 - [ ] Einen maschinenlesbaren Economy-Replay-Abnahmebeleg mit festem Seed definieren; Nutzen: Katalog, Besitz, Reservierung, Transaktion und Recovery bleiben bei späteren Erweiterungen als zusammenhängender Slice nachweisbar.
+- [ ] Nach 0.8.3 Lieferzeit und Verfügbarkeit je Anbieter datengetrieben ergänzen; Nutzen: Beschaffung erhält echte Zeit-/Preisentscheidungen, ohne den bestätigten Economy-Kern zu verdoppeln.
 - [ ] Repository Health um einen Abschlussabgleich zwischen gemergten Meilensteinen in `PROJEKTSTATUS.json`, `TODO.md` und `README.md` erweitern; Nutzen: bereits erledigte Freigabeschritte blockieren die Folgeiteration nicht erneut und Statuspflege verursacht weniger Nacharbeit.
 
 ## Abgeschlossene Meilensteine
