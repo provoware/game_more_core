@@ -146,11 +146,12 @@ function renderDistricts(districts) {
     : districts.persisted ? "Persistierter District-State ohne neue Änderung." : "Noch keine persistente Bezirksänderung – angezeigt werden die Startwerte.";
 }
 
-function renderProperties(properties) {
+function renderProperties(properties, propertyUpgrades) {
   const host = $("property-list");
   host.replaceChildren();
   if (!properties) return;
   $("property-owned-count").textContent = `${properties.owned_count || 0} / ${properties.purchasable_count || 0}`;
+  const upgradeByLocation = new Map((propertyUpgrades?.entries || []).map((entry) => [entry.location_id, entry]));
   for (const property of properties.entries || []) {
     const row = document.createElement("article");
     row.className = "equipment-row";
@@ -158,9 +159,15 @@ function renderProperties(properties) {
     const title = document.createElement("strong");
     title.textContent = `${displayId(property.location_id)}${property.owned ? " · EIGENTUM" : ""}`;
     const detail = document.createElement("span");
-    detail.textContent = `${displayId(property.district_id)} · ${money(property.purchase_price_cents)} · ${property.upgrade_slots?.length || 0} spätere Ausbau-Slots`;
+    const upgradeEntry = upgradeByLocation.get(property.location_id);
+    const values = upgradeEntry?.effective_values;
+    const valueText = values
+      ? ` · P ${values.prestige} · Pull ${values.audience_pull} · Risiko ${values.risk} · UG ${values.underground_factor} · Nutzen ${values.utility}`
+      : "";
+    detail.textContent = `${displayId(property.district_id)} · ${money(property.purchase_price_cents)}${valueText}`;
     info.append(title, detail);
     row.append(info);
+
     if (!property.owned) {
       const actions = document.createElement("div");
       actions.className = "inline-actions";
@@ -172,6 +179,27 @@ function renderProperties(properties) {
         location_id: property.location_id
       }));
       actions.append(buy);
+      row.append(actions);
+    } else if (upgradeEntry) {
+      const actions = document.createElement("div");
+      actions.className = "inline-actions";
+      for (const upgrade of upgradeEntry.upgrades || []) {
+        const button = document.createElement("button");
+        if (upgrade.can_upgrade) {
+          button.textContent = `${displayId(upgrade.upgrade_id)} L${upgrade.level}→${upgrade.next_level} · ${money(upgrade.next_cost_cents)}`;
+          button.addEventListener("click", () => sendCommand({
+            type: "property.upgrade",
+            command_id: commandId("property-upgrade"),
+            location_id: property.location_id,
+            upgrade_id: upgrade.upgrade_id
+          }));
+        } else {
+          button.textContent = `${displayId(upgrade.upgrade_id)} · MAX L${upgrade.level}`;
+          button.disabled = true;
+          button.className = "disabled-action";
+        }
+        actions.append(button);
+      }
       row.append(actions);
     }
     host.append(row);
@@ -231,7 +259,7 @@ function render() {
 
   renderProfile(p.character);
   renderDistricts(p.districts);
-  renderProperties(p.properties);
+  renderProperties(p.properties, p.property_upgrades);
   renderHall(p.hall_of_tribute);
   $("phase-badge").textContent = event ? event.phase.toUpperCase() : "NOCH KEIN EVENT";
   if (!event) return;
