@@ -54,6 +54,20 @@
             "required": ["transaction_id", "kind", "item_id", "quantity", "unit_price_cents", "budget_delta_cents", "compensates"],
             "properties": {
               "transaction_id": {"type": "string", "minLength": 1},
+              "kind": {"const": "property_purchase"},
+              "item_id": {"type": "string", "pattern": "^property:.+"},
+              "quantity": {"const": 1},
+              "unit_price_cents": {"type": "integer", "minimum": 1},
+              "budget_delta_cents": {"type": "integer", "maximum": -1},
+              "compensates": {"type": "null"}
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": ["transaction_id", "kind", "item_id", "quantity", "unit_price_cents", "budget_delta_cents", "compensates"],
+            "properties": {
+              "transaction_id": {"type": "string", "minLength": 1},
               "kind": {"const": "settlement"},
               "item_id": {"const": "__event_settlement__"},
               "quantity": {"const": 1},
