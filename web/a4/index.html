@@ -24,9 +24,7 @@
 
   <main id="workspace" class="workspace">
     <section id="first-run" class="panel hidden" aria-labelledby="first-run-title">
-      <div class="panel-head">
-        <div><p class="eyebrow">01 // FIRST RUN</p><h2 id="first-run-title">Neues lokales Spiel</h2></div>
-      </div>
+      <div class="panel-head"><div><p class="eyebrow">01 // FIRST RUN</p><h2 id="first-run-title">Neues lokales Spiel</h2></div></div>
       <p>Der erste Alpha-Start legt einen lokalen GENESIS-Character, ein vorbereitetes Event und den Equipment-Katalog an. Danach werden alle Spieländerungen über die vorhandenen Application-Services bestätigt.</p>
       <div class="form-grid">
         <label>Dein Crew-/Charaktername<input id="character-name" value="Meine Crew"></label>
@@ -57,9 +55,7 @@
     </section>
 
     <section id="street-panel" class="panel hidden" aria-labelledby="street-title">
-      <div class="panel-head">
-        <div><p class="eyebrow">03 // STRASSE</p><h2 id="street-title">Kleine Straßenrunde</h2></div>
-      </div>
+      <div class="panel-head"><div><p class="eyebrow">03 // STRASSE</p><h2 id="street-title">Kleine Straßenrunde</h2></div></div>
       <p>Geh eine Runde durch die Stadt. Meistens passiert etwas Nettes, manchmal gar nichts und gelegentlich erwischt dich einfach das Pech.</p>
       <button id="street-walk" class="primary">STRASSENRUNDE</button>
       <div id="street-result" class="notice street-result" aria-live="polite">Noch keine Runde gelaufen.</div>
@@ -75,9 +71,23 @@
       <div id="district-last-change" class="notice" aria-live="polite">Noch keine persistente Bezirksänderung.</div>
     </section>
 
+    <section id="hall-panel" class="panel hidden" aria-labelledby="hall-title">
+      <div class="panel-head">
+        <div><p class="eyebrow">05 // HALL OF TRIBUTE</p><h2 id="hall-title">Top-10-Ranking</h2></div>
+        <div class="metric"><span>Bestätigte Teilnehmer</span><strong id="hall-participants">0</strong></div>
+      </div>
+      <p id="hall-status">Ranking wird aus bestätigten Daten aufgebaut. Es werden keine Gegner oder Netzwerkwerte erfunden.</p>
+      <div class="action-grid" role="group" aria-label="Rankingmetrik wählen">
+        <button id="hall-mode-reputation" type="button">RUF</button>
+        <button id="hall-mode-level" type="button">LEVEL</button>
+        <button id="hall-mode-resonance" type="button">RESONANZ</button>
+      </div>
+      <div id="hall-ranking" class="equipment-list" aria-live="polite"></div>
+    </section>
+
     <section id="event-panel" class="panel hidden" aria-labelledby="event-title">
       <div class="panel-head">
-        <div><p class="eyebrow">05 // EVENT</p><h2 id="event-title">Event-Steuerung</h2></div>
+        <div><p class="eyebrow">06 // EVENT</p><h2 id="event-title">Event-Steuerung</h2></div>
         <div class="metric"><span>Budget</span><strong id="budget">–</strong></div>
       </div>
       <div class="summary-grid">
@@ -92,17 +102,17 @@
     </section>
 
     <section id="economy-panel" class="panel hidden" aria-labelledby="economy-title">
-      <div class="panel-head"><div><p class="eyebrow">06 // EQUIPMENT</p><h2 id="economy-title">Equipment & Economy</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">07 // EQUIPMENT</p><h2 id="economy-title">Equipment & Economy</h2></div></div>
       <div id="equipment-list" class="equipment-list"></div>
     </section>
 
     <section id="incident-panel" class="panel hidden" aria-labelledby="incident-title">
-      <div class="panel-head"><div><p class="eyebrow">07 // CRISIS</p><h2 id="incident-title">Krise</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">08 // CRISIS</p><h2 id="incident-title">Krise</h2></div></div>
       <div id="incident-content"></div>
     </section>
 
     <section id="settlement-panel" class="panel hidden" aria-labelledby="settlement-title">
-      <div class="panel-head"><div><p class="eyebrow">08 // SETTLEMENT</p><h2 id="settlement-title">Abrechnung</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">09 // SETTLEMENT</p><h2 id="settlement-title">Abrechnung</h2></div></div>
       <div id="settlement-content"></div>
     </section>
 
