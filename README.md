@@ -11,7 +11,7 @@
   <img alt="Character Forge 0.7.2 validiert" src="https://img.shields.io/badge/Character_Forge-0.7.2_validiert-7dff00">
   <img alt="Economy 0.8.2 remote validiert" src="https://img.shields.io/badge/Economy-0.8.2_remote_validiert-f2c744">
   <img alt="Event Actions 0.8.3 A validiert" src="https://img.shields.io/badge/Event_Actions-0.8.3--A_validiert-00c2ff">
-  <img alt="Crisis und Berlin Map 0.8.3 B in Abnahme" src="https://img.shields.io/badge/Crisis_Map-0.8.3--B_in_Abnahme-e840ff">
+  <img alt="Crisis und Berlin Map 0.8.3 B validiert" src="https://img.shields.io/badge/Crisis_Map-0.8.3--B_validiert-e840ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -29,17 +29,16 @@
 | | Aktueller Stand |
 |---|---|
 | **Runtime-Baseline** | `0.5.2-alpha.1` |
-| **Letzte remote validierte Feature-Stufe** | `0.8.3-A – Event Execution Engine` |
-| **0.8.3-A-Abnahme** | PR #62 · Head `710674a9e330...` · Runtime Core `32558175370`, Presentation Core `32558175365`, Repository Health `32558175382` grün · `SAFE MERGE PASS` · Merge `8a5b08b5f44e...` |
-| **Aktive Iteration** | `0.8.3-B1 Crisis Engine + 0.8.3-B2 Berlin Ops Map Foundation` |
-| **Aktiver PR** | #63 |
+| **Letzte remote validierte Feature-Stufe** | `0.8.3-B – Crisis Engine + Berlin Ops Map Foundation` |
+| **0.8.3-B-Abnahme** | PR #63 · Head `4a83cecc7298...` · Runtime Core `32559629560`, Presentation Core `32559629773`, Repository Health `32559629667` grün · 6 Review-Threads gelöst · `SAFE MERGE PASS` · Merge `816a3f1dd83d...` |
+| **Nächster Pflichtblock** | `0.8.3-C – Settlement & Consequences` |
 | **0.8.3-B1** | 6 Incident-Typen × 3 Reaktionen, atomarer Crisis-Lifecycle, pending Settlement, Recovery |
 | **0.8.3-B2** | 8 Bezirke, 12 Orte, 7 kaufbare Objekte, Hall of Tribute, Score-/Tier-Projektion |
-| **Weg zum ersten spielbaren Release** | `B final abnehmen → 0.8.3-C Settlement/Folgen → schreibender A4-Client` |
+| **Weg zum ersten spielbaren Release** | `0.8.3-C Settlement/Folgen → vollständigen Loop abnehmen → schreibender A4-Client` |
 | **Character Forge** | A4 Ops Deck + A3 Cinematic Forge auf derselben bestätigten Fachbasis |
 | **Persistenz** | append-only Journal, 60-Sekunden-Autosave, Snapshot, Recovery, kompensierender Undo |
 | **Repository-Sicherheit** | `/safe-merge` + Main Integrity; native Branch Protection bleibt zusätzliche Härtung |
-| **Grafischer Renderer** | statischer HTML-Blueprint vorhanden; Berlin Ops Map derzeit nur datengetriebene Projection, noch kein schreibender Kartenclient |
+| **Grafischer Renderer** | statischer HTML-Blueprint vorhanden; Berlin Ops Map derzeit als getestete read-only Projection, noch kein schreibender Kartenclient |
 | **Telegram / Sync** | geplant; Transport-/Serverphase noch nicht implementiert |
 
 > [!IMPORTANT]
@@ -49,13 +48,12 @@
 
 ## 🚦 Was bis zum Release noch fehlt
 
-Der aktuelle Stand ist eine validierte Spiellogik mit schreibgeschützter Präsentationsbasis – noch kein auslieferbarer Game-Client. Für das erste **spielbare Alpha-Release** bleiben drei Schritte:
+Der aktuelle Stand ist eine validierte Spiellogik mit schreibgeschützter Präsentationsbasis – noch kein auslieferbarer Game-Client. Für das erste **spielbare Alpha-Release** bleiben zwei Pflichtblöcke:
 
-1. **0.8.3-B final abnehmen:** Crisis Engine und Berlin-Ops-Map-Foundation auf dem exakten PR-Head dreifach grün bestätigen und ausschließlich über `/safe-merge` übernehmen.
-2. **0.8.3-C Settlement & Consequences:** bestätigte Krisenfolgen über die vorhandenen Economy-/Character-Verträge buchen, `event.completed` erzeugen und den Gesamtpfad inklusive Recovery testen.
-3. **Release-Kandidat:** danach A4 als kleinsten schreibenden Client anbinden, Ersteinstieg und Save/Recovery-Smoke-Test nachweisen und erst dann Version/Release-Artefakt festlegen.
+1. **0.8.3-C Settlement & Consequences:** bestätigte Krisenfolgen über die vorhandenen Economy-/Character-Verträge buchen, Ruf/Stress/Stabilität/Heat anwenden, `event.completed` erzeugen und den Gesamtpfad inklusive Recovery testen.
+2. **Release-Kandidat:** danach A4 als kleinsten schreibenden Client anbinden, Ersteinstieg und Save/Recovery-Smoke-Test nachweisen und erst dann Version/Release-Artefakt festlegen.
 
-**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik und native GitHub-Branch-Protection.
+**Nicht blockierend für das erste lokale Alpha:** Telegram-/Netzwerk-Sync, öffentlicher Serverbetrieb, persistente Bezirksdynamik, Immobilienausbau, Hall-of-Tribute-Saisons und native GitHub-Branch-Protection.
 
 Die genaue Reihenfolge steht in [`TODO.md`](TODO.md#p0--pflichtpfad-zum-ersten-spielbaren-alpha).
 
@@ -198,7 +196,7 @@ Maschinenlesbarer Vertrag: [`manifests/EVENT_ACTION_MANIFEST.json`](manifests/EV
 
 ---
 
-## 🚨 0.8.3-B1 – Crisis / Incident Engine
+## 🚨 0.8.3-B1 – Crisis / Incident Engine ✅
 
 Ein laufendes Event kann jetzt tatsächlich eskalieren. Die Krise ist kein UI-Effekt, sondern eigener persistierter Zustand.
 
@@ -221,17 +219,19 @@ live | teardown | cancelled
 - Crowd Overload
 - Lärmdruck
 
-Jeder Typ besitzt drei katalogisierte Reaktionen. Severity `1–5` skaliert die Effekte deterministisch.
+Jeder Typ besitzt drei katalogisierte Reaktionen. Severity `1–5` skaliert die Einzeleffekte deterministisch; mehrere bestätigte Krisen dürfen kumulierte Settlement-Summen über einzelne Effektgrenzen hinaus bilden.
 
 ### Warum Folgen zunächst nur vorgemerkt werden
 
 Krisen erzeugen bestätigte Folgen auf Budget, Ruf, Crew-Stress, Stabilität und Heat. Diese stehen im `IncidentState.pending_settlement`, werden aber **noch nicht direkt** auf Economy oder Character geschrieben. Damit bleibt die 0.8.2-Regel erhalten: Geld ändert sich nur über bestätigte Economy-Transaktionen. Die eigentliche Buchung folgt in 0.8.3-C.
 
+Der Replay prüft den Event-Kontext erneut; ein offener Incident darf nur mit seinem gespeicherten Vertragsstand aufgelöst werden.
+
 Vertrag: [`docs/CRISIS_CITY_0.8.3-B.md`](docs/CRISIS_CITY_0.8.3-B.md) · [`manifests/INCIDENT_MANIFEST.json`](manifests/INCIDENT_MANIFEST.json)
 
 ---
 
-## 🗺️ 0.8.3-B2 – Berlin Ops Map Foundation
+## 🗺️ 0.8.3-B2 – Berlin Ops Map Foundation ✅
 
 Die Welt bekommt eine eigene Handlungsebene. Sie ist ausdrücklich **stilisierte Spielkarte, keine Navigation**: 0–100-Koordinaten statt realer Adresslogik machen sie offline, portabel und rendererunabhängig.
 
@@ -256,7 +256,7 @@ Die Welt bekommt eine eigene Handlungsebene. Sie ist ausdrücklich **stilisierte
 
 Jeder Ort besitzt `prestige`, `audience_pull`, `risk`, `underground_factor` und `utility`. Daraus berechnet die read-only Projection einen deterministischen Score und die Tiers `standard / strong / prime / legendary`.
 
-Bereits vorbereitet, aber noch nicht persistent: `heat`, `prestige`, `police_pressure`, `scene_activity` je Bezirk.
+Bereits vorbereitet, aber noch nicht persistent: `heat`, `prestige`, `police_pressure`, `scene_activity` je Bezirk. Unbekannte District-Overrides sowie Besitzangaben für nicht kaufbare Orte werden fail-closed abgewiesen.
 
 ### Hall of Tribute
 
@@ -414,6 +414,7 @@ Pull Requests nach `main` benötigen immer einen eindeutigen Status von Runtime 
 - 0.8.1 / PR #48: Runtime Core `32537531324`, Presentation Core `32537531305`, Repository Health `32537531303`
 - 0.8.2 Economy-Hardening / PR #61: Runtime Core `32557685040`, Presentation Core `32557685042`, Repository Health `32557685108`
 - 0.8.3-A / PR #62: Runtime Core `32558175370`, Presentation Core `32558175365`, Repository Health `32558175382`; `SAFE MERGE PASS`
+- 0.8.3-B / PR #63: Runtime Core `32559629560`, Presentation Core `32559629773`, Repository Health `32559629667`; 6 Review-Threads gelöst; `SAFE MERGE PASS`; Merge `816a3f1dd83d9396550d702c0ac85ba98ed069dd`
 
 </details>
 
