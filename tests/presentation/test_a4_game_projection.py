@@ -46,6 +46,22 @@ class A4GameProjectionTests(unittest.TestCase):
         self.assertEqual(projected["stage"], "first_run")
         self.assertIsNone(projected["event"])
 
+    def test_character_projection_exposes_profile_values_without_mutating_source(self):
+        character = CharacterState("player-local", "Crew")
+        character.alias = "Pegelpilot"
+        character.additional_nicknames = ["Kabelkönig", "Betonkind"]
+        character.motto = "Bass bleibt an"
+        state = {"character": character.to_dict()}
+        original = deepcopy(state)
+
+        projected = build_a4_game_projection(state, incident_catalog=CATALOG)
+        self.assertEqual(projected["character"]["display_name"], "Crew")
+        self.assertEqual(projected["character"]["alias"], "Pegelpilot")
+        self.assertEqual(projected["character"]["additional_nicknames"], ["Kabelkönig", "Betonkind"])
+        self.assertEqual(projected["character"]["motto"], "Bass bleibt an")
+        self.assertEqual(projected["character"]["character_id"], "player-local")
+        self.assertEqual(state, original)
+
     def test_event_blockers_come_from_canonical_availability(self):
         state = {
             "character": CharacterState("player-local", "Crew").to_dict(),
