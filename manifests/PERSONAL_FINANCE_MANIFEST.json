@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "version": "0.8.8-d2",
+  "savings_interest": {
+    "basis_points_per_confirmed_period": 100,
+    "calculation": "floor(bank_cents * basis_points / 10000)",
+    "compound_on_current_bank_balance": true,
+    "confirmed_period_required": true,
+    "consume_zero_interest_period": true,
+    "require_sequential_finance_tick": true,
+    "system_time_is_sole_authority": false,
+    "browser_can_confirm_period": false,
+    "browser_can_supply_interest_amount": false
+  }
+}
