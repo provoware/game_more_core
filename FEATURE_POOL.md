@@ -36,6 +36,7 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 - **0.8.7-A:** PR #87 · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
 - **0.8.7-B:** PR #88 · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
 - **0.8.7-C1:** PR #90 · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
+- **0.8.7-C2:** PR #92 · Merge `df18bab2dc9120fec4fe20bb39388a102eef2148` · Runtime + Fail-fast-Härtung
 
 ---
 
@@ -43,14 +44,15 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-WORLD-002` | `PULLED` | **Bezirksbezogene Welt-/Zufallsereignisse** | C1 Vertrag/Katalog, C2 deterministische Runtime, danach Application-Integration | vorhandener DistrictState bleibt einzige Metrik-Autorität |
+| `POOL-WORLD-002` | `PULLED` | **Bezirksbezogene Welt-/Zufallsereignisse** | C1 Vertrag/Katalog und C2 Runtime sind validiert; C3 bindet den autorisierten Application-Trigger an | vorhandener DistrictState bleibt einzige Metrik-Autorität |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung ohne neue Engine | bestehender Street-Encounter-/Approach-Vertrag |
 | `POOL-PROFILE-002` | `READY` | Crewfarben und Emblem-Auswahl | stärkere Identität | nur Darstellungsdaten; Character-ID unverändert |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 | `POOL-UX-002` | `IDEA` | Ereignis-Timeline im Control Deck | bestätigte Welt-, Street- und Crisis-Ereignisse schneller nachvollziehen | reine Projection/Presentation; Journal bleibt Autorität |
 | `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | spätere Ereignisse können bestätigte frühere District-Ereignisse erzählerisch aufgreifen | erst nach validierter 0.8.7-C Runtime; keine versteckten Browserzustände |
 | `POOL-WORLD-004` | `IDEA` | District-Event-Cadence/Cooldown | verhindert Ereignis-Spam und macht seltene Ereignisse gewichtiger | erst nach kanonischer Application-Integration; Taktung aus bestätigter Spielzeit, nie aus Systemzeit allein |
-| `POOL-QA-003` | `IDEA` | District-Event-Katalogdiagnose mit Eintrags-ID | Entwickler/Mods sehen bei ungültigem Katalog sofort den betroffenen Eintrag statt nur die Vertragsart | erst auf Basis der Fail-fast-Validierung; keine zweite Validierungslogik |
+| `POOL-QA-003` | `IDEA` | District-Event-Katalogdiagnose mit Eintrags-ID | Entwickler/Mods sehen bei ungültigem Katalog sofort den betroffenen Eintrag statt nur die Vertragsart | auf Basis der zentralen Fail-fast-Prüfung; keine zweite Validierungslogik |
+| `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | erkennt, wenn `PROJEKTSTATUS.json` nach einem validierten Safe Merge hinter `main` zurückbleibt | Main-Integrity-/Merge-Provenienz wiederverwenden; keine zweite Release-Autorität |
 
 ---
 
@@ -78,4 +80,4 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 ## Nächste Entnahme
 
-`POOL-WORLD-002` bleibt bis zum vollständigen 0.8.7-C-Slice aktiv. Nach C2 ist der kleinste nächste Schritt die autorisierte Application-Integration; erst danach sollte die read-only Ereignis-Timeline folgen. `POOL-WORLD-004` hält die spätere Cadence/Cooldown-Idee fest, damit Ereignisse nicht bei jeder Gelegenheit inflationär auftreten. `POOL-QA-003` hält eine spätere, laienfreundlichere Katalogdiagnose fest, ohne die jetzt zentrale Fail-fast-Prüfung zu duplizieren.
+`POOL-WORLD-002` bleibt bis zum vollständigen 0.8.7-C-Slice aktiv. C1 und C2 sind remote validiert; der kleinste nächste Schritt ist C3 mit genau einem autorisierten Application-Trigger. Erst danach sollte die read-only Ereignis-Timeline folgen. `POOL-WORLD-004` hält die spätere Cadence/Cooldown-Idee fest, damit Ereignisse nicht bei jeder Gelegenheit inflationär auftreten. `POOL-QA-004` hält eine spätere automatische Freshness-Prüfung fest, damit Projektstatus und tatsächlicher Safe-Merge-Stand nicht erneut auseinanderlaufen.
