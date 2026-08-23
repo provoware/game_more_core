@@ -9,6 +9,7 @@ SUPPORTED_EVENT_TYPES = frozenset({
     "world.district_effect_applied",
     "event.incident_resolved",
 })
+DISTRICT_METRICS = ("heat", "prestige", "police_pressure", "scene_activity")
 
 
 def build_event_timeline_projection(
@@ -92,6 +93,9 @@ def _street_entry(
     body = texts.get(body_key)
     if not isinstance(title, str) or not title or not isinstance(body, str) or not body:
         return None
+    approach_id = payload.get("approach_id")
+    if not isinstance(approach_id, str) or not approach_id:
+        approach_id = "balanced"
     return {
         "sequence": sequence,
         "event_id": event_id,
@@ -101,7 +105,7 @@ def _street_entry(
         "metadata": {
             "encounter_id": encounter_id,
             "polarity": polarity,
-            "approach_id": payload.get("approach_id", "balanced"),
+            "approach_id": approach_id,
         },
     }
 
@@ -138,7 +142,7 @@ def _district_entry(
         "metadata": {
             "district_id": district_id,
             "district_event_id": catalog_event_id,
-            "deltas": deepcopy(payload.get("deltas", {})),
+            "deltas": _district_deltas(payload.get("deltas")),
         },
     }
 
@@ -167,6 +171,9 @@ def _incident_entry(
     body = texts.get(label_key) if isinstance(label_key, str) else None
     if not isinstance(title, str) or not title or not isinstance(body, str) or not body:
         return None
+    target_phase = payload.get("target_phase")
+    if not isinstance(target_phase, str) or not target_phase:
+        target_phase = None
     return {
         "sequence": sequence,
         "event_id": event_id,
@@ -176,9 +183,21 @@ def _incident_entry(
         "metadata": {
             "incident_type": incident_type,
             "response_id": response_id,
-            "target_phase": payload.get("target_phase"),
+            "target_phase": target_phase,
         },
     }
+
+
+def _district_deltas(raw: Any) -> dict[str, int]:
+    if not isinstance(raw, Mapping):
+        return {}
+    result: dict[str, int] = {}
+    for metric in DISTRICT_METRICS:
+        value = raw.get(metric)
+        if isinstance(value, bool) or not isinstance(value, int):
+            continue
+        result[metric] = value
+    return result
 
 
 def _district_specs(manifest: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:

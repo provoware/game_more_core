@@ -151,6 +151,104 @@ class EventTimelineProjectionTests(unittest.TestCase):
         result[0]["metadata"]["approach_id"] = "changed"
         self.assertEqual(record["payload"]["approach_id"], "balanced")
 
+    def test_optional_metadata_is_sanitized_before_future_browser_rendering(self):
+        district_spec = DISTRICT_EVENTS["events"][0]
+        records = [
+            {
+                "sequence": 1,
+                "event_id": "street-meta",
+                "event_type": "street.encounter_resolved",
+                "payload": {
+                    "encounter_id": "street.none",
+                    "polarity": "neutral",
+                    "approach_id": {"unexpected": "object"},
+                    "title_key": "street.none.title",
+                    "body_key": "street.none.body",
+                },
+            },
+            {
+                "sequence": 2,
+                "event_id": "district-meta",
+                "event_type": "world.district_effect_applied",
+                "payload": {
+                    "source_type": "district_event",
+                    "source_id": f"district-event:kreuzberg:settlement-1:{district_spec['event_id']}",
+                    "district_id": "kreuzberg",
+                    "deltas": {
+                        "heat": 1,
+                        "prestige": True,
+                        "police_pressure": "2",
+                        "scene_activity": -1,
+                        "invented_metric": 99,
+                    },
+                },
+            },
+            {
+                "sequence": 3,
+                "event_id": "crisis-meta",
+                "event_type": "event.incident_resolved",
+                "payload": {
+                    "incident_type": "power_drop",
+                    "response_id": "power_drop.generator",
+                    "target_phase": ["live"],
+                },
+            },
+        ]
+
+        result = project(records)
+
+        self.assertEqual(result[0]["metadata"]["approach_id"], "balanced")
+        self.assertEqual(result[1]["metadata"]["deltas"], {"heat": 1, "scene_activity": -1})
+        self.assertIsNone(result[2]["metadata"]["target_phase"])
+        self.assertNotIn("invented_metric", result[1]["metadata"]["deltas"])
+
+    def test_valid_optional_metadata_stays_unchanged(self):
+        district_spec = DISTRICT_EVENTS["events"][0]
+        records = [
+            {
+                "sequence": 1,
+                "event_id": "street-valid-meta",
+                "event_type": "street.encounter_resolved",
+                "payload": {
+                    "encounter_id": "street.none",
+                    "polarity": "neutral",
+                    "approach_id": "scout",
+                    "title_key": "street.none.title",
+                    "body_key": "street.none.body",
+                },
+            },
+            {
+                "sequence": 2,
+                "event_id": "district-valid-meta",
+                "event_type": "world.district_effect_applied",
+                "payload": {
+                    "source_type": "district_event",
+                    "source_id": f"district-event:kreuzberg:settlement-1:{district_spec['event_id']}",
+                    "district_id": "kreuzberg",
+                    "deltas": {"heat": 1, "prestige": 0, "police_pressure": 2, "scene_activity": -1},
+                },
+            },
+            {
+                "sequence": 3,
+                "event_id": "crisis-valid-meta",
+                "event_type": "event.incident_resolved",
+                "payload": {
+                    "incident_type": "power_drop",
+                    "response_id": "power_drop.generator",
+                    "target_phase": "live",
+                },
+            },
+        ]
+
+        result = project(records)
+
+        self.assertEqual(result[0]["metadata"]["approach_id"], "scout")
+        self.assertEqual(
+            result[1]["metadata"]["deltas"],
+            {"heat": 1, "prestige": 0, "police_pressure": 2, "scene_activity": -1},
+        )
+        self.assertEqual(result[2]["metadata"]["target_phase"], "live")
+
     def test_invalid_limit_is_rejected(self):
         for invalid in (0, -1, True):
             with self.subTest(invalid=invalid):
