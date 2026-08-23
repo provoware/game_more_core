@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "version": "0.8.8-b1",
+  "availability": {
+    "always_available_with_character": true,
+    "requires_event_phase": false,
+    "requires_system_time": false,
+    "client_can_supply_payout_or_effects": false
+  },
+  "jobs": [
+    {
+      "job_id": "scene.flyer_shift",
+      "label": "Flyer & Einlasslisten",
+      "description": "Flyer verteilen, Listen sortieren und den Einlass für eine kleine Nacht vorbereiten.",
+      "duration_hours": 3,
+      "payout_cents": 3500,
+      "energy_delta": -6,
+      "stress_delta": 2
+    },
+    {
+      "job_id": "scene.load_in_help",
+      "label": "Load-in Helfer",
+      "description": "Cases tragen, Kabelwege freihalten und beim Aufbau einer Anlage mit anpacken.",
+      "duration_hours": 4,
+      "payout_cents": 6000,
+      "energy_delta": -12,
+      "stress_delta": 4
+    },
+    {
+      "job_id": "scene.cable_repair",
+      "label": "Kabel & Kleinkram reparieren",
+      "description": "Stecker prüfen, Kabel markieren und kleine technische Reparaturen für die Szene erledigen.",
+      "duration_hours": 3,
+      "payout_cents": 5500,
+      "energy_delta": -8,
+      "stress_delta": 3
+    },
+    {
+      "job_id": "scene.bar_support",
+      "label": "Bar-Support",
+      "description": "Kisten, Becher und Nachschub organisieren, ohne selbst die Veranstaltung zu steuern.",
+      "duration_hours": 5,
+      "payout_cents": 7000,
+      "energy_delta": -10,
+      "stress_delta": 6
+    },
+    {
+      "job_id": "scene.night_cleanup",
+      "label": "Nacht-Abbau & Cleanup",
+      "description": "Nach einer Nacht Material sortieren, Müll einsammeln und den Ort sauber übergeben.",
+      "duration_hours": 4,
+      "payout_cents": 5000,
+      "energy_delta": -9,
+      "stress_delta": 2
+    }
+  ]
+}

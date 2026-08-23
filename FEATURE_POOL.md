@@ -33,12 +33,14 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-WORLD-002` | `DONE` | District World Events | Vertrag, Runtime, Settlement-Integration |
 | `POOL-UX-002` | `DONE` | Ereignis-Timeline im Control Deck | C4A Projection + C4B sichtbare read-only Timeline |
 | `POOL-WORLD-004` | `DONE` | District-Event-Cadence/Cooldown | 24h bestätigte Spielweltzeit, kein Systemzeit-Fallback |
+| `POOL-PROFILE-002` | `DONE` | Crew-Logo/Fahne | syncbereites Identitätsrezept, Legacy-Default, Control-Deck-Editor; 0.8.8-A / PR #104 |
 
 ### Letzte Remote-Abnahmen
 
 - **0.8.7-C4A:** PR #98 · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
 - **0.8.7-C4B:** PR #101 · Merge `3d71f00c5717ae797e6b8f1ca4c65c036bf71c81`
 - **0.8.7-C5:** PR #102 · Merge `bd79da8d1e124ec60248a05bf332c6ef338ca7b6`
+- **0.8.8-A:** PR #104 · Merge `7e0ed1e36dcc89436c0430d49e547fe2106f756b` · Crew-Logo/Fahne ohne Bildblob
 
 ---
 
@@ -46,17 +48,17 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-PROFILE-002` | `PULLED` | **Crew-Logo/Fahne** | jeder Spieler erhält eine wiedererkennbare Crew-Identität | kleine synchronisierbare Datenrepräsentation; keine Bildblobs; Character-ID unverändert |
-| `POOL-ECON-003` | `READY` | **Scene Jobs** | jederzeit Geld ansparen und Leerlauf spielerisch nutzen | bestehende Economy-/Ressourcenwege; serverseitige Erträge; bestätigte Runde |
-| `POOL-COMPANION-001` | `DEPENDENCY` | **Secret Best Friend Assistant** | eine Aufgabe automatisch Runde für Runde betreiben | benötigt zuerst wiederverwendbare Job-/Task-Aktionen; genau eine aktive Aufgabe; bis Deaktivierung |
-| `POOL-FINANCE-001` | `READY` | **Bankkonto & Sparen** | Bargeld sichern, Ein-/Auszahlung, Zins und Zinseszins | eigene Ledger-Kinds auf bestehender Economy; bestätigte Spielzeit statt Systemzeit |
+| `POOL-ECON-003` | `PULLED` | **Scene Jobs & persönliches Bargeld** | jederzeit außerhalb der Eventphase Geld ansparen und Leerlauf spielerisch nutzen | B1 Runtime/Wallet + B2 sichtbarer A4-Slice implementiert; bis Remote-Abnahme nicht DONE; Client sendet nur `job_id` |
+| `POOL-COMPANION-001` | `DEPENDENCY` | **Secret Best Friend Assistant** | eine Aufgabe automatisch Runde für Runde betreiben | benötigt zuerst sicher gemergte Job-/Task-Aktionen; genau eine aktive Aufgabe; bis Deaktivierung |
+| `POOL-FINANCE-001` | `READY` | **Bankkonto & Sparen** | Bargeld sichern, Ein-/Auszahlung, Zins und Zinseszins | Finance-State/Ledger aus Scene Jobs wiederverwenden; bestätigte Spielzeit statt Systemzeit |
 | `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt `POOL-FINANCE-001`; keine echten Marktdaten notwendig; katalogisierte Spielkurse |
-| `POOL-FINANCE-003` | `DEPENDENCY` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Economy-/Bank-Ledger, keine zweite Buchhaltung |
+| `POOL-FINANCE-003` | `DEPENDENCY` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Finance-Ledger, keine zweite Buchhaltung |
 | `POOL-UX-004` | `READY` | **Control Deck Focus & Verdichtung** | weniger Wiederholungen, mehr Arbeitsfläche | Bereiche lokal maximieren/zurücksetzen; redundante Anzeigen entfernen; kein Save-State |
 | `POOL-UX-005` | `READY` | **Nächste-Aktion-Signal** | erlaubte nächste Schritte schneller erkennen | kontrastreicher Puls nur Presentation; Reduced Motion = statische Hervorhebung |
 | `POOL-MAP-002` | `READY` | **Berlin Ops Map 2** | bessere Bezirkslesbarkeit, Zoom/Pan und Objektübersicht | bestehende Map-Projection bleibt einzige Datenquelle; read-only |
 | `POOL-STORY-001` | `READY` | District-Event-Nachhall in Biografie | Weltfolgen werden Teil der Crew-Geschichte | nur bestätigte Journal-/Projection-Daten |
 | `POOL-UX-003` | `READY` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only; keine Sortierung, kein Save-/Journal-State |
+| `POOL-ECON-004` | `READY` | **Job-Erschöpfung / Anti-Grind** | verhindert bedeutungsloses Endlosfarmen bei extrem niedriger Energie | Grundregel „phasenunabhängig arbeitbar“ erhalten; Balance erst mit bestätigter B-Baseline verändern |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-/Approach-Vertrag |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 
@@ -95,4 +97,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-PROFILE-002` ist als nächster kleiner Fundament-Slice gezogen. Danach folgt `POOL-ECON-003`, weil der Assistent auf wiederverwendbaren normalen Aufgaben aufbauen soll. Bank/Anlagen, Control-Deck-Verdichtung, Map 2, Story-Nachhall und Timeline-Filter bleiben getrennte PRs, damit Economy, Presentation, Story und Sync nicht in einer Mega-Änderung vermischt werden.
+`POOL-ECON-003` ist aktiv. Erst nach seinem Remote-PASS und Safe Merge wird `POOL-COMPANION-001` gezogen. Dadurch kann der Assistent dieselben kanonischen Job-/Task-Services verwenden statt eine zweite Automationslogik zu erzeugen. Danach folgt `POOL-FINANCE-001`; Bank und Anlagen bauen auf demselben persönlichen Finance-Ledger auf.

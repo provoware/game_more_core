@@ -7,6 +7,7 @@ from bunkerfrequenz.application.incident_service import replay_incident_event
 from bunkerfrequenz.application.property_service import replay_property_event
 from bunkerfrequenz.application.property_upgrade_service import replay_property_upgrade_event
 from bunkerfrequenz.application.recovery_service import replay_character_event
+from bunkerfrequenz.application.scene_job_service import replay_finance_job_event
 from bunkerfrequenz.application.settlement_service import replay_settlement_event
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceKernel, RecoveryReceipt
 
@@ -19,7 +20,8 @@ def replay_game_event(derived_state: dict, record: dict) -> dict:
     state = replay_settlement_event(state, record)
     state = replay_district_event(state, record)
     state = replay_property_event(state, record)
-    return replay_property_upgrade_event(state, record)
+    state = replay_property_upgrade_event(state, record)
+    return replay_finance_job_event(state, record)
 
 
 class GameRecoveryService:
