@@ -56,7 +56,7 @@ class A4FinanceStatementsTests(unittest.TestCase):
             [entry["kind"] for entry in statement["entries"]],
             ["bank_withdrawal", "savings_interest", "bank_deposit", "job_income"],
         )
-        self.assertEqual(statement["entries"][-1]["source_label"], "Kabelreparatur")
+        self.assertEqual(statement["entries"][-1]["source_label"], "Kabel & Kleinkram reparieren")
         self.assertEqual(statement["totals"]["job_income_cents"], 5_500)
         self.assertEqual(statement["totals"]["bank_deposit_cents"], 2_000)
         self.assertEqual(statement["totals"]["bank_withdrawal_cents"], 500)
@@ -76,7 +76,7 @@ class A4FinanceStatementsTests(unittest.TestCase):
         for marker in (
             "jobs-finance-statement",
             "KONTOAUSZUG // BESTÄTIGTES LEDGER",
-            'data.statementFilter',
+            "dataset.statementFilter",
             'statementFilter = "all"',
             "JOBLOHN",
             "EINZAHLUNGEN",
