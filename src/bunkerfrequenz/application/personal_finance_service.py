@@ -267,7 +267,8 @@ class PersonalFinanceService:
 
 
 def replay_personal_finance_event(derived_state: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]:
-    if record.get("event_type") not in {
+    event_type = record.get("event_type")
+    if event_type not in {
         "finance.bank_transfer_posted",
         "finance.savings_interest_posted",
     }:
@@ -287,6 +288,13 @@ def replay_personal_finance_event(derived_state: dict[str, Any], record: dict[st
         return state
     if target.revision != current.revision + 1:
         raise ValueError("Finance-Replay überspringt Revision")
+    if event_type == "finance.savings_interest_posted":
+        if target.confirmed_finance_tick != current.confirmed_finance_tick + 1:
+            raise ValueError("Sparzins-Replay überspringt bestätigten Finance-Tick")
+        if payload.get("finance_tick") != target.confirmed_finance_tick:
+            raise ValueError("Sparzins-Replay widerspricht dem Finance-Zielzustand")
+    elif target.confirmed_finance_tick != current.confirmed_finance_tick:
+        raise ValueError("Banktransfer darf bestätigten Finance-Tick nicht verändern")
     state["finance"] = target.to_dict()
     return state
 
