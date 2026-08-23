@@ -3,10 +3,11 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-C5B – Visible Friendship Afterglow` · PR #112 · Merge `eaa615e48eecd84ba3ffb69551f8fb324fb42c12`
-- **0.8.8-C5B Remote-Abnahme:** Runtime `32660419399` · Presentation `32660419381` · Repository Health `32660419392` · Release Acceptance `32660419409` · Release Package `32660419390` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-D – Atomic Wallet ↔ Bank Transfers`
-- **D-Status:** persönliches Bargeld kann über denselben `PlayerFinanceState` und dasselbe Finance-Ledger atomar zwischen Wallet und Bank verschoben werden; Zinsen bleiben ausdrücklich eigener Folgeslice
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-D – Atomic Wallet ↔ Bank Transfers` · PR #113 · Merge `c1a27a977ff76a397d95ae097395317c4d46950b`
+- **0.8.8-D Remote-Abnahme:** Runtime `32662002026` · Presentation `32662002022` · Repository Health `32662002030` · Release Acceptance `32662002025` · Release Package `32662002046` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-D2 – Confirmed Savings Interest`
+- **D2-Status:** Sparzinsen und Zinseszins werden ausschließlich aus einem bereits kanonisch bestätigten Finance-Periodentrigger berechnet; Systemzeit und Browser können keine Periode oder Zinsmenge autorisieren
+- **Entwicklungsprozess:** `AGENTS.md` verlangt jetzt eine Planned-Read-Liste und gezieltes Einlesen nur der geplanten Änderungsdateien, direkten Verträge und konkret benötigten Regressionen
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
 ---
@@ -93,53 +94,79 @@
 - [x] kein Browser-Story-Write, keine XP, kein neuer persistenter Freundschaftszustand
 - [x] PR #112 · finaler Head `da76621ecea0cd8e1afecd967fe7201a7c1d4c6c` · 5/5 Gates · 0 Review-Threads · `/safe-merge` PASS · Merge `eaa615e48eecd84ba3ffb69551f8fb324fb42c12`
 
+## 0.8.8-D – Atomic Wallet ↔ Bank Transfers
+
+- [x] `PersonalFinanceService` für `deposit` und `withdraw` auf dem bestehenden Persistence-Kernel
+- [x] `finance.bank_transfer_posted` katalogisiert und recoverbar
+- [x] Wallet, Bank, Finance-Ledger und Revision atomar in genau einem Commit
+- [x] Retry schreibfrei; Bedeutungswechsel derselben Command-ID fail-closed
+- [x] Browser sendet nur Richtung + positiven Centbetrag, keine Zielstände
+- [x] Einzahlen/Abheben im vorhandenen JOBS-/Geldbereich; kein zweites Finance-Dashboard
+- [x] PR #113 · finaler Head `e41f2b40beb6508c21175a768ea3fb18050c79b1` · Runtime `32662002026` · Presentation `32662002022` · Repository Health `32662002030` · Release Acceptance `32662002025` · Release Package `32662002046` · 0 Review-Threads · `/safe-merge` PASS · Merge `c1a27a977ff76a397d95ae097395317c4d46950b`
+
 ---
 
-# Aktiv – 0.8.8-D Atomic Wallet ↔ Bank Transfers
+# Aktiv – 0.8.8-D2 Confirmed Savings Interest
 
 ## Ziel
 
-Persönliches Geld wird innerhalb des bereits vorhandenen `PlayerFinanceState` sicher zwischen Bargeld und Bank verschoben. Jeder Transfer ist atomar, replaybar und nutzt dasselbe Finance-Ledger; Zinsen werden noch nicht eingeführt.
+Das vorhandene Bankguthaben erhält Zins und Zinseszins nur dann, wenn die Runtime bereits eine kanonisch bestätigte Finance-Periode übergibt. D2 erzeugt selbst keine Zeitautorität.
 
-### D – kleinster Finance-/Gameplay-Slice
+### Planned-Read-Liste gemäß AGENTS.md
 
-- [x] `PersonalFinanceService` für `deposit` und `withdraw` auf dem bestehenden Persistence-Kernel
-- [x] neuer katalogisierter Journaltyp `finance.bank_transfer_posted`
-- [x] Wallet, Bank, Finance-Ledger und Revision werden in genau einem Commit geändert
-- [x] `bank_deposit` und `bank_withdrawal` verwenden die bereits vorhandenen Ledger-Kinds
-- [x] unzureichendes Bargeld oder Bankguthaben bricht vor jedem Write fail-closed ab
-- [x] Retry derselben Command-ID ist schreibfrei; geänderte Richtung oder Betrag unter derselben ID wird abgewiesen
-- [x] Game-Recovery rekonstruiert den bestätigten Finance-Zielzustand
-- [x] A4 akzeptiert bei `finance.transfer` nur Richtung + positiven `amount_cents`; Browser darf keine Zielstände oder Zinsen liefern
-- [x] bestätigtes Bankguthaben wird in derselben Scene-Jobs-/Finance-Projektion angezeigt
-- [x] Einzahlen und Abheben direkt im bestehenden JOBS-/Geldbereich; kein zweites Finance-Dashboard
-- [x] gezielte Runtime-/Presentation-Regressionen
+- `AGENTS.md`
+- `src/bunkerfrequenz/application/personal_finance_service.py`
+- `src/bunkerfrequenz/domain/finance.py`
+- `src/bunkerfrequenz/application/game_recovery.py`
+- `manifests/JOURNAL_MANIFEST.json`
+- `manifests/PERSONAL_FINANCE_MANIFEST.json`
+- `manifests/ZEIT_MANIFEST.json` nur zur Prüfung der bestehenden Zeitgrenze
+- `tests/runtime/test_personal_finance_service.py`
+- `tests/runtime/test_confirmed_savings_interest.py`
+- `tests/runtime/test_feature_status_consistency.py`
+- `TODO.md`, `PROJEKTSTATUS.json`, `FEATURE_POOL.md` und die kleine Finanz-Laienhilfe
+
+Weitere Dateien nur bei einem konkreten Import-, Vertrags- oder Gate-Befund.
+
+### D2 – kleinster bestätigter Sparzins-Slice
+
+- [x] `PERSONAL_FINANCE_MANIFEST.json` katalogisiert 100 Basispunkte = 1 % pro bestätigter Finance-Periode
+- [x] Zins wird auf dem aktuell bestätigten Bankguthaben berechnet; Folgeperioden verzinsen damit bereits gebuchte Zinsen
+- [x] `ConfirmedFinancePeriod` enthält nur stabile Perioden-ID, fortlaufenden `finance_tick` und Character-Bindung
+- [x] `finance.savings_interest_posted` aktualisiert Bank, Ledger, `confirmed_finance_tick` und Revision atomar
+- [x] dieselbe bestätigte Periode ist bei Retry schreibfrei, auch wenn die technische Command-ID wechselt
+- [x] Perioden dürfen nicht übersprungen oder rückwirkend neu interpretiert werden
+- [x] auch eine 0-Cent-Zinsperiode wird dauerhaft verbraucht, damit späteres Guthaben keine alte Periode rückwirkend verzinst
+- [x] Game-Recovery rekonstruiert Zins und Zinseszins über denselben `PlayerFinanceState`
+- [x] Browser kann weder Finance-Periode noch Zinsbetrag bestätigen; Systemzeit allein bleibt wirkungslos
+- [x] keine neue UI und kein neuer Finance-State
 - [ ] finalen PR-Head durch Runtime Core, Presentation Core, Repository Health, Release Acceptance und Release Package prüfen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch weiterhin 0 Commits hinter `main`
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in D
+### Bewusst nicht in D2
 
-- keine Sparzinsen oder Zinseszinsen
+- kein eigener Zeit-/Periodenproduzent
+- keine Rechnerzeit-Zinsen
+- keine Browseraktion zum „Zinsen auslösen“
 - keine Anlagen oder Dividenden
 - keine zweite Finance-/Ledger-Engine
-- keine Systemzeit als Finanzautorität
-- keine Änderung an C3-Rundenautorität oder Assistentenlogik
+- keine Änderung am Eventbudget
 - kein Produktversionsbump
 
 ### Danach
 
-- [ ] **0.8.8-D2 – bestätigte Sparzinsen:** Zinsfortschritt ausschließlich aus kanonisch bestätigter Spielperiode; Systemzeit niemals allein
-- [ ] **0.8.8-E – Control Deck Focus:** bestehende Oberfläche verdichten und lokale Fokus-/Maximierungssteuerung ergänzen
-- [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end Runde → Assistent → Scene Job → Journal → Recovery → Retry prüfen
+- [ ] **0.8.8-E – Control Deck Focus:** redundante Anzeigen reduzieren, Bereiche lokal maximieren/zurücksetzen und nächste erlaubte Aktionen klarer hervorheben
+- [ ] **0.8.8-C6 – Round-Authority Integration Harness:** weiterhin erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
+- [ ] **0.8.8-FIN-STATEMENTS – Kontoauszüge:** bestätigtes Finance-Ledger read-only verständlich als persönliche Geldhistorie darstellen
 
 ---
 
 # Danach priorisiert
 
-1. **0.8.8-D2 – Sparzinsen:** bestätigte Zinsperioden und Zinseszins auf demselben Finance-Ledger, ohne Rechnerzeit-Autorität.
-2. **0.8.8-E – Control Deck Focus:** Informationen verdichten, doppelte Ansichten entfernen, Arbeitsbereiche lokal maximieren/zurücksetzen und nächste erlaubte Aktion kontrastreich hervorheben.
+1. **0.8.8-E – Control Deck Focus:** Informationen verdichten, doppelte Ansichten entfernen, Arbeitsbereiche lokal maximieren/zurücksetzen und nächste erlaubte Aktion kontrastreich hervorheben.
+2. **0.8.8-FIN-STATEMENTS – Kontoauszüge:** Wallet-, Bank-, Job- und Zinsbuchungen aus demselben bestätigten Ledger verständlich sichtbar machen.
 3. **0.8.8-F – Berlin Ops Map 2:** bezirksartige Darstellung, Zoom/Pan, bessere Objekt-Hierarchie und Detailansicht; Karte bleibt read-only.
 
 ---
@@ -149,12 +176,10 @@ Persönliches Geld wird innerhalb des bereits vorhandenen `PlayerFinanceState` s
 - Keine Mega-PR: pro fachlichem Modul eigener kleiner Slice.
 - Keine zweite Economy-, Finance-, Map-, Timeline-, Profile-, Assistant-Task- oder Sync-Engine.
 - Persönliches Bargeld und Bankguthaben gehören zum selben `PlayerFinanceState`; das Eventbudget bleibt fachlich getrennt.
-- Browser darf bei Banktransfers nur Richtung und positiven Betrag liefern; Zielstände, Zinsen und Dividenden werden serverseitig bestimmt.
-- Wiederholte Assistentenaktionen und spätere Finanzzyklen brauchen bestätigte Spielrunde/Spielweltzeit; niemals Systemzeit allein.
-- Ein gespeicherter Assistenten-Steuerzustand ist noch keine Ausführungsberechtigung.
-- Ein verarbeiteter Rundentrigger bleibt fachlich unveränderlich; Retry darf keine spätere Auswahl rückwirkend anwenden.
+- Browser darf bei Banktransfers nur Richtung und positiven Betrag liefern; Zielstände, Zinsperioden, Zinsen und Dividenden werden nicht vom Browser autorisiert.
+- Zinsen benötigen einen bereits bestätigten Finance-Tick; Rechnerzeit allein erzeugt niemals Geld.
+- Wiederholte Assistentenaktionen brauchen bestätigte Spielrunde; Systemzeit allein bleibt ohne Autorität.
 - Story-Projections lesen nur bestätigte Journal-/Katalogdaten und schreiben keinen Progressionszustand.
-- Story-Textvariation muss deterministisch aus bestätigten IDs erfolgen und darf bei Refresh nicht neu würfeln.
 - Map-Zoom, Focus-Maximierung und Timeline-Filter sind lokale UI-Zustände und gehören nicht ins Journal.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
