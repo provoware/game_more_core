@@ -6,7 +6,7 @@
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.7-B – Control Deck & Player Choices`
 - **0.8.7-A Saisonale Hall of Tribute:** PR #87 · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
 - **0.8.7-B Control Deck & Player Choices:** PR #88 · Head `6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c` · Runtime `32600255789` · Presentation `32600255795` · Repository Health `32600255756` · Release Acceptance `32600255773` · Release Package `32600255763` · 0 Review-Threads · `SAFE MERGE PASS` · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
-- **Nächste Iteration:** `0.8.7-C – Bezirksbezogene Welt-Ereignisse`
+- **Aktive Iteration:** `0.8.7-C – Bezirksbezogene Welt-Ereignisse`; erster Slice = Vertrag/Katalog, noch ohne schreibende Runtime
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
 ---
@@ -51,7 +51,7 @@
 
 ---
 
-# NÄCHSTER GEPLANTER AUSBAU
+# AKTIVER AUSBAU
 
 ## 0.8.7-C – Bezirksbezogene Welt-Ereignisse
 
@@ -59,13 +59,21 @@
 
 Reproduzierbare, katalogisierte Welt-Ereignisse sollen den vorhandenen persistenten DistrictState sichtbar beeinflussen, ohne eine zweite Event- oder Zufallsengine einzuführen.
 
-### Vorbereitung
+### Slice C1 – Vertrag/Katalog
 
-- [ ] vorhandenen DistrictState- und Journal-Vertrag als einzige Zustandsbasis verwenden
-- [ ] Ereigniskatalog mit stabilen IDs, Gewichten, Voraussetzungen und Effekten definieren
-- [ ] Auswahl deterministisch/replaybar halten; Systemzeit nie als alleinigen Seed verwenden
-- [ ] genau eine aktive District-Event-Instanz pro fachlich erlaubtem Kontext absichern
-- [ ] bestätigte Folgen ausschließlich über zuständigen Service + Journal anwenden
+- [x] vorhandenen DistrictState-Vertrag als einzige Metrik-/Bounds-Basis referenzieren
+- [x] Ereigniskatalog mit stabilen IDs, Gewichten, Voraussetzungen und kleinen Effekten definieren
+- [x] Auswahlvertrag deterministisch/replaybar halten; Systemzeit nie als Seed
+- [x] genau eine aktive District-Event-Instanz pro Kontext als Vertragsgrenze festlegen
+- [x] Browser-Aktivierung und Browser-Effektwerte ausdrücklich verbieten
+- [x] deutsche Story-Texte separat von Spiellogik katalogisieren
+- [x] gezielte Vertragsregressionen für IDs, Gewichte, Bounds, Voraussetzungen und Textschlüssel ergänzen
+
+### Slice C2 – Runtime/Recovery als nächster Schritt
+
+- [ ] Auswahlservice auf bestätigtem `world_seed + district_id + trigger_id` implementieren
+- [ ] bestätigte Folgen ausschließlich über zuständigen District-Service + Journal anwenden
+- [ ] Idempotenz/Reload/Recovery für eine konkrete Event-Instanz absichern
 - [ ] A4 zunächst nur lesend informieren; keine District-Fachlogik in JavaScript
 - [ ] gezielte Runtime-/Recovery-/Projection-Regressionen ergänzen
 
