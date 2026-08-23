@@ -2,26 +2,26 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-F",
-  "status": "0_8_8_fin_statements_remote_validated_f_map2_in_validation",
-  "current_focus": "berlin_ops_map2_local_view_controls",
-  "last_validated_feature_iteration": "0.8.8-FIN-STATEMENTS",
+  "active_iteration": "0.8.8-STORY-DISTRICT-BIO",
+  "status": "0_8_8_f_remote_validated_story_district_bio_in_validation",
+  "current_focus": "confirmed_district_timeline_profile_afterglow",
+  "last_validated_feature_iteration": "0.8.8-F",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #116 / head 614e4363e95f6fedb5aac51e5aac72a67848ffbb / merge 81dda0d21170a5d876cd5a7ebf05a8409ec735c8",
+  "validation_reference": "PR #117 / head 91255bbb7bee90050cbd762ce93600802a666940 / merge 8119bf71a6f169d5cac367d5123d2bc1e6a73193",
   "remote_validation": {
-    "status": "success_for_0.8.8_fin_statements",
-    "pull_request": 116,
-    "validated_head": "614e4363e95f6fedb5aac51e5aac72a67848ffbb",
-    "runtime_core_workflow_run": 32665075313,
-    "presentation_core_workflow_run": 32665075287,
-    "repository_health_workflow_run": 32665075289,
-    "release_acceptance_workflow_run": 32665075282,
-    "release_package_workflow_run": 32665075278,
+    "status": "success_for_0.8.8_f_berlin_ops_map2",
+    "pull_request": 117,
+    "validated_head": "91255bbb7bee90050cbd762ce93600802a666940",
+    "runtime_core_workflow_run": 32666137485,
+    "presentation_core_workflow_run": 32666137499,
+    "repository_health_workflow_run": 32666137472,
+    "release_acceptance_workflow_run": 32666137497,
+    "release_package_workflow_run": 32666137508,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "81dda0d21170a5d876cd5a7ebf05a8409ec735c8"
+    "merged_commit": "8119bf71a6f169d5cac367d5123d2bc1e6a73193"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -60,7 +60,8 @@
     {"iteration": "0.8.8-D", "pull_request": 113, "merged_commit": "c1a27a977ff76a397d95ae097395317c4d46950b", "feature": "atomic_personal_wallet_bank_transfers"},
     {"iteration": "0.8.8-D2", "pull_request": 114, "merged_commit": "bbebc9c3cafeac7f71eebeea1b89d4861b304e76", "feature": "confirmed_compound_savings_interest"},
     {"iteration": "0.8.8-E", "pull_request": 115, "merged_commit": "6ac72d794ad3565bc40eb23dd501626382aa679a", "feature": "control_deck_local_focus_and_runtime_next_action_signal"},
-    {"iteration": "0.8.8-FIN-STATEMENTS", "pull_request": 116, "merged_commit": "81dda0d21170a5d876cd5a7ebf05a8409ec735c8", "feature": "read_only_personal_finance_statements"}
+    {"iteration": "0.8.8-FIN-STATEMENTS", "pull_request": 116, "merged_commit": "81dda0d21170a5d876cd5a7ebf05a8409ec735c8", "feature": "read_only_personal_finance_statements"},
+    {"iteration": "0.8.8-F", "pull_request": 117, "merged_commit": "8119bf71a6f169d5cac367d5123d2bc1e6a73193", "feature": "berlin_ops_map2_bounded_local_view_controls"}
   ],
   "subsystems": {
     "character_forge": {
@@ -110,7 +111,7 @@
       "account_statement_second_ledger": false
     },
     "living_world": {
-      "status": "0_8_7_c5_remote_validated",
+      "status": "0_8_7_c5_remote_validated_story_afterglow_in_validation",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -127,7 +128,11 @@
       "district_event_cadence_enabled": true,
       "district_event_cooldown_hours": 24,
       "district_event_cadence_authority": "confirmed_event.time_window.start_local",
-      "district_event_system_time_fallback": false
+      "district_event_system_time_fallback": false,
+      "district_biography_afterglow_in_validation": true,
+      "district_biography_source": "event_timeline_district_entries",
+      "district_biography_progression_engine": false,
+      "district_biography_new_journal_event": false
     },
     "properties": {
       "status": "remote_validated_and_safe_merged",
@@ -153,7 +158,7 @@
       "fake_local_champion_titles": false
     },
     "presentation": {
-      "status": "fin_statements_remote_validated_f_map2_in_validation",
+      "status": "f_remote_validated_story_district_bio_in_validation",
       "a4_localhost_client": true,
       "high_quality_berlin_ops_renderer": true,
       "map_read_only": true,
@@ -172,6 +177,12 @@
       "event_timeline_visible": true,
       "event_timeline_max_entries": 12,
       "event_timeline_sources": ["street.encounter_resolved", "event.incident_resolved", "world.district_effect_applied"],
+      "district_biography_visible": true,
+      "district_biography_location": "existing_profile_panel",
+      "district_biography_entries_limit": 5,
+      "district_biography_source": "event_timeline",
+      "district_biography_state_persisted": false,
+      "district_biography_invents_timestamp": false,
       "crew_identity_editor_visible": true,
       "scene_jobs_panel_validated": true,
       "assistant_controls_in_scene_jobs_panel": true,
@@ -246,11 +257,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.8-STORY-DISTRICT-BIO",
-  "next_goal": "District-World-Events aus bestehenden bestätigten Journal-/Projection-Daten als kleinen Biografie-Nachhall sichtbar machen; keine zweite Story-Engine.",
+  "next_iteration": "0.8.8-FIN-EXPORT",
+  "next_goal": "FIN-EXPORT: bestätigte FIN-STATEMENTS-Projection optional als TXT/CSV exportieren; keine neue Buchhaltung oder Finanzwerte.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T22:54:00+02:00"
+  "updated_at": "2026-08-23T23:24:00+02:00"
 }
