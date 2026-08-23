@@ -68,10 +68,20 @@
     document.head.append(script);
   }
 
+  function ensureDistrictBiographyModule() {
+    if (document.querySelector('script[data-district-biography="true"]')) return;
+    const script = document.createElement("script");
+    script.src = "district_biography.js";
+    script.defer = true;
+    script.dataset.districtBiography = "true";
+    document.head.append(script);
+  }
+
   function init() {
     load();
     apply();
     ensureFocusModule();
+    ensureDistrictBiographyModule();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
     }
