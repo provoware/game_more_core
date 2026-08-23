@@ -25,7 +25,7 @@ def context(command_id: str) -> JournalContext:
         "char.local",
         command_id,
         "scene-job-test",
-        "0.8.8-c1",
+        "0.8.8-econ-anti-grind",
         "char.local",
     )
 
@@ -53,6 +53,40 @@ class SceneJobServiceTests(unittest.TestCase):
         )
         self.assertNotIn("event", self.kernel.load_state())
 
+    def test_low_energy_keeps_job_available_but_scales_payout_by_available_energy(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        kernel = PersistenceKernel(tmp.name, ALLOWED)
+        character = CharacterState(character_id="char.local", display_name="Local")
+        character.energy = 4
+        kernel.initialize_state({"character": character.to_dict()})
+        service = SceneJobService(kernel, JOBS)
+
+        result = service.run("scene.cable_repair", context=context("job-low-energy"))
+
+        self.assertEqual(result.character.energy, 0)
+        self.assertEqual(result.finance.cash_cents, 2750)
+        self.assertEqual(result.finance.ledger[-1]["amount_cents"], 2750)
+        job_event = [record for record in kernel.read_records() if record["event_type"] == "finance.job_completed"][0]
+        self.assertEqual(job_event["payload"]["payout_cents"], 2750)
+
+    def test_zero_energy_job_remains_available_but_cannot_farm_money(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        kernel = PersistenceKernel(tmp.name, ALLOWED)
+        character = CharacterState(character_id="char.local", display_name="Local")
+        character.energy = 0
+        kernel.initialize_state({"character": character.to_dict()})
+        service = SceneJobService(kernel, JOBS)
+
+        result = service.run("scene.flyer_shift", context=context("job-zero-energy"))
+
+        self.assertEqual(result.character.energy, 0)
+        self.assertEqual(result.finance.cash_cents, 0)
+        self.assertEqual(result.finance.ledger[-1]["amount_cents"], 0)
+        self.assertEqual(result.finance.revision, 1)
+        self.assertEqual(len(kernel.read_records()), 2)
+
     def test_retry_is_idempotent_and_does_not_pay_twice(self):
         first = self.service.run("scene.flyer_shift", context=context("job-retry"))
         records = self.kernel.read_records()
@@ -78,7 +112,7 @@ class SceneJobServiceTests(unittest.TestCase):
                     "event-x",
                     "job-wrong-context",
                     "scene-job-test",
-                    "0.8.8-c1",
+                    "0.8.8-econ-anti-grind",
                     "char.local",
                 ),
             )
@@ -92,6 +126,21 @@ class SceneJobServiceTests(unittest.TestCase):
 
         self.assertEqual(state["finance"], result.finance.to_dict())
         self.assertEqual(state["character"], result.character.to_dict())
+
+    def test_exhaustion_policy_is_fail_closed_and_has_no_time_or_client_authority(self):
+        policy = self.service.exhaustion_policy
+        self.assertEqual(policy["mode"], "pre_job_energy_proportional_payout")
+        self.assertTrue(policy["jobs_remain_available"])
+        self.assertTrue(policy["full_payout_requires_energy_cost"])
+        self.assertEqual(policy["zero_energy_payout_cents"], 0)
+        self.assertFalse(policy["requires_system_time"])
+        self.assertFalse(policy["client_can_supply_modifier"])
+        self.assertFalse(policy["second_exhaustion_resource"])
+
+        unsafe = deepcopy(JOBS)
+        unsafe["exhaustion_policy"]["client_can_supply_modifier"] = True
+        with self.assertRaisesRegex(ValueError, "Lohnfaktor"):
+            SceneJobService(self.kernel, unsafe)
 
     def test_assistant_policy_reuses_jobs_and_fails_closed_on_unsafe_authority(self):
         policy = self.service.assistant_policy

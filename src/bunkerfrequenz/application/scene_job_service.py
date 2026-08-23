@@ -34,6 +34,13 @@ class SceneJobService:
             raise ValueError("Scene Jobs dürfen weder Eventphase noch Systemzeit voraussetzen")
         if policy.get("client_can_supply_payout_or_effects") is not False:
             raise ValueError("Client darf Scene-Job-Auszahlungen oder Effekte nicht liefern")
+
+        exhaustion_policy = self.manifest.get("exhaustion_policy")
+        if not isinstance(exhaustion_policy, Mapping):
+            raise ValueError("Scene-Job-Manifest benötigt exhaustion_policy")
+        self.exhaustion_policy = deepcopy(dict(exhaustion_policy))
+        self._validate_exhaustion_policy()
+
         assistant_policy = self.manifest.get("assistant_policy")
         if not isinstance(assistant_policy, Mapping):
             raise ValueError("Scene-Job-Manifest benötigt assistant_policy")
@@ -70,6 +77,7 @@ class SceneJobService:
             raise ValueError("Scene-Job-Kontext passt nicht zum Character")
         finance = PlayerFinanceState.from_dict(state.get("finance") if isinstance(state.get("finance"), dict) else None)
 
+        effective_payout_cents = self._effective_payout_cents(job, character.energy)
         energy_after = min(RESOURCE_MAX, max(RESOURCE_MIN, character.energy + job["energy_delta"]))
         stress_after = min(RESOURCE_MAX, max(RESOURCE_MIN, character.stress + job["stress_delta"]))
         character_after = CharacterState.from_dict(character.to_dict())
@@ -78,12 +86,12 @@ class SceneJobService:
         character_after.validate()
 
         finance_after = PlayerFinanceState.from_dict(finance.to_dict())
-        finance_after.cash_cents += job["payout_cents"]
+        finance_after.cash_cents += effective_payout_cents
         finance_after.revision += 1
         finance_after.ledger.append({
             "transaction_id": f"job:{context.command_id}",
             "kind": "job_income",
-            "amount_cents": job["payout_cents"],
+            "amount_cents": effective_payout_cents,
             "cash_after_cents": finance_after.cash_cents,
             "bank_after_cents": finance_after.bank_cents,
             "asset_id": None,
@@ -104,7 +112,7 @@ class SceneJobService:
             "contract_version": self.version,
             "job_id": job_id,
             "duration_hours": job["duration_hours"],
-            "payout_cents": job["payout_cents"],
+            "payout_cents": effective_payout_cents,
             "finance": finance_after.to_dict(),
         }
         receipt = self.persistence.commit(
@@ -126,6 +134,15 @@ class SceneJobService:
         )
         return SceneJobResult(character_after, finance_after, deepcopy(job), receipt.event_ids, False)
 
+    def _effective_payout_cents(self, job: Mapping[str, Any], pre_job_energy: int) -> int:
+        energy_cost = max(0, -job["energy_delta"])
+        base_payout = job["payout_cents"]
+        if energy_cost == 0 or pre_job_energy >= energy_cost:
+            return base_payout
+        if pre_job_energy <= 0:
+            return self.exhaustion_policy["zero_energy_payout_cents"]
+        return base_payout * pre_job_energy // energy_cost
+
     def _current_result(self, job: Mapping[str, Any], *, replay: bool) -> SceneJobResult:
         state = self.persistence.load_state() or {}
         raw_character = state.get("character")
@@ -139,6 +156,23 @@ class SceneJobService:
             (),
             replay,
         )
+
+    def _validate_exhaustion_policy(self) -> None:
+        policy = self.exhaustion_policy
+        if policy.get("mode") != "pre_job_energy_proportional_payout":
+            raise ValueError("Scene-Job-Erschöpfung benötigt proportionalen Energie-Lohnvertrag")
+        if policy.get("jobs_remain_available") is not True:
+            raise ValueError("Scene Jobs müssen auch bei Erschöpfung verfügbar bleiben")
+        if policy.get("full_payout_requires_energy_cost") is not True:
+            raise ValueError("Voller Scene-Job-Lohn muss den Energieverbrauch decken")
+        if policy.get("zero_energy_payout_cents") != 0:
+            raise ValueError("Scene Jobs dürfen bei 0 Energie keinen Joblohn erzeugen")
+        if policy.get("requires_system_time") is not False:
+            raise ValueError("Scene-Job-Erschöpfung darf keine Systemzeit voraussetzen")
+        if policy.get("client_can_supply_modifier") is not False:
+            raise ValueError("Client darf keinen Erschöpfungs-Lohnfaktor liefern")
+        if policy.get("second_exhaustion_resource") is not False:
+            raise ValueError("Scene Jobs dürfen keine zweite Erschöpfungsressource einführen")
 
     def _validate_assistant_policy(self) -> None:
         policy = self.assistant_policy
