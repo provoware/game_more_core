@@ -64,7 +64,7 @@ class RecoveryActionServiceTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "stress_above_recovery_threshold"):
             service.run("recovery.koffein_kalte_luft", context=context("recover-stress"))
-        self.assertEqual(kernel.read_records(), [])
+        self.assertEqual(kernel.read_records(), ())
 
     def test_recovery_is_not_available_when_energy_is_already_above_threshold(self):
         character = CharacterState(character_id="char.local", display_name="Local")
@@ -78,7 +78,7 @@ class RecoveryActionServiceTests(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "energy_above_recovery_threshold"):
             service.run("recovery.koffein_kalte_luft", context=context("recover-energy"))
-        self.assertEqual(kernel.read_records(), [])
+        self.assertEqual(kernel.read_records(), ())
 
     def test_retry_is_write_free_and_semantic_reuse_conflicts(self):
         first = self.service.run("recovery.koffein_kalte_luft", context=context("recover-retry"))
@@ -117,7 +117,7 @@ class RecoveryActionServiceTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(ValueError, "Character-Kontext"):
             self.service.run("recovery.koffein_kalte_luft", context=wrong)
-        self.assertEqual(self.kernel.read_records(), [])
+        self.assertEqual(self.kernel.read_records(), ())
 
 
 if __name__ == "__main__":
