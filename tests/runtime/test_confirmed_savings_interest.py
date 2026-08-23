@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 from pathlib import Path
 import tempfile
 import unittest
@@ -7,6 +8,7 @@ from bunkerfrequenz.application.game_recovery import replay_game_event
 from bunkerfrequenz.application.personal_finance_service import (
     ConfirmedFinancePeriod,
     PersonalFinanceService,
+    replay_personal_finance_event,
 )
 from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.domain.finance import PlayerFinanceState
@@ -139,6 +141,18 @@ class ConfirmedSavingsInterestTests(unittest.TestCase):
             recovered = replay_game_event(recovered, record)
 
         self.assertEqual(recovered["finance"], kernel.load_state()["finance"])
+
+    def test_replay_rejects_tampered_or_skipped_confirmed_finance_tick(self):
+        kernel, initial, service = self.make_service()
+        service.apply_confirmed_interest(
+            ConfirmedFinancePeriod("savings-001", 1, "char.local"),
+            context=context("interest-replay-tamper"),
+        )
+        record = deepcopy(kernel.read_records()[0])
+        record["payload"]["finance"]["confirmed_finance_tick"] = 2
+
+        with self.assertRaisesRegex(ValueError, "Finance-Tick"):
+            replay_personal_finance_event(dict(initial), record)
 
     def test_contract_explicitly_denies_system_time_and_browser_authority(self):
         policy = FINANCE["savings_interest"]
