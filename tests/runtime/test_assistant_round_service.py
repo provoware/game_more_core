@@ -71,6 +71,29 @@ class AssistantRoundExecutionServiceTests(unittest.TestCase):
             ],
         )
 
+    def test_assistant_uses_same_low_energy_payout_rule_as_manual_scene_jobs(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        kernel = PersistenceKernel(tmp.name, ALLOWED)
+        character = CharacterState(character_id="char.local", display_name="Local")
+        character.energy = 3
+        kernel.initialize_state({"character": character.to_dict()})
+        control = AssistantControlService(kernel, JOBS)
+        jobs = SceneJobService(kernel, JOBS)
+        service = AssistantRoundExecutionService(kernel, jobs)
+        control.set_active_job("scene.flyer_shift", context=context("assistant-low-select"))
+
+        result = service.process(
+            ConfirmedRoundTrigger("round-low-energy", "char.local"),
+            context=context("runtime-low-energy"),
+        )
+
+        self.assertTrue(result.executed)
+        state = kernel.load_state()
+        self.assertEqual(state["character"]["energy"], 0)
+        self.assertEqual(state["finance"]["cash_cents"], 1750)
+        self.assertEqual(state["finance"]["ledger"][-1]["amount_cents"], 1750)
+
     def test_processed_round_does_not_change_meaning_after_job_switch(self):
         self.control.set_active_job("scene.flyer_shift", context=context("assistant-select-a"))
         trigger = ConfirmedRoundTrigger("round-002", "char.local")
