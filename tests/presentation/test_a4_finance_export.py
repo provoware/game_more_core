@@ -24,8 +24,9 @@ class A4FinanceExportTests(unittest.TestCase):
     def test_txt_and_csv_export_all_projection_entries_without_local_filter(self):
         self.assertIn("csvFromProjection", EXPORT)
         self.assertIn("txtFromProjection", EXPORT)
-        self.assertIn("bunkerfrequenz-kontoauszug.csv", EXPORT)
-        self.assertIn("bunkerfrequenz-kontoauszug.txt", EXPORT)
+        self.assertIn('FILE_BASENAME = "bunkerfrequenz-kontoauszug"', EXPORT)
+        self.assertIn('`${FILE_BASENAME}.csv`', EXPORT)
+        self.assertIn('`${FILE_BASENAME}.txt`', EXPORT)
         self.assertNotIn("statementFilter", EXPORT)
         for field in (
             "sequence",
