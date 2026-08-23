@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.8-d1",
+  "version": "0.8.8-d2",
   "append_only": true,
   "canonical_order_key": ["sequence", "event_id"],
   "hash_chain": true,
@@ -42,6 +42,7 @@
     "economy.transaction_compensated",
     "finance.job_completed",
     "finance.bank_transfer_posted",
+    "finance.savings_interest_posted",
     "assistant.control_changed",
     "assistant.round_processed",
     "club.created",
@@ -86,6 +87,7 @@
       "character.resonance_rank_up",
       "finance.job_completed",
       "finance.bank_transfer_posted",
+      "finance.savings_interest_posted",
       "assistant.control_changed",
       "assistant.round_processed",
       "street.encounter_resolved",
