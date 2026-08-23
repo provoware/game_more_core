@@ -1,40 +1,55 @@
 # Laienhilfe – Geheimer bester Freund
 
-## Was ist bereits vorbereitet?
+## Was ist jetzt möglich?
 
-C1 hat die Sicherheitsregeln festgelegt. C2 speichert dauerhaft **Aus** oder **genau einen vorhandenen Scene Job**. C3 verbindet diese Auswahl jetzt mit einer **intern bestätigten Spielrunde**.
+C1 hat die Sicherheitsregeln festgelegt. C2 speichert dauerhaft **Aus** oder **genau einen vorhandenen Scene Job**. C3 sorgt dafür, dass eine intern bestätigte Spielrunde den gewählten Job höchstens einmal ausführt. C4 macht diese vorhandene Steuerung jetzt direkt im **JOBS-Bereich** sichtbar und bedienbar.
 
-Das bedeutet: Ist der Freund eingeschaltet, arbeitet er pro bestätigter Runde genau einmal den zu diesem Zeitpunkt gewählten Scene Job ab. Die eigentliche Auszahlung sowie Energie- und Stressfolge kommen weiterhin ausschließlich aus dem vorhandenen Scene-Job-Katalog.
+Es gibt bewusst kein zweites Assistenten-Dashboard. Der Freund sitzt dort, wo auch die normalen Scene Jobs stehen.
 
-## Was kann C3?
+## So benutzt du den Freund
 
-- eine bestätigte Runde genau einmal verarbeiten,
-- den aktuell gewählten Scene Job über den bestehenden `SceneJobService` ausführen,
-- denselben Rundentrigger bei Retry erkennen, ohne erneut zu zahlen,
-- eine Runde auch dann als verarbeitet merken, wenn der Freund auf **Aus** steht,
-- nach einem Absturz erkennen, wenn der Job schon verbucht wurde, aber der Rundenmarker noch fehlte,
-- einen späteren Jobwechsel davon abhalten, eine alte Runde rückwirkend anders auszuführen.
+1. Öffne den vorhandenen **JOBS-Bereich**.
+2. Bei jedem Scene Job findest du zusätzlich die Assistenten-Schaltfläche.
+3. Mit **FREUND STARTEN** wählst du diesen Job als automatische Aufgabe.
+4. Bei einem anderen Job kannst du mit **FREUND WECHSELN** die Auswahl ändern.
+5. Der aktuell gewählte Job zeigt **FREUND AKTIV**.
+6. Mit **FREUND STOPPEN** stellst du den Assistenten wieder auf **Aus**.
 
-## Warum gibt es einen Rundenmarker?
+Der Status oberhalb der Jobkarten zeigt, ob der Freund aus oder aktiv ist, welchen katalogisierten Job er gewählt hat und welche bestätigte Steuerrevision gespeichert ist.
 
-Nach jeder verarbeiteten Runde wird `assistant.round_processed` journalisiert. Dieser Marker ist kein zweites Rundensystem. Er beantwortet nur eine Sicherheitsfrage: **Hat der Assistent diese bereits bestätigte Runde schon verarbeitet?**
+## Startet der Klick schon eine automatische Runde?
 
-Ohne diesen Marker könnte ein Retry problematisch werden: Die Runde könnte zuerst im Zustand **Aus** eintreffen, später wird ein Job gewählt und derselbe alte Trigger nochmals zugestellt. C3 verhindert, dass daraus nachträglich eine Auszahlung entsteht.
+Nein. Die Schaltflächen ändern ausschließlich den bereits vorhandenen `AssistantControlState`. Sie dürfen keine Spielrunde erfinden.
 
-## Was passiert bei einem Absturz zwischen Job und Marker?
+Automatische Arbeit erfolgt weiterhin nur, wenn die Runtime einen **intern bestätigten Rundentrigger** an C3 übergibt. Browser und Rechnerzeit starten keine Runde.
 
-Der Job selbst besitzt bereits einen stabilen Retry-Schutz. C3 verwendet für jede Character-/Runden-Kombination dieselbe technische Child-Command-ID.
+## Welche Daten darf der Browser senden?
 
-Falls der Job schon dauerhaft im Journal steht, der `assistant.round_processed`-Marker aber noch fehlt, übernimmt C3 beim Retry die **ursprünglich verbuchte Job-ID**. Der Job wird nicht ein zweites Mal bezahlt; danach wird nur noch der fehlende Rundenmarker ergänzt.
+Bei der Assistentensteuerung nur die technische Command-ID und:
 
-## Wer darf eine Runde bestätigen?
+- eine vorhandene `job_id`, wenn der Freund gestartet oder gewechselt wird,
+- `null`, wenn der Freund gestoppt wird.
 
-Nicht der Browser und nicht die Rechneruhr. C3 stellt bewusst **keinen neuen Browser-Command** für die Rundenautorität bereit und verwendet keine Systemzeit als Trigger. Der Service erwartet einen bereits intern bestätigten Rundentrigger mit stabiler `round_id` und passender `character_id`.
+Lohn, Energie, Stress, Jobfolgen und Rundentrigger kommen nicht aus dem Browser. Zusätzliche Fachwerte werden nicht als Autorität akzeptiert.
 
-## Was bleibt unverändert?
+## Kann ich normale Scene Jobs weiterhin selbst ausführen?
 
-Start, Wechsel und Stop des Freundes bleiben der C2-Steuerzustand `assistant.control_changed`. Scene Jobs bleiben die einzige Quelle für Jobwerte. Persönliches Bargeld bleibt vom Eventbudget getrennt.
+Ja. Die vorhandene normale Job-Schaltfläche bleibt unverändert. C4 ergänzt nur die Assistentensteuerung daneben.
 
-## Was kommt erst später?
+## Was passiert nach Neustart oder Recovery?
 
-C4 bringt Auswahl, Wechsel, Stop und Status kompakt in den vorhandenen JOBS-Bereich. C5 kann bestätigte Assistentenaktionen später erzählerisch nachhallen lassen. C3 baut weder ein zweites Dashboard noch eine neue Freundschafts-Progressionsengine.
+Die Anzeige wird wieder aus dem bestätigten `AssistantControlState` aufgebaut. Die Oberfläche erfindet keinen eigenen Zustand. Verweist ein beschädigter oder veralteter Save auf eine Job-ID, die nicht mehr im kanonischen Scene-Job-Katalog existiert, bricht die Projektion fail-closed ab, statt einen Ersatzjob zu erfinden.
+
+## Was bleibt durch C3 geschützt?
+
+Auch nach der neuen Bedienung gilt unverändert:
+
+- eine bestätigte Runde wird höchstens einmal verarbeitet,
+- Retry zahlt nicht doppelt,
+- eine Runde im Zustand **Aus** kann später nicht rückwirkend Arbeit auslösen,
+- ein späterer Jobwechsel verändert keine alte Runde,
+- Systemzeit und Browser besitzen keine Rundenautorität.
+
+## Was kommt danach?
+
+C5 kann ausschließlich tatsächlich bestätigte Assistentenaktionen für kleine erzählerische Freundschaftsreaktionen verwenden. Eine eigene Freundschafts-Progressionsengine ist dafür nicht vorgesehen. Das spätere C6-End-to-End-Harness bleibt abhängig von einem echten kanonischen Rundenproduzenten.
