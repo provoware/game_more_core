@@ -4,6 +4,7 @@ from copy import deepcopy
 from dataclasses import dataclass, replace
 from typing import Any, Mapping
 
+from bunkerfrequenz.application.assistant_service import AssistantService
 from bunkerfrequenz.application.district_service import DistrictService
 from bunkerfrequenz.application.district_world_event_service import DistrictWorldEventService
 from bunkerfrequenz.application.economy_service import EconomyService
@@ -26,6 +27,8 @@ _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "profile.update": frozenset({"type", "command_id", "changes"}),
     "street.walk": frozenset({"type", "command_id", "approach_id"}),
     "job.run": frozenset({"type", "command_id", "job_id"}),
+    "assistant.assign": frozenset({"type", "command_id", "task_id"}),
+    "assistant.deactivate": frozenset({"type", "command_id"}),
     "event.create": frozenset({"type", "command_id", "event"}),
     "event.update_planning": frozenset({"type", "command_id", "changes"}),
     "event.execute": frozenset({"type", "command_id", "action_id"}),
@@ -38,7 +41,9 @@ _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "settlement.complete": frozenset({"type", "command_id"}),
 }
 _COMMAND_TYPES = frozenset(_COMMAND_FIELDS)
-_CHARACTER_COMMANDS = frozenset({"profile.update", "street.walk", "job.run"})
+_CHARACTER_COMMANDS = frozenset({
+    "profile.update", "street.walk", "job.run", "assistant.assign", "assistant.deactivate",
+})
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,11 +61,10 @@ class GameClientSession:
     """Thin write adapter for the local A4 client.
 
     It owns no gameplay rules. Persistent commands are delegated to canonical
-    Profile/Street/SceneJob/Event/Economy/Property/Upgrade/Incident/Settlement/District services.
-    District world events reuse the confirmed DistrictService state and are triggered
-    only from an already confirmed settlement source. District metrics, job payouts,
-    property prices, upgrade costs/levels, owners and budget deltas are never accepted
-    directly from the client.
+    Profile/Street/SceneJob/Assistant/Event/Economy/Property/Upgrade/Incident/
+    Settlement/District services. The assistant reuses SceneJobService and is
+    advanced only by an already confirmed street round. Payouts, effects and
+    round authority are never accepted directly from the browser.
     """
 
     def __init__(
@@ -72,6 +76,7 @@ class GameClientSession:
         street_manifest: Mapping[str, Any] | None = None,
         street_world_seed: str | None = None,
         scene_job_manifest: Mapping[str, Any] | None = None,
+        assistant_manifest: Mapping[str, Any] | None = None,
         district_manifest: Mapping[str, Any] | None = None,
         city_map_manifest: Mapping[str, Any] | None = None,
         district_event_manifest: Mapping[str, Any] | None = None,
@@ -85,6 +90,8 @@ class GameClientSession:
             raise ValueError("incident_contract_version fehlt")
         if (street_manifest is None) != (street_world_seed is None):
             raise ValueError("street_manifest und street_world_seed müssen gemeinsam gesetzt werden")
+        if assistant_manifest is not None and scene_job_manifest is None:
+            raise ValueError("assistant_manifest benötigt vorhandene Scene Jobs")
         if (district_manifest is None) != (city_map_manifest is None):
             raise ValueError("district_manifest und city_map_manifest müssen gemeinsam gesetzt werden")
         if (district_event_manifest is None) != (district_world_seed is None):
@@ -100,6 +107,11 @@ class GameClientSession:
         self.street = StreetEncounterService(persistence, street_manifest) if street_manifest is not None else None
         self.street_world_seed = street_world_seed
         self.scene_jobs = SceneJobService(persistence, scene_job_manifest) if scene_job_manifest is not None else None
+        self.assistant = (
+            AssistantService(persistence, self.scene_jobs, assistant_manifest)
+            if self.scene_jobs is not None and assistant_manifest is not None
+            else None
+        )
         self.district = (
             DistrictService(persistence, district_manifest, city_map_manifest)
             if district_manifest is not None and city_map_manifest is not None
@@ -406,6 +418,28 @@ class GameClientSession:
                 },
             )
 
+        if command["type"] in {"assistant.assign", "assistant.deactivate"}:
+            if self.assistant is None:
+                return self._rejected("assistant_not_configured")
+            if command["type"] == "assistant.assign":
+                task_id = command.get("task_id")
+                if not isinstance(task_id, str) or not task_id.strip():
+                    return self._rejected("invalid_assistant_task_id")
+                assistant_result = self.assistant.assign(task_id.strip(), context=context)
+            else:
+                assistant_result = self.assistant.deactivate(context=context)
+            return self._confirmed(
+                assistant_result.committed_event_ids,
+                assistant_result.idempotent_replay,
+                metadata={
+                    "assistant": {
+                        "active_task_id": assistant_result.assistant.active_task_id,
+                        "completed_rounds": assistant_result.assistant.completed_rounds,
+                        "executed": False,
+                    }
+                },
+            )
+
         if self.street is None or self.street_world_seed is None:
             return self._rejected("street_not_configured")
         approach_id = command.get("approach_id")
@@ -439,6 +473,25 @@ class GameClientSession:
             overall_replay = overall_replay and district_result.idempotent_replay
             metadata["district"] = deepcopy(district_result.metadata)
             metadata["district"]["applied"] = district_result.applied
+        if self.assistant is not None:
+            assistant_result = self.assistant.run_confirmed_round(
+                command_id,
+                context=replace(context, command_id=f"{command_id}:assistant-round"),
+            )
+            committed.extend(assistant_result.committed_event_ids)
+            if assistant_result.committed_event_ids or assistant_result.idempotent_replay:
+                overall_replay = overall_replay and assistant_result.idempotent_replay
+            if assistant_result.assistant.active_task_id is not None or assistant_result.executed:
+                task = assistant_result.task or {}
+                metadata["assistant"] = {
+                    "active_task_id": assistant_result.assistant.active_task_id,
+                    "completed_rounds": assistant_result.assistant.completed_rounds,
+                    "last_completed_round_id": assistant_result.assistant.last_completed_round_id,
+                    "executed": assistant_result.executed,
+                    "task_id": task.get("job_id"),
+                    "task_label": task.get("label"),
+                    "payout_cents": task.get("payout_cents") if assistant_result.executed else None,
+                }
         return self._confirmed(tuple(committed), overall_replay, metadata=metadata)
 
     def _confirmed_event(self) -> EventState:
