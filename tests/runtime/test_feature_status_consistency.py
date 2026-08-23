@@ -33,42 +33,38 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
 
-    def test_validated_pool_items_and_active_preview_owner_are_consistent(self):
+    def test_validated_pool_items_and_active_export_proof_owner_are_consistent(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         for pool_id in (
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
             "POOL-UX-002", "POOL-WORLD-004", "POOL-PROFILE-002", "POOL-ECON-003",
             "POOL-COMPANION-001", "POOL-COMPANION-002", "POOL-FINANCE-001",
             "POOL-FINANCE-003", "POOL-FINANCE-004", "POOL-UX-004", "POOL-UX-005",
-            "POOL-MAP-002", "POOL-STORY-001", "POOL-ECON-004",
+            "POOL-MAP-002", "POOL-STORY-001", "POOL-ECON-004", "POOL-ECON-005",
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-ECON-005"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-006"))
 
-    def test_validated_anti_grind_and_active_job_preview_match_status(self):
+    def test_validated_job_preview_and_active_export_proof_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         economy = status["subsystems"]["economy"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-ANTI-GRIND")
-        self.assertEqual(status["active_iteration"], "0.8.8-ECON-JOB-PREVIEW")
-        self.assertEqual(status["next_iteration"], "0.8.8-UX-EXPORT-PROOF")
-        self.assertEqual(status["current_focus"], "scene_job_confirmed_effective_payout_preview")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-JOB-PREVIEW")
+        self.assertEqual(status["active_iteration"], "0.8.8-UX-EXPORT-PROOF")
+        self.assertEqual(status["next_iteration"], "0.8.8-ECON-RECOVERY-ACTIONS")
+        self.assertEqual(status["current_focus"], "finance_statement_export_preview_proof")
         self.assertTrue(economy["scene_job_anti_grind_validated"])
-        self.assertEqual(economy["scene_job_exhaustion_mode"], "pre_job_energy_proportional_payout")
-        self.assertTrue(economy["scene_job_full_payout_requires_energy_cost"])
-        self.assertEqual(economy["scene_job_zero_energy_payout_cents"], 0)
-        self.assertFalse(economy["scene_job_exhaustion_requires_system_time"])
-        self.assertFalse(economy["scene_job_second_exhaustion_resource"])
-        self.assertTrue(economy["assistant_uses_same_scene_job_exhaustion_rule"])
-        self.assertTrue(economy["scene_job_effective_payout_preview_in_validation"])
+        self.assertTrue(economy["scene_job_effective_payout_preview_validated"])
         self.assertEqual(economy["scene_job_effective_payout_preview_source"], "confirmed_character_energy")
         self.assertTrue(economy["scene_job_effective_payout_preview_same_canonical_calculation"])
         self.assertFalse(economy["browser_calculates_scene_job_payout"])
         self.assertTrue(presentation["scene_job_effective_payout_preview_visible"])
-        self.assertEqual(presentation["scene_job_effective_payout_preview_location"], "existing_jobs_panel")
-        self.assertFalse(presentation["scene_job_effective_payout_preview_write_back"])
+        self.assertTrue(presentation["personal_finance_statement_export_preview_visible"])
+        self.assertTrue(presentation["personal_finance_statement_export_copy_local"])
+        self.assertEqual(presentation["personal_finance_statement_export_checksum"], "fnv1a32_non_crypto")
+        self.assertTrue(presentation["personal_finance_statement_export_same_serialized_content"])
         self.assertFalse(presentation["browser_gameplay_authority"])
         self.assertTrue(process["focused_read_policy"])
         self.assertTrue(process["planned_read_list_required"])
@@ -94,7 +90,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-MAP-002": "`DONE`",
             "POOL-STORY-001": "`DONE`",
             "POOL-ECON-004": "`DONE`",
-            "POOL-ECON-005": "`PULLED`",
+            "POOL-ECON-005": "`DONE`",
+            "POOL-UX-006": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
