@@ -1,0 +1,84 @@
+.crew-identity-editor {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--line, #3a4149);
+  background: color-mix(in srgb, var(--panel, #15181c) 90%, transparent);
+}
+
+.crew-identity-editor .crew-identity-layout {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.crew-identity-preview-wrap {
+  display: grid;
+  gap: .5rem;
+  justify-items: center;
+}
+
+.crew-identity-preview {
+  width: 180px;
+  min-height: 112px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid var(--crew-accent, #ff5a1f);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset;
+  color: var(--crew-accent, #ff5a1f);
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.crew-identity-preview[data-mode="logo"] {
+  width: 132px;
+  min-height: 132px;
+  border-radius: 22%;
+}
+
+.crew-identity-symbol {
+  font-size: 3rem;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(0,0,0,.35);
+}
+
+.crew-identity-mark {
+  position: absolute;
+  right: .45rem;
+  bottom: .3rem;
+  padding: .12rem .3rem;
+  background: rgba(0,0,0,.62);
+  color: #fff;
+  font-size: .72rem;
+}
+
+.crew-identity-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .7rem;
+}
+
+.crew-identity-controls label {
+  display: grid;
+  gap: .3rem;
+}
+
+.crew-identity-controls select,
+.crew-identity-controls input {
+  width: 100%;
+}
+
+.crew-identity-sync-note {
+  margin: .7rem 0 0;
+  font-size: .86rem;
+  opacity: .8;
+}
+
+@media (max-width: 720px) {
+  .crew-identity-editor .crew-identity-layout,
+  .crew-identity-controls {
+    grid-template-columns: 1fr;
+  }
+}
