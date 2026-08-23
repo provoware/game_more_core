@@ -8,7 +8,7 @@
 - **0.8.7-C2 District-Event Runtime:** PR #91 · `SAFE MERGE PASS` · Merge `5e32d6de2a5859b1cadca62543dd10949717e4fc`; anschließend Katalog-Fail-fast über PR #92 gehärtet
 - **0.8.7-C3 Application-Integration:** PR #95 · `SAFE MERGE PASS` · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
 - **District-Event-Robustheit:** `no_eligible_event` wird als expliziter schreibfreier No-op behandelt; kein künstliches Ersatz-Ereignis
-- **Nächste Entwicklungsstufe:** `0.8.7-C4 – read-only Ereignis-Timeline im Control Deck`
+- **Aktive Entwicklungsstufe:** `0.8.7-C4 – read-only Ereignis-Timeline`; C4A baut zuerst ausschließlich die bestätigte Projection-/Textschicht
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
 ---
@@ -84,12 +84,21 @@
 
 # Aktiv – 0.8.7-C4 Ereignis-Timeline
 
-- [ ] bestätigte District-, Street- und Crisis-Ereignisse aus bereits autoritativen Quellen lesen
-- [ ] Projection bleibt read-only und erfindet keine Ereignisse oder Reihenfolge
+## C4A – bestätigte Projection-/Textschicht
+
+- [x] bestätigte District-, Street- und Crisis-Ereignisse ausschließlich aus Journalrecords lesen
+- [x] Reihenfolge ausschließlich aus kanonischer Journal-`sequence` ableiten
+- [x] Street- und District-Texte aus vorhandenen Textkatalogen auflösen; Incident-Schlüssel erhalten einen eigenen UI-Textkatalog
+- [x] leere Historie bleibt leer; fehlende/ungültige Records oder Texte erzeugen keinen erfundenen Ersatzinhalt
+- [x] Projection liefert maximal die letzten 12 bestätigten Einträge und bleibt vollständig vom Eingabejournal entkoppelt
+- [x] Regressionen für Reihenfolge, Textauflösung, leere Historie, ungültige Records, Limit und Detached Data ergänzen
+
+## C4B – sichtbares Control Deck
+
+- [ ] C4A-Projection über die bestehende A4-Runtime an den Client reichen
 - [ ] Control Deck zeigt eine kompakte, tastatur- und screenreaderfreundliche Timeline
-- [ ] sichtbare Story-Texte kommen aus vorhandenen Textkatalogen, nicht aus Domain-Logik
-- [ ] leere Historie bleibt ehrlich leer statt Demo-Inhalte zu erfinden
-- [ ] Regressionen für Datenquelle, Reihenfolge, Textauflösung und fehlende/ungültige Records ergänzen
+- [ ] Darstellung bleibt read-only und enthält keinen Command-/Write-Pfad
+- [ ] bestehende C4A-Reihenfolge und Texte unverändert verwenden; Browser sortiert oder erfindet nichts neu
 
 ### Explizit NICHT in C4
 
@@ -105,7 +114,7 @@
 
 1. **0.8.7-C5 – Cadence/Cooldown:** District-Events über bestätigte Spielzeit dosieren, niemals über Systemzeit allein.
 2. **0.8.7-D – Street Content Packs:** mehr Abwechslung über denselben validierten Ansatz-/Encounter-Vertrag.
-3. **QA – District-Event-Diagnose:** read-only anzeigen, welche Voraussetzungen aktuell Ereignisse ausschließen; zentrale Katalogregeln wiederverwenden, keine zweite Auswahlengine.
+3. **QA – Timeline-Diagnose:** optional read-only anzeigen, warum ein bestätigter Journalrecord wegen fehlendem/ungültigem Text nicht projiziert wurde; keine Fallback-Story erfinden.
 
 ---
 
