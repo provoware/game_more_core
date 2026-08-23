@@ -46,6 +46,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-D2:** PR #114 · Merge `bbebc9c3cafeac7f71eebeea1b89d4861b304e76` · bestätigte Sparzinsen/Zinseszins exakt einmal pro Finance-Tick
 - **0.8.8-E:** PR #115 · Merge `6ac72d794ad3565bc40eb23dd501626382aa679a` · lokaler Panel-Fokus + Runtime-abgeleitetes Nächste-Aktion-Signal
 - **0.8.8-FIN-STATEMENTS:** PR #116 · Merge `81dda0d21170a5d876cd5a7ebf05a8409ec735c8` · read-only Geldhistorie aus bestätigtem Finance-Ledger
+- **0.8.8-F:** PR #117 · Merge `8119bf71a6f169d5cac367d5123d2bc1e6a73193` · begrenzter lokaler Zoom/Pan + Auswahlfokus auf bestehender Map-Projection
 
 ---
 
@@ -60,8 +61,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-FINANCE-003` | `DONE` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | FIN-STATEMENTS remote validiert; liest bestätigtes Ledger read-only |
 | `POOL-UX-004` | `DONE` | **Control Deck Focus & Verdichtung** | weniger Wiederholungen, mehr Arbeitsfläche | 0.8.8-E remote validiert; Fokus bleibt lokaler Presentation-State |
 | `POOL-UX-005` | `DONE` | **Nächste-Aktion-Signal** | erlaubte nächste Schritte schneller erkennen | 0.8.8-E remote validiert; nur bereits freigegebene Runtime-Aktion |
-| `POOL-MAP-002` | `PULLED` | **Berlin Ops Map 2** | bessere Kartenlesbarkeit durch Zoom/Pan und Auswahlfokus | bestehende 0–100-Map-Projection bleibt einzige Datenquelle; read-only |
-| `POOL-STORY-001` | `READY` | District-Event-Nachhall in Biografie | Weltfolgen werden Teil der Crew-Geschichte | nur bestätigte Journal-/Projection-Daten |
+| `POOL-MAP-002` | `DONE` | **Berlin Ops Map 2** | bessere Kartenlesbarkeit durch Zoom/Pan und Auswahlfokus | 0.8.8-F remote validiert; bestehende 0–100-Projection bleibt einzige Datenquelle |
+| `POOL-STORY-001` | `PULLED` | **District-Event-Nachhall im Profil** | bestätigte Weltfolgen werden als Berlin-Erinnerungen sichtbar | nur bestätigte `event_timeline`-District-Einträge; keine neue Progressions-/Journalengine |
 | `POOL-UX-003` | `READY` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only; keine Sortierung, kein Save-/Journal-State |
 | `POOL-ECON-004` | `READY` | **Job-Erschöpfung / Anti-Grind** | verhindert bedeutungsloses Endlosfarmen bei extrem niedriger Energie | Grundregel „phasenunabhängig arbeitbar“ erhalten; Balance getrennt verändern |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-/Approach-Vertrag |
@@ -84,8 +85,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-001` | `READY` | Native GitHub Branch Protection / Ruleset | geeigneter Admin-Schreibweg |
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
 | `POOL-QA-006` | `READY` | Status-Sync nach Safe Merge automatisieren | bestätigten Safe-Merge-Commit read-only erkennen und Statusdrift melden |
-| `POOL-FINANCE-004` | `IDEA` | Kontoauszug CSV/TXT-Export | validierte FIN-STATEMENTS-Projection; rein lokaler Export ohne neue Buchhaltung |
-| `POOL-MAP-003` | `IDEA` | Map-Viewport-Miniübersicht | nach validiertem Map 2 den aktuellen Ausschnitt rein lokal in einer kleinen Gesamtübersicht markieren; keine neue Kartendatenquelle |
+| `POOL-FINANCE-004` | `READY` | **Kontoauszug CSV/TXT-Export** | validierte FIN-STATEMENTS-Projection; rein lokaler Export ohne neue Buchhaltung |
+| `POOL-MAP-003` | `IDEA` | Map-Viewport-Miniübersicht | validierte Map 2; aktuellen Ausschnitt rein lokal markieren |
 
 ---
 
@@ -100,4 +101,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-MAP-002` ist für 0.8.8-F aktiv. Zoom, Pan und Auswahlfokus transformieren ausschließlich die bestehende bestätigte 0–100-Projection und bleiben lokaler Presentation-State. Danach ist `POOL-STORY-001` der stärkste unabhängige Story-Slice. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
+`POOL-STORY-001` ist für 0.8.8-STORY-DISTRICT-BIO aktiv. Der Nachhall filtert ausschließlich bereits bestätigte District-Einträge der bestehenden Ereignis-Chronik und bleibt read-only im vorhandenen Profil. Danach ist `POOL-FINANCE-004` der stärkste unabhängige Slice. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
