@@ -54,6 +54,37 @@ class A4MapProContractTests(unittest.TestCase):
         self.assertIn(".map-marker.owned", STYLES)
         self.assertIn(".map-marker.hall", STYLES)
 
+    def test_map2_view_controls_are_local_bounded_and_keyboard_accessible(self):
+        for action in (
+            "zoom-out",
+            "reset",
+            "zoom-in",
+            "pan-left",
+            "pan-up",
+            "pan-down",
+            "pan-right",
+            "focus-selected",
+        ):
+            self.assertIn(f'"{action}"', MAP_JS)
+        self.assertIn("const MIN_ZOOM = 1;", MAP_JS)
+        self.assertIn("const MAX_ZOOM = 2.2;", MAP_JS)
+        self.assertIn('controls.setAttribute("role", "group")', MAP_JS)
+        self.assertIn('controls.setAttribute("aria-label", "Kartenansicht steuern")', MAP_JS)
+        self.assertIn('status.setAttribute("aria-live", "polite")', MAP_JS)
+        self.assertIn("function focusSelected()", MAP_JS)
+        self.assertIn("function selectedCenter(model)", MAP_JS)
+        self.assertNotIn("pointerdown", MAP_JS)
+        self.assertNotIn("wheel", MAP_JS)
+
+    def test_map2_transforms_only_existing_projection_coordinates(self):
+        self.assertIn("district.map_box.x", MAP_JS)
+        self.assertIn("district.map_box.w * view.zoom", MAP_JS)
+        self.assertIn("location.position.x", MAP_JS)
+        self.assertIn("location.position.y", MAP_JS)
+        self.assertIn("currentModel = model || null;", MAP_JS)
+        self.assertNotIn("longitude", MAP_JS.lower())
+        self.assertNotIn("latitude", MAP_JS.lower())
+
     def test_map_copy_states_that_navigation_and_domain_writes_are_outside_renderer(self):
         self.assertIn("Keine Navigation, kein Geocoding, keine eigene Fachlogik.", INDEX)
         self.assertIn("Die Karte ist read-only.", INDEX)
