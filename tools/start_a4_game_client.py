@@ -34,6 +34,7 @@ from bunkerfrequenz.infrastructure.persistence import (  # noqa: E402
 )
 from bunkerfrequenz.presentation.a4_game_projection import build_a4_game_projection  # noqa: E402
 from bunkerfrequenz.presentation.event_timeline import build_event_timeline_projection  # noqa: E402
+from bunkerfrequenz.presentation.scene_jobs_projection import build_scene_jobs_projection  # noqa: E402
 
 MAX_BODY_BYTES = 64 * 1024
 STREET_WORLD_SEED = "bunkerfrequenz-a4-local-street-v1"
@@ -49,6 +50,7 @@ REQUIRED = (
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/INCIDENT_MANIFEST.json",
     "manifests/STREET_ENCOUNTER_MANIFEST.json",
+    "manifests/SCENE_JOB_MANIFEST.json",
     "manifests/DISTRICT_STATE_MANIFEST.json",
     "manifests/DISTRICT_EVENT_MANIFEST.json",
     "manifests/CITY_MAP_MANIFEST.json",
@@ -122,6 +124,7 @@ class A4ClientRuntime:
         journal_manifest = _load_json(ROOT / "manifests" / "JOURNAL_MANIFEST.json")
         incident_manifest = _load_json(ROOT / "manifests" / "INCIDENT_MANIFEST.json")
         self.street_manifest = _load_json(ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json")
+        self.scene_job_manifest = _load_json(ROOT / "manifests" / "SCENE_JOB_MANIFEST.json")
         self.district_manifest = _load_json(ROOT / "manifests" / "DISTRICT_STATE_MANIFEST.json")
         self.district_event_manifest = _load_json(ROOT / "manifests" / "DISTRICT_EVENT_MANIFEST.json")
         self.city_map_manifest = _load_json(ROOT / "manifests" / "CITY_MAP_MANIFEST.json")
@@ -195,6 +198,7 @@ class A4ClientRuntime:
             incident_contract_version=incident_manifest["version"],
             street_manifest=self.street_manifest,
             street_world_seed=STREET_WORLD_SEED,
+            scene_job_manifest=self.scene_job_manifest,
             district_manifest=self.district_manifest,
             city_map_manifest=self.city_map_manifest,
             district_event_manifest=self.district_event_manifest,
@@ -207,8 +211,9 @@ class A4ClientRuntime:
 
     def projection(self) -> dict:
         with self.lock:
+            confirmed_state = self.session.read_state()
             projection = build_a4_game_projection(
-                self.session.read_state(),
+                confirmed_state,
                 incident_catalog=self.incident_catalog,
                 district_manifest=self.district_manifest,
                 city_map_manifest=self.city_map_manifest,
@@ -223,6 +228,10 @@ class A4ClientRuntime:
                 zeit_manifest=self.zeit_manifest,
                 street_manifest=self.street_manifest,
                 street_text_catalog=self.street_texts,
+            )
+            projection["scene_jobs"] = build_scene_jobs_projection(
+                confirmed_state,
+                self.session.scene_jobs.jobs if self.session.scene_jobs is not None else (),
             )
             projection["event_timeline"] = build_event_timeline_projection(
                 self.kernel.read_records(),
@@ -340,7 +349,7 @@ class A4ClientRuntime:
             if not isinstance(character_id, str) or not character_id:
                 return {"status": "rejected", "error_code": "character_missing", "state": self.projection()}
 
-            if command.get("type") in {"profile.update", "street.walk"}:
+            if command.get("type") in {"profile.update", "street.walk", "job.run"}:
                 context = self._context(command_id, "character", character_id, character_id)
             else:
                 event = state.get("event")
@@ -384,7 +393,7 @@ class A4ClientRuntime:
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.7-b1"
+    server_version = "BunkerfrequenzA4/0.8.8-b1"
 
     @property
     def runtime(self) -> A4ClientRuntime:
