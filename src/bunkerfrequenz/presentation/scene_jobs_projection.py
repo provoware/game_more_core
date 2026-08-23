@@ -22,11 +22,11 @@ def build_scene_jobs_projection(
     state: Mapping[str, Any] | None,
     jobs: Sequence[Mapping[str, Any]],
 ) -> dict[str, Any]:
-    """Build the read-only A4 Scene-Jobs/Wallet/Assistant projection.
+    """Build the read-only A4 Scene-Jobs/Wallet/Bank/Assistant projection.
 
     `jobs` must come from the already validated SceneJobService catalog. The
-    projection deliberately exposes display consequences and confirmed assistant
-    control state, but no writable payout/effect or round authority.
+    projection exposes confirmed personal finance balances and assistant state,
+    but no writable payout/effect, target balance or round authority.
     """
     raw = deepcopy(dict(state or {}))
     raw_finance = raw.get("finance")
@@ -62,6 +62,7 @@ def build_scene_jobs_projection(
     return {
         "available": isinstance(raw.get("character"), Mapping),
         "cash_cents": finance.cash_cents,
+        "bank_cents": finance.bank_cents,
         "finance_revision": finance.revision,
         "ledger_entries": len(finance.ledger),
         "assistant": {
