@@ -34,7 +34,7 @@ class DistrictWorldEventCatalogValidationTests(unittest.TestCase):
     def test_duplicate_id_and_weight_total_mismatch_are_rejected_at_startup(self):
         duplicate = copy.deepcopy(EVENTS)
         duplicate["events"][1]["event_id"] = duplicate["events"][0]["event_id"]
-        with self.assertRaisesRegex(ValueError, "doppelte Event-ID"):
+        with self.assertRaisesRegex(ValueError, r"events\[1\]\.event_id.*doppelt"):
             self.build(duplicate)
 
         bad_total = copy.deepcopy(EVENTS)

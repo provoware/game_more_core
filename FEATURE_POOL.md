@@ -29,6 +29,7 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 | `POOL-UX-001` | `DONE` | Control Deck 2.0 | HUD, Schnellnavigation, lokale Anzeigeoptionen; 0.8.7-B / PR #88 |
 | `POOL-STREET-004` | `DONE` | Street Approaches | vier Spieleransätze, nur Auswahlgewichte; 0.8.7-B / PR #88 |
 | `POOL-CRISIS-002` | `DONE` | Krisen-Folgenvorschau | katalogisierte Folgen vor der Wahl sichtbar; 0.8.7-B / PR #88 |
+| `POOL-QA-003` | `DONE` | District-Event-Katalogdiagnose mit Eintrags-ID | Fail-fast nennt Event-ID und Feldpfad; QA-Härtung in PR #94 |
 
 ### Letzte Remote-Abnahmen
 
@@ -51,8 +52,8 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 | `POOL-UX-002` | `IDEA` | Ereignis-Timeline im Control Deck | bestätigte Welt-, Street- und Crisis-Ereignisse schneller nachvollziehen | reine Projection/Presentation; Journal bleibt Autorität |
 | `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | spätere Ereignisse können bestätigte frühere District-Ereignisse erzählerisch aufgreifen | erst nach validierter 0.8.7-C Runtime; keine versteckten Browserzustände |
 | `POOL-WORLD-004` | `IDEA` | District-Event-Cadence/Cooldown | verhindert Ereignis-Spam und macht seltene Ereignisse gewichtiger | erst nach kanonischer Application-Integration; Taktung aus bestätigter Spielzeit, nie aus Systemzeit allein |
-| `POOL-QA-003` | `IDEA` | District-Event-Katalogdiagnose mit Eintrags-ID | Entwickler/Mods sehen bei ungültigem Katalog sofort den betroffenen Eintrag statt nur die Vertragsart | auf Basis der zentralen Fail-fast-Prüfung; keine zweite Validierungslogik |
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | erkennt, wenn `PROJEKTSTATUS.json` nach einem validierten Safe Merge hinter `main` zurückbleibt | Main-Integrity-/Merge-Provenienz wiederverwenden; keine zweite Release-Autorität |
+| `POOL-QA-005` | `IDEA` | District-Event-Katalog-Preflight als lesender Diagnosebefehl | Katalogfehler vor Spielstart gesammelt prüfen, ohne Save oder Gameplay zu berühren | zentrale `DistrictWorldEventService`-Validierung wiederverwenden; keine zweite Prüflogik |
 
 ---
 
@@ -80,4 +81,4 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 ## Nächste Entnahme
 
-`POOL-WORLD-002` bleibt bis zum vollständigen 0.8.7-C-Slice aktiv. C1 und C2 sind remote validiert; der kleinste nächste Schritt ist C3 mit genau einem autorisierten Application-Trigger. Erst danach sollte die read-only Ereignis-Timeline folgen. `POOL-WORLD-004` hält die spätere Cadence/Cooldown-Idee fest, damit Ereignisse nicht bei jeder Gelegenheit inflationär auftreten. `POOL-QA-004` hält eine spätere automatische Freshness-Prüfung fest, damit Projektstatus und tatsächlicher Safe-Merge-Stand nicht erneut auseinanderlaufen.
+`POOL-WORLD-002` bleibt bis zum vollständigen 0.8.7-C-Slice aktiv. C1 und C2 sind remote validiert; der kleinste nächste Gameplay-Schritt bleibt C3 mit genau einem autorisierten Application-Trigger. Erst danach sollte die read-only Ereignis-Timeline folgen. `POOL-WORLD-004` hält die spätere Cadence/Cooldown-Idee fest, damit Ereignisse nicht bei jeder Gelegenheit inflationär auftreten. `POOL-QA-004` hält eine spätere automatische Freshness-Prüfung fest, damit Projektstatus und tatsächlicher Safe-Merge-Stand nicht erneut auseinanderlaufen. `POOL-QA-005` hält einen späteren lesenden Katalog-Preflight fest, der dieselbe zentrale Validierung ohne zweite Prüflogik nutzbar macht.
