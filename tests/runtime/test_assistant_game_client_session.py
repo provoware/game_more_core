@@ -104,12 +104,21 @@ class AssistantGameClientSessionTests(unittest.TestCase):
         self.assertEqual(self.kernel.read_records(), ())
 
     def test_recovery_command_delegates_to_canonical_service_and_rejects_client_deltas(self):
+        recovery_tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(recovery_tmp.cleanup)
+        recovery_kernel = PersistenceKernel(recovery_tmp.name, ALLOWED)
         low_energy = CharacterState.from_dict(self.character.to_dict())
         low_energy.energy = 40
         low_energy.stress = 30
-        self.kernel.initialize_state({"character": low_energy.to_dict()})
+        recovery_kernel.initialize_state({"character": low_energy.to_dict()})
+        recovery_session = AssistantGameClientSession(
+            recovery_kernel,
+            incident_catalog=build_incident_catalog(INCIDENTS),
+            incident_contract_version=INCIDENTS["version"],
+            scene_job_manifest=JOBS,
+        )
 
-        result = self.session.dispatch(
+        result = recovery_session.dispatch(
             {
                 "type": "recovery.run",
                 "command_id": "ui-recovery",
@@ -123,8 +132,8 @@ class AssistantGameClientSessionTests(unittest.TestCase):
         self.assertEqual(result.confirmed_state["character"]["stress"], 42)
         self.assertEqual(result.metadata["recovery_action"]["recovery_id"], "recovery.koffein_kalte_luft")
 
-        before = self.kernel.read_records()
-        injected = self.session.dispatch(
+        before = recovery_kernel.read_records()
+        injected = recovery_session.dispatch(
             {
                 "type": "recovery.run",
                 "command_id": "ui-recovery-inject",
@@ -135,7 +144,7 @@ class AssistantGameClientSessionTests(unittest.TestCase):
         )
         self.assertEqual(injected.status, "rejected")
         self.assertEqual(injected.error_code, "unexpected_command_fields")
-        self.assertEqual(self.kernel.read_records(), before)
+        self.assertEqual(recovery_kernel.read_records(), before)
 
 
 if __name__ == "__main__":
