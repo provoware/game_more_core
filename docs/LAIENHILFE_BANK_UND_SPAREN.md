@@ -1,10 +1,10 @@
-# Laienhilfe – Bankkonto, Sparen & Kontoauszug
+# Laienhilfe – Bankkonto, Sparen, Kontoauszug & Export
 
 ## Was ist jetzt möglich?
 
 Dein persönliches Geld besteht aus **Bargeld** und **Bankguthaben**. Beides gehört zum selben persönlichen `PlayerFinanceState` und zum selben bestätigten Finance-Ledger.
 
-Seit 0.8.8-D kannst du Geld zwischen Bargeld und Bank verschieben. D2 ergänzt bestätigte Sparzinsen. FIN-STATEMENTS macht diese bereits bestätigten Geldbewegungen jetzt verständlich sichtbar.
+Seit 0.8.8-D kannst du Geld zwischen Bargeld und Bank verschieben. D2 ergänzt bestätigte Sparzinsen. FIN-STATEMENTS macht diese bereits bestätigten Geldbewegungen verständlich sichtbar. FIN-EXPORT ergänzt jetzt eine **lokale TXT- und CSV-Kopie genau dieses Kontoauszugs**.
 
 ## Wie funktionieren die Zinsen?
 
@@ -39,6 +39,39 @@ Aktuell werden vier Arten verständlich dargestellt:
 
 Die neueste unterstützte Geldbewegung steht oben. Zusätzlich siehst du den Bargeld- und Bankstand **nach** der jeweiligen Buchung.
 
+## Wie exportiere ich den Kontoauszug?
+
+Im Kontoauszug erscheinen zwei zusätzliche Schalter:
+
+- **TXT EXPORT** – gut lesbare Textdatei
+- **CSV EXPORT** – tabellarische Datei für Tabellenprogramme oder weitere Auswertung
+
+Beide Dateien heißen bewusst stabil:
+
+- `bunkerfrequenz-kontoauszug.txt`
+- `bunkerfrequenz-kontoauszug.csv`
+
+Es wird **kein Datum im Dateinamen erfunden**, weil der Kontoauszug keinen kanonisch bestätigten Exportzeitpunkt besitzt.
+
+## Exportiert der aktuelle Filter nur einen Teil?
+
+Nein. Das ist absichtlich so.
+
+Die Filter `ALLE`, `JOBLOHN`, `BANK` und `ZINSEN` sind nur eine lokale Anzeigehilfe. Beim Export wird immer der **vollständige bereits unterstützte FIN-STATEMENTS-Kontoauszug** verwendet. So kann ein versehentlich aktiver Filter keine Buchungen aus deiner Datei verschwinden lassen.
+
+## Werden beim Export Summen neu berechnet?
+
+Nein. Der Export übernimmt die bereits vorhandenen Felder der bestätigten Kontoauszug-Projection, einschließlich der dort vorhandenen Summen und Eintragszahlen.
+
+Der Browser:
+
+- liest kein `finance.ledger` direkt,
+- erzeugt keine neuen Buchungen,
+- berechnet keine neuen Salden,
+- schreibt nichts in Save oder Journal zurück.
+
+Die Exportdatei ist also eine **lokale Kopie zur Ansicht**, kein zweiter Finanzstand.
+
 ## Warum steht dort „Buchung #…“ statt Datum und Uhrzeit?
 
 Das persönliche Ledger enthält für diese Geldbewegungen derzeit **keinen kanonisch bestätigten Buchungszeitpunkt**. Deshalb erfindet das Spiel kein Datum und keine Uhrzeit.
@@ -49,15 +82,15 @@ Das persönliche Ledger enthält für diese Geldbewegungen derzeit **keinen kano
 
 `ALLE`, `JOBLOHN`, `BANK` und `ZINSEN` ändern nur, welche bereits bestätigten Zeilen du gerade siehst. Der Filter wird nicht ins Journal geschrieben und verändert kein Geld.
 
-Auch die angezeigten Summen werden ausschließlich aus den vorhandenen Ledgerzeilen berechnet. Der Browser erfindet keine Buchungen und keine Beträge.
+Die in der Projection gelieferten Summen stammen aus der validierten FIN-STATEMENTS-Schicht. FIN-EXPORT übernimmt sie nur und rechnet sie nicht ein zweites Mal.
 
 ## Was passiert mit späteren Geldarten wie Investments?
 
-Unbekannte oder spätere Ledgerarten werden in diesem Slice **nicht gedeutet**. Der Kontoauszug weist nur darauf hin, dass weitere bestätigte Buchungen existieren. Damit kann eine spätere Investment-Iteration eigene Regeln hinzufügen, ohne dass FIN-STATEMENTS heute etwas Falsches behauptet.
+Unbekannte oder spätere Ledgerarten werden in diesem Slice **nicht gedeutet**. Der Kontoauszug weist nur darauf hin, dass weitere bestätigte Buchungen existieren. Damit kann eine spätere Investment-Iteration eigene Regeln hinzufügen, ohne dass FIN-STATEMENTS oder FIN-EXPORT heute etwas Falsches behauptet.
 
 ## Kann der Browser Zinsen oder Kontoauszugsbuchungen auslösen?
 
-Nein. Der Browser darf weder Finance-Perioden noch Zinsbeträge bestätigen. Für den Kontoauszug existiert außerdem **kein eigener Schreib-Command**: Er ist eine reine Anzeige des bestehenden bestätigten Ledgers.
+Nein. Der Browser darf weder Finance-Perioden noch Zinsbeträge bestätigen. Für Kontoauszug und Export existiert außerdem **kein eigener Schreib-Command**. Beides bleibt reine Anzeige beziehungsweise lokale Dateikopie der bestehenden bestätigten Projection.
 
 ## Ist das Eventbudget betroffen?
 
@@ -65,4 +98,4 @@ Nein. Persönliches Bargeld und Bankguthaben bleiben fachlich getrennt vom Event
 
 ## Was kommt als Nächstes?
 
-Nach validiertem FIN-STATEMENTS ist **0.8.8-F – Berlin Ops Map 2** der stärkste unabhängige Slice: lokaler Zoom/Pan, bessere Bezirks- und Objekthierarchie sowie fokussierte Details auf derselben read-only Map-Projection. C6 bleibt abhängig, bis ein echter kanonischer Rundenproduzent existiert.
+Nach FIN-EXPORT ist **0.8.8-ECON-ANTI-GRIND** der stärkste spielmechanische Slice: zuerst ein klarer Balancevertrag für sehr niedrige Energie, danach die kleinste Runtime-Regel, ohne phasenunabhängige Scene Jobs abzuschaffen. C6 bleibt abhängig, bis ein echter kanonischer Rundenproduzent existiert.
