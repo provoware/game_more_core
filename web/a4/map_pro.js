@@ -3,8 +3,14 @@
 (() => {
   let activeFilter = "all";
   let selectedKey = null;
+  let currentModel = null;
+  const view = { zoom: 1, panX: 0, panY: 0 };
 
   const FILTERS = new Set(["all", "owned", "prime", "hall"]);
+  const MIN_ZOOM = 1;
+  const MAX_ZOOM = 2.2;
+  const ZOOM_STEP = 0.2;
+  const PAN_STEP = 8;
 
   function node(tag, className, text) {
     const element = document.createElement(tag);
@@ -20,6 +26,10 @@
   function bounded(value) {
     const numeric = Number(value);
     return Number.isFinite(numeric) ? Math.max(0, Math.min(100, numeric)) : 0;
+  }
+
+  function clamp(value, minimum, maximum) {
+    return Math.max(minimum, Math.min(maximum, value));
   }
 
   function money(cents) {
@@ -152,6 +162,131 @@
     return button;
   }
 
+  function maxPan() {
+    return Math.max(0, (view.zoom - 1) * 50);
+  }
+
+  function normalizeView() {
+    view.zoom = clamp(Number(view.zoom) || MIN_ZOOM, MIN_ZOOM, MAX_ZOOM);
+    const limit = maxPan();
+    view.panX = clamp(Number(view.panX) || 0, -limit, limit);
+    view.panY = clamp(Number(view.panY) || 0, -limit, limit);
+  }
+
+  function transformed(value, pan) {
+    return 50 + (value - 50) * view.zoom + pan;
+  }
+
+  function updateViewStatus(message) {
+    const status = document.getElementById("map-view-status");
+    if (!status) return;
+    status.textContent = message || `Ansicht ${view.zoom.toFixed(1)}× · Pan X ${Math.round(view.panX)} · Y ${Math.round(view.panY)}`;
+  }
+
+  function applyView(model = currentModel) {
+    if (!model) return;
+    normalizeView();
+    for (const district of model.districts) {
+      const element = document.querySelector(`#berlin-map-canvas [data-map-key="${CSS.escape(`district:${district.district_id}`)}"]`);
+      if (!element) continue;
+      element.style.left = `${transformed(district.map_box.x, view.panX)}%`;
+      element.style.top = `${transformed(district.map_box.y, view.panY)}%`;
+      element.style.width = `${district.map_box.w * view.zoom}%`;
+      element.style.height = `${district.map_box.h * view.zoom}%`;
+    }
+    for (const location of model.locations) {
+      const element = document.querySelector(`#berlin-map-canvas [data-map-key="${CSS.escape(`location:${location.location_id}`)}"]`);
+      if (!element) continue;
+      element.style.left = `${transformed(location.position.x, view.panX)}%`;
+      element.style.top = `${transformed(location.position.y, view.panY)}%`;
+    }
+    updateViewStatus();
+  }
+
+  function changeZoom(delta) {
+    view.zoom = Math.round(clamp(view.zoom + delta, MIN_ZOOM, MAX_ZOOM) * 10) / 10;
+    applyView();
+  }
+
+  function panBy(deltaX, deltaY) {
+    view.panX += deltaX;
+    view.panY += deltaY;
+    applyView();
+  }
+
+  function resetView() {
+    view.zoom = 1;
+    view.panX = 0;
+    view.panY = 0;
+    applyView();
+    updateViewStatus("Gesamtansicht 1.0× wiederhergestellt.");
+  }
+
+  function selectedCenter(model) {
+    if (!selectedKey || !model) return null;
+    if (selectedKey.startsWith("district:")) {
+      const id = selectedKey.slice("district:".length);
+      const district = model.districts.find((item) => item.district_id === id);
+      return district ? {
+        x: district.map_box.x + district.map_box.w / 2,
+        y: district.map_box.y + district.map_box.h / 2,
+        label: displayId(district.district_id),
+      } : null;
+    }
+    if (selectedKey.startsWith("location:")) {
+      const id = selectedKey.slice("location:".length);
+      const location = model.locations.find((item) => item.location_id === id);
+      return location ? { x: location.position.x, y: location.position.y, label: displayId(location.location_id) } : null;
+    }
+    return null;
+  }
+
+  function focusSelected() {
+    const target = selectedCenter(currentModel);
+    if (!target) {
+      updateViewStatus("Erst einen Bezirk oder Ort auswählen.");
+      return;
+    }
+    view.zoom = Math.max(view.zoom, 1.6);
+    view.panX = -(target.x - 50) * view.zoom;
+    view.panY = -(target.y - 50) * view.zoom;
+    applyView();
+    updateViewStatus(`${target.label} fokussiert · ${view.zoom.toFixed(1)}×.`);
+  }
+
+  function mapViewButton(label, action, handler, ariaLabel = label) {
+    const button = node("button", "utility-button", label);
+    button.type = "button";
+    button.dataset.mapViewAction = action;
+    button.setAttribute("aria-label", ariaLabel);
+    button.addEventListener("click", handler);
+    return button;
+  }
+
+  function ensureViewControls() {
+    const canvas = document.getElementById("berlin-map-canvas");
+    if (!canvas || document.getElementById("map-view-controls")) return;
+    const controls = node("div", "inline-actions");
+    controls.id = "map-view-controls";
+    controls.setAttribute("role", "group");
+    controls.setAttribute("aria-label", "Kartenansicht steuern");
+    controls.append(
+      mapViewButton("−", "zoom-out", () => changeZoom(-ZOOM_STEP), "Karte verkleinern"),
+      mapViewButton("1:1", "reset", resetView, "Gesamtansicht wiederherstellen"),
+      mapViewButton("+", "zoom-in", () => changeZoom(ZOOM_STEP), "Karte vergrößern"),
+      mapViewButton("←", "pan-left", () => panBy(PAN_STEP, 0), "Kartenausschnitt nach links verschieben"),
+      mapViewButton("↑", "pan-up", () => panBy(0, PAN_STEP), "Kartenausschnitt nach oben verschieben"),
+      mapViewButton("↓", "pan-down", () => panBy(0, -PAN_STEP), "Kartenausschnitt nach unten verschieben"),
+      mapViewButton("→", "pan-right", () => panBy(-PAN_STEP, 0), "Kartenausschnitt nach rechts verschieben"),
+      mapViewButton("AUSWAHL FOKUS", "focus-selected", focusSelected, "Ausgewählten Bezirk oder Ort fokussieren")
+    );
+    const status = node("p", "selection-hint", "Gesamtansicht 1.0×.");
+    status.id = "map-view-status";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    canvas.before(controls, status);
+  }
+
   function updateFilterButtons() {
     document.querySelectorAll("[data-map-filter]").forEach((button) => {
       const selected = button.dataset.mapFilter === activeFilter;
@@ -183,6 +318,7 @@
     const panel = document.getElementById("map-pro-panel");
     const canvas = document.getElementById("berlin-map-canvas");
     if (!panel || !canvas) return;
+    currentModel = model || null;
     if (!model) {
       panel.classList.add("hidden");
       canvas.replaceChildren();
@@ -194,10 +330,12 @@
     document.getElementById("map-location-count").textContent = String(model.summary.location_count);
     document.getElementById("map-owned-count").textContent = String(model.summary.owned_count);
 
+    ensureViewControls();
     canvas.replaceChildren();
     for (const district of model.districts) canvas.append(districtElement(district));
     for (const location of model.locations) canvas.append(locationElement(location));
     bindFilters(model);
+    applyView(model);
 
     const selected = selectedKey && model.locations.find((item) => `location:${item.location_id}` === selectedKey);
     const first = selected || model.locations.find(matchesFilter);

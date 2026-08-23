@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import unittest
 
@@ -8,6 +9,7 @@ APP_JS = (ROOT / "web" / "a4" / "app.js").read_text(encoding="utf-8")
 INDEX = (ROOT / "web" / "a4" / "index.html").read_text(encoding="utf-8")
 STYLES = (ROOT / "web" / "a4" / "styles.css").read_text(encoding="utf-8")
 LAUNCHER = (ROOT / "tools" / "start_a4_game_client.py").read_text(encoding="utf-8")
+MAP_MANIFEST = json.loads((ROOT / "manifests" / "BERLIN_OPS_MAP_PRO_MANIFEST.json").read_text(encoding="utf-8"))
 
 
 class A4MapProContractTests(unittest.TestCase):
@@ -53,6 +55,42 @@ class A4MapProContractTests(unittest.TestCase):
         self.assertIn(".map-marker.tier-legendary", STYLES)
         self.assertIn(".map-marker.owned", STYLES)
         self.assertIn(".map-marker.hall", STYLES)
+
+    def test_map2_view_controls_are_local_bounded_and_keyboard_accessible(self):
+        for action in (
+            "zoom-out",
+            "reset",
+            "zoom-in",
+            "pan-left",
+            "pan-up",
+            "pan-down",
+            "pan-right",
+            "focus-selected",
+        ):
+            self.assertIn(f'"{action}"', MAP_JS)
+        self.assertIn("const MIN_ZOOM = 1;", MAP_JS)
+        self.assertIn("const MAX_ZOOM = 2.2;", MAP_JS)
+        self.assertIn('controls.setAttribute("role", "group")', MAP_JS)
+        self.assertIn('controls.setAttribute("aria-label", "Kartenansicht steuern")', MAP_JS)
+        self.assertIn('status.setAttribute("aria-live", "polite")', MAP_JS)
+        self.assertIn("function focusSelected()", MAP_JS)
+        self.assertIn("function selectedCenter(model)", MAP_JS)
+        self.assertNotIn("pointerdown", MAP_JS)
+        self.assertNotIn("wheel", MAP_JS)
+        self.assertEqual(MAP_MANIFEST["interaction"]["zoom"], "local_bounded")
+        self.assertEqual(MAP_MANIFEST["interaction"]["pan"], "local_bounded")
+        self.assertTrue(MAP_MANIFEST["interaction"]["focus_selected"])
+        self.assertFalse(MAP_MANIFEST["interaction"]["persistent_selection"])
+        self.assertFalse(MAP_MANIFEST["interaction"]["domain_write"])
+
+    def test_map2_transforms_only_existing_projection_coordinates(self):
+        self.assertIn("district.map_box.x", MAP_JS)
+        self.assertIn("district.map_box.w * view.zoom", MAP_JS)
+        self.assertIn("location.position.x", MAP_JS)
+        self.assertIn("location.position.y", MAP_JS)
+        self.assertIn("currentModel = model || null;", MAP_JS)
+        self.assertNotIn("longitude", MAP_JS.lower())
+        self.assertNotIn("latitude", MAP_JS.lower())
 
     def test_map_copy_states_that_navigation_and_domain_writes_are_outside_renderer(self):
         self.assertIn("Keine Navigation, kein Geocoding, keine eigene Fachlogik.", INDEX)
