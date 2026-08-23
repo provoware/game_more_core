@@ -3,6 +3,49 @@
 (function installRecoveryActionsUi() {
   const baseRenderSceneJobs = renderSceneJobs;
 
+  function availabilityText(action) {
+    if (action?.can_run) return "Nächste Regeneration: bestätigt möglich.";
+    if (action?.blocker === "energy_above_recovery_threshold") {
+      return "Nächste Regeneration gesperrt: Noch zu viel Energie für diesen Notfall-Reset.";
+    }
+    if (action?.blocker === "stress_above_recovery_threshold") {
+      return "Nächste Regeneration gesperrt: Zu viel Stress – erst anders runterkommen.";
+    }
+    return "Nächste Regeneration aktuell nicht verfügbar.";
+  }
+
+  function ensureFeedbackHost() {
+    const panel = document.getElementById("jobs-panel");
+    if (!panel) return null;
+    let feedback = document.getElementById("jobs-recovery-feedback");
+    if (!feedback) {
+      feedback = document.createElement("div");
+      feedback.id = "jobs-recovery-feedback";
+      feedback.className = "notice";
+      feedback.setAttribute("role", "status");
+      feedback.setAttribute("aria-live", "polite");
+      feedback.textContent = "Noch keine Regeneration bestätigt.";
+      document.getElementById("jobs-recovery-actions")?.after(feedback);
+    }
+    return feedback;
+  }
+
+  function renderConfirmedFeedback(recoveryId, beforeCharacter) {
+    const afterCharacter = state.projection?.character;
+    if (!beforeCharacter || !afterCharacter) return;
+    if (
+      beforeCharacter.energy === afterCharacter.energy &&
+      beforeCharacter.stress === afterCharacter.stress
+    ) return;
+
+    const action = (state.projection?.scene_jobs?.recovery_actions || []).find(
+      (item) => item.recovery_id === recoveryId
+    );
+    const feedback = ensureFeedbackHost();
+    if (!feedback) return;
+    feedback.textContent = `Energie ${beforeCharacter.energy} → ${afterCharacter.energy} · Stress ${beforeCharacter.stress} → ${afterCharacter.stress}. ${availabilityText(action)}`;
+  }
+
   function renderRecoveryActions(sceneJobs) {
     const panel = document.getElementById("jobs-panel");
     if (!panel) return;
@@ -17,6 +60,7 @@
       host.append(title, intro);
       document.getElementById("jobs-list")?.after(host);
     }
+    ensureFeedbackHost();
     for (const old of host.querySelectorAll("article")) old.remove();
 
     for (const action of sceneJobs?.recovery_actions || []) {
@@ -44,11 +88,17 @@
       button.className = "primary";
       button.textContent = "REGENERIEREN";
       button.disabled = action.can_run !== true;
-      button.addEventListener("click", () => sendCommand({
-        type: "recovery.run",
-        command_id: commandId("recovery"),
-        recovery_id: action.recovery_id
-      }));
+      button.addEventListener("click", async () => {
+        const beforeCharacter = state.projection?.character
+          ? { ...state.projection.character }
+          : null;
+        await sendCommand({
+          type: "recovery.run",
+          command_id: commandId("recovery"),
+          recovery_id: action.recovery_id
+        });
+        renderConfirmedFeedback(action.recovery_id, beforeCharacter);
+      });
       row.append(info, button);
       host.append(row);
     }

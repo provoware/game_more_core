@@ -33,7 +33,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
 
-    def test_validated_pool_items_and_active_timeline_filter_owner_are_consistent(self):
+    def test_validated_pool_items_and_active_recovery_feedback_owner_are_consistent(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         for pool_id in (
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
@@ -41,35 +41,27 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-COMPANION-001", "POOL-COMPANION-002", "POOL-FINANCE-001",
             "POOL-FINANCE-003", "POOL-FINANCE-004", "POOL-UX-004", "POOL-UX-005",
             "POOL-MAP-002", "POOL-STORY-001", "POOL-ECON-004", "POOL-ECON-005",
-            "POOL-UX-006", "POOL-ECON-006",
+            "POOL-UX-006", "POOL-ECON-006", "POOL-UX-003",
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-003"))
-        self.assertIn("`READY`", _pool_row(pool, "POOL-ECON-007"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-ECON-007"))
+        self.assertIn("`READY`", _pool_row(pool, "POOL-STREET-002"))
 
-    def test_validated_recovery_and_active_timeline_filter_match_status(self):
+    def test_validated_timeline_filter_and_active_recovery_feedback_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         economy = status["subsystems"]["economy"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-RECOVERY-ACTIONS")
-        self.assertEqual(status["active_iteration"], "0.8.8-UX-TIMELINE-FILTER")
-        self.assertEqual(status["next_iteration"], "0.8.8-ECON-RECOVERY-FEEDBACK")
-        self.assertEqual(status["current_focus"], "local_read_only_event_timeline_filters")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-TIMELINE-FILTER")
+        self.assertEqual(status["active_iteration"], "0.8.8-ECON-RECOVERY-FEEDBACK")
+        self.assertEqual(status["next_iteration"], "0.8.8-STREET-PACK")
+        self.assertEqual(status["current_focus"], "confirmed_recovery_before_after_feedback")
         self.assertTrue(economy["scene_job_anti_grind_validated"])
-        self.assertTrue(economy["scene_job_effective_payout_preview_validated"])
-        self.assertFalse(economy["browser_calculates_scene_job_payout"])
-        self.assertFalse(economy["recovery_actions_in_validation"])
         self.assertTrue(economy["recovery_actions_validated"])
-        self.assertEqual(economy["recovery_action_energy_delta"], 20)
-        self.assertEqual(economy["recovery_action_stress_delta"], 12)
-        self.assertFalse(economy["recovery_action_requires_system_time"])
-        self.assertFalse(economy["recovery_action_second_resource"])
-        self.assertFalse(economy["recovery_action_grants_xp_or_traits"])
-        self.assertFalse(economy["browser_can_supply_recovery_resource_values"])
-        self.assertTrue(presentation["event_timeline_projection_ready"])
-        self.assertTrue(presentation["event_timeline_visible"])
+        self.assertTrue(economy["recovery_feedback_in_validation"])
+        self.assertEqual(economy["recovery_feedback_source"], "confirmed_projection_before_after")
+        self.assertFalse(economy["recovery_feedback_recalculates_resource_deltas"])
         self.assertTrue(presentation["timeline_local_filter"])
         self.assertEqual(
             presentation["timeline_local_filter_values"],
@@ -77,6 +69,10 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         )
         self.assertFalse(presentation["timeline_local_filter_persisted"])
         self.assertTrue(presentation["timeline_local_filter_preserves_runtime_order"])
+        self.assertTrue(presentation["recovery_feedback_visible"])
+        self.assertTrue(presentation["recovery_feedback_uses_confirmed_before_after_projection"])
+        self.assertTrue(presentation["recovery_feedback_next_availability_from_runtime_projection"])
+        self.assertFalse(presentation["recovery_feedback_persisted"])
         self.assertFalse(presentation["browser_gameplay_authority"])
         self.assertTrue(process["focused_read_policy"])
         self.assertTrue(process["planned_read_list_required"])
@@ -105,7 +101,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-ECON-005": "`DONE`",
             "POOL-UX-006": "`DONE`",
             "POOL-ECON-006": "`DONE`",
-            "POOL-UX-003": "`PULLED`",
+            "POOL-UX-003": "`DONE`",
+            "POOL-ECON-007": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
