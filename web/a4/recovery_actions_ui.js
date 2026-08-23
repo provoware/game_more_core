@@ -3,6 +3,33 @@
 (function installRecoveryActionsUi() {
   const baseRenderSceneJobs = renderSceneJobs;
 
+  function availabilityText(action) {
+    if (action?.can_run) return "Nächste Regeneration: bestätigt möglich.";
+    if (action?.blocker === "energy_above_recovery_threshold") {
+      return "Nächste Regeneration gesperrt: Noch zu viel Energie für diesen Notfall-Reset.";
+    }
+    if (action?.blocker === "stress_above_recovery_threshold") {
+      return "Nächste Regeneration gesperrt: Zu viel Stress – erst anders runterkommen.";
+    }
+    return "Nächste Regeneration aktuell nicht verfügbar.";
+  }
+
+  function ensureFeedbackHost() {
+    const panel = document.getElementById("jobs-panel");
+    if (!panel) return null;
+    let feedback = document.getElementById("jobs-recovery-feedback");
+    if (!feedback) {
+      feedback = document.createElement("div");
+      feedback.id = "jobs-recovery-feedback";
+      feedback.className = "notice";
+      feedback.setAttribute("role", "status");
+      feedback.setAttribute("aria-live", "polite");
+      feedback.textContent = "Noch keine Regeneration bestätigt.";
+      document.getElementById("jobs-recovery-actions")?.after(feedback);
+    }
+    return feedback;
+  }
+
   function renderRecoveryActions(sceneJobs) {
     const panel = document.getElementById("jobs-panel");
     if (!panel) return;
@@ -17,6 +44,7 @@
       host.append(title, intro);
       document.getElementById("jobs-list")?.after(host);
     }
+    ensureFeedbackHost();
     for (const old of host.querySelectorAll("article")) old.remove();
 
     for (const action of sceneJobs?.recovery_actions || []) {
@@ -54,8 +82,22 @@
     }
   }
 
+  function renderFeedback(metadata, sceneJobs) {
+    const feedback = ensureFeedbackHost();
+    if (!feedback || !metadata) return;
+    const energy = metadata.resource_changes?.energy;
+    const stress = metadata.resource_changes?.stress;
+    if (!energy || !stress) return;
+    const nextAction = (sceneJobs?.recovery_actions || []).find(
+      (action) => action.recovery_id === metadata.recovery_id
+    );
+    feedback.textContent = `${metadata.label}: Energie ${energy.old} → ${energy.new} · Stress ${stress.old} → ${stress.new}. ${availabilityText(nextAction)}`;
+  }
+
   renderSceneJobs = function renderSceneJobsWithRecovery(sceneJobs, hasCharacter) {
     baseRenderSceneJobs(sceneJobs, hasCharacter);
     if (hasCharacter && sceneJobs?.available) renderRecoveryActions(sceneJobs);
   };
+
+  window.BunkerRecoveryActions = Object.freeze({ renderFeedback });
 })();
