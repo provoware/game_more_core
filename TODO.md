@@ -3,12 +3,13 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-C3 – Settlement-getriebene District-Event Application-Integration` · PR #95 · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-C4A – read-only Ereignis-Timeline Projection/Textschicht` · PR #98 · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
 - **0.8.7-C1 District-Event-Vertrag/Katalog:** PR #90 · `SAFE MERGE PASS` · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
 - **0.8.7-C2 District-Event Runtime:** PR #91 · `SAFE MERGE PASS` · Merge `5e32d6de2a5859b1cadca62543dd10949717e4fc`; anschließend Katalog-Fail-fast über PR #92 gehärtet
 - **0.8.7-C3 Application-Integration:** PR #95 · `SAFE MERGE PASS` · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
+- **0.8.7-C4A Timeline-Projection:** PR #98 · `SAFE MERGE PASS` · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
 - **District-Event-Robustheit:** `no_eligible_event` wird als expliziter schreibfreier No-op behandelt; kein künstliches Ersatz-Ereignis
-- **Aktive Entwicklungsstufe:** `0.8.7-C4 – read-only Ereignis-Timeline`; C4A baut zuerst ausschließlich die bestätigte Projection-/Textschicht
+- **Aktive Entwicklungsstufe:** `0.8.7-C4B – sichtbares Control Deck`; C4A ist Daten-/Textquelle, C4B bleibt reine Presentation
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
 ---
@@ -84,7 +85,7 @@
 
 # Aktiv – 0.8.7-C4 Ereignis-Timeline
 
-## C4A – bestätigte Projection-/Textschicht
+## C4A – bestätigte Projection-/Textschicht ✅
 
 - [x] bestätigte District-, Street- und Crisis-Ereignisse ausschließlich aus Journalrecords lesen
 - [x] Reihenfolge ausschließlich aus kanonischer Journal-`sequence` ableiten
@@ -92,6 +93,7 @@
 - [x] leere Historie bleibt leer; fehlende/ungültige Records oder Texte erzeugen keinen erfundenen Ersatzinhalt
 - [x] Projection liefert maximal die letzten 12 bestätigten Einträge und bleibt vollständig vom Eingabejournal entkoppelt
 - [x] Regressionen für Reihenfolge, Textauflösung, leere Historie, ungültige Records, Limit und Detached Data ergänzen
+- [x] `/safe-merge` PASS · PR #98 · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
 
 ## C4B – sichtbares Control Deck
 
