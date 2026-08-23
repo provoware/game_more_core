@@ -32,15 +32,16 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertEqual(len(matching), 1, pool_id)
             self.assertIn("`DONE`", matching[0], pool_id)
 
-    def test_c2_status_matches_the_remote_validated_runtime(self):
+    def test_c3_status_matches_the_remote_validated_application_integration(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         living_world = status["subsystems"]["living_world"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.7-C2")
-        self.assertEqual(status["next_iteration"], "0.8.7-C3")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.7-C3")
+        self.assertEqual(status["next_iteration"], "0.8.7-C4")
         self.assertTrue(living_world["district_event_runtime_implemented"])
         self.assertTrue(living_world["district_event_catalog_fail_fast"])
-        self.assertFalse(living_world["district_event_application_integration"])
+        self.assertTrue(living_world["district_event_application_integration"])
+        self.assertEqual(living_world["district_event_authorized_trigger"], "settlement.complete")
         self.assertFalse(living_world["district_event_client_authority"])
 
 
