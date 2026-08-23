@@ -3,10 +3,9 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-B – Control Deck & Player Choices`
-- **0.8.7-A Saisonale Hall of Tribute:** PR #87 · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
-- **0.8.7-B Control Deck & Player Choices:** PR #88 · Head `6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c` · Runtime `32600255789` · Presentation `32600255795` · Repository Health `32600255756` · Release Acceptance `32600255773` · Release Package `32600255763` · 0 Review-Threads · `SAFE MERGE PASS` · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
-- **Aktive Iteration:** `0.8.7-C – Bezirksbezogene Welt-Ereignisse`; erster Slice = Vertrag/Katalog, noch ohne schreibende Runtime
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-B – Control Deck & Player Choices` · PR #88 · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
+- **0.8.7-C1 District-Event-Vertrag/Katalog:** PR #90 · `SAFE MERGE PASS` · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`; kanonischer Feature-Status wird erst in eigener Statuspflege weitergezogen
+- **Aktive Iteration:** `0.8.7-C2 – District-Event Runtime`; deterministische Auswahl + bestätigte District-Anwendung, noch ohne A4-Auslösung
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
 ---
@@ -41,47 +40,43 @@
 - [x] Encounter bleibt einzige Effekt-Autorität
 - [x] Krisenentscheidungen zeigen katalogisierte Folgen vor dem Klick
 - [x] Browser sendet weiterhin nur erlaubte IDs
-- [x] Runtime Core `32600255789` ✅
-- [x] Presentation Core `32600255795` ✅
-- [x] Repository Health `32600255756` ✅
-- [x] Release Acceptance `32600255773` ✅
-- [x] Release Package `32600255763` ✅
-- [x] 0 Review-Threads
 - [x] `/safe-merge` PASS · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
+
+## 0.8.7-C1 – District-Event-Vertrag/Katalog ✅
+
+- [x] vorhandenen DistrictState-Vertrag als einzige Metrik-/Bounds-Basis referenzieren
+- [x] vier Ereignisse mit stabilen IDs, Gewichten, Voraussetzungen und kleinen Effekten definieren
+- [x] Auswahlvertrag deterministisch/replaybar halten; Systemzeit nie als Seed
+- [x] Browser-Aktivierung und Browser-Effektwerte ausdrücklich verbieten
+- [x] deutsche Story-Texte separat von Spiellogik katalogisieren
+- [x] gezielte Vertragsregressionen ergänzen
+- [x] `/safe-merge` PASS · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
 
 ---
 
 # AKTIVER AUSBAU
 
-## 0.8.7-C – Bezirksbezogene Welt-Ereignisse
+## 0.8.7-C2 – District-Event Runtime
 
 ### Ziel
 
-Reproduzierbare, katalogisierte Welt-Ereignisse sollen den vorhandenen persistenten DistrictState sichtbar beeinflussen, ohne eine zweite Event- oder Zufallsengine einzuführen.
+Der C1-Katalog wird über eine kleine deterministische Runtime ausführbar, ohne zweite District-Engine oder Browser-Autorität.
 
-### Slice C1 – Vertrag/Katalog
+- [x] Auswahlservice aus bestätigtem `world_seed + district_id + trigger_id` implementieren
+- [x] Voraussetzungen vor der gewichteten Auswahl gegen aktuellen DistrictState prüfen
+- [x] bestätigte Folgen über den vorhandenen `DistrictService` und `world.district_effect_applied` journalisieren
+- [x] derselbe District-/Trigger-Kontext darf auch bei verändertem Retry-Seed nicht erneut würfeln oder doppelt anwenden
+- [x] vorhandenen District-Recovery-Pfad für den resultierenden Journalrecord regressiv absichern
+- [x] ungültigen District-Kontext vor jedem Write ablehnen
+- [ ] Runtime aus einem kanonischen Game-Client/Application-Flow auslösen; Browser sendet dabei keine Effekte
+- [ ] District-Event read-only in Projection/A4 sichtbar machen
 
-- [x] vorhandenen DistrictState-Vertrag als einzige Metrik-/Bounds-Basis referenzieren
-- [x] Ereigniskatalog mit stabilen IDs, Gewichten, Voraussetzungen und kleinen Effekten definieren
-- [x] Auswahlvertrag deterministisch/replaybar halten; Systemzeit nie als Seed
-- [x] genau eine aktive District-Event-Instanz pro Kontext als Vertragsgrenze festlegen
-- [x] Browser-Aktivierung und Browser-Effektwerte ausdrücklich verbieten
-- [x] deutsche Story-Texte separat von Spiellogik katalogisieren
-- [x] gezielte Vertragsregressionen für IDs, Gewichte, Bounds, Voraussetzungen und Textschlüssel ergänzen
+### Explizit NICHT in C2
 
-### Slice C2 – Runtime/Recovery als nächster Schritt
-
-- [ ] Auswahlservice auf bestätigtem `world_seed + district_id + trigger_id` implementieren
-- [ ] bestätigte Folgen ausschließlich über zuständigen District-Service + Journal anwenden
-- [ ] Idempotenz/Reload/Recovery für eine konkrete Event-Instanz absichern
-- [ ] A4 zunächst nur lesend informieren; keine District-Fachlogik in JavaScript
-- [ ] gezielte Runtime-/Recovery-/Projection-Regressionen ergänzen
-
-### Explizit NICHT in 0.8.7-C
-
+- keine neue Journal-Eventart
 - keine zweite Crisis-/Street-Engine
+- keine JavaScript-District-Regeln
 - keine Netzwerkgegner
-- keine frei erfundenen Browser-Effekte
 - kein Property-Resale/Rent-System
 - kein Produktversionsbump ohne eigene Release-Abnahme
 
@@ -89,9 +84,9 @@ Reproduzierbare, katalogisierte Welt-Ereignisse sollen den vorhandenen persisten
 
 # Danach – priorisierter Ausbau
 
-1. **0.8.7-D – Street Content Packs:** mehr Abwechslung über denselben validierten Ansatz-/Encounter-Vertrag.
-2. **0.8.7-E – Crewfarben & Emblem:** reine Identitäts-/Darstellungsdaten ohne Character-ID-Änderung.
-3. **0.9 – Network Foundation:** eigener Server-/Transport-/Konfliktvertrag vor Netzwerk-Ranking oder Telegram-Sync.
+1. **0.8.7-C3 – Application-Integration:** autorisierten Trigger in den bestehenden Spielablauf einhängen, ohne Client-Effektwerte.
+2. **0.8.7-C4 – Ereignis-Timeline:** bestätigte District-, Street- und Crisis-Ereignisse read-only im Control Deck zeigen.
+3. **0.8.7-D – Street Content Packs:** mehr Abwechslung über denselben validierten Ansatz-/Encounter-Vertrag.
 
 ---
 

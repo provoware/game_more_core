@@ -34,7 +34,8 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 - **0.8.6-C:** PR #85 · Merge `10c7d6b5e04838b07ae6899b8b76580cd87de607`
 - **0.8.7-A:** PR #87 · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
-- **0.8.7-B:** PR #88 · Head `6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c` · 5/5 Gates · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
+- **0.8.7-B:** PR #88 · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
+- **0.8.7-C1:** PR #90 · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
 
 ---
 
@@ -42,12 +43,13 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-WORLD-002` | `PULLED` | **Bezirksbezogene Welt-/Zufallsereignisse** | Bezirke spielerisch stärker unterscheiden; C1 definiert Vertrag/Katalog, C2 folgt mit Runtime | vorhandener DistrictState bleibt einzige Metrik-Autorität |
+| `POOL-WORLD-002` | `PULLED` | **Bezirksbezogene Welt-/Zufallsereignisse** | C1 Vertrag/Katalog, C2 deterministische Runtime, danach Application-Integration | vorhandener DistrictState bleibt einzige Metrik-Autorität |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung ohne neue Engine | bestehender Street-Encounter-/Approach-Vertrag |
 | `POOL-PROFILE-002` | `READY` | Crewfarben und Emblem-Auswahl | stärkere Identität | nur Darstellungsdaten; Character-ID unverändert |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 | `POOL-UX-002` | `IDEA` | Ereignis-Timeline im Control Deck | bestätigte Welt-, Street- und Crisis-Ereignisse schneller nachvollziehen | reine Projection/Presentation; Journal bleibt Autorität |
 | `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | spätere Ereignisse können bestätigte frühere District-Ereignisse erzählerisch aufgreifen | erst nach validierter 0.8.7-C Runtime; keine versteckten Browserzustände |
+| `POOL-WORLD-004` | `IDEA` | District-Event-Cadence/Cooldown | verhindert Ereignis-Spam und macht seltene Ereignisse gewichtiger | erst nach kanonischer Application-Integration; Taktung aus bestätigter Spielzeit, nie aus Systemzeit allein |
 
 ---
 
@@ -75,4 +77,4 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 ## Nächste Entnahme
 
-`POOL-WORLD-002` ist als **0.8.7-C – Bezirksbezogene Welt-Ereignisse** aktiv. Nach dem Vertrag/Katalog-Slice folgt als kleinster nächster Schritt die kanonische Runtime-Auswahl und bestätigte Anwendung über District-Service + Journal. Danach bleiben `POOL-STREET-002` und `POOL-PROFILE-002` bevorzugte Folgebausteine.
+`POOL-WORLD-002` bleibt bis zum vollständigen 0.8.7-C-Slice aktiv. Nach C2 ist der kleinste nächste Schritt die autorisierte Application-Integration; erst danach sollte die read-only Ereignis-Timeline folgen. `POOL-WORLD-004` hält die spätere Cadence/Cooldown-Idee fest, damit Ereignisse nicht bei jeder Gelegenheit inflationär auftreten.
