@@ -41,6 +41,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-FIN-EXPORT:** PR #119 · Merge `11c023f927ad9a74673587fefd1709fe2322553f`
 - **0.8.8-ECON-ANTI-GRIND:** PR #120 · Merge `49d6947b9f1b3a35d0785a958a7688e3b22a6bc1`
 - **0.8.8-ECON-JOB-PREVIEW:** PR #121 · Merge `040be951665a34dd8d81694ab695128e0b846bd5` · aktuelle Auszahlung vor Jobstart aus derselben kanonischen Anti-Grind-Berechnung sichtbar
+- **0.8.8-UX-EXPORT-PROOF:** PR #122 · Merge `0909f3c38642f97d4474cd200af11c960e1ada66` · Vorschau/Kopieren/Prüfsumme aus exakt derselben TXT-/CSV-Serialisierung
 
 ---
 
@@ -58,10 +59,11 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-UX-005` | `DONE` | Nächste-Aktion-Signal | freigegebene Schritte schneller erkennen | nur vorhandene Runtime-Aktion |
 | `POOL-MAP-002` | `DONE` | Berlin Ops Map 2 | bessere Kartenlesbarkeit | bestehende Projection bleibt Quelle |
 | `POOL-STORY-001` | `DONE` | District-Event-Nachhall im Profil | bestätigte Weltfolgen sichtbar | keine Progressionsengine |
-| `POOL-UX-003` | `READY` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only |
+| `POOL-UX-003` | `READY` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only; keine Sortier-/Journalautorität |
 | `POOL-ECON-004` | `DONE` | Job-Erschöpfung / Anti-Grind | verhindert Endlosfarmen ohne Energie | gleicher SceneJobService |
 | `POOL-ECON-005` | `DONE` | Scene-Job-Lohnvorschau | tatsächlichen Erschöpfungslohn vor Jobstart sehen | PR #121 sicher gemergt; Browser rendert nur |
-| `POOL-UX-006` | `PULLED` | Exportvorschau / Prüfsumme | TXT/CSV vor Download prüfen und kopieren | exakt derselbe serialisierte Inhalt, kein Finanz-Write |
+| `POOL-UX-006` | `DONE` | Exportvorschau / Prüfsumme | TXT/CSV vor Download prüfen und kopieren | PR #122 sicher gemergt; gleiche Serialisierung, kein Finanz-Write |
+| `POOL-ECON-006` | `PULLED` | Bestätigte Regenerationsaktionen | Energie aktiv zurückgewinnen | +20 Energie gegen +12 Stress; keine Zeit-/Zweitressource |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-Vertrag |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 
@@ -83,7 +85,6 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
 | `POOL-QA-006` | `READY` | Status-Sync nach Safe Merge automatisieren | bestätigten Safe-Merge-Commit read-only erkennen |
 | `POOL-MAP-003` | `IDEA` | Map-Viewport-Miniübersicht | validierte Map 2 |
-| `POOL-ECON-006` | `READY` | Bestätigte Regenerationsaktionen | Energie aktiv zurückgewinnen, ohne Systemzeit-Autorität |
 
 ---
 
@@ -98,4 +99,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-UX-006` ist für 0.8.8-UX-EXPORT-PROOF aktiv. Vorschau, Kopieren, Prüfsumme und Download verwenden exakt denselben serialisierten TXT-/CSV-Inhalt. Danach ist `POOL-ECON-006` der stärkste unabhängige Gameplay-Slice; `POOL-COMPANION-003` bleibt abhängig.
+`POOL-ECON-006` ist für 0.8.8-ECON-RECOVERY-ACTIONS aktiv. Die Runtime tauscht katalogisiert +20 Energie gegen +12 Stress und erlaubt die Aktion nur bei vollständigem Headroom; der Browser liefert nur `recovery_id`. Danach ist `POOL-UX-003` der kleinste unabhängige read-only Slice; `POOL-COMPANION-003` bleibt abhängig.
