@@ -110,7 +110,71 @@ function setInputIfIdle(id, value) {
   if (document.activeElement !== input) input.value = value ?? "";
 }
 
+function ensureSceneJobsUi() {
+  if (!$("hud-cash")) {
+    const metric = document.createElement("div");
+    metric.className = "hud-metric";
+    const label = document.createElement("span");
+    label.textContent = "Bargeld";
+    const value = document.createElement("strong");
+    value.id = "hud-cash";
+    value.textContent = "–";
+    metric.append(label, value);
+    const propertyMetric = $("hud-property")?.closest(".hud-metric");
+    propertyMetric?.before(metric);
+  }
+
+  if (!document.querySelector('.quick-nav a[href="#jobs-panel"]')) {
+    const link = document.createElement("a");
+    link.href = "#jobs-panel";
+    link.textContent = "JOBS";
+    document.querySelector('.quick-nav a[href="#street-panel"]')?.after(link);
+  }
+
+  if ($("jobs-panel")) return;
+  const panel = document.createElement("section");
+  panel.id = "jobs-panel";
+  panel.className = "panel feature-panel hidden";
+  panel.setAttribute("aria-labelledby", "jobs-title");
+
+  const head = document.createElement("div");
+  head.className = "panel-head";
+  const heading = document.createElement("div");
+  const eyebrow = document.createElement("p");
+  eyebrow.className = "eyebrow";
+  eyebrow.textContent = "03 // ARBEIT & BARGELD";
+  const title = document.createElement("h2");
+  title.id = "jobs-title";
+  title.textContent = "Scene Jobs";
+  heading.append(eyebrow, title);
+  const cashMetric = document.createElement("div");
+  cashMetric.className = "metric";
+  const cashLabel = document.createElement("span");
+  cashLabel.textContent = "Bargeld";
+  const cashValue = document.createElement("strong");
+  cashValue.id = "jobs-cash";
+  cashValue.textContent = money(0);
+  cashMetric.append(cashLabel, cashValue);
+  head.append(heading, cashMetric);
+
+  const intro = document.createElement("p");
+  intro.textContent = "Diese normalen Szenejobs sind unabhängig von der Eventphase verfügbar. Lohn und Ressourcenfolgen kommen vollständig aus der Runtime; du wählst nur den Job.";
+  const list = document.createElement("div");
+  list.id = "jobs-list";
+  list.className = "equipment-list";
+  list.setAttribute("aria-live", "polite");
+  const status = document.createElement("div");
+  status.id = "jobs-last-result";
+  status.className = "notice";
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", "polite");
+  status.textContent = "Noch kein Job abgeschlossen.";
+  panel.append(head, intro, list, status);
+  $("street-panel")?.before(panel);
+}
+
 function renderHud(p) {
+  ensureSceneJobsUi();
   const event = p.event;
   const character = p.character;
   $("hud-phase").textContent = event ? displayId(event.phase) : "–";
@@ -118,6 +182,7 @@ function renderHud(p) {
   $("hud-energy").textContent = character ? String(character.energy) : "–";
   $("hud-stress").textContent = character ? String(character.stress) : "–";
   $("hud-reputation").textContent = character ? String(character.reputation) : "–";
+  $("hud-cash").textContent = character ? money(p.scene_jobs?.cash_cents || 0) : "–";
   $("hud-property").textContent = p.properties ? String(p.properties.owned_count || 0) : "–";
 }
 
@@ -274,6 +339,43 @@ function renderProfile(character) {
   $("profile-stress").textContent = String(character.stress);
   $("profile-id").textContent = character.character_id;
   renderCrewIdentity(character.crew_identity);
+}
+
+function renderSceneJobs(sceneJobs, hasCharacter) {
+  ensureSceneJobsUi();
+  const visible = Boolean(hasCharacter && sceneJobs?.available);
+  setHidden("jobs-panel", !visible);
+  if (!visible) return;
+
+  $("jobs-cash").textContent = money(sceneJobs.cash_cents || 0);
+  const host = $("jobs-list");
+  host.replaceChildren();
+  for (const job of sceneJobs.jobs || []) {
+    const row = document.createElement("article");
+    row.className = "equipment-row";
+    const info = document.createElement("div");
+    const title = document.createElement("strong");
+    title.textContent = job.label;
+    const description = document.createElement("span");
+    description.textContent = job.description;
+    const consequences = document.createElement("span");
+    consequences.textContent = `${job.duration_hours} h · Lohn ${money(job.payout_cents)} · Energie ${signed(job.energy_delta)} · Stress ${signed(job.stress_delta)}`;
+    info.append(title, description, consequences);
+
+    const actions = document.createElement("div");
+    actions.className = "inline-actions";
+    const run = document.createElement("button");
+    run.className = "primary";
+    run.textContent = `ARBEITEN · ${money(job.payout_cents)}`;
+    run.addEventListener("click", () => sendCommand({
+      type: "job.run",
+      command_id: commandId("scene-job"),
+      job_id: job.job_id
+    }));
+    actions.append(run);
+    row.append(info, actions);
+    host.append(row);
+  }
 }
 
 function renderStreetApproaches(approaches) {
@@ -514,6 +616,7 @@ function renderHall(hall) {
 function render() {
   const p = state.projection || {};
   const event = p.event;
+  ensureSceneJobsUi();
   setHidden("first-run", Boolean(p.character));
   setHidden("profile-panel", !p.character);
   setHidden("street-panel", !p.character);
@@ -527,6 +630,7 @@ function render() {
 
   renderHud(p);
   renderProfile(p.character);
+  renderSceneJobs(p.scene_jobs, Boolean(p.character));
   renderStreetApproaches(p.street_approaches);
   renderDistricts(p.districts);
   window.BunkerMapPro?.render(p.berlin_ops_map);
@@ -686,6 +790,12 @@ async function sendCommand(command) {
     state.projection = payload.state;
     render();
     if (command.type === "street.walk") renderStreetEncounter(payload.metadata?.street_encounter);
+    if (command.type === "job.run") {
+      const job = payload.metadata?.scene_job;
+      if (job && $("jobs-last-result")) {
+        $("jobs-last-result").textContent = `${job.label}: ${signedMoney(job.payout_cents)} Bargeld · Energie ${signed(job.energy_delta)} · Stress ${signed(job.stress_delta)}.`;
+      }
+    }
   } catch (error) {
     log(`${command.type}: ABGEWIESEN – ${error.message}`);
   }
