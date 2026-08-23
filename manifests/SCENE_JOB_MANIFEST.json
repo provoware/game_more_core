@@ -1,11 +1,20 @@
 {
   "schema_version": 1,
-  "version": "0.8.8-c1",
+  "version": "0.8.8-econ-anti-grind",
   "availability": {
     "always_available_with_character": true,
     "requires_event_phase": false,
     "requires_system_time": false,
     "client_can_supply_payout_or_effects": false
+  },
+  "exhaustion_policy": {
+    "mode": "pre_job_energy_proportional_payout",
+    "jobs_remain_available": true,
+    "full_payout_requires_energy_cost": true,
+    "zero_energy_payout_cents": 0,
+    "requires_system_time": false,
+    "client_can_supply_modifier": false,
+    "second_exhaustion_resource": false
   },
   "assistant_policy": {
     "task_source": "scene_jobs",
