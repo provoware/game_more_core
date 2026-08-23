@@ -9,6 +9,24 @@ from bunkerfrequenz.domain.finance import PlayerFinanceState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 
 
+def calculate_scene_job_payout_cents(job: Mapping[str, Any], pre_job_energy: int) -> int:
+    """Return the canonical Anti-Grind payout for one confirmed pre-job energy value."""
+    if isinstance(pre_job_energy, bool) or not isinstance(pre_job_energy, int) or not RESOURCE_MIN <= pre_job_energy <= RESOURCE_MAX:
+        raise ValueError("Scene-Job-Lohnvorschau benötigt bestätigte Energie 0..100")
+    energy_delta = job.get("energy_delta")
+    base_payout = job.get("payout_cents")
+    if isinstance(energy_delta, bool) or not isinstance(energy_delta, int) or not -100 <= energy_delta <= 100:
+        raise ValueError("Scene Job benötigt gültigen Energieeffekt")
+    if isinstance(base_payout, bool) or not isinstance(base_payout, int) or base_payout <= 0:
+        raise ValueError("Scene Job benötigt positiven Basislohn")
+    energy_cost = max(0, -energy_delta)
+    if energy_cost == 0 or pre_job_energy >= energy_cost:
+        return base_payout
+    if pre_job_energy <= 0:
+        return 0
+    return base_payout * pre_job_energy // energy_cost
+
+
 @dataclass(frozen=True, slots=True)
 class SceneJobResult:
     character: CharacterState
@@ -77,7 +95,7 @@ class SceneJobService:
             raise ValueError("Scene-Job-Kontext passt nicht zum Character")
         finance = PlayerFinanceState.from_dict(state.get("finance") if isinstance(state.get("finance"), dict) else None)
 
-        effective_payout_cents = self._effective_payout_cents(job, character.energy)
+        effective_payout_cents = calculate_scene_job_payout_cents(job, character.energy)
         energy_after = min(RESOURCE_MAX, max(RESOURCE_MIN, character.energy + job["energy_delta"]))
         stress_after = min(RESOURCE_MAX, max(RESOURCE_MIN, character.stress + job["stress_delta"]))
         character_after = CharacterState.from_dict(character.to_dict())
@@ -133,15 +151,6 @@ class SceneJobService:
             context=context,
         )
         return SceneJobResult(character_after, finance_after, deepcopy(job), receipt.event_ids, False)
-
-    def _effective_payout_cents(self, job: Mapping[str, Any], pre_job_energy: int) -> int:
-        energy_cost = max(0, -job["energy_delta"])
-        base_payout = job["payout_cents"]
-        if energy_cost == 0 or pre_job_energy >= energy_cost:
-            return base_payout
-        if pre_job_energy <= 0:
-            return self.exhaustion_policy["zero_energy_payout_cents"]
-        return base_payout * pre_job_energy // energy_cost
 
     def _current_result(self, job: Mapping[str, Any], *, replay: bool) -> SceneJobResult:
         state = self.persistence.load_state() or {}

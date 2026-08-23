@@ -86,12 +86,22 @@
     document.head.append(script);
   }
 
+  function ensureSceneJobPayoutPreviewModule() {
+    if (document.querySelector('script[data-scene-job-payout-preview="true"]')) return;
+    const script = document.createElement("script");
+    script.src = "scene_job_payout_preview.js";
+    script.defer = true;
+    script.dataset.sceneJobPayoutPreview = "true";
+    document.head.append(script);
+  }
+
   function init() {
     load();
     apply();
     ensureFocusModule();
     ensureDistrictBiographyModule();
     ensureFinanceStatementExportModule();
+    ensureSceneJobPayoutPreviewModule();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
     }

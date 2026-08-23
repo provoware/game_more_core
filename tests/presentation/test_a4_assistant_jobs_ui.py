@@ -11,6 +11,8 @@ ROOT = Path(__file__).parents[2]
 JOBS = json.loads((ROOT / "manifests" / "SCENE_JOB_MANIFEST.json").read_text(encoding="utf-8"))
 INDEX = (ROOT / "web" / "a4" / "index.html").read_text(encoding="utf-8")
 ASSISTANT_UI = (ROOT / "web" / "a4" / "assistant_jobs_ui.js").read_text(encoding="utf-8")
+UI_PREFS = (ROOT / "web" / "a4" / "ui_prefs.js").read_text(encoding="utf-8")
+PAYOUT_PREVIEW = (ROOT / "web" / "a4" / "scene_job_payout_preview.js").read_text(encoding="utf-8")
 LAUNCHER = (ROOT / "tools" / "start_a4_game_client.py").read_text(encoding="utf-8")
 
 
@@ -40,6 +42,28 @@ class A4AssistantJobsUiTests(unittest.TestCase):
         self.assertEqual(projection["cash_cents"], 8_500)
         self.assertEqual(projection["bank_cents"], 4_250)
         self.assertEqual(projection["finance_revision"], 3)
+
+    def test_projection_exposes_canonical_effective_payout_from_confirmed_energy(self):
+        character = CharacterState("char.local", "Local")
+        character.energy = 4
+        projection = build_scene_jobs_projection({"character": character.to_dict()}, JOBS["jobs"])
+        cable = next(job for job in projection["jobs"] if job["job_id"] == "scene.cable_repair")
+
+        self.assertEqual(cable["payout_cents"], 5_500)
+        self.assertEqual(cable["effective_payout_cents"], 2_750)
+        self.assertTrue(cable["payout_reduced_by_energy"])
+
+        character.energy = 8
+        full = build_scene_jobs_projection({"character": character.to_dict()}, JOBS["jobs"])
+        cable_full = next(job for job in full["jobs"] if job["job_id"] == "scene.cable_repair")
+        self.assertEqual(cable_full["effective_payout_cents"], 5_500)
+        self.assertFalse(cable_full["payout_reduced_by_energy"])
+
+        character.energy = 0
+        empty = build_scene_jobs_projection({"character": character.to_dict()}, JOBS["jobs"])
+        cable_empty = next(job for job in empty["jobs"] if job["job_id"] == "scene.cable_repair")
+        self.assertEqual(cable_empty["effective_payout_cents"], 0)
+        self.assertTrue(cable_empty["payout_reduced_by_energy"])
 
     def test_projection_fails_closed_if_saved_assistant_job_is_not_in_catalog(self):
         state = {
@@ -79,6 +103,18 @@ class A4AssistantJobsUiTests(unittest.TestCase):
         self.assertNotIn("cash_after_cents", fragment)
         self.assertNotIn("bank_after_cents", fragment)
         self.assertNotIn("interest", fragment.lower())
+
+    def test_payout_preview_only_renders_projection_values_without_gameplay_formula(self):
+        self.assertIn('script.src = "scene_job_payout_preview.js"', UI_PREFS)
+        self.assertIn("job.effective_payout_cents", PAYOUT_PREVIEW)
+        self.assertIn("job.payout_reduced_by_energy", PAYOUT_PREVIEW)
+        self.assertIn("Lohn bis zu", PAYOUT_PREVIEW)
+        self.assertIn("AKTUELL", PAYOUT_PREVIEW)
+        self.assertNotIn("sendCommand", PAYOUT_PREVIEW)
+        self.assertNotIn("fetch(", PAYOUT_PREVIEW)
+        self.assertNotIn("localStorage", PAYOUT_PREVIEW)
+        self.assertNotIn("energy_delta]", PAYOUT_PREVIEW)
+        self.assertNotIn("payout_cents *", PAYOUT_PREVIEW)
 
     def test_ui_explains_round_authority_and_launcher_routes_control_as_character_command(self):
         self.assertIn("intern bestätigten Spielrunde", ASSISTANT_UI)
