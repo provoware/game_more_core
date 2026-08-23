@@ -1,3 +1,4 @@
+from copy import deepcopy
 import json
 from pathlib import Path
 import tempfile
@@ -24,7 +25,7 @@ def context(command_id: str) -> JournalContext:
         "char.local",
         command_id,
         "scene-job-test",
-        "0.8.8-b1",
+        "0.8.8-c1",
         "char.local",
     )
 
@@ -77,7 +78,7 @@ class SceneJobServiceTests(unittest.TestCase):
                     "event-x",
                     "job-wrong-context",
                     "scene-job-test",
-                    "0.8.8-b1",
+                    "0.8.8-c1",
                     "char.local",
                 ),
             )
@@ -91,6 +92,26 @@ class SceneJobServiceTests(unittest.TestCase):
 
         self.assertEqual(state["finance"], result.finance.to_dict())
         self.assertEqual(state["character"], result.character.to_dict())
+
+    def test_assistant_policy_reuses_jobs_and_fails_closed_on_unsafe_authority(self):
+        policy = self.service.assistant_policy
+        self.assertEqual(policy["task_source"], "scene_jobs")
+        self.assertEqual(policy["max_active_tasks"], 1)
+        self.assertTrue(policy["requires_confirmed_round"])
+        self.assertFalse(policy["requires_system_time"])
+        self.assertFalse(policy["client_can_supply_round_authority"])
+        self.assertFalse(policy["client_can_supply_payout_or_effects"])
+        self.assertTrue(policy["stop_and_switch_required"])
+
+        unsafe = deepcopy(JOBS)
+        unsafe["assistant_policy"]["client_can_supply_round_authority"] = True
+        with self.assertRaisesRegex(ValueError, "Rundenautorität"):
+            SceneJobService(self.kernel, unsafe)
+
+        duplicate_catalog = deepcopy(JOBS)
+        duplicate_catalog["assistant_policy"]["task_source"] = "assistant_jobs"
+        with self.assertRaisesRegex(ValueError, "Scene-Job-Katalog"):
+            SceneJobService(self.kernel, duplicate_catalog)
 
 
 if __name__ == "__main__":
