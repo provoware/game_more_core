@@ -3,26 +3,26 @@
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
   "active_iteration": "0.8.7-C",
-  "status": "0_8_7_c_district_event_contract_in_validation_last_validated_0_8_7_b",
-  "current_focus": "district_world_event_contract_catalog_and_regression",
-  "last_validated_feature_iteration": "0.8.7-B",
+  "status": "0_8_7_c2_district_event_runtime_remote_validated_and_hardened_next_c3",
+  "current_focus": "district_world_event_application_integration",
+  "last_validated_feature_iteration": "0.8.7-C2",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #88 / head 6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c / merge 4d1a35bfbc086d07599b6ec7b3816e830bcea995",
+  "validation_reference": "PR #92 / head d34f3e9446ca29ab6eb5bbc01559c73261ad8f6b / merge df18bab2dc9120fec4fe20bb39388a102eef2148",
   "remote_validation": {
-    "status": "success_for_0.8.7_b_control_deck_on_0.8.4_alpha_1_release_baseline",
-    "pull_request": 88,
-    "validated_head": "6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c",
-    "runtime_core_workflow_run": 32600255789,
-    "presentation_core_workflow_run": 32600255795,
-    "repository_health_workflow_run": 32600255756,
-    "release_acceptance_workflow_run": 32600255773,
-    "release_package_workflow_run": 32600255763,
+    "status": "success_for_0.8.7_c2_district_event_runtime_and_catalog_fail_fast",
+    "pull_request": 92,
+    "validated_head": "d34f3e9446ca29ab6eb5bbc01559c73261ad8f6b",
+    "runtime_core_workflow_run": 32619278615,
+    "presentation_core_workflow_run": 32619278616,
+    "repository_health_workflow_run": 32619278620,
+    "release_acceptance_workflow_run": 32619278610,
+    "release_package_workflow_run": 32619278589,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "codex_review_execution": "blocked_by_external_usage_limit_not_counted_as_pass",
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "4d1a35bfbc086d07599b6ec7b3816e830bcea995"
+    "merged_commit": "df18bab2dc9120fec4fe20bb39388a102eef2148"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -43,7 +43,9 @@
     {"iteration": "0.8.6-B", "pull_request": 83, "merged_commit": "0b301bc9004f60dbc3ce221a7c6b3e462766b5b7", "feature": "property_upgrades"},
     {"iteration": "0.8.6-C", "pull_request": 85, "merged_commit": "10c7d6b5e04838b07ae6899b8b76580cd87de607", "feature": "berlin_ops_map_pro"},
     {"iteration": "0.8.7-A", "pull_request": 87, "merged_commit": "841258a37915e05d7f87eed7841c8e4b8d79bf46", "feature": "seasonal_hall_of_tribute"},
-    {"iteration": "0.8.7-B", "pull_request": 88, "merged_commit": "4d1a35bfbc086d07599b6ec7b3816e830bcea995", "feature": "control_deck_player_choices"}
+    {"iteration": "0.8.7-B", "pull_request": 88, "merged_commit": "4d1a35bfbc086d07599b6ec7b3816e830bcea995", "feature": "control_deck_player_choices"},
+    {"iteration": "0.8.7-C1", "pull_request": 90, "merged_commit": "337f8ad8f9719ec3389c372da9688bbbec593c16", "feature": "district_world_event_contract_catalog"},
+    {"iteration": "0.8.7-C2", "pull_request": 92, "merged_commit": "df18bab2dc9120fec4fe20bb39388a102eef2148", "feature": "district_world_event_runtime_and_catalog_fail_fast"}
   ],
   "subsystems": {
     "character_forge": {
@@ -69,7 +71,7 @@
       "property_transactions_compensatable": false
     },
     "living_world": {
-      "status": "0_8_7_c_contract_in_validation",
+      "status": "0_8_7_c2_runtime_remote_validated_and_hardened",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -78,7 +80,9 @@
       "hall_of_tribute_visible": true,
       "district_event_contract_version": "0.8.7-c1",
       "district_event_catalog_size": 4,
-      "district_event_runtime_implemented": false,
+      "district_event_runtime_implemented": true,
+      "district_event_catalog_fail_fast": true,
+      "district_event_application_integration": false,
       "district_event_client_authority": false
     },
     "properties": {
@@ -131,11 +135,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.7-C2",
-  "next_goal": "District-Event-Auswahl deterministisch aus world_seed + district_id + trigger_id ableiten und bestätigte Folgen über District-Service + Journal anwenden.",
+  "next_iteration": "0.8.7-C3",
+  "next_goal": "Einen autorisierten District-Event-Trigger in den bestehenden Game-Client/Application-Flow einhängen, ohne Client-Effektwerte oder Browser-Zufallsautorität.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T04:53:32+02:00"
+  "updated_at": "2026-08-23T07:54:08+02:00"
 }
