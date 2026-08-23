@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-A – Crew Identity Logo/Fahne` · PR #104 · Merge `7e0ed1e36dcc89436c0430d49e547fe2106f756b`
-- **0.8.8-A Remote-Abnahme:** Runtime `32648468121` · Presentation `32648468165` · Repository Health `32648468119` · Release Acceptance `32648468142` · Release Package `32648468140` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-B – Scene Jobs & persönliches Bargeld`
-- **B2-Status:** Runtime/Recovery + sichtbare A4-Integration implementiert; Remote-Abnahme und Safe Merge stehen noch aus
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-B – Scene Jobs & persönliches Bargeld` · PR #105 · Merge `83aa6d050909e949a42f3c1bb3ab5c267b386693`
+- **0.8.8-B Remote-Abnahme:** Runtime `32649707398` · Presentation `32649707389` · Repository Health `32649707385` · Release Acceptance `32649707396` · Release Package `32649707391` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-C – Secret Best Friend Assistant`
+- **C-Status:** Runtime/Recovery + A4-Integration implementiert; Remote-Abnahme und Safe Merge stehen noch aus
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
 ---
@@ -28,65 +28,77 @@
 - [x] bestehender `profile.update` / `character.profile_updated`-Pfad bleibt einzige Schreibgrenze
 - [x] Legacy-Saves erhalten stabilen neutralen Default ohne Journal-Umschreibung
 - [x] A4-Editor mit Preview; Character-ID und Gameplaywerte bleiben unverändert
-- [x] Runtime-, Presentation- und Recovery-Regressionen
 - [x] PR #104 5/5 Remote-Gates, 0 Review-Threads und `/safe-merge` PASS
+
+## 0.8.8-B – Scene Jobs & persönliches Bargeld
+
+- [x] fünf szenetypische Jobs mit serverseitiger Dauer, Auszahlung, Energie und Stress
+- [x] persönlicher `PlayerFinanceState` + gemeinsames Finance-Ledger
+- [x] `SceneJobService` verbucht Lohn und Ressourcen atomar und replaybar
+- [x] A4-JOB-Bereich + Bargeldanzeige; Browser sendet nur `job_id`
+- [x] Legacy-Saves ohne Finance-State bleiben lesbar und starten bei 0 € ohne Read-Write
+- [x] PR #105 / Head `6a653e40e19c80aed4df827910f7c91110a8a679` · 5/5 Gates · 0 Review-Threads · SAFE MERGE PASS · Merge `83aa6d050909e949a42f3c1bb3ab5c267b386693`
 
 ---
 
-# Aktiv – 0.8.8-B Scene Jobs & persönliches Bargeld
+# Aktiv – 0.8.8-C Secret Best Friend Assistant
 
 ## Ziel
 
-Der Spieler kann unabhängig von der Eventphase normale szenetypische Jobs ausführen, um persönliches Bargeld anzusparen. Auszahlung und Ressourcenfolgen werden ausschließlich von der Runtime bestimmt.
+Jeder Spieler erhält einen erzählerisch integrierten **geheimen besten Freund**, dem genau ein vorhandener Scene Job zugewiesen werden kann. Er erledigt diese Aufgabe nach jeder bestätigten Straßenrunde genau einmal, bis der Spieler sie wechselt oder stoppt.
 
-### B1 – Runtime & Wallet
+### Vertrag & Runtime
 
-- [x] `SCENE_JOB_MANIFEST.json` mit fünf szenetypischen Jobs und stabilen IDs
-- [x] persönliche Finance-Basis mit `cash_cents`, späterem Bank-/Investment-Platz und einem gemeinsamen Finance-Ledger
-- [x] `SceneJobService` verbucht Lohn sowie Energie-/Stressfolge atomar
-- [x] `finance.job_completed` im vorhandenen Journal-/Recovery-Pfad integriert
-- [x] Job-Retry mit derselben Command-ID zahlt nicht doppelt
-- [x] unbekannte Jobs, falscher Character-Kontext und Client-Effektinjektion werden vor Write abgewiesen
+- [x] `ASSISTANT_MANIFEST.json` mit stabiler Story-Rolle und `confirmed_street_walk` als einziger Rundenauslöser
+- [x] `AssistantState` mit einer aktiven Aufgabe, letzter bestätigter Runde, Ausführungszähler und Revision
+- [x] Assistent verwendet ausschließlich vorhandene `SceneJobService`-Jobs; keine zweite Job-/Task-Engine
+- [x] Spieler kann Aufgabe setzen, wechseln und deaktivieren
+- [x] aktive Aufgabe wird nach bestätigter `street.walk`-Runde genau einmal ausgeführt
+- [x] Retry derselben Straßenrunde kann Joblohn nicht doppelt buchen
+- [x] keine Systemzeit und kein Hintergrundtimer als Gameplay-Autorität
+- [x] Browser kann weder Assistenten-Auszahlung noch Energie-/Stressfolge noch Rundennummer liefern
+- [x] Assistant-State ist im gemeinsamen Journal-/Recovery-Pfad replaybar
 
-### B2 – sichtbarer A4-Slice
+### A4 / UX
 
-- [x] A4-Launcher lädt denselben Scene-Job-Vertrag und konfiguriert den vorhandenen `GameClientSession`
-- [x] read-only Scene-Job-/Wallet-Projection aus bestätigtem State + validiertem Service-Katalog
-- [x] kompakter `JOBS`-Bereich im Control Deck mit Jobbeschreibung, Dauer, Lohn, Energie und Stress
-- [x] persönliches Bargeld kompakt im OPS-HUD und im Jobkontext sichtbar
-- [x] Browser sendet bei `job.run` ausschließlich `job_id` + technische Command-ID; keine Auszahlung oder Effekte
-- [x] Legacy-Saves ohne Finance-State zeigen 0 € Bargeld, ohne beim Lesen zu schreiben
-- [x] gezielte Runtime-/Presentation-Regressionen ergänzt
+- [x] read-only Assistant-Projection mit Story, aktiver Aufgabe, erledigten Runden und Triggerhinweis
+- [x] kein zweiter Aufgabenbildschirm: Assistent wird direkt im vorhandenen JOBS-Bereich dargestellt
+- [x] jede Jobkarte kann mit `FREUND ÜBERNIMMT` zugewiesen werden
+- [x] aktiver Job ist eindeutig markiert; `AUFGABE STOPPEN` deaktiviert den Assistenten
+- [x] vorhandener `/api/state`-Refresh wird mitgenutzt; kein weiterer Polling-Loop
+- [x] Runtime-/GameClient-/Presentation-Regressionen ergänzt
+
+### Noch vor Merge
+
 - [ ] finalen PR-Head durch Runtime Core, Presentation Core, Repository Health, Release Acceptance und Release Package prüfen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch weiterhin 0 Commits hinter `main`
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in B
+### Bewusst nicht in C
 
-- kein Assistenten-Autoloop
 - keine Bankeinzahlung/-auszahlung
 - keine Zinsen, Anlagen oder Dividenden
-- keine Systemzeit als Job- oder Finance-Autorität
+- keine frei konfigurierbaren Makros oder beliebigen Command-Ketten
+- keine Offline-/Systemzeit-Automatik
 - kein Produktversionsbump
 
 ---
 
-# Priorisierter Ausbau nach 0.8.8-B
+# Priorisierter Ausbau nach 0.8.8-C
 
-1. **0.8.8-C – Secret Best Friend Assistant:** genau eine vorhandene Aufgabe aktivieren; pro bestätigter Runde exakt einmal ausführen; Stop/Wechsel jederzeit; vorhandene Job-/Task-Services wiederverwenden.
-2. **0.8.8-D – Bank & Investments:** Bargeld einzahlen/abheben, bestätigte Zinsperioden, Zinseszins, Anlagen/Dividenden und nachvollziehbare Auszüge auf demselben Finance-Ledger.
-3. **0.8.8-E – Control Deck Focus:** Informationen verdichten, doppelte Ansichten entfernen, Arbeitsbereiche lokal maximieren/zurücksetzen und nächste erlaubte Aktion kontrastreich hervorheben; Reduced Motion respektieren.
-4. **0.8.8-F – Berlin Ops Map 2:** bezirksartige Darstellung, Zoom/Pan, bessere Objekt-Hierarchie und Detailansicht; Karte bleibt read-only.
-5. **POOL-STORY-001 – Ereignis-Nachhall:** bestätigte wichtige District-Ereignisse später in der Crew-Biografie aufgreifen.
-6. **POOL-UX-003 – Timeline-Fokusfilter:** lokal Straße/Krise/Bezirk filtern, ohne Reihenfolge oder Save-State zu verändern.
+1. **0.8.8-D – Bank & Investments:** Bargeld einzahlen/abheben, bestätigte Zinsperioden, Zinseszins, Anlagen/Dividenden und nachvollziehbare Auszüge auf demselben Finance-Ledger.
+2. **0.8.8-E – Control Deck Focus:** Informationen verdichten, doppelte Ansichten entfernen, Arbeitsbereiche lokal maximieren/zurücksetzen und nächste erlaubte Aktion kontrastreich hervorheben; Reduced Motion respektieren.
+3. **0.8.8-F – Berlin Ops Map 2:** bezirksartige Darstellung, Zoom/Pan, bessere Objekt-Hierarchie und Detailansicht; Karte bleibt read-only.
+4. **POOL-STORY-001 – Ereignis-Nachhall:** bestätigte wichtige District-Ereignisse später in der Crew-Biografie aufgreifen.
+5. **POOL-UX-003 – Timeline-Fokusfilter:** lokal Straße/Krise/Bezirk filtern, ohne Reihenfolge oder Save-State zu verändern.
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
 - Keine Mega-PR: pro fachlichem Modul eigener kleiner Slice.
-- Keine zweite Economy-, Finance-, Map-, Timeline-, Profile- oder Sync-Engine.
+- Keine zweite Economy-, Finance-, Job-, Map-, Timeline-, Profile- oder Sync-Engine.
 - Persönliches Bargeld ist nicht das Eventbudget; beide bleiben fachlich getrennt.
 - Browser sendet nur erlaubte IDs; Geld, Jobfolgen, Zinsen, Dividenden und Assistentenfolgen werden serverseitig bestimmt.
 - Wiederholte Assistentenaktionen und Finanzzyklen brauchen bestätigte Spielrunde/Spielweltzeit; niemals Systemzeit allein.
