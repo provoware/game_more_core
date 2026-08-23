@@ -1,25 +1,75 @@
 {
   "version": "0.8.8-c5",
   "entries": {
-    "scene.flyer_shift": {
-      "headline": "Listen sitzen, Nacht kann kommen.",
-      "body": "Dein Freund schiebt dir die sortierten Einlasslisten rüber und meint trocken: Weniger Chaos am Eingang ist manchmal schon Luxus."
-    },
-    "scene.load_in_help": {
-      "headline": "Cases drin, Rücken beleidigt.",
-      "body": "Dein Freund klopft Staub von der Jacke: Anlage steht. Die Bandscheiben reichen die Kündigung später ein."
-    },
-    "scene.cable_repair": {
-      "headline": "Wackler gefunden, Frieden gerettet.",
-      "body": "Dein Freund hält den reparierten Stecker hoch: Kleines Kabel, großes Drama verhindert. Für heute reicht das als Heldentat."
-    },
-    "scene.bar_support": {
-      "headline": "Nachschub läuft, Tresen lebt.",
-      "body": "Dein Freund zählt die letzten Kisten und grinst: Wenn niemand merkt, wie knapp es war, war die Organisation perfekt."
-    },
-    "scene.night_cleanup": {
-      "headline": "Der Morgen findet weniger Verwüstung.",
-      "body": "Dein Freund lehnt den Besen an die Wand: Die Nacht war laut. Der Beweis dafür passt jetzt wenigstens in Müllsäcke."
-    }
+    "scene.flyer_shift": [
+      {
+        "headline": "Listen sitzen, Nacht kann kommen.",
+        "body": "Dein Freund schiebt dir die sortierten Einlasslisten rüber und meint trocken: Weniger Chaos am Eingang ist manchmal schon Luxus."
+      },
+      {
+        "headline": "Papierkrieg gewonnen, Tür bleibt ruhig.",
+        "body": "Dein Freund tippt auf die fertigen Listen: Heute muss wenigstens niemand mit einem zerknitterten Zettel gegen die Realität verhandeln."
+      },
+      {
+        "headline": "Einlass vorbereitet, Drama vertagt.",
+        "body": "Dein Freund legt den Stift weg: Namen sortiert, Flyer verteilt. Das Chaos darf sich für später etwas Neues ausdenken."
+      }
+    ],
+    "scene.load_in_help": [
+      {
+        "headline": "Cases drin, Rücken beleidigt.",
+        "body": "Dein Freund klopft Staub von der Jacke: Anlage steht. Die Bandscheiben reichen die Kündigung später ein."
+      },
+      {
+        "headline": "Schleppen erledigt, Halle erwacht.",
+        "body": "Dein Freund lehnt sich kurz an ein Case: Alles drin. Jetzt fehlt nur noch der Teil, bei dem es aussieht, als wäre das mühelos gewesen."
+      },
+      {
+        "headline": "Load-in durch, Arme offiziell benutzt.",
+        "body": "Dein Freund grinst Richtung Bühne: Die Kisten haben verloren. Morgen diskutieren wir mit den Schultern über die Folgen."
+      }
+    ],
+    "scene.cable_repair": [
+      {
+        "headline": "Wackler gefunden, Frieden gerettet.",
+        "body": "Dein Freund hält den reparierten Stecker hoch: Kleines Kabel, großes Drama verhindert. Für heute reicht das als Heldentat."
+      },
+      {
+        "headline": "Kontakt wieder da, Fluchen reduziert.",
+        "body": "Dein Freund wickelt das Kabel sauber auf: Es war natürlich nur diese eine Stelle. Wie immer die Stelle, die niemand sehen wollte."
+      },
+      {
+        "headline": "Signal lebt, Schuldiger isoliert.",
+        "body": "Dein Freund zeigt auf den reparierten Übergang: Technik ist einfach. Man muss nur lange genug herausfinden, welches winzige Ding den ganzen Abend ruinieren wollte."
+      }
+    ],
+    "scene.bar_support": [
+      {
+        "headline": "Nachschub läuft, Tresen lebt.",
+        "body": "Dein Freund zählt die letzten Kisten und grinst: Wenn niemand merkt, wie knapp es war, war die Organisation perfekt."
+      },
+      {
+        "headline": "Tresen stabil, Durstverwaltung funktioniert.",
+        "body": "Dein Freund stellt die letzte Kiste ab: Versorgung gesichert. Die Gäste dürfen weiter glauben, Getränke materialisieren sich von selbst."
+      },
+      {
+        "headline": "Bar versorgt, Engpass unsichtbar gemacht.",
+        "body": "Dein Freund wischt sich die Hände ab: Genau richtig nachgelegt. Gute Logistik erkennt man daran, dass keiner darüber reden muss."
+      }
+    ],
+    "scene.night_cleanup": [
+      {
+        "headline": "Der Morgen findet weniger Verwüstung.",
+        "body": "Dein Freund lehnt den Besen an die Wand: Die Nacht war laut. Der Beweis dafür passt jetzt wenigstens in Müllsäcke."
+      },
+      {
+        "headline": "Spuren beseitigt, Legenden dürfen bleiben.",
+        "body": "Dein Freund knotet den letzten Sack zu: Der Boden kennt die Wahrheit. Zum Glück schreibt der keine Rezensionen."
+      },
+      {
+        "headline": "Cleanup durch, Tageslicht entschärft.",
+        "body": "Dein Freund schaut durch den fast wieder brauchbaren Raum: Nachts war das Kunst. Morgens heißt dieselbe Installation plötzlich Aufräumen."
+      }
+    ]
   }
 }
