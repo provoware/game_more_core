@@ -39,6 +39,20 @@ Vor jeder Implementierung wird ein **kleiner geplanter Datei-Lesesatz** festgele
 
 **Leitregel:** Erst Zielstelle und Beweis lesen, dann patchen. Nicht das gesamte Repository in die Analyse ziehen, nur um Sicherheit zu simulieren.
 
+## Repository-Dateiklassen – verbindlich
+
+Bei jeder Repository-Arbeit werden Dateien vor dem Lesen in drei Klassen getrennt. Damit Basiswissen nicht in jeder Iteration erneut übertragen und Evidenz nicht dauerhaft in die Analyse gezogen wird.
+
+1. **Basisdateien** sind dauerhafte Verträge und Orientierung, zum Beispiel `AGENTS.md`, Manifeste, Schemas, `PROJEKTSTATUS.json`, `TODO.md`, `FEATURE_POOL.md` und zentrale Architekturverträge. Sie werden nur gelesen, wenn die aktive Iteration ihren Vertrag, Status oder Prozess tatsächlich berührt. Ein bereits bestätigter unveränderter Basisvertrag wird nicht vorsorglich erneut vollständig übertragen.
+2. **Arbeitsdateien** sind die konkret zu ändernden Runtime-, Domain-, Presentation-, Tool- oder Testdateien des aktiven Slices. Sie bilden zusammen mit ihren direkten Verträgen die normale Planned-Read-Liste.
+3. **Evidenzdateien und Logs** sind CI-Logs, Workflow-Artefakte, Diagnoseausgaben, generierte Reports, große Diffs und historische Nachweise. Sie gehören nicht zum dauerhaften Arbeitskontext. Im Normalfall werden nur Run-ID, Gate-Name, Status und ein kurzer Ergebnisnachweis geführt.
+4. Vollständige Logs werden nur bei einem konkreten roten Gate oder einer nicht lokal erklärbaren Abweichung gelesen. Dann ist zuerst nur der relevante Job und möglichst nur der fehlerhafte Logabschnitt einzulesen.
+5. Ein grünes Gate wird nicht durch erneutes Übertragen seines vollständigen Logs „noch grüner“. Nachweise erfolgreicher Gates bleiben kompakt.
+6. Große Basisdateien oder Historien werden nicht mit jeder Analyse erneut übertragen. Relevante Zeilenbereiche, Diffs oder stabile Referenzen werden bevorzugt.
+7. Die Iteration dokumentiert bei Scope-Erweiterungen, **welche Dateiklasse** neu aufgenommen wurde und warum.
+
+**Leitregel:** Basis selten, Arbeit gezielt, Evidenz nur bei Bedarf. Logs sind Diagnosematerial und kein dauerhafter Projektkontext.
+
 ## Pflichtangaben je Iteration
 - **Fortschritt:** Entwicklungsfortschritt in %
 - **Ziel:** gewünschter Zustand in einem Satz.
