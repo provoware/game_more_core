@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-C5A – Confirmed Afterglow Projection` · PR #111 · Merge `dc22935d92cf9fea0d72aaac449921a6093a431f`
-- **0.8.8-C5A Remote-Abnahme:** Runtime `32659895098` · Presentation `32659895080` · Repository Health `32659895087` · Release Acceptance `32659895072` · Release Package `32659895070` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-C5B – Visible Friendship Afterglow`
-- **C5B-Status:** die bereits abgesicherte read-only Nachhall-Projektion wird kompakt im vorhandenen JOBS-Assistentenblock angezeigt; mehrere Textvarianten werden deterministisch aus bestätigten Character-/Runden-/Job-IDs gewählt und können bei Refresh/Retry nicht neu gewürfelt werden
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-C5B – Visible Friendship Afterglow` · PR #112 · Merge `eaa615e48eecd84ba3ffb69551f8fb324fb42c12`
+- **0.8.8-C5B Remote-Abnahme:** Runtime `32660419399` · Presentation `32660419381` · Repository Health `32660419392` · Release Acceptance `32660419409` · Release Package `32660419390` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-D – Atomic Wallet ↔ Bank Transfers`
+- **D-Status:** persönliches Bargeld kann über denselben `PlayerFinanceState` und dasselbe Finance-Ledger atomar zwischen Wallet und Bank verschoben werden; Zinsen bleiben ausdrücklich eigener Folgeslice
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
 ---
@@ -82,49 +82,63 @@
 - [x] Ausgabe auf die letzten drei bestätigten Einträge begrenzt, geordnet und vom Quelljournal entkoppelt
 - [x] PR #111 · finaler Head `5f875cd066fd9608a482ec26092f64ec0b992437` · 5/5 Gates · `/safe-merge` PASS · Merge `dc22935d92cf9fea0d72aaac449921a6093a431f`
 
----
+## 0.8.8-C5B – Visible Friendship Afterglow
 
-# Aktiv – 0.8.8-C5B Visible Friendship Afterglow
-
-## Ziel
-
-Die abgesicherte C5A-Projektion wird im vorhandenen JOBS-Assistentenblock sichtbar, abwechslungsreich und weiterhin rein lesend dargestellt. Kein Browserzustand, keine XP und keine zweite Freundschaftsengine entstehen.
-
-### C5B – kleinster sichtbarer Story-Slice
-
-- [x] Nachhall unter `scene_jobs.assistant_afterglow` an den bestehenden A4-State hängen
-- [x] Journalrecords im A4-Projektionslauf einmal lesen und für Timeline sowie Nachhall wiederverwenden
-- [x] Nachhall direkt im bestehenden `jobs-assistant-control` anzeigen; kein zweites Dashboard
+- [x] Nachhall unter `scene_jobs.assistant_afterglow` an den bestehenden A4-State gehängt
+- [x] Journalrecords im A4-Projektionslauf einmal gelesen und für Timeline sowie Nachhall wiederverwendet
+- [x] Nachhall direkt im bestehenden `jobs-assistant-control`; kein zweites Dashboard
 - [x] drei externe Textvarianten pro vorhandenem Scene Job
 - [x] Variantenauswahl deterministisch aus bestätigter `character_id + round_id + job_id`; kein Refresh-/Retry-Reroll
 - [x] UI rendert ausschließlich projizierte Überschrift, Text und katalogisierten Jobtitel
-- [x] kein `fetch`, `localStorage`, Browser-Rundentrigger oder eigener Story-Write im Nachhallrenderer
-- [x] gezielte Presentation-Regressionen für Wiring, UI-Grenze, Determinismus, unvollständige Paare und Reihenfolge
+- [x] kein Browser-Story-Write, keine XP, kein neuer persistenter Freundschaftszustand
+- [x] PR #112 · finaler Head `da76621ecea0cd8e1afecd967fe7201a7c1d4c6c` · 5/5 Gates · 0 Review-Threads · `/safe-merge` PASS · Merge `eaa615e48eecd84ba3ffb69551f8fb324fb42c12`
+
+---
+
+# Aktiv – 0.8.8-D Atomic Wallet ↔ Bank Transfers
+
+## Ziel
+
+Persönliches Geld wird innerhalb des bereits vorhandenen `PlayerFinanceState` sicher zwischen Bargeld und Bank verschoben. Jeder Transfer ist atomar, replaybar und nutzt dasselbe Finance-Ledger; Zinsen werden noch nicht eingeführt.
+
+### D – kleinster Finance-/Gameplay-Slice
+
+- [x] `PersonalFinanceService` für `deposit` und `withdraw` auf dem bestehenden Persistence-Kernel
+- [x] neuer katalogisierter Journaltyp `finance.bank_transfer_posted`
+- [x] Wallet, Bank, Finance-Ledger und Revision werden in genau einem Commit geändert
+- [x] `bank_deposit` und `bank_withdrawal` verwenden die bereits vorhandenen Ledger-Kinds
+- [x] unzureichendes Bargeld oder Bankguthaben bricht vor jedem Write fail-closed ab
+- [x] Retry derselben Command-ID ist schreibfrei; geänderte Richtung oder Betrag unter derselben ID wird abgewiesen
+- [x] Game-Recovery rekonstruiert den bestätigten Finance-Zielzustand
+- [x] A4 akzeptiert bei `finance.transfer` nur Richtung + positiven `amount_cents`; Browser darf keine Zielstände oder Zinsen liefern
+- [x] bestätigtes Bankguthaben wird in derselben Scene-Jobs-/Finance-Projektion angezeigt
+- [x] Einzahlen und Abheben direkt im bestehenden JOBS-/Geldbereich; kein zweites Finance-Dashboard
+- [x] gezielte Runtime-/Presentation-Regressionen
 - [ ] finalen PR-Head durch Runtime Core, Presentation Core, Repository Health, Release Acceptance und Release Package prüfen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch weiterhin 0 Commits hinter `main`
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in C5B
+### Bewusst nicht in D
 
-- kein Freundschaftslevel, XP, Beziehungspunkt, Unlock oder Belohnungsbonus
-- keine neue Journal-Eventart und kein neuer persistenter Story-State
-- keine Änderung an C3-Rundenausführung, C4-Steuerung oder `SceneJobService`
-- keine Browser- oder Systemzeit-Autorität
-- keine zweite Timeline oder Assistentenansicht
+- keine Sparzinsen oder Zinseszinsen
+- keine Anlagen oder Dividenden
+- keine zweite Finance-/Ledger-Engine
+- keine Systemzeit als Finanzautorität
+- keine Änderung an C3-Rundenautorität oder Assistentenlogik
 - kein Produktversionsbump
 
 ### Danach
 
-- [ ] **0.8.8-D – Bankkonto & Sparen:** vorhandenes persönliches Finance-Ledger für Ein-/Auszahlung und später bestätigte Zinsperioden nutzen
-- [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end Runde → Assistent → Scene Job → Journal → Recovery → Retry prüfen
+- [ ] **0.8.8-D2 – bestätigte Sparzinsen:** Zinsfortschritt ausschließlich aus kanonisch bestätigter Spielperiode; Systemzeit niemals allein
 - [ ] **0.8.8-E – Control Deck Focus:** bestehende Oberfläche verdichten und lokale Fokus-/Maximierungssteuerung ergänzen
+- [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end Runde → Assistent → Scene Job → Journal → Recovery → Retry prüfen
 
 ---
 
 # Danach priorisiert
 
-1. **0.8.8-D – Bank & Investments:** Bargeld einzahlen/abheben, bestätigte Zinsperioden, Zinseszins, Anlagen/Dividenden und nachvollziehbare Auszüge auf demselben Finance-Ledger.
+1. **0.8.8-D2 – Sparzinsen:** bestätigte Zinsperioden und Zinseszins auf demselben Finance-Ledger, ohne Rechnerzeit-Autorität.
 2. **0.8.8-E – Control Deck Focus:** Informationen verdichten, doppelte Ansichten entfernen, Arbeitsbereiche lokal maximieren/zurücksetzen und nächste erlaubte Aktion kontrastreich hervorheben.
 3. **0.8.8-F – Berlin Ops Map 2:** bezirksartige Darstellung, Zoom/Pan, bessere Objekt-Hierarchie und Detailansicht; Karte bleibt read-only.
 
@@ -134,9 +148,9 @@ Die abgesicherte C5A-Projektion wird im vorhandenen JOBS-Assistentenblock sichtb
 
 - Keine Mega-PR: pro fachlichem Modul eigener kleiner Slice.
 - Keine zweite Economy-, Finance-, Map-, Timeline-, Profile-, Assistant-Task- oder Sync-Engine.
-- Persönliches Bargeld ist nicht das Eventbudget; beide bleiben fachlich getrennt.
-- Browser sendet nur erlaubte IDs; Geld, Jobfolgen, Zinsen, Dividenden und Assistentenfolgen werden serverseitig bestimmt.
-- Wiederholte Assistentenaktionen und Finanzzyklen brauchen bestätigte Spielrunde/Spielweltzeit; niemals Systemzeit allein.
+- Persönliches Bargeld und Bankguthaben gehören zum selben `PlayerFinanceState`; das Eventbudget bleibt fachlich getrennt.
+- Browser darf bei Banktransfers nur Richtung und positiven Betrag liefern; Zielstände, Zinsen und Dividenden werden serverseitig bestimmt.
+- Wiederholte Assistentenaktionen und spätere Finanzzyklen brauchen bestätigte Spielrunde/Spielweltzeit; niemals Systemzeit allein.
 - Ein gespeicherter Assistenten-Steuerzustand ist noch keine Ausführungsberechtigung.
 - Ein verarbeiteter Rundentrigger bleibt fachlich unveränderlich; Retry darf keine spätere Auswahl rückwirkend anwenden.
 - Story-Projections lesen nur bestätigte Journal-/Katalogdaten und schreiben keinen Progressionszustand.

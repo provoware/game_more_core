@@ -2,27 +2,27 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-C5B",
-  "status": "0_8_8_c5a_remote_validated_c5b_visible_afterglow_in_validation",
-  "current_focus": "assistant_confirmed_afterglow_visible_in_existing_jobs_ui",
-  "last_validated_feature_iteration": "0.8.8-C5A",
+  "active_iteration": "0.8.8-D",
+  "status": "0_8_8_c5b_remote_validated_d_bank_transfer_in_validation",
+  "current_focus": "personal_finance_atomic_wallet_bank_transfer",
+  "last_validated_feature_iteration": "0.8.8-C5B",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #111 / head 5f875cd066fd9608a482ec26092f64ec0b992437 / merge dc22935d92cf9fea0d72aaac449921a6093a431f",
+  "validation_reference": "PR #112 / head da76621ecea0cd8e1afecd967fe7201a7c1d4c6c / merge eaa615e48eecd84ba3ffb69551f8fb324fb42c12",
   "remote_validation": {
-    "status": "success_for_0.8.8_c5a_confirmed_afterglow_projection",
-    "pull_request": 111,
-    "validated_head": "5f875cd066fd9608a482ec26092f64ec0b992437",
-    "runtime_core_workflow_run": 32659895098,
-    "presentation_core_workflow_run": 32659895080,
-    "repository_health_workflow_run": 32659895087,
-    "release_acceptance_workflow_run": 32659895072,
-    "release_package_workflow_run": 32659895070,
+    "status": "success_for_0.8.8_c5b_visible_friendship_afterglow",
+    "pull_request": 112,
+    "validated_head": "da76621ecea0cd8e1afecd967fe7201a7c1d4c6c",
+    "runtime_core_workflow_run": 32660419399,
+    "presentation_core_workflow_run": 32660419381,
+    "repository_health_workflow_run": 32660419392,
+    "release_acceptance_workflow_run": 32660419409,
+    "release_package_workflow_run": 32660419390,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "codex_review_execution": "blocked_by_external_usage_limit_not_counted_as_pass",
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "dc22935d92cf9fea0d72aaac449921a6093a431f"
+    "merged_commit": "eaa615e48eecd84ba3ffb69551f8fb324fb42c12"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -56,7 +56,8 @@
     {"iteration": "0.8.8-C2", "pull_request": 108, "merged_commit": "5c597479afafe64f63aa4ce015cea5365b2320bf", "feature": "assistant_persistent_control_state"},
     {"iteration": "0.8.8-C3", "pull_request": 109, "merged_commit": "85e95995d5e84c53131e24a8ad3dec36717891c6", "feature": "assistant_confirmed_round_exactly_once_execution"},
     {"iteration": "0.8.8-C4", "pull_request": 110, "merged_commit": "f8295564a4bddabddb4493c778e549d1cb083374", "feature": "assistant_controls_in_existing_jobs_ui"},
-    {"iteration": "0.8.8-C5A", "pull_request": 111, "merged_commit": "dc22935d92cf9fea0d72aaac449921a6093a431f", "feature": "confirmed_assistant_afterglow_projection"}
+    {"iteration": "0.8.8-C5A", "pull_request": 111, "merged_commit": "dc22935d92cf9fea0d72aaac449921a6093a431f", "feature": "confirmed_assistant_afterglow_projection"},
+    {"iteration": "0.8.8-C5B", "pull_request": 112, "merged_commit": "eaa615e48eecd84ba3ffb69551f8fb324fb42c12", "feature": "visible_deterministic_confirmed_assistant_afterglow"}
   ],
   "subsystems": {
     "character_forge": {
@@ -76,14 +77,18 @@
       "always_available_job_actions": true
     },
     "economy": {
-      "status": "remote_validated_with_scene_jobs_personal_finance",
+      "status": "c5b_remote_validated_d_bank_transfer_in_validation",
       "equipment_market": true,
       "property_purchase_ledger_kind": "property_purchase",
       "property_upgrade_ledger_kind": "property_upgrade",
       "property_fixed_postings_advance_market_tick": false,
       "property_transactions_compensatable": false,
       "personal_finance_state_validated": true,
-      "bank_account_supported": false,
+      "bank_account_supported": true,
+      "bank_transfer_service_implemented": true,
+      "bank_transfer_recoverable": true,
+      "bank_transfer_idempotent": true,
+      "browser_can_supply_bank_target_balances": false,
       "savings_interest_supported": false,
       "investments_dividends_supported": false,
       "account_statements_supported": false
@@ -132,7 +137,7 @@
       "fake_local_champion_titles": false
     },
     "presentation": {
-      "status": "c5a_remote_validated_c5b_visible_afterglow_in_validation",
+      "status": "c5b_remote_validated_d_bank_controls_in_validation",
       "a4_localhost_client": true,
       "high_quality_berlin_ops_renderer": true,
       "map_read_only": true,
@@ -155,13 +160,15 @@
       "assistant_afterglow_entries_limit": 3,
       "assistant_afterglow_variants_per_job": 3,
       "assistant_afterglow_refresh_reroll": false,
+      "personal_bank_controls_in_jobs_panel": true,
+      "personal_bank_second_dashboard": false,
       "timeline_local_filter": false,
       "focus_maximize_restore": false,
       "next_action_attention_signal": false,
       "browser_gameplay_authority": false
     },
     "assistant": {
-      "status": "c5a_remote_validated_c5b_visible_afterglow_in_validation",
+      "status": "c5b_remote_validated",
       "secret_best_friend_story_role": true,
       "contract_policy_defined": true,
       "task_source": "scene_jobs",
@@ -204,11 +211,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.8-D",
-  "next_goal": "D: persönliches Bankkonto auf dem vorhandenen Finance-Ledger für Ein-/Auszahlungen vorbereiten; Zinsfortschritt nur aus bestätigter Spielautorität, niemals aus Systemzeit allein.",
+  "next_iteration": "0.8.8-D2",
+  "next_goal": "D2: Sparzinsen nur aus einer kanonisch bestätigten Spielperiode ableiten und atomar im bestehenden Finance-Ledger buchen; Systemzeit niemals allein.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T21:00:00+02:00"
+  "updated_at": "2026-08-23T21:30:00+02:00"
 }

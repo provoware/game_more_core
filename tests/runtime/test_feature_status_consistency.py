@@ -37,23 +37,29 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         for pool_id in (
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
             "POOL-UX-002", "POOL-WORLD-004", "POOL-PROFILE-002", "POOL-ECON-003",
-            "POOL-COMPANION-001",
+            "POOL-COMPANION-001", "POOL-COMPANION-002",
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
 
-    def test_validated_assistant_c5a_and_active_c5b_match_status(self):
+    def test_validated_assistant_c5b_and_active_bank_transfer_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         event_runtime = status["subsystems"]["event_runtime"]
         economy = status["subsystems"]["economy"]
         presentation = status["subsystems"]["presentation"]
         assistant = status["subsystems"]["assistant"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-C5A")
-        self.assertEqual(status["active_iteration"], "0.8.8-C5B")
-        self.assertEqual(status["next_iteration"], "0.8.8-D")
-        self.assertEqual(status["current_focus"], "assistant_confirmed_afterglow_visible_in_existing_jobs_ui")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-C5B")
+        self.assertEqual(status["active_iteration"], "0.8.8-D")
+        self.assertEqual(status["next_iteration"], "0.8.8-D2")
+        self.assertEqual(status["current_focus"], "personal_finance_atomic_wallet_bank_transfer")
         self.assertTrue(event_runtime["always_available_job_actions"])
         self.assertTrue(economy["personal_finance_state_validated"])
+        self.assertTrue(economy["bank_account_supported"])
+        self.assertTrue(economy["bank_transfer_service_implemented"])
+        self.assertTrue(economy["bank_transfer_recoverable"])
+        self.assertTrue(economy["bank_transfer_idempotent"])
+        self.assertFalse(economy["browser_can_supply_bank_target_balances"])
+        self.assertFalse(economy["savings_interest_supported"])
         self.assertTrue(presentation["scene_jobs_panel_validated"])
         self.assertTrue(presentation["assistant_controls_in_scene_jobs_panel"])
         self.assertFalse(presentation["assistant_second_dashboard"])
@@ -63,7 +69,9 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertEqual(presentation["assistant_afterglow_entries_limit"], 3)
         self.assertEqual(presentation["assistant_afterglow_variants_per_job"], 3)
         self.assertFalse(presentation["assistant_afterglow_refresh_reroll"])
-        self.assertEqual(assistant["status"], "c5a_remote_validated_c5b_visible_afterglow_in_validation")
+        self.assertTrue(presentation["personal_bank_controls_in_jobs_panel"])
+        self.assertFalse(presentation["personal_bank_second_dashboard"])
+        self.assertEqual(assistant["status"], "c5b_remote_validated")
         self.assertTrue(assistant["contract_policy_defined"])
         self.assertEqual(assistant["task_source"], "scene_jobs")
         self.assertEqual(assistant["max_active_tasks"], 1)
@@ -94,8 +102,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-PROFILE-002": "`DONE`",
             "POOL-ECON-003": "`DONE`",
             "POOL-COMPANION-001": "`DONE`",
-            "POOL-COMPANION-002": "`PULLED`",
-            "POOL-FINANCE-001": "`READY`",
+            "POOL-COMPANION-002": "`DONE`",
+            "POOL-FINANCE-001": "`PULLED`",
             "POOL-UX-004": "`READY`",
             "POOL-MAP-002": "`READY`",
         }

@@ -1,22 +1,26 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import replace
 from typing import Any, Mapping
 
 from bunkerfrequenz.application.assistant_control_service import AssistantControlService
 from bunkerfrequenz.application.game_client_session import GameClientCommandResult, GameClientSession
+from bunkerfrequenz.application.personal_finance_service import PersonalFinanceService
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 
 
 _ASSISTANT_FIELDS = frozenset({"type", "command_id", "job_id"})
+_FINANCE_TRANSFER_FIELDS = frozenset({"type", "command_id", "direction", "amount_cents"})
 
 
 class AssistantGameClientSession(GameClientSession):
-    """Add only assistant start/switch/stop to the existing A4 session boundary.
+    """Extend the existing A4 session with assistant control and personal bank transfers.
 
-    All non-assistant commands remain owned by ``GameClientSession``. Assistant
-    control delegates directly to ``AssistantControlService`` and therefore
-    cannot provide round authority, payout values or resource effects.
+    Non-special commands remain owned by ``GameClientSession``. Assistant control
+    delegates to ``AssistantControlService``. Personal wallet/bank transfers delegate
+    to ``PersonalFinanceService``. Neither surface accepts round authority, payouts,
+    resource effects or client-supplied target balances.
     """
 
     def __init__(
@@ -36,6 +40,7 @@ class AssistantGameClientSession(GameClientSession):
             if scene_job_manifest is not None
             else None
         )
+        self.personal_finance = PersonalFinanceService(persistence)
 
     def dispatch(
         self,
@@ -43,7 +48,10 @@ class AssistantGameClientSession(GameClientSession):
         *,
         context: JournalContext,
     ) -> GameClientCommandResult:
-        if command.get("type") != "assistant.control":
+        command_type = command.get("type")
+        if command_type == "finance.transfer":
+            return self._dispatch_finance_transfer(command, context=context)
+        if command_type != "assistant.control":
             return super().dispatch(command, context=context)
 
         unknown_fields = set(command) - _ASSISTANT_FIELDS
@@ -85,6 +93,72 @@ class AssistantGameClientSession(GameClientSession):
                     "assistant_control": {
                         **deepcopy(result.assistant.to_dict()),
                         "changed": result.changed,
+                    }
+                },
+            )
+        except PersistenceError as exc:
+            return self._rejected("persistence_error", str(exc))
+        except (ValueError, KeyError, TypeError) as exc:
+            return self._rejected("validation_error", str(exc))
+        except RuntimeError as exc:
+            return self._rejected("runtime_error", str(exc))
+
+    def _dispatch_finance_transfer(
+        self,
+        command: Mapping[str, Any],
+        *,
+        context: JournalContext,
+    ) -> GameClientCommandResult:
+        unknown_fields = set(command) - _FINANCE_TRANSFER_FIELDS
+        if unknown_fields:
+            return self._rejected(
+                "unexpected_command_fields",
+                ", ".join(sorted(str(field) for field in unknown_fields)),
+            )
+        command_id = command.get("command_id")
+        if not isinstance(command_id, str) or not command_id.strip():
+            return self._rejected("invalid_command_id")
+        command_id = command_id.strip()
+        if context.command_id != command_id:
+            return self._rejected("command_context_mismatch")
+
+        state = self.read_state()
+        raw_character = state.get("character")
+        if not isinstance(raw_character, dict):
+            return self._rejected("character_missing")
+        character_id = raw_character.get("character_id")
+        if not isinstance(character_id, str) or not character_id:
+            return self._rejected("character_missing")
+        if context.character_id and context.character_id != character_id:
+            return self._rejected("character_context_mismatch")
+        finance_context = replace(
+            context,
+            entity_type="character",
+            entity_id=character_id,
+            character_id=character_id,
+        )
+
+        direction = command.get("direction")
+        amount_cents = command.get("amount_cents")
+        if not isinstance(direction, str) or direction not in PersonalFinanceService.DIRECTIONS:
+            return self._rejected("invalid_finance_direction")
+        if isinstance(amount_cents, bool) or not isinstance(amount_cents, int) or amount_cents <= 0:
+            return self._rejected("invalid_finance_amount")
+
+        try:
+            result = self.personal_finance.transfer(direction, amount_cents, context=finance_context)
+            return GameClientCommandResult(
+                "confirmed",
+                self.read_state(),
+                result.committed_event_ids,
+                result.idempotent_replay,
+                None,
+                None,
+                {
+                    "personal_finance_transfer": {
+                        "direction": result.direction,
+                        "amount_cents": result.amount_cents,
+                        "finance": result.finance.to_dict(),
                     }
                 },
             )

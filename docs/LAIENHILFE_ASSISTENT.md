@@ -1,10 +1,10 @@
-# Laienhilfe – Geheimer bester Freund
+# Laienhilfe – Geheimer bester Freund & persönliches Geld
 
 ## Was ist jetzt möglich?
 
-C1 hat die Sicherheitsregeln festgelegt. C2 speichert dauerhaft **Aus** oder **genau einen vorhandenen Scene Job**. C3 sorgt dafür, dass eine intern bestätigte Spielrunde den gewählten Job höchstens einmal ausführt. C4 macht diese vorhandene Steuerung direkt im **JOBS-Bereich** sichtbar und bedienbar.
+C1 hat die Sicherheitsregeln für den Assistenten festgelegt. C2 speichert dauerhaft **Aus** oder **genau einen vorhandenen Scene Job**. C3 sorgt dafür, dass eine intern bestätigte Spielrunde den gewählten Job höchstens einmal ausführt. C4 macht diese Steuerung direkt im **JOBS-Bereich** sichtbar und bedienbar. C5A/C5B ergänzen dort kleine, ausschließlich aus bestätigter Assistentenarbeit abgeleitete Storyreaktionen – ohne Freundschaftslevel oder zweite Progressionsengine.
 
-C5A hat anschließend die sichere Datenherkunft für kleine erzählerische Reaktionen abgesichert. C5B zeigt diesen Nachhall nun direkt im vorhandenen Assistentenblock. Wichtig: Es entsteht dadurch **kein Freundschaftslevel, keine XP-Leiste und keine zweite Progressionsengine**.
+0.8.8-D ergänzt im selben Bereich das persönliche **Bankkonto**. Dein bereits vorhandenes Bargeld und dein Bankguthaben sind zwei Ansichten desselben `PlayerFinanceState` und werden im selben Finance-Ledger nachvollziehbar geführt.
 
 ## So benutzt du den Freund
 
@@ -17,6 +17,35 @@ C5A hat anschließend die sichere Datenherkunft für kleine erzählerische Reakt
 
 Der Status oberhalb der Jobkarten zeigt, ob der Freund aus oder aktiv ist, welchen katalogisierten Job er gewählt hat und welche bestätigte Steuerrevision gespeichert ist.
 
+## So benutzt du das Bankkonto
+
+Direkt im vorhandenen JOBS-/Geldbereich gibt es den Block **Bankkonto**. Dort siehst du **Bargeld**, **Bankguthaben** und den bestätigten Finanzstand.
+
+1. Gib einen positiven Betrag in Euro ein, zum Beispiel `25` oder `25,50`.
+2. **EINZAHLEN** verschiebt diesen Betrag vom Bargeld auf die Bank.
+3. **ABHEBEN** verschiebt ihn von der Bank zurück ins Bargeld.
+4. Ist auf der Quellseite nicht genug Geld vorhanden, wird der Transfer vollständig abgelehnt. Es gibt keinen halben Zwischenstand.
+
+Ein Transfer verändert immer gemeinsam Wallet, Bankguthaben, Ledger und Finance-Revision. Retry derselben technischen Command-ID kann denselben Transfer nicht doppelt buchen.
+
+## Welche Bankdaten darf der Browser bestimmen?
+
+Nur die **Richtung** (`deposit` oder `withdraw`) und den **positiven Betrag in Cent**. Die Runtime liest die bestätigten Geldstände selbst und berechnet daraus die Zielstände.
+
+Der Browser darf insbesondere **nicht** liefern:
+
+- neuen Bargeld-Endstand,
+- neuen Bank-Endstand,
+- Zinsen oder Zinseszinsen,
+- Dividenden oder Anlagenwerte,
+- irgendeinen Systemzeit-basierten Finanzfortschritt.
+
+Damit kann eine manipulierte Oberfläche keinen Geldstand erfinden.
+
+## Gibt es schon Zinsen?
+
+Nein. 0.8.8-D enthält bewusst nur atomare Ein- und Auszahlungen. Zinsen folgen als eigener Slice, weil sie eine bestätigte Spielautorität für den Fortschritt brauchen. Die Rechneruhr allein darf niemals Zinsen auslösen.
+
 ## Wann erscheint eine Freundschaftsreaktion?
 
 Der Nachhall braucht immer zwei bereits bestätigte Journal-Einträge:
@@ -25,8 +54,6 @@ Der Nachhall braucht immer zwei bereits bestätigte Journal-Einträge:
 - `finance.job_completed`: Der exakt zu dieser Runde gehörende Scene Job wurde tatsächlich dauerhaft verbucht.
 
 Nur wenn **beide Einträge zusammenpassen**, erscheint ein kleiner Storytext. Ein normal manuell ausgeführter Job reicht nicht. Ein einzelner Rundenmarker reicht ebenfalls nicht. Eine Runde, in der der Assistent auf **Aus** stand, erzeugt keinen Freundschafts-Nachhall.
-
-Damit kann die Oberfläche nicht aus einer Browseraktion oder aus einem halben Zwischenzustand eine Geschichte erfinden.
 
 ## Wo sehe ich den Nachhall?
 
@@ -45,35 +72,25 @@ Das heißt:
 - die Rechneruhr und Browser-Zufall bestimmen keinen Storytext,
 - es entsteht kein neuer gespeicherter Freundschaftszustand.
 
-Die Variation ist damit nur Darstellung bestätigter Geschichte – kein neues Gameplay-System.
-
 ## Startet ein Klick schon eine automatische Runde?
 
-Nein. Die Schaltflächen ändern ausschließlich den bereits vorhandenen `AssistantControlState`. Sie dürfen keine Spielrunde erfinden.
+Nein. Die Assistenten-Schaltflächen ändern ausschließlich den vorhandenen `AssistantControlState`. Sie dürfen keine Spielrunde erfinden. Bank-Einzahlungen oder -Auszahlungen starten ebenfalls keine Runde und verändern keine Assistentenautorität.
 
 Automatische Arbeit erfolgt weiterhin nur, wenn die Runtime einen **intern bestätigten Rundentrigger** an C3 übergibt. Browser und Rechnerzeit starten keine Runde.
 
-## Welche Daten darf der Browser senden?
-
-Bei der Assistentensteuerung nur die technische Command-ID und:
-
-- eine vorhandene `job_id`, wenn der Freund gestartet oder gewechselt wird,
-- `null`, wenn der Freund gestoppt wird.
-
-Lohn, Energie, Stress, Jobfolgen, Rundentrigger und Freundschaftsreaktionen kommen nicht aus dem Browser.
-
 ## Kann ich normale Scene Jobs weiterhin selbst ausführen?
 
-Ja. Die vorhandene normale Job-Schaltfläche bleibt unverändert. Manuelle Jobs werden außerdem ausdrücklich **nicht** als Assistenten-Freundschaftsreaktion gewertet.
+Ja. Die vorhandene normale Job-Schaltfläche bleibt unverändert. Manuelle Jobs werden ausdrücklich **nicht** als Assistenten-Freundschaftsreaktion gewertet. Joblohn landet weiterhin im persönlichen Bargeld und kann danach freiwillig auf die Bank verschoben werden.
 
-## Was bleibt durch C3 geschützt?
+## Was bleibt geschützt?
 
-- eine bestätigte Runde wird höchstens einmal verarbeitet,
-- Retry zahlt nicht doppelt,
+- eine bestätigte Assistentenrunde wird höchstens einmal verarbeitet,
+- Retry zahlt Joblohn oder Banktransfer nicht doppelt,
 - eine Runde im Zustand **Aus** kann später nicht rückwirkend Arbeit auslösen,
 - ein späterer Jobwechsel verändert keine alte Runde,
-- Systemzeit und Browser besitzen keine Rundenautorität.
+- Banktransfer bricht bei unzureichendem Quellguthaben vor jedem Write ab,
+- Systemzeit und Browser besitzen weder Runden- noch Zinsautorität.
 
 ## Was kommt danach?
 
-Der nächste unabhängige Gameplay-Slice ist **0.8.8-D – Bankkonto & Sparen** auf dem bereits vorhandenen persönlichen Finance-Ledger. **C6 – Round-Authority Integration Harness** bleibt bewusst abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist; dann soll der komplette Pfad Runde → Assistent → Scene Job → Journal → Recovery → Retry end-to-end geprüft werden.
+Als sauberer Finance-Folgeslice bietet sich **0.8.8-D2 – bestätigte Sparzinsen** an: Zinsfortschritt nur aus einer kanonisch bestätigten Spielperiode, niemals aus Rechnerzeit allein. Alternativ bleibt **0.8.8-E – Control Deck Focus** als unabhängiger UX-Slice bereit. **C6 – Round-Authority Integration Harness** bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.

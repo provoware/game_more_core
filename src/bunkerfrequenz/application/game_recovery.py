@@ -5,6 +5,7 @@ from bunkerfrequenz.application.district_recovery import replay_district_event
 from bunkerfrequenz.application.economy_service import replay_economy_event
 from bunkerfrequenz.application.event_state_service import replay_event_state_event
 from bunkerfrequenz.application.incident_service import replay_incident_event
+from bunkerfrequenz.application.personal_finance_service import replay_finance_bank_transfer_event
 from bunkerfrequenz.application.property_service import replay_property_event
 from bunkerfrequenz.application.property_upgrade_service import replay_property_upgrade_event
 from bunkerfrequenz.application.recovery_service import replay_character_event
@@ -23,6 +24,7 @@ def replay_game_event(derived_state: dict, record: dict) -> dict:
     state = replay_property_event(state, record)
     state = replay_property_upgrade_event(state, record)
     state = replay_finance_job_event(state, record)
+    state = replay_finance_bank_transfer_event(state, record)
     return replay_assistant_control_event(state, record)
 
 
