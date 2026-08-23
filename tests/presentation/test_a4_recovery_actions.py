@@ -48,6 +48,23 @@ class A4RecoveryActionsTests(unittest.TestCase):
         self.assertIn('script.dataset.recoveryActions = "true"', PREFS)
         self.assertIn("ensureRecoveryActionsModule();", PREFS)
 
+    def test_feedback_uses_confirmed_before_after_projections_and_next_runtime_availability(self):
+        self.assertIn('id = "jobs-recovery-feedback"', UI)
+        self.assertIn('aria-live", "polite"', UI)
+        self.assertIn("const beforeCharacter = state.projection?.character", UI)
+        self.assertIn("const afterCharacter = state.projection?.character", UI)
+        self.assertIn("await sendCommand", UI)
+        self.assertIn("state.projection?.scene_jobs?.recovery_actions", UI)
+        self.assertIn("action?.can_run", UI)
+        self.assertIn('action?.blocker === "energy_above_recovery_threshold"', UI)
+        self.assertIn('action?.blocker === "stress_above_recovery_threshold"', UI)
+        self.assertIn("Energie ${beforeCharacter.energy} → ${afterCharacter.energy}", UI)
+        self.assertIn("Stress ${beforeCharacter.stress} → ${afterCharacter.stress}", UI)
+        self.assertNotIn("beforeCharacter.energy +", UI)
+        self.assertNotIn("beforeCharacter.stress +", UI)
+        self.assertNotIn("max_energy_before", UI)
+        self.assertNotIn("max_stress_before", UI)
+
 
 if __name__ == "__main__":
     unittest.main()
