@@ -75,7 +75,7 @@ def _build_finance_statement_projection(
         "supported_entries": len(entries),
         "other_entries": other_entries,
         "totals": totals,
-        "filters": ("all", "jobs", "bank", "interest"),
+        "filters": ["all", "jobs", "bank", "interest"],
     }
 
 
