@@ -33,6 +33,7 @@ from bunkerfrequenz.infrastructure.persistence import (  # noqa: E402
     PersistenceKernel,
 )
 from bunkerfrequenz.presentation.a4_game_projection import build_a4_game_projection  # noqa: E402
+from bunkerfrequenz.presentation.assistant_projection import build_assistant_projection  # noqa: E402
 from bunkerfrequenz.presentation.event_timeline import build_event_timeline_projection  # noqa: E402
 from bunkerfrequenz.presentation.scene_jobs_projection import build_scene_jobs_projection  # noqa: E402
 
@@ -51,6 +52,7 @@ REQUIRED = (
     "manifests/INCIDENT_MANIFEST.json",
     "manifests/STREET_ENCOUNTER_MANIFEST.json",
     "manifests/SCENE_JOB_MANIFEST.json",
+    "manifests/ASSISTANT_MANIFEST.json",
     "manifests/DISTRICT_STATE_MANIFEST.json",
     "manifests/DISTRICT_EVENT_MANIFEST.json",
     "manifests/CITY_MAP_MANIFEST.json",
@@ -125,6 +127,7 @@ class A4ClientRuntime:
         incident_manifest = _load_json(ROOT / "manifests" / "INCIDENT_MANIFEST.json")
         self.street_manifest = _load_json(ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json")
         self.scene_job_manifest = _load_json(ROOT / "manifests" / "SCENE_JOB_MANIFEST.json")
+        self.assistant_manifest = _load_json(ROOT / "manifests" / "ASSISTANT_MANIFEST.json")
         self.district_manifest = _load_json(ROOT / "manifests" / "DISTRICT_STATE_MANIFEST.json")
         self.district_event_manifest = _load_json(ROOT / "manifests" / "DISTRICT_EVENT_MANIFEST.json")
         self.city_map_manifest = _load_json(ROOT / "manifests" / "CITY_MAP_MANIFEST.json")
@@ -158,7 +161,7 @@ class A4ClientRuntime:
         allowed = set(journal_manifest.get("event_types", ()))
         if not allowed:
             raise SystemExit("START FEHLGESCHLAGEN – JOURNAL_MANIFEST besitzt keine Eventtypen")
-        self.game_version = str(journal_manifest.get("version", "0.8.6-b1"))
+        self.game_version = str(journal_manifest.get("version", "0.8.8-c1"))
         self.incident_catalog = build_incident_catalog(incident_manifest)
         self.session_id = f"a4-{uuid.uuid4()}"
         self.save_dir = _prepare_save_dir(save_dir)
@@ -199,6 +202,7 @@ class A4ClientRuntime:
             street_manifest=self.street_manifest,
             street_world_seed=STREET_WORLD_SEED,
             scene_job_manifest=self.scene_job_manifest,
+            assistant_manifest=self.assistant_manifest,
             district_manifest=self.district_manifest,
             city_map_manifest=self.city_map_manifest,
             district_event_manifest=self.district_event_manifest,
@@ -229,9 +233,12 @@ class A4ClientRuntime:
                 street_manifest=self.street_manifest,
                 street_text_catalog=self.street_texts,
             )
-            projection["scene_jobs"] = build_scene_jobs_projection(
+            jobs = self.session.scene_jobs.jobs if self.session.scene_jobs is not None else ()
+            projection["scene_jobs"] = build_scene_jobs_projection(confirmed_state, jobs)
+            projection["assistant"] = build_assistant_projection(
                 confirmed_state,
-                self.session.scene_jobs.jobs if self.session.scene_jobs is not None else (),
+                manifest=self.assistant_manifest,
+                scene_jobs=jobs,
             )
             projection["event_timeline"] = build_event_timeline_projection(
                 self.kernel.read_records(),
@@ -349,7 +356,10 @@ class A4ClientRuntime:
             if not isinstance(character_id, str) or not character_id:
                 return {"status": "rejected", "error_code": "character_missing", "state": self.projection()}
 
-            if command.get("type") in {"profile.update", "street.walk", "job.run"}:
+            character_commands = {
+                "profile.update", "street.walk", "job.run", "assistant.assign", "assistant.deactivate",
+            }
+            if command.get("type") in character_commands:
                 context = self._context(command_id, "character", character_id, character_id)
             else:
                 event = state.get("event")
@@ -393,7 +403,7 @@ class A4ClientRuntime:
 
 
 class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
-    server_version = "BunkerfrequenzA4/0.8.8-b1"
+    server_version = "BunkerfrequenzA4/0.8.8-c1"
 
     @property
     def runtime(self) -> A4ClientRuntime:
