@@ -15,8 +15,8 @@ class A4FinanceExportTests(unittest.TestCase):
         self.assertIn("statement?.supported_entries", EXPORT)
         self.assertIn("statement?.other_entries", EXPORT)
         self.assertIn("statement?.filters", EXPORT)
-        self.assertNotIn("finance.ledger", EXPORT)
-        self.assertNotIn("ledger", EXPORT.lower().replace("bestätigte fin-statements-projection", ""))
+        for forbidden in ("finance.ledger", "ledger_entries", "PlayerFinanceState", "build_scene_jobs_projection"):
+            self.assertNotIn(forbidden, EXPORT)
         self.assertNotIn("reduce(", EXPORT)
         self.assertNotIn("/api/command", EXPORT)
         self.assertNotIn("fetch(", EXPORT)
