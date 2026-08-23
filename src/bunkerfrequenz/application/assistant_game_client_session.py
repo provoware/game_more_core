@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import replace
 from typing import Any, Mapping
 
 from bunkerfrequenz.application.assistant_control_service import AssistantControlService
@@ -120,8 +121,22 @@ class AssistantGameClientSession(GameClientSession):
         command_id = command_id.strip()
         if context.command_id != command_id:
             return self._rejected("command_context_mismatch")
-        if context.entity_type != "character" or not context.entity_id:
-            return self._rejected("invalid_character_context")
+
+        state = self.read_state()
+        raw_character = state.get("character")
+        if not isinstance(raw_character, dict):
+            return self._rejected("character_missing")
+        character_id = raw_character.get("character_id")
+        if not isinstance(character_id, str) or not character_id:
+            return self._rejected("character_missing")
+        if context.character_id and context.character_id != character_id:
+            return self._rejected("character_context_mismatch")
+        finance_context = replace(
+            context,
+            entity_type="character",
+            entity_id=character_id,
+            character_id=character_id,
+        )
 
         direction = command.get("direction")
         amount_cents = command.get("amount_cents")
@@ -131,7 +146,7 @@ class AssistantGameClientSession(GameClientSession):
             return self._rejected("invalid_finance_amount")
 
         try:
-            result = self.personal_finance.transfer(direction, amount_cents, context=context)
+            result = self.personal_finance.transfer(direction, amount_cents, context=finance_context)
             return GameClientCommandResult(
                 "confirmed",
                 self.read_state(),
