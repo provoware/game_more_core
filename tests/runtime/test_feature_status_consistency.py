@@ -40,26 +40,28 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
 
-    def test_c5_status_matches_visible_timeline_and_confirmed_cadence(self):
+    def test_validated_crew_identity_and_active_scene_jobs_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         living_world = status["subsystems"]["living_world"]
+        character_forge = status["subsystems"]["character_forge"]
+        event_runtime = status["subsystems"]["event_runtime"]
+        economy = status["subsystems"]["economy"]
         presentation = status["subsystems"]["presentation"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.7-C5")
-        self.assertEqual(status["active_iteration"], "0.8.8-A")
-        self.assertEqual(status["next_iteration"], "0.8.8-A")
-        self.assertEqual(status["current_focus"], "crew_identity_contract_and_sync_ready_profile")
-        self.assertTrue(living_world["district_event_runtime_implemented"])
-        self.assertTrue(living_world["district_event_application_integration"])
-        self.assertEqual(living_world["district_event_authorized_trigger"], "settlement.complete")
-        self.assertFalse(living_world["district_event_client_authority"])
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-A")
+        self.assertEqual(status["active_iteration"], "0.8.8-B")
+        self.assertEqual(status["next_iteration"], "0.8.8-B")
+        self.assertEqual(status["current_focus"], "scene_jobs_wallet_and_a4_visibility")
+        self.assertTrue(character_forge["crew_identity_logo_flag"])
+        self.assertTrue(presentation["crew_identity_editor_visible"])
+        self.assertFalse(event_runtime["always_available_job_actions"])
+        self.assertFalse(economy["personal_finance_state_validated"])
+        self.assertFalse(presentation["scene_jobs_panel_validated"])
         self.assertTrue(living_world["district_event_timeline_visible"])
         self.assertTrue(living_world["district_event_cadence_enabled"])
         self.assertEqual(living_world["district_event_cooldown_hours"], 24)
         self.assertEqual(living_world["district_event_cadence_authority"], "confirmed_event.time_window.start_local")
         self.assertFalse(living_world["district_event_system_time_fallback"])
-        self.assertTrue(presentation["event_timeline_projection_ready"])
-        self.assertTrue(presentation["event_timeline_visible"])
 
     def test_requested_0_8_8_foundations_have_single_pool_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
