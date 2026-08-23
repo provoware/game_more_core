@@ -122,45 +122,51 @@ class DistrictWorldEventService:
 
         seen_ids: set[str] = set()
         total_weight = 0
-        for event in self.events:
+        for index, event in enumerate(self.events):
             if not isinstance(event, Mapping):
-                raise ValueError("District-Event-Katalogeintrag muss Objekt sein")
-            event_id = self._text(event.get("event_id"), "events.event_id")
+                raise ValueError(f"events[{index}] muss Objekt sein")
+            event_id = self._text(event.get("event_id"), f"events[{index}].event_id")
             if event_id in seen_ids:
-                raise ValueError("District-Event-Katalog besitzt doppelte Event-ID")
+                raise ValueError(f"events[{index}].event_id '{event_id}' ist doppelt")
             seen_ids.add(event_id)
-            self._text(event.get("title_key"), f"{event_id}.title_key")
-            self._text(event.get("body_key"), f"{event_id}.body_key")
+            self._text(event.get("title_key"), f"events[{index}]({event_id}).title_key")
+            self._text(event.get("body_key"), f"events[{index}]({event_id}).body_key")
 
             weight = event.get("weight")
             if isinstance(weight, bool) or not isinstance(weight, int) or weight <= 0:
-                raise ValueError("District-Event-Gewicht muss positive Ganzzahl sein")
+                raise ValueError(f"events[{index}]({event_id}).weight muss positive Ganzzahl sein")
             total_weight += weight
 
             requirements = event.get("requirements", {})
             if not isinstance(requirements, Mapping):
-                raise ValueError("District-Event-requirements muss Objekt sein")
+                raise ValueError(f"events[{index}]({event_id}).requirements muss Objekt sein")
             for key, value in requirements.items():
+                field = f"events[{index}]({event_id}).requirements.{key}"
                 if isinstance(value, bool) or not isinstance(value, int):
-                    raise ValueError("District-Event-Voraussetzung muss Ganzzahl sein")
+                    raise ValueError(f"{field} muss Ganzzahl sein")
                 if key.startswith("minimum_"):
                     metric = key.removeprefix("minimum_")
                 elif key.startswith("maximum_"):
                     metric = key.removeprefix("maximum_")
                 else:
-                    raise ValueError("Unbekannte District-Event-Voraussetzung")
+                    raise ValueError(f"{field} ist unbekannte Voraussetzung")
                 if metric not in expected_metrics:
-                    raise ValueError("District-Event-Voraussetzung verweist auf unbekannte Metrik")
+                    raise ValueError(f"{field} verweist auf unbekannte Metrik '{metric}'")
 
             effects = event.get("effects")
             if not isinstance(effects, Mapping) or set(effects) != set(expected_metrics):
-                raise ValueError("District-Event-Effekte müssen exakt alle District-Metriken enthalten")
-            for value in effects.values():
+                raise ValueError(
+                    f"events[{index}]({event_id}).effects muss exakt alle District-Metriken enthalten"
+                )
+            for metric, value in effects.items():
+                field = f"events[{index}]({event_id}).effects.{metric}"
                 if isinstance(value, bool) or not isinstance(value, int) or not minimum <= value <= maximum:
-                    raise ValueError("District-Event-Effekt liegt außerhalb des Vertrags")
+                    raise ValueError(f"{field} liegt außerhalb des Vertrags [{minimum}, {maximum}]")
 
         if total_weight != expected_weight:
-            raise ValueError("District-Event-Kataloggewicht weicht von selection.weight_total ab")
+            raise ValueError(
+                f"District-Event-Kataloggewicht {total_weight} weicht von selection.weight_total {expected_weight} ab"
+            )
 
     def _existing_event_id(self, source_prefix: str) -> str | None:
         state = self.district_service.current_state()
