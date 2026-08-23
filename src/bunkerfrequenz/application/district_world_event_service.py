@@ -19,7 +19,7 @@ class DistrictWorldEventResult:
 
 
 class DistrictWorldEventService:
-    """Select and apply one catalogued district event deterministically."""
+    """Select one catalogued district event deterministically and reuse DistrictService for persistence."""
 
     def __init__(self, district_service: DistrictService, event_manifest: Mapping[str, Any]) -> None:
         self.district_service = district_service
@@ -64,44 +64,24 @@ class DistrictWorldEventService:
         if context.entity_type != "district" or context.entity_id != district_id:
             raise ValueError("District-Event benötigt passenden District-Kontext")
 
-        event_instance_id = f"district-event:{district_id}:{trigger_id}"
-        replay = self._existing_replay(event_instance_id)
-        if replay is not None:
-            event = self._event_by_id(replay["event_id"])
-            result = self.district_service.apply_catalogued_world_event(
-                event_instance_id=event_instance_id,
-                district_id=district_id,
-                requested_deltas=event["effects"],
-                event_metadata={
-                    "event_id": event["event_id"],
-                    "event_contract_version": self.version,
-                    "trigger_id": trigger_id,
-                },
-                context=context,
-            )
-            return DistrictWorldEventResult(
-                event["event_id"],
-                event["title_key"],
-                event["body_key"],
-                event_instance_id,
-                result,
-            )
+        source_prefix = f"district-event:{district_id}:{trigger_id}:"
+        replay_event_id = self._existing_event_id(source_prefix)
+        if replay_event_id is None:
+            state = self.district_service.current_state()
+            metrics = state.metrics[district_id]
+            eligible = [event for event in self.events if self._requirements_met(event, metrics)]
+            if not eligible:
+                raise PersistenceError("Für diesen District-Kontext ist kein katalogisiertes Ereignis zulässig")
+            event = self._select(eligible, world_seed=world_seed, district_id=district_id, trigger_id=trigger_id)
+        else:
+            event = self._event_by_id(replay_event_id)
 
-        state = self.district_service.current_state()
-        metrics = state.metrics[district_id]
-        eligible = [event for event in self.events if self._requirements_met(event, metrics)]
-        if not eligible:
-            raise PersistenceError("Für diesen District-Kontext ist kein katalogisiertes Ereignis zulässig")
-        event = self._select(eligible, world_seed=world_seed, district_id=district_id, trigger_id=trigger_id)
-        result = self.district_service.apply_catalogued_world_event(
-            event_instance_id=event_instance_id,
+        event_instance_id = f"{source_prefix}{event['event_id']}"
+        result = self.district_service._apply(
+            source_type="district_event",
+            source_id=event_instance_id,
             district_id=district_id,
             requested_deltas=event["effects"],
-            event_metadata={
-                "event_id": event["event_id"],
-                "event_contract_version": self.version,
-                "trigger_id": trigger_id,
-            },
             context=context,
         )
         return DistrictWorldEventResult(
@@ -112,23 +92,17 @@ class DistrictWorldEventService:
             result,
         )
 
-    def _existing_replay(self, event_instance_id: str) -> Mapping[str, Any] | None:
-        for record in self.district_service.persistence.read_records():
-            if record.get("event_type") != "world.district_effect_applied":
-                continue
-            payload = record.get("payload")
-            if not isinstance(payload, Mapping) or payload.get("source_id") != event_instance_id:
-                continue
-            metadata = payload.get("source_metadata")
-            if not isinstance(metadata, Mapping):
-                raise PersistenceError("Bestätigtes District-Event besitzt keine Auswahlmetadaten")
-            if metadata.get("event_contract_version") != self.version:
-                raise PersistenceError("Bestätigtes District-Event verwendet anderen Vertragsstand")
-            event_id = metadata.get("event_id")
-            if not isinstance(event_id, str):
-                raise PersistenceError("Bestätigtes District-Event besitzt keine Event-ID")
-            return metadata
-        return None
+    def _existing_event_id(self, source_prefix: str) -> str | None:
+        state = self.district_service.current_state()
+        matches = [source for source in state.applied_sources if source.startswith(source_prefix)]
+        if not matches:
+            return None
+        if len(matches) != 1:
+            raise PersistenceError("District-Event-Trigger besitzt mehr als eine bestätigte Instanz")
+        event_id = matches[0][len(source_prefix):]
+        if not event_id:
+            raise PersistenceError("Bestätigte District-Event-Quelle besitzt keine Event-ID")
+        return event_id
 
     def _event_by_id(self, event_id: str) -> Mapping[str, Any]:
         event = next((item for item in self.events if item.get("event_id") == event_id), None)
