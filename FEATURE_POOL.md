@@ -57,6 +57,7 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | erkennt, wenn `PROJEKTSTATUS.json` nach einem validierten Safe Merge hinter `main` zurückbleibt | Main-Integrity-/Merge-Provenienz wiederverwenden; keine zweite Release-Autorität |
 | `POOL-QA-005` | `IDEA` | District-Event-Katalog-Preflight als lesender Diagnosebefehl | Katalogfehler vor Spielstart gesammelt prüfen, ohne Save oder Gameplay zu berühren | zentrale `DistrictWorldEventService`-Validierung wiederverwenden; keine zweite Prüflogik |
 | `POOL-QA-006` | `IDEA` | Status-Sync nach Safe Merge automatisieren | reduziert wiederkehrende Evidenzdrift nach erfolgreichen Feature-Merges | nur kanonische Statusdateien aktualisieren; kein automatischer Produktversionsbump |
+| `POOL-QA-007` | `IDEA` | District-Event-Eligibility-Diagnose | zeigt im Entwicklerbereich lesend, welche Voraussetzungen aktuell alle Welt-Ereignisse ausschließen | dieselbe zentrale Requirements-Prüfung wiederverwenden; keine zweite Auswahlengine und keine Browser-Autorität |
 
 ---
 
@@ -84,4 +85,4 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 ## Nächste Entnahme
 
-`POOL-WORLD-002` ist mit C1–C3 abgeschlossen. Als nächster kleiner Slice wird `POOL-UX-002` gezogen: eine read-only Ereignis-Timeline, die ausschließlich bestätigte vorhandene Quellen sichtbar macht. Danach bleibt `POOL-WORLD-004` für Cadence/Cooldown priorisiert. `POOL-STORY-001` hält den späteren erzählerischen Nachhall fest. `POOL-QA-004` und `POOL-QA-006` halten zwei verschiedene Qualitätsverbesserungen fest: automatische Freshness-Erkennung und spätere sichere Status-Synchronisierung nach erfolgreichen Safe Merges.
+`POOL-WORLD-002` ist mit C1–C3 abgeschlossen. Als nächster Feature-Slice bleibt `POOL-UX-002` gesetzt: eine read-only Ereignis-Timeline, die ausschließlich bestätigte vorhandene Quellen sichtbar macht. Danach bleibt `POOL-WORLD-004` für Cadence/Cooldown priorisiert. `POOL-STORY-001` hält den späteren erzählerischen Nachhall fest. `POOL-QA-004` und `POOL-QA-006` halten Freshness-Erkennung und spätere sichere Status-Synchronisierung fest; `POOL-QA-007` ergänzt eine spätere rein lesende Diagnose für Fälle ohne zulässiges District-Ereignis.
