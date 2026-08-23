@@ -48,6 +48,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-C3:** PR #109 · Merge `85e95995d5e84c53131e24a8ad3dec36717891c6` · bestätigte Runde exakt einmal an Scene Job gebunden
 - **0.8.8-C4:** PR #110 · Merge `f8295564a4bddabddb4493c778e549d1cb083374` · Assistent direkt im bestehenden JOBS-Bereich steuerbar
 - **0.8.8-C5A:** PR #111 · Merge `dc22935d92cf9fea0d72aaac449921a6093a431f` · bestätigte Assistentenarbeit als read-only Nachhall-Projektion abgesichert
+- **0.8.8-C5B:** PR #112 · Merge `eaa615e48eecd84ba3ffb69551f8fb324fb42c12` · sichtbarer deterministischer Freundschafts-Nachhall im bestehenden JOBS-Bereich
 
 ---
 
@@ -56,9 +57,9 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
 | `POOL-COMPANION-001` | `DONE` | **Secret Best Friend Assistant – Steuerung & Ausführung** | vorhandene Aufgabe automatisch Runde für Runde betreiben | C1–C4 remote validiert; bestehende Scene Jobs, keine neue Rundenautorität |
-| `POOL-COMPANION-002` | `PULLED` | **Freundschafts-Nachhall** | bestätigte Assistentenarbeit bekommt kleine Storyreaktion | C5A remote validiert; C5B zeigt deterministisch variierende Nachhalltexte im bestehenden JOBS-Assistentenblock; keine Progressionsengine |
-| `POOL-FINANCE-001` | `READY` | **Bankkonto & Sparen** | Bargeld sichern, Ein-/Auszahlung, Zins und Zinseszins | Finance-State/Ledger aus Scene Jobs wiederverwenden; bestätigte Spielzeit statt Systemzeit |
-| `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt `POOL-FINANCE-001`; keine echten Marktdaten notwendig; katalogisierte Spielkurse |
+| `POOL-COMPANION-002` | `DONE` | **Freundschafts-Nachhall** | bestätigte Assistentenarbeit bekommt kleine Storyreaktion | C5A/C5B remote validiert; deterministische Texte, keine Progressionsengine |
+| `POOL-FINANCE-001` | `PULLED` | **Bankkonto & Sparen** | Bargeld sicher zwischen Wallet und Bank verschieben; später Zinsen | D nutzt denselben `PlayerFinanceState` und dasselbe Ledger; zuerst nur atomare Ein-/Auszahlung, Zinsen separat mit bestätigter Spielautorität |
+| `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt validiertes Bankkonto; keine echten Marktdaten notwendig; katalogisierte Spielkurse |
 | `POOL-FINANCE-003` | `DEPENDENCY` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Finance-Ledger, keine zweite Buchhaltung |
 | `POOL-UX-004` | `READY` | **Control Deck Focus & Verdichtung** | weniger Wiederholungen, mehr Arbeitsfläche | Bereiche lokal maximieren/zurücksetzen; redundante Anzeigen entfernen; kein Save-State |
 | `POOL-UX-005` | `READY` | **Nächste-Aktion-Signal** | erlaubte nächste Schritte schneller erkennen | kontrastreicher Puls nur Presentation; Reduced Motion = statische Hervorhebung |
@@ -105,4 +106,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-COMPANION-002` bleibt bis zur C5B-Abnahme aktiv. C5A hat die Datenherkunft abgesichert; C5B macht genau diese Projection im vorhandenen JOBS-Bereich sichtbar und variiert Texte deterministisch, ohne neuen Spielzustand. Danach ist `POOL-FINANCE-001` der stärkste unabhängige Gameplay-Slice. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
+`POOL-FINANCE-001` ist aktiv. D führt zuerst nur atomare Wallet↔Bank-Transfers über den bestehenden Finance-State und dasselbe Ledger ein. Nach D ist D2 mit bestätigten Sparzinsen der kleinste fachlich saubere Folgeschritt; dabei darf ausschließlich eine kanonisch bestätigte Spielperiode Fortschritt erzeugen. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
