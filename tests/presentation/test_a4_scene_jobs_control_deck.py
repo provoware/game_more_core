@@ -57,7 +57,10 @@ class A4SceneJobsControlDeckTests(unittest.TestCase):
         self.assertIn('self.scene_job_manifest = _load_json', LAUNCHER)
         self.assertIn('scene_job_manifest=self.scene_job_manifest', LAUNCHER)
         self.assertIn('build_scene_jobs_projection(', LAUNCHER)
-        self.assertIn('{"profile.update", "street.walk", "job.run"}', LAUNCHER)
+        self.assertIn(
+            '{"profile.update", "street.walk", "job.run", "assistant.control"}',
+            LAUNCHER,
+        )
 
 
 if __name__ == "__main__":

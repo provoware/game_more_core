@@ -23,7 +23,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from bunkerfrequenz.application.game_client_session import GameClientSession  # noqa: E402
+from bunkerfrequenz.application.assistant_game_client_session import AssistantGameClientSession  # noqa: E402
 from bunkerfrequenz.application.game_recovery import GameRecoveryService  # noqa: E402
 from bunkerfrequenz.application.incident_service import build_incident_catalog  # noqa: E402
 from bunkerfrequenz.domain.character import CharacterState  # noqa: E402
@@ -43,6 +43,7 @@ REQUIRED = (
     "web/a4/index.html",
     "web/a4/styles.css",
     "web/a4/app.js",
+    "web/a4/assistant_jobs_ui.js",
     "web/a4/map_pro.js",
     "web/a4/ui_prefs.js",
     "web/a4/event_timeline.js",
@@ -192,7 +193,7 @@ class A4ClientRuntime:
                 "START FEHLGESCHLAGEN – Spielstand konnte nicht sicher geöffnet werden: "
                 f"{self.save_dir} ({exc})"
             ) from exc
-        self.session = GameClientSession(
+        self.session = AssistantGameClientSession(
             self.kernel,
             incident_catalog=self.incident_catalog,
             incident_contract_version=incident_manifest["version"],
@@ -349,7 +350,7 @@ class A4ClientRuntime:
             if not isinstance(character_id, str) or not character_id:
                 return {"status": "rejected", "error_code": "character_missing", "state": self.projection()}
 
-            if command.get("type") in {"profile.update", "street.walk", "job.run"}:
+            if command.get("type") in {"profile.update", "street.walk", "job.run", "assistant.control"}:
                 context = self._context(command_id, "character", character_id, character_id)
             else:
                 event = state.get("event")
