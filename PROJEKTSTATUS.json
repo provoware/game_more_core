@@ -2,26 +2,26 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-E",
-  "status": "0_8_8_d2_remote_validated_e_control_deck_focus_in_validation",
-  "current_focus": "control_deck_local_panel_focus_and_runtime_next_action_signal",
-  "last_validated_feature_iteration": "0.8.8-D2",
+  "active_iteration": "0.8.8-FIN-STATEMENTS",
+  "status": "0_8_8_e_remote_validated_fin_statements_in_validation",
+  "current_focus": "read_only_personal_finance_ledger_statements",
+  "last_validated_feature_iteration": "0.8.8-E",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #114 / head 897b5717776012376ef20e33093b413700744e07 / merge bbebc9c3cafeac7f71eebeea1b89d4861b304e76",
+  "validation_reference": "PR #115 / head 131d7a8eff787a04ced995b1385ae85e7bdff89f / merge 6ac72d794ad3565bc40eb23dd501626382aa679a",
   "remote_validation": {
-    "status": "success_for_0.8.8_d2_confirmed_compound_savings_interest",
-    "pull_request": 114,
-    "validated_head": "897b5717776012376ef20e33093b413700744e07",
-    "runtime_core_workflow_run": 32663103520,
-    "presentation_core_workflow_run": 32663103517,
-    "repository_health_workflow_run": 32663103523,
-    "release_acceptance_workflow_run": 32663103519,
-    "release_package_workflow_run": 32663103518,
+    "status": "success_for_0.8.8_e_control_deck_focus",
+    "pull_request": 115,
+    "validated_head": "131d7a8eff787a04ced995b1385ae85e7bdff89f",
+    "runtime_core_workflow_run": 32664026523,
+    "presentation_core_workflow_run": 32664026458,
+    "repository_health_workflow_run": 32664026461,
+    "release_acceptance_workflow_run": 32664026528,
+    "release_package_workflow_run": 32664026553,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "bbebc9c3cafeac7f71eebeea1b89d4861b304e76"
+    "merged_commit": "6ac72d794ad3565bc40eb23dd501626382aa679a"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -58,7 +58,8 @@
     {"iteration": "0.8.8-C5A", "pull_request": 111, "merged_commit": "dc22935d92cf9fea0d72aaac449921a6093a431f", "feature": "confirmed_assistant_afterglow_projection"},
     {"iteration": "0.8.8-C5B", "pull_request": 112, "merged_commit": "eaa615e48eecd84ba3ffb69551f8fb324fb42c12", "feature": "visible_deterministic_confirmed_assistant_afterglow"},
     {"iteration": "0.8.8-D", "pull_request": 113, "merged_commit": "c1a27a977ff76a397d95ae097395317c4d46950b", "feature": "atomic_personal_wallet_bank_transfers"},
-    {"iteration": "0.8.8-D2", "pull_request": 114, "merged_commit": "bbebc9c3cafeac7f71eebeea1b89d4861b304e76", "feature": "confirmed_compound_savings_interest"}
+    {"iteration": "0.8.8-D2", "pull_request": 114, "merged_commit": "bbebc9c3cafeac7f71eebeea1b89d4861b304e76", "feature": "confirmed_compound_savings_interest"},
+    {"iteration": "0.8.8-E", "pull_request": 115, "merged_commit": "6ac72d794ad3565bc40eb23dd501626382aa679a", "feature": "control_deck_local_focus_and_runtime_next_action_signal"}
   ],
   "subsystems": {
     "character_forge": {
@@ -78,7 +79,7 @@
       "always_available_job_actions": true
     },
     "economy": {
-      "status": "d2_remote_validated",
+      "status": "e_remote_validated_fin_statements_in_validation",
       "equipment_market": true,
       "property_purchase_ledger_kind": "property_purchase",
       "property_upgrade_ledger_kind": "property_upgrade",
@@ -100,7 +101,12 @@
       "browser_can_confirm_savings_period": false,
       "browser_can_supply_interest_amount": false,
       "investments_dividends_supported": false,
-      "account_statements_supported": false
+      "account_statements_supported": true,
+      "account_statements_read_only": true,
+      "account_statement_kinds": ["job_income", "bank_deposit", "bank_withdrawal", "savings_interest"],
+      "account_statement_totals_from_confirmed_ledger": true,
+      "account_statement_invents_timestamp": false,
+      "account_statement_second_ledger": false
     },
     "living_world": {
       "status": "0_8_7_c5_remote_validated",
@@ -146,7 +152,7 @@
       "fake_local_champion_titles": false
     },
     "presentation": {
-      "status": "d2_remote_validated_e_control_deck_focus_in_validation",
+      "status": "e_remote_validated_fin_statements_in_validation",
       "a4_localhost_client": true,
       "high_quality_berlin_ops_renderer": true,
       "map_read_only": true,
@@ -171,6 +177,9 @@
       "assistant_afterglow_refresh_reroll": false,
       "personal_bank_controls_in_jobs_panel": true,
       "personal_bank_second_dashboard": false,
+      "personal_finance_statement_visible": true,
+      "personal_finance_statement_location": "existing_jobs_bank_control",
+      "personal_finance_statement_filter_persisted": false,
       "timeline_local_filter": false,
       "focus_maximize_restore": true,
       "focus_state_persisted": false,
@@ -230,11 +239,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.8-FIN-STATEMENTS",
-  "next_goal": "FIN-STATEMENTS: bestätigtes persönliches Finance-Ledger read-only als verständliche Job-, Einzahlungs-, Auszahlungs- und Zinsbewegungen darstellen; keine zweite Buchhaltung.",
+  "next_iteration": "0.8.8-F",
+  "next_goal": "F: Berlin Ops Map 2 mit lokalem Zoom/Pan, besserer Bezirks-/Objekthierarchie und fokussierter Detailansicht auf derselben read-only Map-Projection.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T22:18:00+02:00"
+  "updated_at": "2026-08-23T22:31:00+02:00"
 }
