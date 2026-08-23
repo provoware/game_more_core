@@ -8,10 +8,11 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.7 A validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.7--A_validiert-7dff00">
+  <img alt="Feature Stand 0.8.7 B validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.7--B_validiert-7dff00">
   <img alt="Berlin Ops Map PRO validiert" src="https://img.shields.io/badge/Berlin_Ops_Map_PRO-validiert-00c2ff">
   <img alt="Seasonal Hall validiert" src="https://img.shields.io/badge/Seasonal_Hall-0.8.7--A_validiert-ff7ad9">
-  <img alt="Control Deck in validation" src="https://img.shields.io/badge/Control_Deck-0.8.7--B_in_Abnahme-f2c744">
+  <img alt="Control Deck validiert" src="https://img.shields.io/badge/Control_Deck-0.8.7--B_validiert-7dff00">
+  <img alt="District Events Contract in validation" src="https://img.shields.io/badge/District_Events-0.8.7--C1_in_Abnahme-f2c744">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -28,20 +29,20 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.7-A – Saisonale Hall of Tribute` |
-| **Aktive Iteration** | 🟡 `0.8.7-B – Control Deck & Player Choices` – noch nicht remote abgenommen |
+| **Validierter Feature-Stand** | ✅ `0.8.7-B – Control Deck & Player Choices` |
+| **Aktive Iteration** | 🟡 `0.8.7-C – Bezirksbezogene Welt-Ereignisse`, C1 Vertrag/Katalog in Abnahme |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
-| **Living World** | ✅ replaybare Street Encounters + persistente District-Metriken |
+| **Living World** | ✅ replaybare Street Encounters + persistente District-Metriken; 🟡 District-Event-Vertrag C1 |
 | **Ranking** | ✅ Competitive Top 10 + bestätigte Wochen-/Monatszyklen |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
 | **Berlin Ops Map PRO** | ✅ 8 Districts · 12 Locations · read-only |
-| **Control Deck 2.0** | 🟡 HUD, Schnellnavigation und lokale Anzeigeoptionen im 0.8.7-B-Kandidaten |
-| **Spielerentscheidungen** | 🟡 Street Approaches + Krisen-Folgenvorschau im 0.8.7-B-Kandidaten |
-| **Recovery** | ✅ Combined Replay für persistente Kernblöcke |
+| **Control Deck 2.0** | ✅ HUD, Schnellnavigation und lokale Anzeigeoptionen |
+| **Spielerentscheidungen** | ✅ Street Approaches + Krisen-Folgenvorschau |
+| **Recovery** | ✅ Combined Replay für persistente Kernblöcke; District-Event-Recovery folgt erst in C2 |
 | **Netzwerk/Telegram** | nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.7-A` ist remote validiert und sicher gemergt. `0.8.7-B` ist **aktive Feature-Entwicklung** und wird erst nach grünen Gates + `/safe-merge` als validiert bezeichnet. Die Produktversion bleibt `0.8.4-alpha.1`.
+> `0.8.7-B` ist remote validiert und sicher gemergt. `0.8.7-C` startet bewusst mit einem **nicht schreibenden Fachvertrag** für District-Ereignisse. Der Katalog allein macht noch keine neuen Ereignisse spielbar. Die Produktversion bleibt `0.8.4-alpha.1`.
 
 ---
 
@@ -84,6 +85,7 @@ HALL OF TRIBUTE / SAISON
 - Berlin Ops Map PRO
 - Competitive Top 10
 - Wochen-/Monatszyklen der Hall of Tribute
+- Control Deck 2.0 mit Street Approaches und Krisen-Folgenvorschau
 
 ---
 
@@ -104,9 +106,9 @@ Die Hall verwendet weiterhin dieselbe Competitive-Ranking-Engine. Neu sind best�
 
 ---
 
-## 🎛️ 0.8.7-B – Control Deck & Player Choices 🟡
+## 🎛️ 0.8.7-B – Control Deck & Player Choices ✅
 
-Dieser Slice verbessert Optik, Bedienung und echte Auswahlmöglichkeiten. Er ist im aktuellen Featurebranch implementiert, aber noch nicht als validiert markiert.
+Dieser Slice verbessert Optik, Bedienung und echte Auswahlmöglichkeiten und ist remote validiert sowie sicher gemergt.
 
 ### Control Deck 2.0
 
@@ -143,16 +145,24 @@ Alte `0.8.5-c1`-Street-Records bleiben replaybar und werden als `balanced` inter
 
 ### Krisenentscheidungen
 
-Die vorhandene Crisis Engine bleibt unverändert zuständig. Das Control Deck zeigt vor der Antwort lediglich die bereits katalogisierten Auswirkungen, z. B.:
+Die vorhandene Crisis Engine bleibt unverändert zuständig. Das Control Deck zeigt vor der Antwort lediglich die bereits katalogisierten Auswirkungen, z. B. Budget, Ruf, Crew-Stress, Stabilität, Heat und Zielphase. Der Browser sendet weiterhin nur die bestehende `response_id`.
 
-- Budget
-- Ruf
-- Crew-Stress
-- Stabilität
-- Heat
-- Zielphase
+**Remote-Abnahme:** PR #88 · Head `6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c` · 5/5 Gates · SAFE MERGE PASS · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`.
 
-Der Browser sendet weiterhin nur die bestehende `response_id`.
+---
+
+## 🌆 0.8.7-C – Bezirksbezogene Welt-Ereignisse 🟡
+
+C1 legt zuerst den Fachvertrag fest. Vier kleine Ereignisse bilden den Startkatalog:
+
+- **Das Netz flackert**
+- **Die Nachricht macht die Runde**
+- **Mehr Blau in den Nebenstraßen**
+- **Eine Tür steht plötzlich offen**
+
+Der Vertrag bindet sich an den vorhandenen `DISTRICT_STATE_MANIFEST` und dessen vier Werte `heat`, `prestige`, `police_pressure` und `scene_activity`. Die Auswahl ist als `sha256_stable_weighted` mit `world_seed + district_id + trigger_id` definiert. Systemzeit ist kein Seed, Reload darf nicht neu würfeln und der Browser darf weder ein Ereignis aktivieren noch Effekte einspeisen.
+
+**Bewusste Grenze von C1:** Es gibt noch keinen neuen Runtime-Service, keine neue Journal-Eventart und keine sichtbare District-Event-Karte. C2 implementiert erst danach Auswahl, bestätigte Anwendung und Recovery.
 
 ---
 
@@ -249,8 +259,9 @@ A4 CONTROL DECK
 | 0.8.6-A | Property Purchase | `192b3eb4ad9d...` |
 | 0.8.6-B | Property Upgrades | `0b301bc9004f...` |
 | 0.8.6-C | Berlin Ops Map PRO | `10c7d6b5e048...` |
-| **0.8.7-A** | **Saisonale Hall of Tribute** | `841258a37915...` |
-| **0.8.7-B** | **Control Deck & Player Choices** | *in Abnahme* |
+| 0.8.7-A | Saisonale Hall of Tribute | `841258a37915...` |
+| **0.8.7-B** | **Control Deck & Player Choices** | `4d1a35bfbc08...` |
+| **0.8.7-C1** | **District-Event-Vertrag/Katalog** | *in Abnahme* |
 
 ---
 
@@ -305,6 +316,7 @@ SAFE MERGE PASS
 | Projektmanifest | [`PROJEKTMANIFEST.json`](PROJEKTMANIFEST.json) |
 | Anfängerstart | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
 | Street-Vertrag | [`manifests/STREET_ENCOUNTER_MANIFEST.json`](manifests/STREET_ENCOUNTER_MANIFEST.json) |
+| District-Event-Vertrag | [`manifests/DISTRICT_EVENT_MANIFEST.json`](manifests/DISTRICT_EVENT_MANIFEST.json) |
 | Hall-Saison | [`manifests/HALL_SEASON_MANIFEST.json`](manifests/HALL_SEASON_MANIFEST.json) |
 | Berlin Ops Map | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |
 | Safe Merge | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
