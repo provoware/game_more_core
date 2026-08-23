@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.8 FIN EXPORT validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--FIN--EXPORT_validiert-7dff00">
-  <img alt="Scene Job Anti Grind in Abnahme" src="https://img.shields.io/badge/Scene_Jobs-ANTI--GRIND_in_Abnahme-00c2ff">
+  <img alt="Feature Stand 0.8.8 Anti Grind validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--ANTI--GRIND_validiert-7dff00">
+  <img alt="Scene Job Lohnvorschau in Abnahme" src="https://img.shields.io/badge/Scene_Jobs-JOB--PREVIEW_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -27,8 +27,8 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.8-FIN-EXPORT – Kontoauszug TXT/CSV` |
-| **Aktive Iteration** | 🟡 `0.8.8-ECON-ANTI-GRIND – Scene-Job-Erschöpfung` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-ECON-ANTI-GRIND – Scene-Job-Erschöpfung` |
+| **Aktive Iteration** | 🟡 `0.8.8-ECON-JOB-PREVIEW – Scene-Job-Lohnvorschau` |
 | **Nächste Iteration** | `0.8.8-UX-EXPORT-PROOF – Exportvorschau/Prüfsumme` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Crew Identity** | ✅ Logo/Fahne als syncbereites Datenrezept, kein Bildblob |
@@ -37,7 +37,7 @@
 | **Ranking** | ✅ Competitive Top 10 + bestätigte Wochen-/Monatszyklen |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
 | **Berlin Ops Map 2** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan + Auswahlfokus |
-| **Scene Jobs** | 🟡 fünf Jobs bleiben jederzeit verfügbar; ANTI-GRIND reduziert Lohn bei nicht gedecktem Energieverbrauch proportional, 0 Energie = 0 Cent |
+| **Scene Jobs** | ✅ Anti-Grind verhindert Endlosfarmen ohne Energie; 🟡 JOB-PREVIEW zeigt vor dem Start den aktuell bestätigten Runtime-Lohn statt nur den Maximalbetrag |
 | **Assistent C1–C5B** | ✅ Autorität, Steuerung, Rundenausführung, JOBS-UI und bestätigter Freundschafts-Nachhall |
 | **Bankkonto D/D2** | ✅ Wallet↔Bank + 1 % bestätigter Sparzins/Zinseszins ohne Rechnerzeit-/Browserautorität |
 | **Kontoauszüge** | ✅ bestätigtes Finance-Ledger read-only als Joblohn, Bankbewegung und Sparzins; keine zweite Buchhaltung |
@@ -47,7 +47,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.8-FIN-EXPORT` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. ANTI-GRIND verwendet nur die bestätigte Character-Energie direkt vor dem kanonischen Scene Job: genug Energie = voller Lohn, Teilenergie = proportionaler Lohn, 0 Energie = 0 Cent. Es gibt keinen Rechnerzeit-Cooldown, keine zweite Erschöpfungsressource und keinen Browser-Lohnfaktor. Manueller Job und Assistent verwenden denselben `SceneJobService`.
+> `0.8.8-ECON-ANTI-GRIND` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. JOB-PREVIEW berechnet keinen Lohn im Browser: Die bestehende Scene-Jobs-Projection verwendet dieselbe kanonische Anti-Grind-Berechnung wie `SceneJobService.run()` und liefert nur `effective_payout_cents` plus Kürzungsstatus an die Oberfläche. Der Browser rendert diese Werte, kann aber weder Energie, Lohnfaktor noch Auszahlung autorisieren.
 
 ---
 
@@ -102,6 +102,7 @@ PROPERTY / HALL OF TRIBUTE
 - FIN-STATEMENTS: bestätigtes Finance-Ledger read-only als verständliche persönliche Geldhistorie
 - STORY-DISTRICT-BIO: bestätigte District-Timeline als read-only Berlin-Erinnerungen im Profil
 - FIN-EXPORT: TXT/CSV ausschließlich aus der validierten FIN-STATEMENTS-Projection, ohne Rückschreibpfad
+- ECON-ANTI-GRIND: Scene Jobs bleiben verfügbar; Joblohn wird bei nicht gedecktem Energieverbrauch proportional begrenzt, bei 0 Energie auf 0 Cent
 
 ---
 
@@ -248,8 +249,9 @@ Der Ausbau bleibt in getrennte, prüfbare Slices zerlegt:
 | **0.8.8-F** | Berlin Ops Map 2 | ✅ begrenzter lokaler Zoom/Pan + Auswahlfokus auf bestehender Projection |
 | **0.8.8-STORY-DISTRICT-BIO** | Berlin-Erinnerungen | ✅ ausschließlich bestätigte District-Timeline im Profil, keine Progressionsengine |
 | **0.8.8-FIN-EXPORT** | Kontoauszug TXT/CSV | ✅ ausschließlich aus validierter FIN-STATEMENTS-Projection |
-| **0.8.8-ECON-ANTI-GRIND** | Scene-Job-Erschöpfung | 🟡 Jobs bleiben verfügbar; Lohn wird bei nicht gedecktem Energieverbrauch proportional begrenzt |
-| **0.8.8-UX-EXPORT-PROOF** | Exportvorschau/Prüfsumme | danach; ausschließlich dieselbe bestätigte Projection, read-only |
+| **0.8.8-ECON-ANTI-GRIND** | Scene-Job-Erschöpfung | ✅ Jobs bleiben verfügbar; Lohn proportional aus bestätigter Vor-Job-Energie |
+| **0.8.8-ECON-JOB-PREVIEW** | tatsächlicher Erschöpfungslohn vor Jobstart | 🟡 gleiche kanonische Berechnung in read-only Runtime-Projection; Browser rendert nur |
+| **0.8.8-UX-EXPORT-PROOF** | Exportvorschau/Prüfsumme | danach; ausschließlich derselbe bestätigte Exportinhalt, read-only |
 
 Anlagen/Dividenden und lokaler Timeline-Fokusfilter bleiben eigenständige Folge-Slices, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
 
@@ -366,7 +368,8 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung, Aktionshervorhebung oder
 | 0.8.8-FIN-STATEMENTS | read-only Kontoauszüge | `81dda0d21170...` |
 | 0.8.8-F | Berlin Ops Map 2 | `8119bf71a6f1...` |
 | 0.8.8-STORY-DISTRICT-BIO | Berlin-Erinnerungen | `233066969239...` |
-| **0.8.8-FIN-EXPORT** | **Kontoauszug TXT/CSV** | `11c023f927ad...` |
+| 0.8.8-FIN-EXPORT | Kontoauszug TXT/CSV | `11c023f927ad...` |
+| **0.8.8-ECON-ANTI-GRIND** | **Scene-Job-Erschöpfung** | `49d6947b9f1b...` |
 
 ---
 
@@ -423,6 +426,7 @@ SAFE MERGE PASS
 | Crew-Logo/Fahne | [`docs/LAIENHILFE_CREW_LOGO_FAHNE.md`](docs/LAIENHILFE_CREW_LOGO_FAHNE.md) |
 | Scene Jobs & Bargeld | [`docs/LAIENHILFE_SCENE_JOBS.md`](docs/LAIENHILFE_SCENE_JOBS.md) |
 | Scene-Job-Erschöpfung | [`docs/LAIENHILFE_SCENE_JOB_ERSCHOEPFUNG.md`](docs/LAIENHILFE_SCENE_JOB_ERSCHOEPFUNG.md) |
+| Scene-Job-Lohnvorschau | [`docs/LAIENHILFE_SCENE_JOB_LOHNVORSCHAU.md`](docs/LAIENHILFE_SCENE_JOB_LOHNVORSCHAU.md) |
 | Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Kontoauszug-Export | [`docs/LAIENHILFE_FIN_EXPORT.md`](docs/LAIENHILFE_FIN_EXPORT.md) |
 | Berlin-Erinnerungen | [`docs/LAIENHILFE_DISTRICT_BIO.md`](docs/LAIENHILFE_DISTRICT_BIO.md) |
