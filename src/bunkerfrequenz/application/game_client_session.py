@@ -5,6 +5,7 @@ from dataclasses import dataclass, replace
 from typing import Any, Mapping
 
 from bunkerfrequenz.application.district_service import DistrictService
+from bunkerfrequenz.application.district_world_event_service import DistrictWorldEventService
 from bunkerfrequenz.application.economy_service import EconomyService
 from bunkerfrequenz.application.event_execution_service import EventExecutionService
 from bunkerfrequenz.application.event_state_service import EventStateService
@@ -54,8 +55,9 @@ class GameClientSession:
 
     It owns no gameplay rules. Persistent commands are delegated to canonical
     Profile/Street/Event/Economy/Property/Upgrade/Incident/Settlement/District services.
-    District metrics, property prices, upgrade costs/levels, owners and budget
-    deltas are never accepted directly from the client.
+    District world events reuse the confirmed DistrictService state and are triggered
+    only from an already confirmed settlement source. District metrics, property prices,
+    upgrade costs/levels, owners and budget deltas are never accepted directly from the client.
     """
 
     def __init__(
@@ -68,6 +70,8 @@ class GameClientSession:
         street_world_seed: str | None = None,
         district_manifest: Mapping[str, Any] | None = None,
         city_map_manifest: Mapping[str, Any] | None = None,
+        district_event_manifest: Mapping[str, Any] | None = None,
+        district_world_seed: str | None = None,
         property_manifest: Mapping[str, Any] | None = None,
         property_upgrade_manifest: Mapping[str, Any] | None = None,
     ) -> None:
@@ -79,6 +83,10 @@ class GameClientSession:
             raise ValueError("street_manifest und street_world_seed müssen gemeinsam gesetzt werden")
         if (district_manifest is None) != (city_map_manifest is None):
             raise ValueError("district_manifest und city_map_manifest müssen gemeinsam gesetzt werden")
+        if (district_event_manifest is None) != (district_world_seed is None):
+            raise ValueError("district_event_manifest und district_world_seed müssen gemeinsam gesetzt werden")
+        if district_event_manifest is not None and (district_manifest is None or city_map_manifest is None):
+            raise ValueError("district_event_manifest benötigt District- und City-Map-Vertrag")
         if property_manifest is not None and city_map_manifest is None:
             raise ValueError("property_manifest benötigt city_map_manifest")
         if property_upgrade_manifest is not None and (property_manifest is None or city_map_manifest is None):
@@ -92,6 +100,12 @@ class GameClientSession:
             if district_manifest is not None and city_map_manifest is not None
             else None
         )
+        self.district_events = (
+            DistrictWorldEventService(self.district, district_event_manifest)
+            if self.district is not None and district_event_manifest is not None
+            else None
+        )
+        self.district_world_seed = district_world_seed
         self.property = (
             PropertyService(persistence, property_manifest, city_map_manifest)
             if property_manifest is not None and city_map_manifest is not None
@@ -296,6 +310,34 @@ class GameClientSession:
                 overall_replay = overall_replay and district_result.idempotent_replay
                 metadata["district"] = deepcopy(district_result.metadata)
                 metadata["district"]["applied"] = district_result.applied
+                if (
+                    self.district_events is not None
+                    and self.district_world_seed is not None
+                    and district_result.applied
+                ):
+                    district_id = district_result.metadata.get("district_id")
+                    trigger_id = district_result.metadata.get("source_id")
+                    if isinstance(district_id, str) and isinstance(trigger_id, str):
+                        event_result = self.district_events.trigger(
+                            world_seed=self.district_world_seed,
+                            district_id=district_id,
+                            trigger_id=trigger_id,
+                            context=replace(
+                                context,
+                                entity_type="district",
+                                entity_id=district_id,
+                                command_id=f"{command_id}:district-event",
+                            ),
+                        )
+                        committed.extend(event_result.district_result.committed_event_ids)
+                        overall_replay = overall_replay and event_result.district_result.idempotent_replay
+                        metadata["district_world_event"] = {
+                            "district_id": district_id,
+                            "event_id": event_result.event_id,
+                            "title_key": event_result.title_key,
+                            "body_key": event_result.body_key,
+                            "event_instance_id": event_result.event_instance_id,
+                        }
             return self._confirmed(tuple(committed), overall_replay, metadata=metadata or None)
         except PersistenceError as exc:
             return self._rejected("persistence_error", str(exc))
