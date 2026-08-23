@@ -152,6 +152,6 @@ class RecoveryActionService:
             if max_energy + energy_delta > 100:
                 raise ValueError("Regenerations-Energiegewinn darf an Zulässigkeitsgrenze nicht clampen")
             if max_stress + stress_delta > 100:
-                raise ValueError("Regeneration benötigt gültige Stressgrenze")
+                raise ValueError("Regenerations-Stresspreis darf an Zulässigkeitsgrenze nicht clampen")
             by_id[recovery_id] = deepcopy(raw)
         return by_id
