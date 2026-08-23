@@ -25,8 +25,7 @@ class A4FinanceExportTests(unittest.TestCase):
         self.assertIn("csvFromProjection", EXPORT)
         self.assertIn("txtFromProjection", EXPORT)
         self.assertIn('FILE_BASENAME = "bunkerfrequenz-kontoauszug"', EXPORT)
-        self.assertIn('`${FILE_BASENAME}.csv`', EXPORT)
-        self.assertIn('`${FILE_BASENAME}.txt`', EXPORT)
+        self.assertIn('`${FILE_BASENAME}.${format}`', EXPORT)
         self.assertNotIn("statementFilter", EXPORT)
         for field in (
             "sequence",
@@ -41,13 +40,29 @@ class A4FinanceExportTests(unittest.TestCase):
         ):
             self.assertIn(f'"{field}"', EXPORT)
 
+    def test_preview_checksum_copy_and_download_share_exact_serializer_output(self):
+        self.assertIn("function serializeStatement(format, statement)", EXPORT)
+        self.assertIn("function checksum32(content)", EXPORT)
+        self.assertIn("new TextEncoder().encode(content)", EXPORT)
+        self.assertIn("Math.imul(hash, 0x01000193)", EXPORT)
+        self.assertIn("const content = renderPreview(format);", EXPORT)
+        self.assertIn("downloadText(`${FILE_BASENAME}.${format}`, mimeType, content)", EXPORT)
+        self.assertIn("navigator.clipboard.writeText(previewContent)", EXPORT)
+        self.assertIn('preview.id = "jobs-finance-export-preview"', EXPORT)
+        self.assertIn('checksum.id = "jobs-finance-export-checksum"', EXPORT)
+        self.assertIn("TXT PRÜFEN", EXPORT)
+        self.assertIn("CSV PRÜFEN", EXPORT)
+        self.assertIn("VORSCHAU KOPIEREN", EXPORT)
+        self.assertIn("Bytes · Prüfsumme", EXPORT)
+        self.assertNotIn("crypto.subtle", EXPORT)
+
     def test_export_does_not_invent_time_or_persist_game_state(self):
         for forbidden in ("new Date", "Date.now", "timestamp", "created_at", "localStorage", "sessionStorage"):
             self.assertNotIn(forbidden, EXPORT)
         self.assertIn("Blob", EXPORT)
         self.assertIn("URL.createObjectURL", EXPORT)
         self.assertIn("anchor.download", EXPORT)
-        self.assertIn("Export bleibt lokal und verändert weder Save noch Ledger", EXPORT)
+        self.assertIn("Vorschau, Prüfsumme, Kopieren und Download bleiben lokal", EXPORT)
 
     def test_export_module_is_loaded_by_existing_small_ui_loader(self):
         self.assertIn('script.src = "finance_statement_export.js"', PREFS)
