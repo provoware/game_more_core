@@ -3,7 +3,9 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Mapping, Sequence
 
+from bunkerfrequenz.application.scene_job_service import calculate_scene_job_payout_cents
 from bunkerfrequenz.domain.assistant import AssistantControlState
+from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.domain.finance import PlayerFinanceState
 
 
@@ -90,6 +92,11 @@ def build_scene_jobs_projection(
     but no writable payout/effect, target balance or round authority.
     """
     raw = deepcopy(dict(state or {}))
+    raw_character = raw.get("character")
+    if raw_character is not None and not isinstance(raw_character, Mapping):
+        raise ValueError("Persistierter Character-State muss ein Mapping sein")
+    character = CharacterState.from_dict(dict(raw_character)) if isinstance(raw_character, Mapping) else None
+
     raw_finance = raw.get("finance")
     if raw_finance is not None and not isinstance(raw_finance, Mapping):
         raise ValueError("Persistierter Finance-State muss ein Mapping sein")
@@ -111,7 +118,15 @@ def build_scene_jobs_projection(
             raise ValueError(
                 f"Scene-Job-Projektion jobs[{index}] fehlt: {', '.join(missing)}"
             )
-        projected_jobs.append({field: deepcopy(raw_job[field]) for field in _PUBLIC_JOB_FIELDS})
+        projected = {field: deepcopy(raw_job[field]) for field in _PUBLIC_JOB_FIELDS}
+        if character is None:
+            projected["effective_payout_cents"] = None
+            projected["payout_reduced_by_energy"] = False
+        else:
+            effective = calculate_scene_job_payout_cents(projected, character.energy)
+            projected["effective_payout_cents"] = effective
+            projected["payout_reduced_by_energy"] = effective < projected["payout_cents"]
+        projected_jobs.append(projected)
 
     active_job = next(
         (job for job in projected_jobs if job["job_id"] == assistant.active_job_id),
@@ -121,7 +136,7 @@ def build_scene_jobs_projection(
         raise ValueError("Assistant-State verweist auf unbekannten Scene Job")
 
     return {
-        "available": isinstance(raw.get("character"), Mapping),
+        "available": character is not None,
         "cash_cents": finance.cash_cents,
         "bank_cents": finance.bank_cents,
         "finance_revision": finance.revision,
