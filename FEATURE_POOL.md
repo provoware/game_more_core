@@ -50,6 +50,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-C5A:** PR #111 · Merge `dc22935d92cf9fea0d72aaac449921a6093a431f` · bestätigte Assistentenarbeit als read-only Nachhall-Projektion abgesichert
 - **0.8.8-C5B:** PR #112 · Merge `eaa615e48eecd84ba3ffb69551f8fb324fb42c12` · sichtbarer deterministischer Freundschafts-Nachhall im bestehenden JOBS-Bereich
 - **0.8.8-D:** PR #113 · Merge `c1a27a977ff76a397d95ae097395317c4d46950b` · atomare Wallet↔Bank-Transfers auf bestehendem Finance-State/Ledger
+- **0.8.8-D2:** PR #114 · Merge `bbebc9c3cafeac7f71eebeea1b89d4861b304e76` · bestätigte Sparzinsen/Zinseszins exakt einmal pro Finance-Tick
 
 ---
 
@@ -59,15 +60,15 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 |---|---|---|---|---|
 | `POOL-COMPANION-001` | `DONE` | **Secret Best Friend Assistant – Steuerung & Ausführung** | vorhandene Aufgabe automatisch Runde für Runde betreiben | C1–C4 remote validiert; bestehende Scene Jobs, keine neue Rundenautorität |
 | `POOL-COMPANION-002` | `DONE` | **Freundschafts-Nachhall** | bestätigte Assistentenarbeit bekommt kleine Storyreaktion | C5A/C5B remote validiert; deterministische Texte, keine Progressionsengine |
-| `POOL-FINANCE-001` | `PULLED` | **Bankkonto & Sparen** | Wallet↔Bank plus bestätigte Sparzinsen auf demselben Finance-State | D remote validiert; D2 verwendet fortlaufenden bestätigten Finance-Tick, keine Rechnerzeit-/Browserautorität |
-| `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt validiertes Spar-/Zinsfundament; keine echten Marktdaten notwendig; katalogisierte Spielkurse |
+| `POOL-FINANCE-001` | `DONE` | **Bankkonto & Sparen** | Wallet↔Bank plus bestätigte Sparzinsen auf demselben Finance-State | D/D2 remote validiert; keine Rechnerzeit-/Browserautorität |
+| `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt späteren eigenen Anlagenvertrag; keine echten Marktdaten notwendig |
 | `POOL-FINANCE-003` | `READY` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Finance-Ledger read-only, keine zweite Buchhaltung |
-| `POOL-UX-004` | `READY` | **Control Deck Focus & Verdichtung** | weniger Wiederholungen, mehr Arbeitsfläche | Bereiche lokal maximieren/zurücksetzen; redundante Anzeigen entfernen; kein Save-State |
-| `POOL-UX-005` | `READY` | **Nächste-Aktion-Signal** | erlaubte nächste Schritte schneller erkennen | kontrastreicher Puls nur Presentation; Reduced Motion = statische Hervorhebung |
+| `POOL-UX-004` | `PULLED` | **Control Deck Focus & Verdichtung** | weniger Wiederholungen, mehr Arbeitsfläche | Bereiche lokal fokussieren/zurücksetzen; kein Save-State |
+| `POOL-UX-005` | `PULLED` | **Nächste-Aktion-Signal** | erlaubte nächste Schritte schneller erkennen | nur bereits freigegebene Runtime-Aktion markieren; Reduced Motion respektieren |
 | `POOL-MAP-002` | `READY` | **Berlin Ops Map 2** | bessere Bezirkslesbarkeit, Zoom/Pan und Objektübersicht | bestehende Map-Projection bleibt einzige Datenquelle; read-only |
 | `POOL-STORY-001` | `READY` | District-Event-Nachhall in Biografie | Weltfolgen werden Teil der Crew-Geschichte | nur bestätigte Journal-/Projection-Daten |
 | `POOL-UX-003` | `READY` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only; keine Sortierung, kein Save-/Journal-State |
-| `POOL-ECON-004` | `READY` | **Job-Erschöpfung / Anti-Grind** | verhindert bedeutungsloses Endlosfarmen bei extrem niedriger Energie | Grundregel „phasenunabhängig arbeitbar“ erhalten; Balance getrennt vom Assistenten verändern |
+| `POOL-ECON-004` | `READY` | **Job-Erschöpfung / Anti-Grind** | verhindert bedeutungsloses Endlosfarmen bei extrem niedriger Energie | Grundregel „phasenunabhängig arbeitbar“ erhalten; Balance getrennt verändern |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-/Approach-Vertrag |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 
@@ -107,4 +108,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-FINANCE-001` bleibt für D2 aktiv. Der bestätigte Finance-Tick wird lückenlos und genau einmal verarbeitet; 1 % Zins pro bestätigter Periode wird auf das aktuelle Bankguthaben gebucht, wodurch Zinseszins ohne zweite Finance-Engine entsteht. Nach D2 ist `POOL-UX-004` der stärkste unabhängige Gameplay-/UX-Slice. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
+`POOL-UX-004` und `POOL-UX-005` sind für 0.8.8-E aktiv. Fokus/Zurücksetzen bleibt vollständig lokaler Presentation-State; das Nächste-Aktion-Signal darf ausschließlich bereits von der Runtime freigegebene Aktionen hervorheben. Danach ist `POOL-FINANCE-003` der stärkste unabhängige Slice. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
