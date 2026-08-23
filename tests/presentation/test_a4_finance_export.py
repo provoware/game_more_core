@@ -42,16 +42,18 @@ class A4FinanceExportTests(unittest.TestCase):
 
     def test_preview_checksum_copy_and_download_share_exact_serializer_output(self):
         self.assertIn("function serializeStatement(format, statement)", EXPORT)
-        self.assertGreaterEqual(EXPORT.count("serializeStatement(format, statement)"), 3)
         self.assertIn("function checksum32(content)", EXPORT)
+        self.assertIn("new TextEncoder().encode(content)", EXPORT)
         self.assertIn("Math.imul(hash, 0x01000193)", EXPORT)
-        self.assertIn("renderPreview(format)", EXPORT)
+        self.assertIn("const content = renderPreview(format);", EXPORT)
+        self.assertIn("downloadText(`${FILE_BASENAME}.${format}`, mimeType, content)", EXPORT)
         self.assertIn("navigator.clipboard.writeText(previewContent)", EXPORT)
         self.assertIn('preview.id = "jobs-finance-export-preview"', EXPORT)
         self.assertIn('checksum.id = "jobs-finance-export-checksum"', EXPORT)
         self.assertIn("TXT PRÜFEN", EXPORT)
         self.assertIn("CSV PRÜFEN", EXPORT)
         self.assertIn("VORSCHAU KOPIEREN", EXPORT)
+        self.assertIn("Bytes · Prüfsumme", EXPORT)
         self.assertNotIn("crypto.subtle", EXPORT)
 
     def test_export_does_not_invent_time_or_persist_game_state(self):
