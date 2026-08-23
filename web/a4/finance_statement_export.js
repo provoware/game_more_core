@@ -78,8 +78,8 @@
 
   function checksum32(content) {
     let hash = 0x811c9dc5;
-    for (let index = 0; index < content.length; index += 1) {
-      hash ^= content.charCodeAt(index);
+    for (const byte of new TextEncoder().encode(content)) {
+      hash ^= byte;
       hash = Math.imul(hash, 0x01000193) >>> 0;
     }
     return hash.toString(16).padStart(8, "0");
@@ -98,36 +98,32 @@
     URL.revokeObjectURL(url);
   }
 
-  function exportStatement(format) {
-    const statement = projectionStatement();
-    const status = document.getElementById("jobs-finance-export-status");
-    if (!statement?.available) {
-      if (status) status.textContent = "Kontoauszug ist noch nicht verfügbar.";
-      return;
-    }
-    const content = serializeStatement(format, statement);
-    if (content === null) return;
-    const mimeType = format === "csv" ? "text/csv" : "text/plain";
-    downloadText(`${FILE_BASENAME}.${format}`, mimeType, content);
-    if (status) status.textContent = `${format.toUpperCase()} lokal aus exakt dem geprüften Exportinhalt erstellt · Prüfsumme ${checksum32(content)}.`;
-  }
-
   function renderPreview(format) {
     const statement = projectionStatement();
     const status = document.getElementById("jobs-finance-export-status");
     if (!statement?.available) {
       if (status) status.textContent = "Kontoauszug ist noch nicht verfügbar.";
-      return;
+      return null;
     }
     const content = serializeStatement(format, statement);
-    if (content === null) return;
+    if (content === null) return null;
     previewFormat = format;
     previewContent = content;
     const preview = document.getElementById("jobs-finance-export-preview");
     const checksum = document.getElementById("jobs-finance-export-checksum");
     if (preview) preview.textContent = content;
-    if (checksum) checksum.textContent = `${format.toUpperCase()} · ${content.length} Zeichen · Prüfsumme ${checksum32(content)}`;
+    if (checksum) checksum.textContent = `${format.toUpperCase()} · ${new TextEncoder().encode(content).length} Bytes · Prüfsumme ${checksum32(content)}`;
     if (status) status.textContent = `${format.toUpperCase()}-Vorschau aus demselben Inhalt wie der Download erstellt.`;
+    return content;
+  }
+
+  function exportStatement(format) {
+    const content = renderPreview(format);
+    const status = document.getElementById("jobs-finance-export-status");
+    if (content === null) return;
+    const mimeType = format === "csv" ? "text/csv" : "text/plain";
+    downloadText(`${FILE_BASENAME}.${format}`, mimeType, content);
+    if (status) status.textContent = `${format.toUpperCase()} lokal aus exakt der unmittelbar geprüften Vorschau erstellt · Prüfsumme ${checksum32(content)}.`;
   }
 
   async function copyPreview() {
