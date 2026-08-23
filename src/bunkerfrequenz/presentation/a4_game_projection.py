@@ -10,6 +10,7 @@ from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.incident import IncidentState
 from bunkerfrequenz.domain.settlement import SettlementState
 from bunkerfrequenz.presentation.berlin_ops_map_pro import build_berlin_ops_map_pro_projection
+from bunkerfrequenz.presentation.crew_identity_projection import build_crew_identity_projection
 from bunkerfrequenz.presentation.district_projection import build_living_district_projection
 from bunkerfrequenz.presentation.hall_of_tribute import build_hall_of_tribute_projection
 from bunkerfrequenz.presentation.property_projection import build_property_projection
@@ -130,7 +131,7 @@ def build_a4_game_projection(
 
     raw = deepcopy(dict(state or {}))
     projection: dict[str, Any] = {
-        "view_model_version": "0.8.7-b1",
+        "view_model_version": "0.8.8-a1",
         "stage": "first_run" if "character" not in raw else "ready",
         "state_blocks": {
             key: key in raw
@@ -161,6 +162,7 @@ def build_a4_game_projection(
             "alias": character.alias,
             "additional_nicknames": list(character.additional_nicknames),
             "motto": character.motto,
+            "crew_identity": build_crew_identity_projection(character.crew_identity),
             "level": character.level,
             "energy": character.energy,
             "stress": character.stress,
