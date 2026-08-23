@@ -77,11 +77,21 @@
     document.head.append(script);
   }
 
+  function ensureFinanceStatementExportModule() {
+    if (document.querySelector('script[data-finance-statement-export="true"]')) return;
+    const script = document.createElement("script");
+    script.src = "finance_statement_export.js";
+    script.defer = true;
+    script.dataset.financeStatementExport = "true";
+    document.head.append(script);
+  }
+
   function init() {
     load();
     apply();
     ensureFocusModule();
     ensureDistrictBiographyModule();
+    ensureFinanceStatementExportModule();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
     }
