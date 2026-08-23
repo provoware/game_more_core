@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-RECOVERY-ACTIONS – bestätigte Regeneration` · PR #123 · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900`
-- **RECOVERY-ACTIONS Remote-Abnahme:** Runtime `32673385832` · Presentation `32673385764` · Repository Health `32673385757` · Release Acceptance `32673385796` · Release Package `32673385792` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter`
-- **TIMELINE-FILTER-Status:** ALLE / STRASSE / KRISE / BEZIRK filtern ausschließlich die vorhandene bestätigte Runtime-Timeline; keine Neusortierung, kein Journal-State, keine Speicherung
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter` · PR #124 · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01`
+- **TIMELINE-FILTER Remote-Abnahme:** Runtime `32674157706` · Presentation `32674157688` · Repository Health `32674157773` · Release Acceptance `32674157695` · Release Package `32674157723` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-ECON-RECOVERY-FEEDBACK – verständliches Regenerationsfeedback`
+- **RECOVERY-FEEDBACK-Status:** nach bestätigter Regeneration werden Vorher→Nachher-Werte aus bestätigten Projection-Snapshots gezeigt; nächste Verfügbarkeit kommt ausschließlich aus der danach gerenderten Runtime-Projection
 - **Repository-Arbeitsmodus:** Basisdateien, Arbeitsdateien und Evidenz/Logs sind getrennt; grüne Logs werden nicht dauerhaft übertragen, rote Gates zuerst nur im konkreten Fehlerausschnitt gelesen
 - **Entwicklungsprozess:** Focused-Read bleibt verpflichtend; Codex-Code-Review bleibt vollständig außerhalb von Entwicklung, Gate-Evidenz und Mergeprozess
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -47,65 +47,71 @@
 - [x] bestehendes `character.resources_changed` bleibt Replay-/Recovery-Wahrheit
 - [x] PR #123 · Head `31a3c2966549f54260c3d90b148e2d4cec4b6cad` · Runtime `32673385832` · Presentation `32673385764` · Repository Health `32673385757` · Release Acceptance `32673385796` · Release Package `32673385792` · 0 Review-Threads · `/safe-merge` PASS · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900`
 
+## 0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter
+- [x] Filter `ALLE / STRASSE / KRISE / BEZIRK`
+- [x] ausschließlich lokaler Modul-State; keine Sortierung, Persistenz oder Journal-Autorität
+- [x] PR #124 · Head `59bcc0909bc508f085b2a40a187074461799a908` · Runtime `32674157706` · Presentation `32674157688` · Repository Health `32674157773` · Release Acceptance `32674157695` · Release Package `32674157723` · 0 Review-Threads · `/safe-merge` PASS · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01`
+
 ---
 
-# Aktiv – 0.8.8-UX-TIMELINE-FILTER
+# Aktiv – 0.8.8-ECON-RECOVERY-FEEDBACK
 
 ## Ziel
 
-Die bestehende bestätigte Timeline soll lokal nach `ALLE / STRASSE / KRISE / BEZIRK` filterbar sein, ohne ihre Reihenfolge, Quelle oder Persistenz zu verändern.
+Nach bestätigter Regeneration sollen die tatsächlichen Vorher-/Nachher-Werte und die nächste Runtime-Verfügbarkeit unmittelbar verständlich sichtbar sein, ohne neue Mechanik oder Browser-Regelberechnung.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
 **Basisdateien**
 - `AGENTS.md` – Focused Read, Presentation-/Merge-Grenzen
 - aktive Stellen aus `TODO.md`, `PROJEKTSTATUS.json`, `FEATURE_POOL.md`
-- README nur wegen aktiver/folgender Iterationskonsistenz
+- README wegen aktiver/folgender Iterationskonsistenz
 
 **Arbeitsdateien**
-- `web/a4/event_timeline.js`
-- `tests/presentation/test_a4_event_timeline_control_deck.py`
+- `web/a4/recovery_actions_ui.js`
+- `tests/presentation/test_a4_recovery_actions.py`
 - `tests/runtime/test_feature_status_consistency.py`
-- `docs/LAIENHILFE_TIMELINE_FILTER.md`
+- `docs/LAIENHILFE_REGENERATION_FEEDBACK.md`
 
 **Evidenz/Logs**
 - nur Run-ID/Status bei grünen Gates
 - vollständiger Log ausschließlich bei einem konkreten roten Gate
 
-### TIMELINE-FILTER – kleinster read-only UX-Slice
+### RECOVERY-FEEDBACK – kleinster erklärender UX-Slice
 
-- [x] Filter `ALLE / STRASSE / KRISE / BEZIRK`
-- [x] Filterstate ausschließlich im Modul-RAM; kein Local-/Session-Storage
-- [x] Filterung ausschließlich mit `.filter(...)` auf der vorhandenen Runtime-Reihenfolge
-- [x] kein `.sort(...)`, `.reverse(...)`, POST, Command oder Save-/Journal-Write
-- [x] `aria-pressed`, Gruppennamen und verständlicher Status für Tastatur/Screenreader
-- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32673876348` · Presentation `32673876321` · Repository Health `32673876323` · Release Acceptance `32673876297` · Release Package `32673876299`
+- [x] Vorherwerte direkt aus bestätigter `state.projection.character` vor dem Command übernehmen
+- [x] Nachherwerte erst nach Rückkehr des vorhandenen bestätigten `sendCommand(...)`-Pfads aus der neuen Projection übernehmen
+- [x] keine Delta-, Schwellen- oder Verfügbarkeitsberechnung im Browser
+- [x] nächsten `can_run`-/Blocker-Status ausschließlich aus `state.projection.scene_jobs.recovery_actions` erklären
+- [x] bei unverändertem State kein falsches Erfolgssignal erzeugen
+- [x] technische Implementierung nur in bestehendem Recovery-UI-Modul; Runtime-Service und Session bleiben unverändert
+- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32674791670` · Presentation `32674791661` · Repository Health `32674791642` · Release Acceptance `32674791660` · Release Package `32674791644`
 - [ ] finalen Status-/Dokumentations-Head 5/5 grün bestätigen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch 0 Commits hinter `main` bestätigen
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in TIMELINE-FILTER
+### Bewusst nicht in RECOVERY-FEEDBACK
 
-- keine neue Timeline-Projection oder Storyquelle
-- keine neue Sortierlogik
-- keine Filterpersistenz
-- kein Journal-State
-- keine Änderung an Runtime-/Gameplay-Autorität
+- keine neue Recovery-Aktion oder Balanceänderung
+- keine neue Runtime-/Service-/Session-Logik
+- keine Browserberechnung von Deltas oder Schwellen
+- keine neue Persistenz oder Journalart
+- keine Systemzeit
 - kein Produktversionsbump
 
 ### Danach
 
-- [ ] **0.8.8-ECON-RECOVERY-FEEDBACK:** bestätigte Vorher→Nachher-Werte der Regeneration verständlich anzeigen; keine neue Mechanik
+- [ ] **0.8.8-STREET-PACK:** zusätzliche Straßenereignisse über den vorhandenen Encounter-Vertrag ergänzen; keine neue Encounter-Engine
 - [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
-- [ ] **0.8.8-STREET-PACK:** bestehende Straßenereignisse später über den vorhandenen Encounter-Vertrag erweitern
+- [ ] **0.8.8-ECON-RECOVERY-VARIANTS:** erst nach Balancingbeobachtung weitere Regenerationsoptionen erwägen
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Timeline-Quelle bleibt ausschließlich die vorhandene bestätigte Runtime-Projection.
-- Filter dürfen Einträge nur ausblenden, nie umsortieren, neu erzeugen oder zurückschreiben.
+- Recovery-Mechanik und Availability bleiben vollständig Runtime-Autorität.
+- Feedback darf bestätigte Werte erklären, aber keine neue Ressourcenauswirkung ableiten oder autorisieren.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
