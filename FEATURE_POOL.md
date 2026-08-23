@@ -33,14 +33,24 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-WORLD-002` | `DONE` | District World Events | Vertrag, Runtime, Settlement-Integration |
 | `POOL-UX-002` | `DONE` | Ereignis-Timeline im Control Deck | C4A Projection + C4B sichtbare read-only Timeline |
 | `POOL-WORLD-004` | `DONE` | District-Event-Cadence/Cooldown | 24h bestätigte Spielweltzeit, kein Systemzeit-Fallback |
-| `POOL-PROFILE-002` | `DONE` | Crew-Logo/Fahne | syncbereites Identitätsrezept; 0.8.8-A |
-| `POOL-ECON-003` | `DONE` | Scene Jobs & persönliches Bargeld | fünf katalogisierte Jobs + Finance-State |
+| `POOL-PROFILE-002` | `DONE` | Crew-Logo/Fahne | syncbereites Identitätsrezept, Legacy-Default, Control-Deck-Editor; 0.8.8-A / PR #104 |
+| `POOL-ECON-003` | `DONE` | Scene Jobs & persönliches Bargeld | fünf katalogisierte Jobs, persönlicher Finance-State, A4-JOB-Bereich; 0.8.8-B / PR #105 |
 
 ### Letzte Remote-Abnahmen
 
-- **0.8.8-FIN-EXPORT:** PR #119 · Merge `11c023f927ad9a74673587fefd1709fe2322553f`
-- **0.8.8-ECON-ANTI-GRIND:** PR #120 · Merge `49d6947b9f1b3a35d0785a958a7688e3b22a6bc1`
-- **0.8.8-ECON-JOB-PREVIEW:** PR #121 · Merge `040be951665a34dd8d81694ab695128e0b846bd5` · aktuelle Auszahlung vor Jobstart aus derselben kanonischen Anti-Grind-Berechnung sichtbar
+- **0.8.8-C3:** PR #109 · Merge `85e95995d5e84c53131e24a8ad3dec36717891c6` · bestätigte Runde exakt einmal an Scene Job gebunden
+- **0.8.8-C4:** PR #110 · Merge `f8295564a4bddabddb4493c778e549d1cb083374` · Assistent direkt im bestehenden JOBS-Bereich steuerbar
+- **0.8.8-C5A:** PR #111 · Merge `dc22935d92cf9fea0d72aaac449921a6093a431f` · bestätigte Assistentenarbeit als read-only Nachhall-Projektion
+- **0.8.8-C5B:** PR #112 · Merge `eaa615e48eecd84ba3ffb69551f8fb324fb42c12` · sichtbarer deterministischer Freundschafts-Nachhall
+- **0.8.8-D:** PR #113 · Merge `c1a27a977ff76a397d95ae097395317c4d46950b` · atomare Wallet↔Bank-Transfers
+- **0.8.8-D2:** PR #114 · Merge `bbebc9c3cafeac7f71eebeea1b89d4861b304e76` · bestätigte Sparzinsen/Zinseszins exakt einmal pro Finance-Tick
+- **0.8.8-E:** PR #115 · Merge `6ac72d794ad3565bc40eb23dd501626382aa679a` · lokaler Panel-Fokus + Runtime-abgeleitetes Nächste-Aktion-Signal
+- **0.8.8-FIN-STATEMENTS:** PR #116 · Merge `81dda0d21170a5d876cd5a7ebf05a8409ec735c8` · read-only Geldhistorie aus bestätigtem Finance-Ledger
+- **0.8.8-F:** PR #117 · Merge `8119bf71a6f169d5cac367d5123d2bc1e6a73193` · begrenzter lokaler Zoom/Pan + Auswahlfokus auf bestehender Map-Projection
+- **0.8.8-STORY-DISTRICT-BIO:** PR #118 · Merge `2330669692391e3747a3c807ec9b2a1cb7b7cb6d` · bestätigte District-Timeline als read-only Berlin-Erinnerungen im Profil
+- **0.8.8-FIN-EXPORT:** PR #119 · Merge `11c023f927ad9a74673587fefd1709fe2322553f` · TXT/CSV direkt aus validierter FIN-STATEMENTS-Projection ohne Rückschreibpfad
+- **0.8.8-ECON-ANTI-GRIND:** PR #120 · Merge `49d6947b9f1b3a35d0785a958a7688e3b22a6bc1` · voller Joblohn nur bei gedecktem Energieverbrauch; Teilenergie proportional, 0 Energie = 0 Cent
+- **0.8.8-ECON-JOB-PREVIEW:** PR #121 · Merge `040be951665a34dd8d81694ab695128e0b846bd5` · tatsächlicher Erschöpfungslohn vor Jobstart aus derselben kanonischen Berechnung sichtbar
 
 ---
 
@@ -48,22 +58,23 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-COMPANION-001` | `DONE` | Secret Best Friend Assistant | vorhandene Aufgabe automatisch Runde für Runde betreiben | bestehende Scene Jobs, keine neue Rundenautorität |
-| `POOL-COMPANION-002` | `DONE` | Freundschafts-Nachhall | bestätigte Assistentenarbeit bekommt kleine Storyreaktion | keine Progressionsengine |
-| `POOL-FINANCE-001` | `DONE` | Bankkonto & Sparen | Wallet↔Bank + bestätigte Sparzinsen | keine Rechnerzeit-/Browserautorität |
-| `POOL-FINANCE-002` | `DEPENDENCY` | Anlagen & Dividenden | langfristige Geldanlage | benötigt eigenen Anlagenvertrag |
-| `POOL-FINANCE-003` | `DONE` | Kontoauszüge | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Ledger read-only |
-| `POOL-FINANCE-004` | `DONE` | Kontoauszug CSV/TXT-Export | lokalen Kontoauszug weiterverwenden | kein Import/keine neue Buchhaltung |
-| `POOL-UX-004` | `DONE` | Control Deck Focus & Verdichtung | mehr Arbeitsfläche | lokaler Presentation-State |
-| `POOL-UX-005` | `DONE` | Nächste-Aktion-Signal | freigegebene Schritte schneller erkennen | nur vorhandene Runtime-Aktion |
-| `POOL-MAP-002` | `DONE` | Berlin Ops Map 2 | bessere Kartenlesbarkeit | bestehende Projection bleibt Quelle |
-| `POOL-STORY-001` | `DONE` | District-Event-Nachhall im Profil | bestätigte Weltfolgen sichtbar | keine Progressionsengine |
-| `POOL-UX-003` | `READY` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only |
-| `POOL-ECON-004` | `DONE` | Job-Erschöpfung / Anti-Grind | verhindert Endlosfarmen ohne Energie | gleicher SceneJobService |
-| `POOL-ECON-005` | `DONE` | Scene-Job-Lohnvorschau | tatsächlichen Erschöpfungslohn vor Jobstart sehen | PR #121 sicher gemergt; Browser rendert nur |
-| `POOL-UX-006` | `PULLED` | Exportvorschau / Prüfsumme | TXT/CSV vor Download prüfen und kopieren | exakt derselbe serialisierte Inhalt, kein Finanz-Write |
-| `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-Vertrag |
+| `POOL-COMPANION-001` | `DONE` | **Secret Best Friend Assistant – Steuerung & Ausführung** | vorhandene Aufgabe automatisch Runde für Runde betreiben | C1–C4 remote validiert; bestehende Scene Jobs, keine neue Rundenautorität |
+| `POOL-COMPANION-002` | `DONE` | **Freundschafts-Nachhall** | bestätigte Assistentenarbeit bekommt kleine Storyreaktion | C5A/C5B remote validiert; deterministische Texte, keine Progressionsengine |
+| `POOL-FINANCE-001` | `DONE` | **Bankkonto & Sparen** | Wallet↔Bank plus bestätigte Sparzinsen auf demselben Finance-State | D/D2 remote validiert; keine Rechnerzeit-/Browserautorität |
+| `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt späteren eigenen Anlagenvertrag; keine echten Marktdaten notwendig |
+| `POOL-FINANCE-003` | `DONE` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | FIN-STATEMENTS remote validiert; liest bestätigtes Ledger read-only |
+| `POOL-FINANCE-004` | `DONE` | **Kontoauszug CSV/TXT-Export** | bestätigten Kontoauszug lokal weiterverwenden/archivieren | FIN-EXPORT remote validiert; ausschließlich Projection, kein Import, keine neue Buchhaltung |
+| `POOL-UX-004` | `DONE` | **Control Deck Focus & Verdichtung** | weniger Wiederholungen, mehr Arbeitsfläche | 0.8.8-E remote validiert; Fokus bleibt lokaler Presentation-State |
+| `POOL-UX-005` | `DONE` | **Nächste-Aktion-Signal** | erlaubte nächste Schritte schneller erkennen | 0.8.8-E remote validiert; nur bereits freigegebene Runtime-Aktion |
+| `POOL-MAP-002` | `DONE` | **Berlin Ops Map 2** | bessere Kartenlesbarkeit durch Zoom/Pan und Auswahlfokus | 0.8.8-F remote validiert; bestehende 0–100-Projection bleibt einzige Datenquelle |
+| `POOL-STORY-001` | `DONE` | **District-Event-Nachhall im Profil** | bestätigte Weltfolgen werden als Berlin-Erinnerungen sichtbar | STORY-DISTRICT-BIO remote validiert; nur bestätigte Timeline, keine Progressions-/Journalengine |
+| `POOL-UX-003` | `READY` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only; keine Sortierung, kein Save-/Journal-State |
+| `POOL-ECON-004` | `DONE` | **Job-Erschöpfung / Anti-Grind** | verhindert Endlosfarmen ohne Energie und erhält jederzeit verfügbare Scene Jobs | ANTI-GRIND remote validiert; gleicher SceneJobService für manuell + Assistent |
+| `POOL-ECON-005` | `DONE` | **Scene-Job-Lohnvorschau** | vor Jobstart den tatsächlich bestätigten Erschöpfungslohn sehen | JOB-PREVIEW remote validiert; Browser rendert nur bestätigte Projection |
+| `POOL-UX-006` | `PULLED` | **Exportvorschau / Prüfsumme** | TXT/CSV vor Download prüfen, kopieren und vergleichen | exakt derselbe serialisierte Inhalt; kein Finanz-Write |
+| `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-/Approach-Vertrag |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
+| `POOL-ECON-006` | `READY` | **Bestätigte Regenerationsaktionen** | Energie aktiv zurückgewinnen statt erschöpft weiterzuarbeiten | keine Systemzeit-Autorität, keine automatische Echtzeit-Regeneration |
 
 ---
 
@@ -71,19 +82,18 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 | ID | Status | Feature | Voraussetzung |
 |---|---|---|---|
-| `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
+| `POOL-COMPANION-003` | `DEPENDENCY` | **Round-Authority Integration Harness** | echter kanonischer Rundenproduzent; dann End-to-End Runde → Assistent → Scene Job → Journal → Recovery → Retry |
 | `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | Story-/Journalvertrag |
 | `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
-| `POOL-NET-002` | `DEPENDENCY` | Crew-Identity-Synchronisation | `POOL-NET-001` |
+| `POOL-NET-002` | `DEPENDENCY` | Crew-Identity-Synchronisation | `POOL-NET-001` + kanonische Crew-Identity-Daten |
 | `POOL-RANK-004` | `DEPENDENCY` | echte Netzwerk-Rankingzyklen | `POOL-NET-001` |
 | `POOL-STREET-003` | `IDEA` | seltene Mini-Kettenereignisse | Ketten-/Replayvertrag |
 | `POOL-QA-001` | `READY` | Native GitHub Branch Protection / Ruleset | geeigneter Admin-Schreibweg |
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
-| `POOL-QA-006` | `READY` | Status-Sync nach Safe Merge automatisieren | bestätigten Safe-Merge-Commit read-only erkennen |
-| `POOL-MAP-003` | `IDEA` | Map-Viewport-Miniübersicht | validierte Map 2 |
-| `POOL-ECON-006` | `READY` | Bestätigte Regenerationsaktionen | Energie aktiv zurückgewinnen, ohne Systemzeit-Autorität |
+| `POOL-QA-006` | `READY` | Status-Sync nach Safe Merge automatisieren | bestätigten Safe-Merge-Commit read-only erkennen und Statusdrift melden |
+| `POOL-MAP-003` | `IDEA` | Map-Viewport-Miniübersicht | validierte Map 2; aktuellen Ausschnitt rein lokal markieren |
 
 ---
 
@@ -98,4 +108,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-UX-006` ist für 0.8.8-UX-EXPORT-PROOF aktiv. Vorschau, Kopieren, Prüfsumme und Download verwenden exakt denselben serialisierten TXT-/CSV-Inhalt. Danach ist `POOL-ECON-006` der stärkste unabhängige Gameplay-Slice; `POOL-COMPANION-003` bleibt abhängig.
+`POOL-UX-006` ist für 0.8.8-UX-EXPORT-PROOF aktiv. Vorschau, Kopieren, Prüfsumme und Download verwenden exakt denselben serialisierten TXT-/CSV-Inhalt; die Prüfsumme bleibt lokale Vergleichshilfe. Danach ist `POOL-ECON-006` der stärkste unabhängige Gameplay-Slice. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
