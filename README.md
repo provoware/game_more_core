@@ -8,13 +8,13 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.8 E validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--E_validiert-7dff00">
-  <img alt="Finance Statements in Abnahme" src="https://img.shields.io/badge/Finance_Statements-0.8.8--FIN_in_Abnahme-00c2ff">
+  <img alt="Feature Stand 0.8.8 F validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--F_validiert-7dff00">
+  <img alt="District Biography in Abnahme" src="https://img.shields.io/badge/Berlin_Erinnerungen-STORY_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
-> **Entdecken → arbeiten → ansparen → nachvollziehen → entscheiden → planen → handeln → eskalieren → abrechnen → Stadt verändern → ausbauen → aufsteigen.**
+> **Entdecken → arbeiten → ansparen → nachvollziehen → entscheiden → planen → handeln → eskalieren → abrechnen → Stadt verändern → erinnern → ausbauen → aufsteigen.**
 
 </div>
 
@@ -27,25 +27,26 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.8-E – Control Deck Focus` |
-| **Aktive Iteration** | 🟡 `0.8.8-FIN-STATEMENTS – Kontoauszüge` |
-| **Nächste Iteration** | `0.8.8-F – Berlin Ops Map 2` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-F – Berlin Ops Map 2` |
+| **Aktive Iteration** | 🟡 `0.8.8-STORY-DISTRICT-BIO – Bezirks-Nachhall` |
+| **Nächste Iteration** | `0.8.8-FIN-EXPORT – Kontoauszug TXT/CSV` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Crew Identity** | ✅ Logo/Fahne als syncbereites Datenrezept, kein Bildblob |
 | **Living World** | ✅ replaybare Street Encounters, persistente Districts, District World Events + 24h-Cadence |
 | **Timeline** | ✅ Street-, Krisen- und District-Ereignisse read-only im Control Deck sichtbar |
 | **Ranking** | ✅ Competitive Top 10 + bestätigte Wochen-/Monatszyklen |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
-| **Berlin Ops Map PRO** | ✅ 8 Districts · 12 Locations · read-only |
+| **Berlin Ops Map 2** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan + Auswahlfokus |
 | **Scene Jobs** | ✅ fünf Jobs + persönlicher Wallet-/Ledger-Pfad remote validiert |
 | **Assistent C1–C5B** | ✅ Autorität, Steuerung, Rundenausführung, JOBS-UI und bestätigter Freundschafts-Nachhall |
 | **Bankkonto D/D2** | ✅ Wallet↔Bank + 1 % bestätigter Sparzins/Zinseszins ohne Rechnerzeit-/Browserautorität |
-| **Kontoauszüge** | 🟡 bestätigtes Finance-Ledger read-only als Joblohn, Bankbewegung und Sparzins; keine zweite Buchhaltung |
+| **Kontoauszüge** | ✅ bestätigtes Finance-Ledger read-only als Joblohn, Bankbewegung und Sparzins; keine zweite Buchhaltung |
+| **Berlin-Erinnerungen** | 🟡 bis zu fünf bestätigte District-Ereignisse als read-only Nachhall im Profil; keine Progressionsengine |
 | **Control Deck E** | ✅ lokaler Bereichsfokus + Runtime-abgeleitetes Nächste-Aktion-Signal |
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.8-E` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. FIN-STATEMENTS liest nur das bereits bestätigte persönliche Finance-Ledger. Der Browser erzeugt keine Buchungen, Beträge oder Zeitstempel; Filter und Summen sind reine read-only Presentation.
+> `0.8.8-F` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. STORY-DISTRICT-BIO liest nur bereits bestätigte District-Einträge der bestehenden Ereignis-Chronik. Der Browser erzeugt weder Bezirksereignisse noch neue Biografieeinträge, Boni, Zeitstempel oder Gameplaywerte.
 
 ---
 
@@ -72,7 +73,7 @@ SETTLEMENT
       ↓
 DISTRICT WORLD EVENT (CADENCE-GEFÜHRT)
       ↓
-RUF · SKILLS · BIOGRAFIE · TIMELINE
+RUF · SKILLS · BIOGRAFIE · TIMELINE · BERLIN-ERINNERUNGEN
       ↓
 LIVING DISTRICTS / BERLIN OPS MAP
       ↓
@@ -87,7 +88,7 @@ PROPERTY / HALL OF TRIBUTE
 - Street Encounters ohne Reload-Reroll
 - persistente District-Werte
 - Property Purchase + dreistufige Upgrades
-- Berlin Ops Map PRO
+- Berlin Ops Map PRO + Map 2 mit begrenztem lokalem Zoom/Pan und Auswahlfokus
 - Competitive Top 10 + Wochen-/Monatszyklen
 - sichtbare read-only Ereignis-Timeline
 - District World Events mit deterministischer Auswahl und 24h-Cadence aus bestätigter Spielweltzeit
@@ -97,6 +98,7 @@ PROPERTY / HALL OF TRIBUTE
 - Bankkonto D: atomare Ein-/Auszahlung auf demselben persönlichen Finance-State/Ledger
 - Sparzinsen D2: bestätigter Finance-Tick, Zinseszins, Retry-Schutz, keine Rechnerzeit-Autorität
 - Control Deck E: lokaler Fokus/Zurücksetzen und Nächste-Aktion-Signal ausschließlich aus vorhandener Runtime-Freigabe
+- FIN-STATEMENTS: bestätigtes Finance-Ledger read-only als verständliche persönliche Geldhistorie
 
 ---
 
@@ -186,7 +188,7 @@ E verdichtet das vorhandene Control Deck ohne neuen Gameplay-State. Sichtbare Be
 
 ---
 
-## 🧾 0.8.8-FIN-STATEMENTS – Kontoauszüge 🟡
+## 🧾 0.8.8-FIN-STATEMENTS – Kontoauszüge ✅
 
 FIN-STATEMENTS verwendet **keine zweite Buchhaltung**. Die bestehende Scene-Jobs-/Bank-Projektion liest ausschließlich bestätigte Zeilen aus `PlayerFinanceState.ledger` und stellt vier bereits vorhandene Buchungsarten verständlich dar:
 
@@ -196,6 +198,24 @@ FIN-STATEMENTS verwendet **keine zweite Buchhaltung**. Die bestehende Scene-Jobs
 - `savings_interest` → Sparzins
 
 Die neueste unterstützte Buchung steht oben. Summen entstehen ausschließlich aus den vorhandenen Ledgerzeilen. `ALLE / JOBLOHN / BANK / ZINSEN` sind lokale Anzeige-Filter und schreiben weder Save noch Journal. Da das aktuelle persönliche Ledger keinen kanonisch bestätigten Buchungszeitpunkt trägt, zeigt die UI eine stabile `Buchung #N` und **erfindet kein Datum**. Spätere/andere Ledgerarten werden nicht interpretiert, sondern nur transparent gezählt.
+
+**Remote-Abnahme FIN-STATEMENTS:** PR #116 · Head `614e4363e95f6fedb5aac51e5aac72a67848ffbb` · Runtime `32665075313` · Presentation `32665075287` · Repository Health `32665075289` · Release Acceptance `32665075282` · Release Package `32665075278` · SAFE MERGE PASS · Merge `81dda0d21170a5d876cd5a7ebf05a8409ec735c8`.
+
+---
+
+## 🗺️ 0.8.8-F – Berlin Ops Map 2 ✅
+
+Map 2 erweitert ausschließlich die bestehende bestätigte 0–100-Kartenprojektion: lokaler Zoom von 1,0× bis 2,2×, begrenztes Pan, Reset und Auswahlfokus. Der Fokus verwendet nur vorhandene District-Boxen beziehungsweise Location-Positionen. Es gibt kein Geocoding, keinen externen Kartendienst und keinen gespeicherten Map-Zustand.
+
+**Remote-Abnahme F:** PR #117 · Head `91255bbb7bee90050cbd762ce93600802a666940` · Runtime `32666137485` · Presentation `32666137499` · Repository Health `32666137472` · Release Acceptance `32666137497` · Release Package `32666137508` · SAFE MERGE PASS · Merge `8119bf71a6f169d5cac367d5123d2bc1e6a73193`.
+
+---
+
+## 🌃 0.8.8-STORY-DISTRICT-BIO – Bezirks-Nachhall 🟡
+
+Der Story-Slice macht bereits bestätigte Bezirksereignisse im bestehenden Profil als kleine **Berlin-Erinnerungen** sichtbar. Quelle ist ausschließlich die vorhandene `event_timeline`; angezeigt werden höchstens fünf bestätigte `district`-Einträge mit ihren bereits projizierten Titeln, Texten und District-Deltas.
+
+Die Anzeige schreibt nichts zurück. Sie erzeugt keine XP, Ruf-, Beziehungs- oder Bonuswerte, keinen neuen Biografie-Eventtyp und keine erfundenen Zeitangaben. Die persistente Charakterbiografie bleibt unverändert.
 
 ---
 
@@ -211,10 +231,12 @@ Der Ausbau bleibt in getrennte, prüfbare Slices zerlegt:
 | **0.8.8-C6** | Round-Authority Integration Harness | abhängig vom echten kanonischen Rundenproduzenten |
 | **0.8.8-D/D2** | Bank & bestätigte Sparzinsen | ✅ gleicher Finance-State/Ledger, keine Rechnerzeit-Autorität |
 | **0.8.8-E** | Control Deck Focus | ✅ lokaler Fokus + Runtime-abgeleitete nächste Aktion |
-| **0.8.8-FIN-STATEMENTS** | Kontoauszüge | 🟡 bestehendes bestätigtes Ledger read-only verständlich machen |
-| **0.8.8-F** | Berlin Ops Map 2 | bezirksartige Zoom-/Pan-Ansicht mit besserer Objekt-Hierarchie |
+| **0.8.8-FIN-STATEMENTS** | Kontoauszüge | ✅ bestehendes bestätigtes Ledger read-only verständlich |
+| **0.8.8-F** | Berlin Ops Map 2 | ✅ begrenzter lokaler Zoom/Pan + Auswahlfokus auf bestehender Projection |
+| **0.8.8-STORY-DISTRICT-BIO** | Berlin-Erinnerungen | 🟡 ausschließlich bestätigte District-Timeline im Profil, keine Progressionsengine |
+| **0.8.8-FIN-EXPORT** | Kontoauszug TXT/CSV | als nächstes; ausschließlich aus validierter FIN-STATEMENTS-Projection |
 
-Anlagen/Dividenden, Kontoauszug-Export und lokaler Timeline-Fokusfilter bleiben eigenständige Folge-Slices, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
+Anlagen/Dividenden und lokaler Timeline-Fokusfilter bleiben eigenständige Folge-Slices, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
 
 ---
 
@@ -229,8 +251,9 @@ Die aktuelle Karte bleibt eine reine Presentation-Schicht:
 - Hall-Markierung
 - Filter `all / owned / prime / hall`
 - Tastaturfokus + ARIA + Reduced Motion
+- begrenzter lokaler Zoom/Pan + Auswahlfokus
 
-`map_pro.js` besitzt keine eigene Domainlogik, kein `/api/command`, kein Geocoding und keinen externen Kartendienst. Die geplante Map 2 darf diese Grenze nicht aufbrechen.
+`map_pro.js` besitzt keine eigene Domainlogik, kein `/api/command`, kein Geocoding und keinen externen Kartendienst. Map 2 hält diese Grenze ein.
 
 ---
 
@@ -282,7 +305,7 @@ A4 CONTROL DECK
 | Presentation | bestätigte Daten erklären/darstellen | Domain-/Save-State direkt schreiben |
 | Browser-UI | Auswahl-IDs und lokale Darstellung senden | Preise, Erträge, Jobfolgen, Zinsen, Rundenautorität oder Regeln autorisieren |
 
-Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung oder Aktionshervorhebung bleiben lokale Presentation. Wiederholte Assistentenaktionen, Zinsen und Dividenden benötigen bestätigte Spielautorität und dürfen nicht durch die Rechneruhr allein fortschreiten.
+Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung, Aktionshervorhebung oder Berlin-Erinnerungen bleiben lokale Presentation. Wiederholte Assistentenaktionen, Zinsen und Dividenden benötigen bestätigte Spielautorität und dürfen nicht durch die Rechneruhr allein fortschreiten.
 
 ---
 
@@ -324,7 +347,9 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung oder Aktionshervorhebung 
 | 0.8.8-C5B | sichtbarer Freundschafts-Nachhall | `eaa615e48eec...` |
 | 0.8.8-D | Atomic Wallet ↔ Bank Transfers | `c1a27a977ff7...` |
 | 0.8.8-D2 | Confirmed Savings Interest | `bbebc9c3cafe...` |
-| **0.8.8-E** | **Control Deck Focus** | `6ac72d794ad3...` |
+| 0.8.8-E | Control Deck Focus | `6ac72d794ad3...` |
+| 0.8.8-FIN-STATEMENTS | read-only Kontoauszüge | `81dda0d21170...` |
+| **0.8.8-F** | **Berlin Ops Map 2** | `8119bf71a6f1...` |
 
 ---
 
@@ -381,6 +406,7 @@ SAFE MERGE PASS
 | Crew-Logo/Fahne | [`docs/LAIENHILFE_CREW_LOGO_FAHNE.md`](docs/LAIENHILFE_CREW_LOGO_FAHNE.md) |
 | Scene Jobs & Bargeld | [`docs/LAIENHILFE_SCENE_JOBS.md`](docs/LAIENHILFE_SCENE_JOBS.md) |
 | Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
+| Berlin-Erinnerungen | [`docs/LAIENHILFE_DISTRICT_BIO.md`](docs/LAIENHILFE_DISTRICT_BIO.md) |
 | Geheimer bester Freund | [`docs/LAIENHILFE_ASSISTENT.md`](docs/LAIENHILFE_ASSISTENT.md) |
 | District-Event-Vertrag | [`manifests/DISTRICT_EVENT_MANIFEST.json`](manifests/DISTRICT_EVENT_MANIFEST.json) |
 | Berlin Ops Map | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |
