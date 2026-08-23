@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "version": "0.8.7-c1",
+  "district_state_manifest_version": "0.8.5-d1",
+  "city_map_manifest_version": "0.8.3-b2-foundation",
+  "selection": {
+    "method": "sha256_stable_weighted",
+    "weight_total": 100,
+    "seed_fields": ["world_seed", "district_id", "trigger_id"],
+    "system_time_as_seed": false,
+    "reroll_on_reload": false
+  },
+  "activation_policy": {
+    "maximum_active_instances_per_context": 1,
+    "client_can_activate": false,
+    "client_can_supply_effects": false,
+    "effects_apply_only_after_confirmed_resolution": true
+  },
+  "effect_contract": {
+    "metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
+    "per_event_delta_minimum": -6,
+    "per_event_delta_maximum": 6,
+    "district_bounds_remain": {"minimum": 0, "maximum": 100}
+  },
+  "events": [
+    {
+      "event_id": "district.power_flicker",
+      "weight": 28,
+      "title_key": "district_event.power_flicker.title",
+      "body_key": "district_event.power_flicker.body",
+      "requirements": {"minimum_scene_activity": 20},
+      "effects": {"heat": 0, "prestige": -1, "police_pressure": 0, "scene_activity": -3}
+    },
+    {
+      "event_id": "district.word_of_mouth_wave",
+      "weight": 30,
+      "title_key": "district_event.word_of_mouth_wave.title",
+      "body_key": "district_event.word_of_mouth_wave.body",
+      "requirements": {"minimum_prestige": 15},
+      "effects": {"heat": 1, "prestige": 3, "police_pressure": 0, "scene_activity": 4}
+    },
+    {
+      "event_id": "district.patrol_sweep",
+      "weight": 22,
+      "title_key": "district_event.patrol_sweep.title",
+      "body_key": "district_event.patrol_sweep.body",
+      "requirements": {"minimum_heat": 20},
+      "effects": {"heat": -2, "prestige": 0, "police_pressure": 5, "scene_activity": -2}
+    },
+    {
+      "event_id": "district.temporary_space_opens",
+      "weight": 20,
+      "title_key": "district_event.temporary_space_opens.title",
+      "body_key": "district_event.temporary_space_opens.body",
+      "requirements": {"maximum_police_pressure": 60},
+      "effects": {"heat": 1, "prestige": 2, "police_pressure": 0, "scene_activity": 5}
+    }
+  ]
+}
