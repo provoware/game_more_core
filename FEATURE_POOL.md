@@ -60,6 +60,7 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 | `POOL-QA-006` | `IDEA` | Status-Sync nach Safe Merge automatisieren | reduziert wiederkehrende Evidenzdrift nach erfolgreichen Feature-Merges | nur kanonische Statusdateien aktualisieren; kein automatischer Produktversionsbump |
 | `POOL-QA-007` | `IDEA` | District-Event-Eligibility-Diagnose | zeigt im Entwicklerbereich lesend, welche Voraussetzungen aktuell alle Welt-Ereignisse ausschließen | dieselbe zentrale Requirements-Prüfung wiederverwenden; keine zweite Auswahlengine und keine Browser-Autorität |
 | `POOL-QA-008` | `IDEA` | Timeline-Projections-Freshness-Check | erkennt, wenn C4A-Daten vorhanden sind, aber A4 sie noch nicht transportiert oder sichtbar rendert | nur read-only Contract-Prüfung; keine zweite Timeline-Quelle |
+| `POOL-QA-009` | `IDEA` | Timeline-Metadaten-Diagnose | zählt lesend verworfene optionale Timeline-Metadaten und erleichtert beschädigte Journaldaten zu finden | Sanitizing der zentralen C4A-Projection wiederverwenden; kein Fallback-Content, kein Journal-Write |
 
 ---
 
@@ -87,4 +88,4 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 ## Nächste Entnahme
 
-`POOL-WORLD-002` ist mit C1–C3 abgeschlossen. `POOL-UX-002` bleibt aktiv: C4A ist sicher gemergt, C4B macht dieselbe read-only Ereignis-Timeline im Control Deck sichtbar. Danach bleibt `POOL-WORLD-004` für Cadence/Cooldown priorisiert. `POOL-STORY-001` hält den späteren erzählerischen Nachhall fest. `POOL-QA-004` und `POOL-QA-006` halten Freshness-Erkennung und spätere sichere Status-Synchronisierung fest; `POOL-QA-008` ergänzt einen späteren rein lesenden Check zwischen Projection, Transport und sichtbarer Timeline.
+`POOL-WORLD-002` ist mit C1–C3 abgeschlossen. `POOL-UX-002` bleibt aktiv: C4A ist sicher gemergt, C4B macht dieselbe read-only Ereignis-Timeline im Control Deck sichtbar. Danach bleibt `POOL-WORLD-004` für Cadence/Cooldown priorisiert. `POOL-STORY-001` hält den späteren erzählerischen Nachhall fest. `POOL-QA-004` und `POOL-QA-006` halten Freshness-Erkennung und spätere sichere Status-Synchronisierung fest; `POOL-QA-008` ergänzt einen späteren rein lesenden Check zwischen Projection, Transport und sichtbarer Timeline. `POOL-QA-009` hält eine spätere Diagnose für verworfene optionale Timeline-Metadaten fest, ohne die Projection- oder Journal-Autorität zu duplizieren.
