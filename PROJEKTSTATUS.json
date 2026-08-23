@@ -2,27 +2,27 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-A",
-  "status": "0_8_7_c5_remote_validated_next_crew_identity_foundation",
-  "current_focus": "crew_identity_contract_and_sync_ready_profile",
-  "last_validated_feature_iteration": "0.8.7-C5",
+  "active_iteration": "0.8.8-B",
+  "status": "0_8_8_a_remote_validated_scene_jobs_b_active",
+  "current_focus": "scene_jobs_wallet_and_a4_visibility",
+  "last_validated_feature_iteration": "0.8.8-A",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #102 / head 05eef417efa24f299ebc7de7f2104f6a625d5582 / merge bd79da8d1e124ec60248a05bf332c6ef338ca7b6",
+  "validation_reference": "PR #104 / head 8d7004f0d835ad3c386ed657b49644fb3c1aa739 / merge 7e0ed1e36dcc89436c0430d49e547fe2106f756b",
   "remote_validation": {
-    "status": "success_for_0.8.7_c5_district_event_cadence_cooldown",
-    "pull_request": 102,
-    "validated_head": "05eef417efa24f299ebc7de7f2104f6a625d5582",
-    "runtime_core_workflow_run": 32646269065,
-    "presentation_core_workflow_run": 32646269053,
-    "repository_health_workflow_run": 32646269009,
-    "release_acceptance_workflow_run": 32646269064,
-    "release_package_workflow_run": 32646269010,
+    "status": "success_for_0.8.8_a_crew_identity_logo_flag",
+    "pull_request": 104,
+    "validated_head": "8d7004f0d835ad3c386ed657b49644fb3c1aa739",
+    "runtime_core_workflow_run": 32648468121,
+    "presentation_core_workflow_run": 32648468165,
+    "repository_health_workflow_run": 32648468119,
+    "release_acceptance_workflow_run": 32648468142,
+    "release_package_workflow_run": 32648468140,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "codex_review_execution": "blocked_by_external_usage_limit_not_counted_as_pass",
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "bd79da8d1e124ec60248a05bf332c6ef338ca7b6"
+    "merged_commit": "7e0ed1e36dcc89436c0430d49e547fe2106f756b"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -49,7 +49,8 @@
     {"iteration": "0.8.7-C3", "pull_request": 95, "merged_commit": "fb62c5226997462cc2a9adc67529a7691e16ae2b", "feature": "settlement_driven_district_event_application_integration"},
     {"iteration": "0.8.7-C4A", "pull_request": 98, "merged_commit": "4909fb9f7169baaa5b802e497cdba3e2c6da0dae", "feature": "read_only_event_timeline_projection_and_text_layer"},
     {"iteration": "0.8.7-C4B", "pull_request": 101, "merged_commit": "3d71f00c5717ae797e6b8f1ca4c65c036bf71c81", "feature": "visible_read_only_control_deck_event_timeline"},
-    {"iteration": "0.8.7-C5", "pull_request": 102, "merged_commit": "bd79da8d1e124ec60248a05bf332c6ef338ca7b6", "feature": "confirmed_game_world_time_district_event_cadence"}
+    {"iteration": "0.8.7-C5", "pull_request": 102, "merged_commit": "bd79da8d1e124ec60248a05bf332c6ef338ca7b6", "feature": "confirmed_game_world_time_district_event_cadence"},
+    {"iteration": "0.8.8-A", "pull_request": 104, "merged_commit": "7e0ed1e36dcc89436c0430d49e547fe2106f756b", "feature": "crew_identity_logo_flag_sync_ready_recipe"}
   ],
   "subsystems": {
     "character_forge": {
@@ -58,10 +59,10 @@
       "trait_names": 165,
       "level_cap_before_resonance": 50,
       "profile_personalization": true,
-      "crew_identity_logo_flag": false
+      "crew_identity_logo_flag": true
     },
     "event_runtime": {
-      "status": "validated",
+      "status": "validated_through_0_8_8_a",
       "canonical_event_actions": 8,
       "crisis_engine": true,
       "settlement_engine": true,
@@ -69,12 +70,13 @@
       "always_available_job_actions": false
     },
     "economy": {
-      "status": "validated_with_property_extensions",
+      "status": "validated_with_property_extensions_scene_jobs_in_development",
       "equipment_market": true,
       "property_purchase_ledger_kind": "property_purchase",
       "property_upgrade_ledger_kind": "property_upgrade",
       "property_fixed_postings_advance_market_tick": false,
       "property_transactions_compensatable": false,
+      "personal_finance_state_validated": false,
       "bank_account_supported": false,
       "savings_interest_supported": false,
       "investments_dividends_supported": false,
@@ -124,7 +126,7 @@
       "fake_local_champion_titles": false
     },
     "presentation": {
-      "status": "remote_validated_c4b_visible_timeline",
+      "status": "remote_validated_through_crew_identity_scene_jobs_in_development",
       "a4_localhost_client": true,
       "high_quality_berlin_ops_renderer": true,
       "map_read_only": true,
@@ -137,6 +139,8 @@
       "event_timeline_visible": true,
       "event_timeline_max_entries": 12,
       "event_timeline_sources": ["street.encounter_resolved", "event.incident_resolved", "world.district_effect_applied"],
+      "crew_identity_editor_visible": true,
+      "scene_jobs_panel_validated": false,
       "timeline_local_filter": false,
       "focus_maximize_restore": false,
       "next_action_attention_signal": false,
@@ -164,11 +168,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.8-A",
-  "next_goal": "Crew Identity Foundation: Logo/Fahne als synchronisierbare Datenrepräsentation statt Bildblob definieren und in Profil/Projection vorbereiten.",
+  "next_iteration": "0.8.8-B",
+  "next_goal": "Scene Jobs & persönliches Bargeld: katalogisierte Jobs über den bestehenden A4-Command-Pfad sichtbar und replaybar machen; Browser sendet nur job_id.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T16:45:00+02:00"
+  "updated_at": "2026-08-23T17:35:00+02:00"
 }
