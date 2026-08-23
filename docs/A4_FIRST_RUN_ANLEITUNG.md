@@ -22,13 +22,7 @@ Für einen getrennten Test-Spielstand:
 ./START_BUNKERFREQUENZ.sh --port 0 --save-dir /tmp/bunkerfrequenz-test
 ```
 
-Im Terminal muss anschließend stehen:
-
-```text
-STATUS: BEREIT
-```
-
-Beenden: `Strg+C`.
+Im Terminal muss anschließend `STATUS: BEREIT` stehen. Beenden: `Strg+C`.
 
 ## 2. Neues Spiel anlegen
 
@@ -40,41 +34,19 @@ Beim ersten Start erscheint **FIRST RUN**:
 
 Ein vorhandener Spielstand wird nicht still überschrieben.
 
-## 3. Das neue Control Deck verstehen
+## 3. Das Control Deck verstehen
 
-Oben findest du den aktuellen Spielstatus. Das HUD zeigt kompakt:
-
-- Eventphase
-- Budget
-- Energie
-- Stress
-- Ruf
-- Anzahl eigener Orte
-
-Darunter liegt die Schnellnavigation:
+Das HUD zeigt Eventphase, Budget, Energie, Stress, Ruf und Anzahl eigener Orte. Darunter liegt die Schnellnavigation:
 
 ```text
 STRASSE · MAP · PROPERTY · HALL · EVENT · EQUIPMENT · SAVE
 ```
 
-Damit springst du direkt zum gewünschten Bereich, ohne den kompletten Bildschirm durchsuchen zu müssen.
-
 ## 4. Ansicht anpassen
 
-Oben rechts gibt es **ANSICHT**. Dort stehen drei reine Anzeigeoptionen zur Verfügung:
+Unter **ANSICHT** stehen Kompaktmodus, hoher Kontrast und große Schrift bereit. Diese Optionen verändern ausschließlich die Darstellung im Browser. Spielstand, Chancen, Budget und Regeln bleiben unverändert.
 
-### Kompakt
-Weniger Abstände und kleinere Flächen. Sinnvoll, wenn du viel gleichzeitig sehen möchtest.
-
-### Hoher Kontrast
-Stärkere Linien und deutlichere Flächen. Sinnvoll bei schlechter Erkennbarkeit.
-
-### Große Schrift
-Vergrößert die Grunddarstellung.
-
-Wichtig: Diese Optionen verändern **nur die Oberfläche dieses Browsers**. Sie verändern keinen Spielstand, keine Chancen, kein Budget und keine Regeln.
-
-## 5. Straßenrunde – jetzt mit echter Auswahl
+## 5. Straßenrunde – mit echter Auswahl
 
 Vor einer Straßenrunde wählst du einen Ansatz:
 
@@ -85,56 +57,19 @@ Vor einer Straßenrunde wählst du einen Ansatz:
 | **Kontakte** | eher bekannte Gesichter und Crew-Kontakte |
 | **Scout** | eher Wege und nützliche Funde, mit etwas mehr möglichem Ärger |
 
-Danach **RUNDE STARTEN** drücken.
-
-### Was die Auswahl wirklich macht
-
-Sie verändert nur die **Wahrscheinlichkeit**, welche bereits katalogisierte Begegnung gezogen wird. Sie garantiert kein bestimmtes Ergebnis.
-
-Der Browser darf nicht selbst sagen: „Gib mir +10 Ruf“. Er sendet lediglich beispielsweise:
-
-```text
-approach_id = network
-```
-
-Der Spielkern wählt deterministisch eine erlaubte Begegnung und übernimmt deren bestätigte Effekte.
-
-### Wichtig für Reload/Retry
-
-Eine bereits bestätigte Straßenrunde kann nicht durch Reload neu gewürfelt werden. Derselbe Walk behält auch seinen bestätigten Ansatz.
+Der Ansatz verändert nur die Wahrscheinlichkeit katalogisierter Begegnungen. Der Browser sendet nur die gewählte ID; bestätigte Effekte kommen aus dem Spielkern. Eine bestätigte Straßenrunde wird beim Reload nicht neu gewürfelt.
 
 ## 6. Berlin Ops Map PRO
 
-Die Map zeigt die vorhandene Spielwelt:
-
-- 8 Districts
-- 12 Orte
-- District-Werte
-- Score/Tier
-- Eigentum
-- Ausbauten
-- Hall of Tribute
-
-Du kannst filtern und Orte/Bezirke fokussieren. Die Karte selbst schreibt **keine** Gameplaywerte.
-
-Kaufen und Ausbauen erfolgt weiterhin im Property-Bereich.
+Die Map zeigt 8 Districts, 12 Orte, District-Werte, Score/Tier, Eigentum, Ausbauten und Hall of Tribute. Die Karte selbst schreibt keine Gameplaywerte. Kaufen und Ausbauen erfolgt weiterhin im Property-Bereich.
 
 ## 7. Immobilien und Ausbau
 
-Bei kaufbaren Orten gibt es **ÜBERNEHMEN**. Preis und Eigentümer bestimmt der Spielkern.
-
-Eigene Orte können über katalogisierte Ausbauarten bis Level 3 verbessert werden. Der Browser darf weder Preis noch Ziellevel erfinden.
+Bei kaufbaren Orten gibt es **ÜBERNEHMEN**. Preis und Eigentümer bestimmt der Spielkern. Eigene Orte können über katalogisierte Ausbauarten bis Level 3 verbessert werden. Der Browser darf weder Preis noch Ziellevel erfinden.
 
 ## 8. Hall of Tribute und Saison
 
-Die Hall zeigt Ruf, Level und Resonanz sowie Woche/Monat.
-
-Wichtig:
-
-- Ein lokaler Rang 1 bedeutet nicht automatisch einen Championtitel.
-- Endgültige Titel benötigen einen bestätigten abgeschlossenen Zyklus.
-- Für echte Konkurrenz-Titel müssen bestätigte Konkurrenten vorhanden sein.
-- Die Systemuhr allein bestimmt niemals eine Saison.
+Die Hall zeigt Ruf, Level und Resonanz sowie Woche/Monat. Ein lokaler Rang 1 bedeutet nicht automatisch einen Championtitel. Endgültige Titel brauchen einen bestätigten abgeschlossenen Zyklus und echte bestätigte Konkurrenz. Die Systemuhr allein bestimmt niemals eine Saison.
 
 ## 9. Event spielen
 
@@ -158,31 +93,15 @@ Danach muss die Eventphase `COMPLETED` sein.
 
 ## 10. Warum manche Event-Buttons ausgegraut sind
 
-Das ist normalerweise kein Fehler. Unter den Buttons steht der Blocker, z. B.:
-
-```text
-Blockiert: Equipment ist noch nicht bereit
-```
-
-Dann zuerst die fehlende Voraussetzung erfüllen.
+Das ist normalerweise kein Fehler. Unter den Buttons steht der Blocker, beispielsweise `Blockiert: Equipment ist noch nicht bereit`. Dann zuerst die fehlende Voraussetzung erfüllen.
 
 ## 11. Krise entscheiden – Folgen vorher sehen
 
-Während `LIVE` kann eine katalogisierte Krise geöffnet werden. Bei einer aktiven Krise erscheinen Antwortkarten.
-
-Jede Karte zeigt vor der Wahl die **bereits katalogisierten** Auswirkungen, zum Beispiel:
-
-```text
-Budget −50,00 € · Ruf +2 · Crew-Stress +1 · Stabilität +2
-```
-
-Das ist eine Vorschau des vorhandenen Crisis-Vertrags. Der Browser berechnet die Folgen nicht neu. Beim Klick sendet er nur die `response_id` an die Crisis Engine.
+Während `LIVE` kann eine katalogisierte Krise geöffnet werden. Antwortkarten zeigen vor der Wahl die bereits katalogisierten Auswirkungen. Der Browser berechnet die Folgen nicht neu, sondern sendet nur die `response_id` an die Crisis Engine.
 
 ## 12. Speichern
 
-Jede bestätigte Aktion wird sofort journalisiert.
-
-Mit **CHECKPOINT SPEICHERN** legst du zusätzlich einen Snapshot an.
+Jede bestätigte Aktion wird sofort journalisiert. Mit **CHECKPOINT SPEICHERN** legst du zusätzlich einen Snapshot an.
 
 ## 13. Neustart und Recovery
 
@@ -190,9 +109,7 @@ Mit **CHECKPOINT SPEICHERN** legst du zusätzlich einen Snapshot an.
 2. Mit demselben Spielstandordner neu starten.
 3. Bestätigte Werte und Eventphase müssen wieder erscheinen.
 
-Wenn aktueller State und Journal nicht zusammenpassen, versucht der Client die vorhandene Recovery. Er erfindet dabei keinen neuen Spielverlauf, sondern verwendet bestätigte Snapshots und Journalrecords.
-
-Wenn sichere Recovery nicht möglich ist, stoppt der Start mit einer verständlichen Fehlermeldung. Journal-, State- oder Snapshot-Dateien dann nicht von Hand löschen.
+Wenn State und Journal nicht zusammenpassen, verwendet die Recovery bestätigte Snapshots und Journalrecords. Ist eine sichere Wiederherstellung nicht möglich, stoppt der Start mit einer verständlichen Fehlermeldung. Journal-, State- oder Snapshot-Dateien dann nicht von Hand löschen.
 
 ## 14. Häufige Startfehler
 
@@ -216,13 +133,7 @@ Lösung:
 
 ### Programmdatei fehlt
 
-Bei:
-
-```text
-START FEHLGESCHLAGEN – fehlt: ...
-```
-
-keine einzelnen Dateien verschiedener Versionen zusammenkopieren. Einen vollständigen Checkout bzw. ein vollständiges Release-Paket benutzen.
+Bei `START FEHLGESCHLAGEN – fehlt: ...` keine einzelnen Dateien verschiedener Versionen zusammenkopieren. Einen vollständigen Checkout bzw. ein vollständiges Release-Paket benutzen.
 
 ## 15. Wo liegt der Spielstand?
 
@@ -232,45 +143,52 @@ Standard:
 ~/.local/share/bunkerfrequenz/a4-alpha
 ```
 
-Die lokalen **Ansichtseinstellungen** liegen getrennt im Browser und sind kein Bestandteil des Spielstands.
+Lokale Ansichtseinstellungen liegen getrennt im Browser und sind kein Bestandteil des Spielstands.
 
-## 16. Woran erkenne ich den geprüften Entwicklungsstand?
+## 16. Produktversion und Entwicklungsstand
 
-Für Spieler ist die Produkt-Release-Baseline weiterhin `0.8.4-alpha.1`. Neue Features können bereits darüber hinaus geprüft und sicher gemergt sein, ohne dass die Produktversion sofort hochgezählt wird.
+Die Produkt-Release-Baseline bleibt `0.8.4-alpha.1`. Neue Features können bereits darüber hinaus geprüft und sicher gemergt sein. `PROJEKTSTATUS.json` trennt deshalb Produktrelease, aktive Iteration und letzten validierten Feature-Stand.
 
-Der aktuell bestätigte Feature-Stand steht in `PROJEKTSTATUS.json` unter `last_validated_feature_iteration`. Für den letzten vollständig bestätigten Stand muss dort weiterhin stehen:
+## 17. District-Welt-Ereignisse: C1 und C2 einfach erklärt
 
-```text
-0.8.7-B
-```
-
-0.8.7-C darf parallel bereits als **aktive Entwicklung** geführt werden. Das bedeutet nicht automatisch, dass alle 0.8.7-C-Funktionen spielbar sind.
-
-## 17. District-Welt-Ereignisse: Was ist schon da – und was noch nicht?
-
-Der erste 0.8.7-C-Schritt definiert nur den sicheren **Ereignisvertrag**. Darin stehen stabile Ereignis-IDs, Auswahlgewichte, Voraussetzungen, kleine erlaubte District-Effekte und die deutschen Story-Texte.
-
-Beispiele aus dem Katalog:
+C1 hat zuerst festgelegt, **was** ein District-Ereignis sein darf: stabile IDs, Gewichte, Voraussetzungen, kleine District-Effekte und getrennte deutsche Story-Texte. Der Startkatalog enthält:
 
 - **Das Netz flackert**
 - **Die Nachricht macht die Runde**
 - **Mehr Blau in den Nebenstraßen**
 - **Eine Tür steht plötzlich offen**
 
-Wichtig für Anfänger: Diese Einträge sind zunächst **noch keine automatisch laufenden Gameplay-Ereignisse**. Der Spielkern besitzt in diesem Slice noch keinen neuen Auswahl-/Anwendungsservice dafür. Deshalb darfst du nach diesem Vertrags-Schritt noch keine sichtbare District-Event-Karte oder neue District-Wertänderung erwarten.
+C2 ergänzt jetzt den kleinen Runtime-Kern dahinter. Vereinfacht passiert intern:
 
-Der Zweck dieses Zwischenschritts ist Sicherheit: Erst wird festgelegt, **was** ein District-Ereignis sein darf. Danach wird getrennt umgesetzt, **wie** es deterministisch ausgewählt, journalisiert, wiederhergestellt und im Control Deck angezeigt wird.
+```text
+bestätigter Welt-Seed + Bezirk + Trigger
+        ↓
+Voraussetzungen prüfen
+        ↓
+reproduzierbar ein erlaubtes Ereignis auswählen
+        ↓
+vorhandenen DistrictService benutzen
+        ↓
+District-Werte journalisieren
+        ↓
+Reload/Recovery kann denselben Stand wiederherstellen
+```
+
+Wichtig: Derselbe Bezirk + Trigger wird nicht durch Reload oder einen zweiten Versuch neu ausgewürfelt. Selbst wenn ein Retry versehentlich mit einem anderen Seed ankommt, bleibt die bereits bestätigte Event-Instanz maßgeblich und wird nicht doppelt angewendet.
+
+Ebenso wichtig: **Der A4-Browser löst diese neue Runtime in C2 noch nicht selbst aus.** Es gibt deshalb noch keinen neuen District-Event-Button und noch keine sichtbare Ereigniskarte. C2 schafft zuerst die sichere, testbare Server-/Application-Grenze. Die nächste Stufe bindet einen autorisierten Trigger in den bestehenden Spielablauf ein; der Browser darf dabei weiterhin keine District-Effekte mitsenden.
 
 ## 18. Was noch nicht enthalten ist
 
-Noch nicht Teil des spielbaren District-Event-Slices sind unter anderem:
+Noch nicht Teil des sichtbaren District-Event-Gameplays sind:
 
-- automatische Auswahl und bestätigte Anwendung der neuen District-Ereignisse,
-- District-Event-Recovery und Replay als eigener Runtime-Pfad,
+- automatische Auslösung aus einem kanonischen Game-Client-/Application-Flow,
 - sichtbare District-Event-Karten oder Ereignis-Timeline im Control Deck,
+- Event-Cadence/Cooldown auf bestätigter Spielzeit,
+- District-Ereignisketten mit Erinnerung,
 - Property-Miete/Verkauf/laufende Rendite,
 - echtes Netzwerk-/Telegram-Sync,
 - echte Remote-Gegner ohne bestätigte Netzwerkquelle,
 - neuer Produktrelease oberhalb `0.8.4-alpha.1`.
 
-**0.8.7-B – Control Deck & Player Choices** bleibt der letzte vollständig remote validierte Feature-Stand. **0.8.7-C** beginnt bewusst mit dem Vertrag/Katalog; der nächste technische Schritt ist der kleine Runtime-/Recovery-Slice.
+Der nächste saubere Schritt ist **C3 – Application-Integration**: einen einzigen autorisierten District-Event-Trigger in den vorhandenen Spielablauf einhängen, ohne neue Browser-Fachlogik.
