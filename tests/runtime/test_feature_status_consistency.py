@@ -34,7 +34,10 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
 
     def test_validated_control_deck_pool_items_are_done(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
-        for pool_id in ("POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002", "POOL-UX-002", "POOL-WORLD-004"):
+        for pool_id in (
+            "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
+            "POOL-UX-002", "POOL-WORLD-004", "POOL-PROFILE-002",
+        ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
 
     def test_c5_status_matches_visible_timeline_and_confirmed_cadence(self):
@@ -61,8 +64,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
     def test_requested_0_8_8_foundations_have_single_pool_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         expected = {
-            "POOL-PROFILE-002": "`PULLED`",
-            "POOL-ECON-003": "`READY`",
+            "POOL-PROFILE-002": "`DONE`",
+            "POOL-ECON-003": "`PULLED`",
             "POOL-COMPANION-001": "`DEPENDENCY`",
             "POOL-FINANCE-001": "`READY`",
             "POOL-UX-004": "`READY`",
