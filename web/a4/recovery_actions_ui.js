@@ -30,6 +30,22 @@
     return feedback;
   }
 
+  function renderConfirmedFeedback(recoveryId, beforeCharacter) {
+    const afterCharacter = state.projection?.character;
+    if (!beforeCharacter || !afterCharacter) return;
+    if (
+      beforeCharacter.energy === afterCharacter.energy &&
+      beforeCharacter.stress === afterCharacter.stress
+    ) return;
+
+    const action = (state.projection?.scene_jobs?.recovery_actions || []).find(
+      (item) => item.recovery_id === recoveryId
+    );
+    const feedback = ensureFeedbackHost();
+    if (!feedback) return;
+    feedback.textContent = `Energie ${beforeCharacter.energy} → ${afterCharacter.energy} · Stress ${beforeCharacter.stress} → ${afterCharacter.stress}. ${availabilityText(action)}`;
+  }
+
   function renderRecoveryActions(sceneJobs) {
     const panel = document.getElementById("jobs-panel");
     if (!panel) return;
@@ -72,32 +88,24 @@
       button.className = "primary";
       button.textContent = "REGENERIEREN";
       button.disabled = action.can_run !== true;
-      button.addEventListener("click", () => sendCommand({
-        type: "recovery.run",
-        command_id: commandId("recovery"),
-        recovery_id: action.recovery_id
-      }));
+      button.addEventListener("click", async () => {
+        const beforeCharacter = state.projection?.character
+          ? { ...state.projection.character }
+          : null;
+        await sendCommand({
+          type: "recovery.run",
+          command_id: commandId("recovery"),
+          recovery_id: action.recovery_id
+        });
+        renderConfirmedFeedback(action.recovery_id, beforeCharacter);
+      });
       row.append(info, button);
       host.append(row);
     }
-  }
-
-  function renderFeedback(metadata, sceneJobs) {
-    const feedback = ensureFeedbackHost();
-    if (!feedback || !metadata) return;
-    const energy = metadata.resource_changes?.energy;
-    const stress = metadata.resource_changes?.stress;
-    if (!energy || !stress) return;
-    const nextAction = (sceneJobs?.recovery_actions || []).find(
-      (action) => action.recovery_id === metadata.recovery_id
-    );
-    feedback.textContent = `${metadata.label}: Energie ${energy.old} → ${energy.new} · Stress ${stress.old} → ${stress.new}. ${availabilityText(nextAction)}`;
   }
 
   renderSceneJobs = function renderSceneJobsWithRecovery(sceneJobs, hasCharacter) {
     baseRenderSceneJobs(sceneJobs, hasCharacter);
     if (hasCharacter && sceneJobs?.available) renderRecoveryActions(sceneJobs);
   };
-
-  window.BunkerRecoveryActions = Object.freeze({ renderFeedback });
 })();
