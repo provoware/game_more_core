@@ -238,22 +238,39 @@ Die lokalen **Ansichtseinstellungen** liegen getrennt im Browser und sind kein B
 
 Für Spieler ist die Produkt-Release-Baseline weiterhin `0.8.4-alpha.1`. Neue Features können bereits darüber hinaus geprüft und sicher gemergt sein, ohne dass die Produktversion sofort hochgezählt wird.
 
-Der aktuell bestätigte Feature-Stand steht in `PROJEKTSTATUS.json` unter `last_validated_feature_iteration`. Für 0.8.7-B muss dort stehen:
+Der aktuell bestätigte Feature-Stand steht in `PROJEKTSTATUS.json` unter `last_validated_feature_iteration`. Für den letzten vollständig bestätigten Stand muss dort weiterhin stehen:
 
 ```text
 0.8.7-B
 ```
 
-Zusätzlich nennt `TODO.md` denselben Stand samt PR, grünen CI-Gates und Safe-Merge-Nachweis. Wenn diese Angaben widersprüchlich sind, gilt `PROJEKTSTATUS.json` als kanonischer Status und der Widerspruch ist ein Dokumentationsfehler – nicht automatisch ein Spielfehler.
+0.8.7-C darf parallel bereits als **aktive Entwicklung** geführt werden. Das bedeutet nicht automatisch, dass alle 0.8.7-C-Funktionen spielbar sind.
 
-## 17. Was noch nicht enthalten ist
+## 17. District-Welt-Ereignisse: Was ist schon da – und was noch nicht?
 
-Noch nicht Teil dieses Slices sind unter anderem:
+Der erste 0.8.7-C-Schritt definiert nur den sicheren **Ereignisvertrag**. Darin stehen stabile Ereignis-IDs, Auswahlgewichte, Voraussetzungen, kleine erlaubte District-Effekte und die deutschen Story-Texte.
 
-- bezirksbezogene Welt-Ereignisse als eigenes System,
+Beispiele aus dem Katalog:
+
+- **Das Netz flackert**
+- **Die Nachricht macht die Runde**
+- **Mehr Blau in den Nebenstraßen**
+- **Eine Tür steht plötzlich offen**
+
+Wichtig für Anfänger: Diese Einträge sind zunächst **noch keine automatisch laufenden Gameplay-Ereignisse**. Der Spielkern besitzt in diesem Slice noch keinen neuen Auswahl-/Anwendungsservice dafür. Deshalb darfst du nach diesem Vertrags-Schritt noch keine sichtbare District-Event-Karte oder neue District-Wertänderung erwarten.
+
+Der Zweck dieses Zwischenschritts ist Sicherheit: Erst wird festgelegt, **was** ein District-Ereignis sein darf. Danach wird getrennt umgesetzt, **wie** es deterministisch ausgewählt, journalisiert, wiederhergestellt und im Control Deck angezeigt wird.
+
+## 18. Was noch nicht enthalten ist
+
+Noch nicht Teil des spielbaren District-Event-Slices sind unter anderem:
+
+- automatische Auswahl und bestätigte Anwendung der neuen District-Ereignisse,
+- District-Event-Recovery und Replay als eigener Runtime-Pfad,
+- sichtbare District-Event-Karten oder Ereignis-Timeline im Control Deck,
 - Property-Miete/Verkauf/laufende Rendite,
 - echtes Netzwerk-/Telegram-Sync,
 - echte Remote-Gegner ohne bestätigte Netzwerkquelle,
 - neuer Produktrelease oberhalb `0.8.4-alpha.1`.
 
-**0.8.7-B – Control Deck & Player Choices** ist remote validiert und über `/safe-merge` übernommen. Als nächster Entwicklungsbaustein ist **0.8.7-C – Bezirksbezogene Welt-Ereignisse** vorbereitet.
+**0.8.7-B – Control Deck & Player Choices** bleibt der letzte vollständig remote validierte Feature-Stand. **0.8.7-C** beginnt bewusst mit dem Vertrag/Katalog; der nächste technische Schritt ist der kleine Runtime-/Recovery-Slice.

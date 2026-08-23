@@ -42,11 +42,12 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-WORLD-002` | `PULLED` | **Bezirksbezogene Welt-/Zufallsereignisse** | Bezirke spielerisch stärker unterscheiden | eigener katalogisierter Ereignisvertrag auf DistrictState |
+| `POOL-WORLD-002` | `PULLED` | **Bezirksbezogene Welt-/Zufallsereignisse** | Bezirke spielerisch stärker unterscheiden; C1 definiert Vertrag/Katalog, C2 folgt mit Runtime | vorhandener DistrictState bleibt einzige Metrik-Autorität |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung ohne neue Engine | bestehender Street-Encounter-/Approach-Vertrag |
 | `POOL-PROFILE-002` | `READY` | Crewfarben und Emblem-Auswahl | stärkere Identität | nur Darstellungsdaten; Character-ID unverändert |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 | `POOL-UX-002` | `IDEA` | Ereignis-Timeline im Control Deck | bestätigte Welt-, Street- und Crisis-Ereignisse schneller nachvollziehen | reine Projection/Presentation; Journal bleibt Autorität |
+| `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | spätere Ereignisse können bestätigte frühere District-Ereignisse erzählerisch aufgreifen | erst nach validierter 0.8.7-C Runtime; keine versteckten Browserzustände |
 
 ---
 
@@ -74,4 +75,4 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 ## Nächste Entnahme
 
-0.8.7-B ist remote validiert und sicher gemergt. Aktiv vorbereitet ist `POOL-WORLD-002` als **0.8.7-C – Bezirksbezogene Welt-Ereignisse**. Danach folgen bevorzugt `POOL-STREET-002` und `POOL-PROFILE-002`.
+`POOL-WORLD-002` ist als **0.8.7-C – Bezirksbezogene Welt-Ereignisse** aktiv. Nach dem Vertrag/Katalog-Slice folgt als kleinster nächster Schritt die kanonische Runtime-Auswahl und bestätigte Anwendung über District-Service + Journal. Danach bleiben `POOL-STREET-002` und `POOL-PROFILE-002` bevorzugte Folgebausteine.
