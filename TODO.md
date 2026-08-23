@@ -9,7 +9,7 @@
 - **0.8.7-C3 Application-Integration:** PR #95 · `SAFE MERGE PASS` · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
 - **0.8.7-C4A Timeline-Projection:** PR #98 · `SAFE MERGE PASS` · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
 - **District-Event-Robustheit:** `no_eligible_event` wird als expliziter schreibfreier No-op behandelt; kein künstliches Ersatz-Ereignis
-- **Aktive Entwicklungsstufe:** `0.8.7-C4B – sichtbares Control Deck`; C4A ist Daten-/Textquelle, C4B bleibt reine Presentation
+- **Aktive Entwicklungsstufe:** `0.8.7-C4B – sichtbares Control Deck`; Implementation auf Feature-Branch abgeschlossen, Remote-Abnahme noch ausstehend
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
 ---
@@ -97,10 +97,12 @@
 
 ## C4B – sichtbares Control Deck
 
-- [ ] C4A-Projection über die bestehende A4-Runtime an den Client reichen
-- [ ] Control Deck zeigt eine kompakte, tastatur- und screenreaderfreundliche Timeline
-- [ ] Darstellung bleibt read-only und enthält keinen Command-/Write-Pfad
-- [ ] bestehende C4A-Reihenfolge und Texte unverändert verwenden; Browser sortiert oder erfindet nichts neu
+- [x] C4A-Projection über die bestehende A4-Runtime an den Client reichen
+- [x] Control Deck zeigt eine kompakte, tastatur- und screenreaderfreundliche Timeline
+- [x] Darstellung bleibt read-only und enthält keinen Command-/Write-Pfad
+- [x] bestehende C4A-Reihenfolge und Texte unverändert verwenden; Browser sortiert oder erfindet nichts neu
+- [ ] Remote-Gates auf dem endgültigen PR-Head vollständig grün
+- [ ] 0 offene Review-Threads, aktuelles `main`, `/safe-merge` PASS
 
 ### Explizit NICHT in C4
 
