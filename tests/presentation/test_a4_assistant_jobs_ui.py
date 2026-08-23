@@ -3,6 +3,7 @@ from pathlib import Path
 import unittest
 
 from bunkerfrequenz.domain.character import CharacterState
+from bunkerfrequenz.domain.finance import PlayerFinanceState
 from bunkerfrequenz.presentation.scene_jobs_projection import build_scene_jobs_projection
 
 
@@ -27,6 +28,19 @@ class A4AssistantJobsUiTests(unittest.TestCase):
         self.assertEqual(projection["assistant"]["active_job_label"], "Kabel & Kleinkram reparieren")
         self.assertEqual(projection["assistant"]["revision"], 4)
 
+    def test_projection_exposes_confirmed_wallet_and_bank_balances(self):
+        finance = PlayerFinanceState(cash_cents=8_500, bank_cents=4_250, revision=3)
+        state = {
+            "character": CharacterState("char.local", "Local").to_dict(),
+            "finance": finance.to_dict(),
+        }
+
+        projection = build_scene_jobs_projection(state, JOBS["jobs"])
+
+        self.assertEqual(projection["cash_cents"], 8_500)
+        self.assertEqual(projection["bank_cents"], 4_250)
+        self.assertEqual(projection["finance_revision"], 3)
+
     def test_projection_fails_closed_if_saved_assistant_job_is_not_in_catalog(self):
         state = {
             "character": CharacterState("char.local", "Local").to_dict(),
@@ -49,6 +63,22 @@ class A4AssistantJobsUiTests(unittest.TestCase):
         self.assertNotIn("energy_delta", fragment)
         self.assertNotIn("stress_delta", fragment)
         self.assertNotIn("round", fragment.lower())
+
+    def test_bank_ui_stays_in_jobs_panel_and_sends_only_direction_and_amount(self):
+        self.assertIn('control.id = "jobs-bank-control"', ASSISTANT_UI)
+        self.assertIn("WALLET ↔ BANK", ASSISTANT_UI)
+        self.assertIn("EINZAHLEN", ASSISTANT_UI)
+        self.assertIn("ABHEBEN", ASSISTANT_UI)
+        self.assertIn("sceneJobs.bank_cents", ASSISTANT_UI)
+        self.assertNotIn("bank-panel", ASSISTANT_UI)
+
+        start = ASSISTANT_UI.index('type: "finance.transfer"')
+        fragment = ASSISTANT_UI[start:start + 260]
+        self.assertIn("direction,", fragment)
+        self.assertIn("amount_cents: amountCents", fragment)
+        self.assertNotIn("cash_after_cents", fragment)
+        self.assertNotIn("bank_after_cents", fragment)
+        self.assertNotIn("interest", fragment.lower())
 
     def test_ui_explains_round_authority_and_launcher_routes_control_as_character_command(self):
         self.assertIn("intern bestätigten Spielrunde", ASSISTANT_UI)
