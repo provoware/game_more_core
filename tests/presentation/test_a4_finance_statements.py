@@ -51,7 +51,7 @@ class A4FinanceStatementsTests(unittest.TestCase):
         self.assertEqual(state, original)
         self.assertEqual(statement["supported_entries"], 4)
         self.assertEqual(statement["other_entries"], 1)
-        self.assertEqual(statement["filters"], ("all", "jobs", "bank", "interest"))
+        self.assertEqual(statement["filters"], ["all", "jobs", "bank", "interest"])
         self.assertEqual(
             [entry["kind"] for entry in statement["entries"]],
             ["bank_withdrawal", "savings_interest", "bank_deposit", "job_income"],
