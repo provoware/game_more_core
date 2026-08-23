@@ -121,6 +121,147 @@ function renderHud(p) {
   $("hud-property").textContent = p.properties ? String(p.properties.owned_count || 0) : "–";
 }
 
+function ensureCrewIdentityStyles() {
+  if (document.querySelector('link[data-crew-identity-style="true"]')) return;
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = "crew_identity.css";
+  link.dataset.crewIdentityStyle = "true";
+  document.head.append(link);
+}
+
+function crewChoiceSelect(id, labelText, choices, selected) {
+  const label = document.createElement("label");
+  label.textContent = labelText;
+  const select = document.createElement("select");
+  select.id = id;
+  for (const choice of choices || []) {
+    const option = document.createElement("option");
+    option.value = choice.id;
+    option.textContent = choice.label;
+    option.selected = choice.id === selected;
+    select.append(option);
+  }
+  label.append(select);
+  return label;
+}
+
+function readCrewIdentity() {
+  const editor = $("crew-identity-editor");
+  if (!editor) return null;
+  return {
+    mode: $("crew-identity-mode").value,
+    style: $("crew-identity-style").value,
+    symbol: $("crew-identity-symbol-select").value,
+    primary_color_id: $("crew-identity-primary").value,
+    secondary_color_id: $("crew-identity-secondary").value,
+    accent_color_id: $("crew-identity-accent").value,
+    mark: $("crew-identity-mark-input").value.trim().toUpperCase()
+  };
+}
+
+function renderCrewIdentityPreview(crew) {
+  const preview = $("crew-identity-preview");
+  if (!preview || !crew) return;
+  const identity = readCrewIdentity() || crew.identity;
+  const colorMap = new Map((crew.choices?.colors || []).map((item) => [item.id, item.value]));
+  const symbolMap = new Map((crew.choices?.symbols || []).map((item) => [item.id, item.glyph]));
+  const primary = colorMap.get(identity.primary_color_id) || crew.render?.primary || "#101114";
+  const secondary = colorMap.get(identity.secondary_color_id) || crew.render?.secondary || "#5e6670";
+  const accent = colorMap.get(identity.accent_color_id) || crew.render?.accent || "#ff5a1f";
+  const backgrounds = {
+    solid: primary,
+    split: `linear-gradient(90deg, ${primary} 0 50%, ${secondary} 50% 100%)`,
+    band: `linear-gradient(180deg, ${primary} 0 38%, ${secondary} 38% 62%, ${primary} 62% 100%)`,
+    diagonal: `linear-gradient(135deg, ${primary} 0 48%, ${secondary} 48% 100%)`
+  };
+  preview.dataset.mode = identity.mode;
+  preview.style.background = backgrounds[identity.style] || primary;
+  preview.style.setProperty("--crew-accent", accent);
+  $("crew-identity-symbol").textContent = symbolMap.get(identity.symbol) || crew.render?.symbol_glyph || "★";
+  $("crew-identity-mark").textContent = identity.mark || "";
+  $("crew-identity-mark").hidden = !identity.mark;
+  preview.setAttribute("aria-label", `${identity.mode === "logo" ? "Crew-Logo" : "Crew-Fahne"}: ${identity.symbol}, ${identity.style}`);
+}
+
+function renderCrewIdentity(crew) {
+  if (!crew?.identity || !crew?.choices) return;
+  ensureCrewIdentityStyles();
+  let editor = $("crew-identity-editor");
+  if (editor?.contains(document.activeElement)) return;
+  if (!editor) {
+    editor = document.createElement("section");
+    editor.id = "crew-identity-editor";
+    editor.className = "crew-identity-editor";
+    editor.setAttribute("aria-labelledby", "crew-identity-title");
+    $("save-profile").before(editor);
+  }
+  editor.replaceChildren();
+
+  const heading = document.createElement("div");
+  const eyebrow = document.createElement("p");
+  eyebrow.className = "eyebrow";
+  eyebrow.textContent = "CREW IDENTITY // SYNC-READY";
+  const title = document.createElement("h3");
+  title.id = "crew-identity-title";
+  title.textContent = "Logo oder Fahne";
+  const intro = document.createElement("p");
+  intro.textContent = "Baue deine Crew-Marke aus katalogisierten Symbolen, Formen und Farben. Gespeichert wird nur das kleine Identitätsrezept – keine Bilddatei.";
+  heading.append(eyebrow, title, intro);
+
+  const layout = document.createElement("div");
+  layout.className = "crew-identity-layout";
+  const previewWrap = document.createElement("div");
+  previewWrap.className = "crew-identity-preview-wrap";
+  const preview = document.createElement("div");
+  preview.id = "crew-identity-preview";
+  preview.className = "crew-identity-preview";
+  preview.setAttribute("role", "img");
+  const symbol = document.createElement("span");
+  symbol.id = "crew-identity-symbol";
+  symbol.className = "crew-identity-symbol";
+  const mark = document.createElement("span");
+  mark.id = "crew-identity-mark";
+  mark.className = "crew-identity-mark";
+  preview.append(symbol, mark);
+  const sync = document.createElement("small");
+  sync.textContent = "Späterer Multiplayer-Sync über Character-ID + Identitätsdaten; kein Bildblob.";
+  previewWrap.append(preview, sync);
+
+  const controls = document.createElement("div");
+  controls.className = "crew-identity-controls";
+  const identity = crew.identity;
+  controls.append(
+    crewChoiceSelect("crew-identity-mode", "Typ", crew.choices.modes, identity.mode),
+    crewChoiceSelect("crew-identity-style", "Flächenstil", crew.choices.styles, identity.style),
+    crewChoiceSelect("crew-identity-symbol-select", "Symbol", crew.choices.symbols, identity.symbol),
+    crewChoiceSelect("crew-identity-primary", "Primärfarbe", crew.choices.colors, identity.primary_color_id),
+    crewChoiceSelect("crew-identity-secondary", "Sekundärfarbe", crew.choices.colors, identity.secondary_color_id),
+    crewChoiceSelect("crew-identity-accent", "Akzentfarbe", crew.choices.colors, identity.accent_color_id)
+  );
+  const markLabel = document.createElement("label");
+  markLabel.textContent = "Kurzmarke (max. 4)";
+  const markInput = document.createElement("input");
+  markInput.id = "crew-identity-mark-input";
+  markInput.maxLength = 4;
+  markInput.autocomplete = "off";
+  markInput.value = identity.mark || "";
+  markLabel.append(markInput);
+  controls.append(markLabel);
+
+  const note = document.createElement("p");
+  note.className = "crew-identity-sync-note";
+  note.textContent = "Gameplaywerte und Character-ID ändern sich dadurch nicht. Beim Speichern prüft die Runtime alle IDs erneut.";
+  layout.append(previewWrap, controls);
+  editor.append(heading, layout, note);
+
+  for (const control of controls.querySelectorAll("select, input")) {
+    control.addEventListener("input", () => renderCrewIdentityPreview(crew));
+    control.addEventListener("change", () => renderCrewIdentityPreview(crew));
+  }
+  renderCrewIdentityPreview(crew);
+}
+
 function renderProfile(character) {
   if (!character) return;
   setInputIfIdle("profile-display-name", character.display_name);
@@ -132,6 +273,7 @@ function renderProfile(character) {
   $("profile-energy").textContent = String(character.energy);
   $("profile-stress").textContent = String(character.stress);
   $("profile-id").textContent = character.character_id;
+  renderCrewIdentity(character.crew_identity);
 }
 
 function renderStreetApproaches(approaches) {
@@ -566,15 +708,18 @@ $("new-game").addEventListener("click", async () => {
 
 $("save-profile").addEventListener("click", () => {
   const nicknames = $("profile-nicknames").value.split(",").map((value) => value.trim()).filter(Boolean);
+  const crewIdentity = readCrewIdentity();
+  const changes = {
+    display_name: $("profile-display-name").value.trim(),
+    alias: $("profile-alias").value.trim(),
+    additional_nicknames: nicknames,
+    motto: $("profile-motto").value.trim()
+  };
+  if (crewIdentity) changes.crew_identity = crewIdentity;
   sendCommand({
     type: "profile.update",
     command_id: commandId("profile-update"),
-    changes: {
-      display_name: $("profile-display-name").value.trim(),
-      alias: $("profile-alias").value.trim(),
-      additional_nicknames: nicknames,
-      motto: $("profile-motto").value.trim()
-    }
+    changes
   });
 });
 

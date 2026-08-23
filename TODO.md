@@ -6,8 +6,8 @@
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.7-C5 – District-Event Cadence/Cooldown` · PR #102 · Merge `bd79da8d1e124ec60248a05bf332c6ef338ca7b6`
 - **0.8.7-C4B sichtbare Timeline:** PR #101 · 5/5 Gates · `SAFE MERGE PASS` · Merge `3d71f00c5717ae797e6b8f1ca4c65c036bf71c81`
 - **0.8.7-C5 Cadence/Cooldown:** PR #102 · 5/5 Gates · `SAFE MERGE PASS` · Merge `bd79da8d1e124ec60248a05bf332c6ef338ca7b6`
-- **District-Event-Taktung:** global 24 bestätigte Spielweltstunden; Autorität `event.time_window.start_local`; keine Systemzeit-Freigabe
-- **Aktive Entwicklungsstufe:** `0.8.8-A – Crew Identity Foundation`
+- **C5-Evidenzabschluss:** PR #103 · 5/5 Gates · `SAFE MERGE PASS` · Merge `d1ccc1dec2f48c63dbdf5e47b3fbf3adfabef3a6`
+- **Aktive Entwicklungsstufe:** `0.8.8-A – Crew Identity Logo/Fahne` · PR #104 in Remote-Abnahme
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
 ---
@@ -28,26 +28,29 @@
 
 ---
 
-# Aktiv – 0.8.8-A Crew Identity Foundation
+# Aktiv – 0.8.8-A Crew Identity Logo/Fahne
 
 ## Ziel
 
 Jeder Spieler erhält eine eigene Crew-Identität als **Logo oder Fahne**, die später ohne Bilddatei-Konflikte synchronisierbar ist.
 
-- [ ] kanonischen Crew-Identity-Vertrag als kleine Datenrepräsentation definieren: Stil, Symbol, Primär-/Sekundärfarbe, Akzent, optionale Kurzmarke
-- [ ] keine frei eingebetteten Base64-/Datei-Bildblobs im Character-State; Renderer erzeugt Logo/Fahne aus bestätigten Daten
-- [ ] Profiländerung ausschließlich über bestehenden `profile.update`-Pfad
-- [ ] Character-ID und Gameplaywerte bleiben unverändert
-- [ ] Projection/Control Deck zeigt die bestätigte Crew-Identität
-- [ ] zukünftiger Sync-Vertrag muss Crew-Identity-Daten bei allen bestätigten Spielern nachziehen können
-- [ ] Legacy-Saves ohne Crew-Identity erhalten einen stabilen neutralen Default, ohne Journal-Umschreibung
-- [ ] Runtime-, Presentation- und Recovery-Regressionen ergänzen
+- [x] kanonischen Crew-Identity-Vertrag als kleine Datenrepräsentation definieren: Typ, Flächenstil, Symbol, Primär-/Sekundärfarbe, Akzent, optionale Kurzmarke
+- [x] keine frei eingebetteten Base64-/Datei-Bildblobs im Character-State; unbekannte Zusatzfelder werden fail-closed abgewiesen
+- [x] Profiländerung ausschließlich über bestehenden `profile.update` / `character.profile_updated`-Pfad
+- [x] Character-ID und Gameplaywerte bleiben unverändert
+- [x] A4-Projection liefert bestätigte Identität, katalogisierte Auswahlwerte und sichere Renderwerte
+- [x] Control Deck besitzt einen kompakten Logo-/Fahnen-Editor mit Live-Preview
+- [x] zukünftiger Sync benötigt nur stabile Character-ID + kompaktes Crew-Identity-Objekt; keine Bildbytes
+- [x] Legacy-Saves ohne Crew-Identity erhalten einen stabilen neutralen Default, ohne Journal-Umschreibung
+- [x] Runtime-, Presentation- und Recovery-Regressionen ergänzt
+- [ ] finaler PR-Head 5/5 Remote-Gates grün
+- [ ] 0 offene Review-Threads und `/safe-merge` PASS
 
 ---
 
 # Priorisierter Ausbau nach 0.8.8-A
 
-1. **0.8.8-B – Scene Jobs & Sparschleife:** jederzeit verfügbare legale/szenetypische Jobs mit klaren Zeit-/Energie-/Stress-/Geldfolgen; vorhandene Economy-Persistenz wiederverwenden.
+1. **0.8.8-B – Scene Jobs & Sparschleife:** jederzeit verfügbare legale/szenetypische Jobs mit klaren Energie-/Stress-/Geldfolgen; vorhandene Economy-Persistenz wiederverwenden.
 2. **0.8.8-C – Secret Best Friend Assistant:** genau eine Aufgabe aktiv; Assistent führt sie pro bestätigter Runde wiederholt aus, bis der Spieler deaktiviert oder umstellt; keine Hintergrund-Systemzeit.
 3. **0.8.8-D – Bank & Investments:** Bargeld einzahlen/abheben, Sparzins, Zinseszins, Anlagen/Dividenden und nachvollziehbare Kontoauszüge; alles journalisiert und replaybar.
 4. **0.8.8-E – Control Deck Focus:** Informationen verdichten, doppelte Ansichten entfernen, jeden Arbeitsbereich lokal maximieren/zurücksetzen, nächste erlaubte Aktion deutlich hervorheben; Reduced Motion respektieren.
