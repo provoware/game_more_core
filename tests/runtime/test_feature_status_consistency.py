@@ -6,6 +6,13 @@ import unittest
 ROOT = Path(__file__).parents[2]
 
 
+def _pool_row(pool: str, pool_id: str) -> str:
+    matching = [line for line in pool.splitlines() if line.startswith(f"| `{pool_id}` |")]
+    if len(matching) != 1:
+        raise AssertionError(f"{pool_id}: expected exactly one canonical pool table row, got {len(matching)}")
+    return matching[0]
+
+
 class FeatureStatusConsistencyTests(unittest.TestCase):
     def test_last_validated_feature_is_consistent_across_status_todo_and_pool(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
@@ -28,9 +35,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
     def test_validated_control_deck_pool_items_are_done(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         for pool_id in ("POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002", "POOL-UX-002", "POOL-WORLD-004"):
-            matching = [line for line in pool.splitlines() if f"`{pool_id}`" in line]
-            self.assertEqual(len(matching), 1, pool_id)
-            self.assertIn("`DONE`", matching[0], pool_id)
+            self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
 
     def test_c5_status_matches_visible_timeline_and_confirmed_cadence(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
@@ -64,9 +69,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-MAP-002": "`READY`",
         }
         for pool_id, state in expected.items():
-            matching = [line for line in pool.splitlines() if f"`{pool_id}`" in line]
-            self.assertEqual(len(matching), 1, pool_id)
-            self.assertIn(state, matching[0], pool_id)
+            self.assertIn(state, _pool_row(pool, pool_id), pool_id)
 
 
 if __name__ == "__main__":
