@@ -103,6 +103,40 @@ class AssistantGameClientSessionTests(unittest.TestCase):
         self.assertEqual(wrong.status, "rejected")
         self.assertEqual(self.kernel.read_records(), ())
 
+    def test_recovery_command_delegates_to_canonical_service_and_rejects_client_deltas(self):
+        low_energy = CharacterState.from_dict(self.character.to_dict())
+        low_energy.energy = 40
+        low_energy.stress = 30
+        self.kernel.initialize_state({"character": low_energy.to_dict()})
+
+        result = self.session.dispatch(
+            {
+                "type": "recovery.run",
+                "command_id": "ui-recovery",
+                "recovery_id": "recovery.koffein_kalte_luft",
+            },
+            context=context("ui-recovery"),
+        )
+        self.assertEqual(result.status, "confirmed")
+        self.assertEqual(result.committed_event_ids, ("ui-recovery:recovery",))
+        self.assertEqual(result.confirmed_state["character"]["energy"], 60)
+        self.assertEqual(result.confirmed_state["character"]["stress"], 42)
+        self.assertEqual(result.metadata["recovery_action"]["recovery_id"], "recovery.koffein_kalte_luft")
+
+        before = self.kernel.read_records()
+        injected = self.session.dispatch(
+            {
+                "type": "recovery.run",
+                "command_id": "ui-recovery-inject",
+                "recovery_id": "recovery.koffein_kalte_luft",
+                "energy_delta": 100,
+            },
+            context=context("ui-recovery-inject"),
+        )
+        self.assertEqual(injected.status, "rejected")
+        self.assertEqual(injected.error_code, "unexpected_command_fields")
+        self.assertEqual(self.kernel.read_records(), before)
+
 
 if __name__ == "__main__":
     unittest.main()
