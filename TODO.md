@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-A – Saisonale Hall of Tribute`
-- **0.8.6-C Berlin Ops Map PRO:** PR #85 · Merge `10c7d6b5e04838b07ae6899b8b76580cd87de607`
-- **0.8.7-A Saisonale Hall of Tribute:** PR #87 · Head `b887f912675ed2cf5efa8eb85631ab7858721836` · Runtime `32593679072` · Presentation `32593679117` · Repository Health `32593679063` · Release Acceptance `32593679077` · Release Package `32593679102` · 0 Review-Threads · `SAFE MERGE PASS` · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
-- **Aktive Iteration:** `0.8.7-B – Control Deck & Player Choices`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-B – Control Deck & Player Choices`
+- **0.8.7-A Saisonale Hall of Tribute:** PR #87 · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
+- **0.8.7-B Control Deck & Player Choices:** PR #88 · Head `6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c` · Runtime `32600255789` · Presentation `32600255795` · Repository Health `32600255756` · Release Acceptance `32600255773` · Release Package `32600255763` · 0 Review-Threads · `SAFE MERGE PASS` · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
+- **Nächste Iteration:** `0.8.7-C – Bezirksbezogene Welt-Ereignisse`
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
 ---
@@ -31,90 +31,58 @@
 - [x] endgültige Titel nur bei geschlossenem bestätigtem Zyklus + echter bestätigter Konkurrenz
 - [x] lokale Einzelspieler-Hall vergibt keine Fake-Championtitel
 - [x] Wochen-/Monatssicht im A4-Client
-- [x] Runtime Core `32593679072` ✅
-- [x] Presentation Core `32593679117` ✅
-- [x] Repository Health `32593679063` ✅
-- [x] Release Acceptance `32593679077` ✅
-- [x] Release Package `32593679102` ✅
-- [x] 0 Review-Threads
 - [x] `/safe-merge` PASS · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
+
+## 0.8.7-B – Control Deck & Player Choices ✅
+
+- [x] Sticky HUD und Schnellnavigation
+- [x] Kompaktmodus, hoher Kontrast und große Schrift ausschließlich lokal
+- [x] vier Street Approaches mit katalogisierten Auswahlgewichten
+- [x] Encounter bleibt einzige Effekt-Autorität
+- [x] Krisenentscheidungen zeigen katalogisierte Folgen vor dem Klick
+- [x] Browser sendet weiterhin nur erlaubte IDs
+- [x] Runtime Core `32600255789` ✅
+- [x] Presentation Core `32600255795` ✅
+- [x] Repository Health `32600255756` ✅
+- [x] Release Acceptance `32600255773` ✅
+- [x] Release Package `32600255763` ✅
+- [x] 0 Review-Threads
+- [x] `/safe-merge` PASS · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
 
 ---
 
-# AKTIV / IN ABNAHME
+# NÄCHSTER GEPLANTER AUSBAU
 
-## 0.8.7-B – Control Deck & Player Choices 🎛️
+## 0.8.7-C – Bezirksbezogene Welt-Ereignisse
 
 ### Ziel
 
-Die vorhandenen Systeme sollen **schneller verständlich, optisch stärker und spielerisch entscheidungsreicher** werden. Neue Wahlmöglichkeiten dürfen vorhandene Fachlogik nur ansteuern – nicht im Browser neu erfinden.
+Reproduzierbare, katalogisierte Welt-Ereignisse sollen den vorhandenen persistenten DistrictState sichtbar beeinflussen, ohne eine zweite Event- oder Zufallsengine einzuführen.
 
-### B1 – Control Deck 2.0 / Optik
+### Vorbereitung
 
-- [x] Sticky HUD für Phase, Budget, Energie, Stress, Ruf und Eigentum
-- [x] Schnellnavigation zu Straße, Map, Property, Hall, Event, Equipment und Save
-- [x] stärkere Industrial-Control-Room-Hierarchie
-- [x] responsive Desktop-/Tablet-/Mobilansicht
-- [x] Spielerwahl- und Krisenbereiche visuell hervorheben
-- [x] bestehende Berlin Ops Map PRO unverändert als read-only Renderer behalten
+- [ ] vorhandenen DistrictState- und Journal-Vertrag als einzige Zustandsbasis verwenden
+- [ ] Ereigniskatalog mit stabilen IDs, Gewichten, Voraussetzungen und Effekten definieren
+- [ ] Auswahl deterministisch/replaybar halten; Systemzeit nie als alleinigen Seed verwenden
+- [ ] genau eine aktive District-Event-Instanz pro fachlich erlaubtem Kontext absichern
+- [ ] bestätigte Folgen ausschließlich über zuständigen Service + Journal anwenden
+- [ ] A4 zunächst nur lesend informieren; keine District-Fachlogik in JavaScript
+- [ ] gezielte Runtime-/Recovery-/Projection-Regressionen ergänzen
 
-### B2 – Lokale Anzeigeoptionen
+### Explizit NICHT in 0.8.7-C
 
-- [x] Kompaktmodus
-- [x] Hoher Kontrast
-- [x] Große Schrift
-- [x] Einstellungen ausschließlich lokal im Browser speichern
-- [x] UI-Einstellungen besitzen keinerlei Gameplay-/Save-Autorität
-- [x] Reduced Motion weiterhin respektieren
-
-### B3 – Street Approaches / echte Spielerwahl
-
-- [x] vier Ansätze: `balanced`, `recovery`, `network`, `scout`
-- [x] Standardansatz erhält exakt die bisherige Street-Verteilung
-- [x] Ansatz verändert ausschließlich katalogisierte Auswahlgewichte
-- [x] Encounter bleibt einzige Effekt-Autorität
-- [x] Browser sendet nur `approach_id`
-- [x] Gewichts-/Effekt-Injection fail-closed
-- [x] Retry kann den bereits bestätigten Ansatz nicht austauschen
-- [x] alte `0.8.5-c1`-Street-Records replayen weiterhin als `balanced`
-- [x] Systemzeit bleibt aus der Auswahl ausgeschlossen
-
-### B4 – Krisenentscheidungen verständlicher
-
-- [x] Antwortoptionen als eigenständige Entscheidungskarten
-- [x] Zielphase vor dem Klick sichtbar
-- [x] katalogisierte Auswirkungen auf Budget, Ruf, Stress, Stabilität und Heat anzeigen
-- [x] Browser berechnet keine Krisenfolgen selbst
-- [x] Command sendet weiterhin nur die vorhandene `response_id`
-
-### B5 – Robustheit / Abnahme
-
-- [x] Runtime-Regressionen für Street-Ansätze und Legacy-Replay
-- [x] Command-Injection-Regressionen
-- [x] Presentation-Verträge für HUD, Anzeigeoptionen und Outcome-Vorschau
-- [ ] Runtime Core
-- [ ] Presentation Core
-- [ ] Repository Health
-- [ ] Release Acceptance
-- [ ] Release Package
-- [ ] 0 Review-Threads
-- [ ] `/safe-merge`
-
-### Explizit NICHT in 0.8.7-B
-
-- keine neue Street-Engine
-- keine neuen Encounter-Effekte im Browser
-- keine Änderung an Property-/Economy-Autorität
+- keine zweite Crisis-/Street-Engine
 - keine Netzwerkgegner
-- keine bezirksbezogenen Welt-Ereignisse
-- kein Produktversionsbump
+- keine frei erfundenen Browser-Effekte
+- kein Property-Resale/Rent-System
+- kein Produktversionsbump ohne eigene Release-Abnahme
 
 ---
 
 # Danach – priorisierter Ausbau
 
-1. **0.8.7-C – Bezirksbezogene Welt-Ereignisse:** reproduzierbare Ereignisinstanzen auf dem persistenten DistrictState.
-2. **0.8.7-D – Street Content Packs:** mehr Abwechslung über denselben validierten Ansatz-/Encounter-Vertrag.
+1. **0.8.7-D – Street Content Packs:** mehr Abwechslung über denselben validierten Ansatz-/Encounter-Vertrag.
+2. **0.8.7-E – Crewfarben & Emblem:** reine Identitäts-/Darstellungsdaten ohne Character-ID-Änderung.
 3. **0.9 – Network Foundation:** eigener Server-/Transport-/Konfliktvertrag vor Netzwerk-Ranking oder Telegram-Sync.
 
 ---

@@ -26,11 +26,15 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 | `POOL-PROPERTY-002` | `DONE` | Immobilien ausbauen | Level 1–3 + Recovery + Map-Werte; 0.8.6-B |
 | `POOL-MAP-001` | `DONE` | Berlin Ops Map PRO | 8 Districts/12 Locations, read-only; 0.8.6-C |
 | `POOL-RANK-005` | `DONE` | Saisonale Hall of Tribute | Wochen-/Monatszyklen, bestätigte Titel, keine Fake-Champions; 0.8.7-A / PR #87 |
+| `POOL-UX-001` | `DONE` | Control Deck 2.0 | HUD, Schnellnavigation, lokale Anzeigeoptionen; 0.8.7-B / PR #88 |
+| `POOL-STREET-004` | `DONE` | Street Approaches | vier Spieleransätze, nur Auswahlgewichte; 0.8.7-B / PR #88 |
+| `POOL-CRISIS-002` | `DONE` | Krisen-Folgenvorschau | katalogisierte Folgen vor der Wahl sichtbar; 0.8.7-B / PR #88 |
 
 ### Letzte Remote-Abnahmen
 
 - **0.8.6-C:** PR #85 · Merge `10c7d6b5e04838b07ae6899b8b76580cd87de607`
-- **0.8.7-A:** PR #87 · Head `b887f912675ed2cf5efa8eb85631ab7858721836` · 5/5 Gates · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
+- **0.8.7-A:** PR #87 · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
+- **0.8.7-B:** PR #88 · Head `6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c` · 5/5 Gates · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
 
 ---
 
@@ -38,13 +42,11 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-UX-001` | `PULLED` | **Control Deck 2.0** | HUD, Schnellnavigation, stärkere Hierarchie, lokale Anzeigeoptionen | reine Presentation; keine Domain-/Save-Autorität |
-| `POOL-STREET-004` | `PULLED` | **Street Approaches** | Ausgeglichen / Runterkommen / Kontakte / Scout als echte Spielerwahl | nur Auswahlgewichte; Encounter bleibt Effekt-Autorität |
-| `POOL-CRISIS-002` | `PULLED` | **Krisen-Folgenvorschau** | Entscheidungen werden vor dem Klick nachvollziehbar | nur katalogisierte Servereffekte anzeigen |
-| `POOL-WORLD-002` | `READY` | Bezirksbezogene Welt-/Zufallsereignisse | Bezirke spielerisch stärker unterscheiden | eigener katalogisierter Ereignisvertrag auf DistrictState |
+| `POOL-WORLD-002` | `PULLED` | **Bezirksbezogene Welt-/Zufallsereignisse** | Bezirke spielerisch stärker unterscheiden | eigener katalogisierter Ereignisvertrag auf DistrictState |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung ohne neue Engine | bestehender Street-Encounter-/Approach-Vertrag |
 | `POOL-PROFILE-002` | `READY` | Crewfarben und Emblem-Auswahl | stärkere Identität | nur Darstellungsdaten; Character-ID unverändert |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
+| `POOL-UX-002` | `IDEA` | Ereignis-Timeline im Control Deck | bestätigte Welt-, Street- und Crisis-Ereignisse schneller nachvollziehen | reine Projection/Presentation; Journal bleibt Autorität |
 
 ---
 
@@ -72,4 +74,4 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 ## Nächste Entnahme
 
-Aktiv ist **0.8.7-B – Control Deck & Player Choices** aus `POOL-UX-001`, `POOL-STREET-004` und `POOL-CRISIS-002`. Danach folgt bevorzugt `POOL-WORLD-002` als **0.8.7-C**.
+0.8.7-B ist remote validiert und sicher gemergt. Aktiv vorbereitet ist `POOL-WORLD-002` als **0.8.7-C – Bezirksbezogene Welt-Ereignisse**. Danach folgen bevorzugt `POOL-STREET-002` und `POOL-PROFILE-002`.
