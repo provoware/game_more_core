@@ -37,7 +37,9 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         living_world = status["subsystems"]["living_world"]
 
         self.assertEqual(status["last_validated_feature_iteration"], "0.8.7-C3")
-        self.assertEqual(status["next_iteration"], "0.8.7-C4")
+        self.assertEqual(status["active_iteration"], "0.8.7-C")
+        self.assertEqual(status["next_iteration"], "0.8.7-C")
+        self.assertEqual(status["current_focus"], "read_only_event_timeline")
         self.assertTrue(living_world["district_event_runtime_implemented"])
         self.assertTrue(living_world["district_event_catalog_fail_fast"])
         self.assertTrue(living_world["district_event_application_integration"])
