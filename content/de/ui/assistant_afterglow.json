@@ -1,0 +1,25 @@
+{
+  "version": "0.8.8-c5",
+  "entries": {
+    "scene.flyer_shift": {
+      "headline": "Listen sitzen, Nacht kann kommen.",
+      "body": "Dein Freund schiebt dir die sortierten Einlasslisten rüber und meint trocken: Weniger Chaos am Eingang ist manchmal schon Luxus."
+    },
+    "scene.load_in_help": {
+      "headline": "Cases drin, Rücken beleidigt.",
+      "body": "Dein Freund klopft Staub von der Jacke: Anlage steht. Die Bandscheiben reichen die Kündigung später ein."
+    },
+    "scene.cable_repair": {
+      "headline": "Wackler gefunden, Frieden gerettet.",
+      "body": "Dein Freund hält den reparierten Stecker hoch: Kleines Kabel, großes Drama verhindert. Für heute reicht das als Heldentat."
+    },
+    "scene.bar_support": {
+      "headline": "Nachschub läuft, Tresen lebt.",
+      "body": "Dein Freund zählt die letzten Kisten und grinst: Wenn niemand merkt, wie knapp es war, war die Organisation perfekt."
+    },
+    "scene.night_cleanup": {
+      "headline": "Der Morgen findet weniger Verwüstung.",
+      "body": "Dein Freund lehnt den Besen an die Wand: Die Nacht war laut. Der Beweis dafür passt jetzt wenigstens in Müllsäcke."
+    }
+  }
+}

@@ -46,6 +46,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-C1:** PR #107 · Merge `a16436582928d02202f38366c63d7cf790d5deb6` · Assistant Authority Contract
 - **0.8.8-C2:** PR #108 · Merge `5c597479afafe64f63aa4ce015cea5365b2320bf` · persistenter Assistant Control State
 - **0.8.8-C3:** PR #109 · Merge `85e95995d5e84c53131e24a8ad3dec36717891c6` · bestätigte Runde exakt einmal an Scene Job gebunden
+- **0.8.8-C4:** PR #110 · Merge `f8295564a4bddabddb4493c778e549d1cb083374` · Assistent direkt im bestehenden JOBS-Bereich steuerbar
 
 ---
 
@@ -53,7 +54,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-COMPANION-001` | `PULLED` | **Secret Best Friend Assistant** | eine vorhandene Aufgabe automatisch Runde für Runde betreiben | C1–C3 remote validiert; C4 integriert Auswahl/Wechsel/Stop/Status direkt in vorhandene JOBS-UI, ohne neue Rundenautorität |
+| `POOL-COMPANION-001` | `DONE` | **Secret Best Friend Assistant – Steuerung & Ausführung** | vorhandene Aufgabe automatisch Runde für Runde betreiben | C1–C4 remote validiert; bestehende Scene Jobs, keine neue Rundenautorität |
+| `POOL-COMPANION-002` | `PULLED` | **Freundschafts-Nachhall** | bestätigte Assistentenarbeit bekommt kleine Storyreaktion | C5A nur read-only Projection aus bestätigtem Rundenmarker + passender Jobbuchung; keine Progressionsengine |
 | `POOL-FINANCE-001` | `READY` | **Bankkonto & Sparen** | Bargeld sichern, Ein-/Auszahlung, Zins und Zinseszins | Finance-State/Ledger aus Scene Jobs wiederverwenden; bestätigte Spielzeit statt Systemzeit |
 | `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt `POOL-FINANCE-001`; keine echten Marktdaten notwendig; katalogisierte Spielkurse |
 | `POOL-FINANCE-003` | `DEPENDENCY` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Finance-Ledger, keine zweite Buchhaltung |
@@ -72,7 +74,6 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 | ID | Status | Feature | Voraussetzung |
 |---|---|---|---|
-| `POOL-COMPANION-002` | `READY` | **Freundschafts-Nachhall** | nur bestätigte `assistant.round_processed`-/Jobdaten als kleine Storyreaktion projizieren; keine zweite Progressionsengine |
 | `POOL-COMPANION-003` | `DEPENDENCY` | **Round-Authority Integration Harness** | echter kanonischer Rundenproduzent; dann End-to-End Runde → Assistent → Scene Job → Journal → Recovery → Retry |
 | `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | Story-/Journalvertrag |
 | `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
@@ -103,4 +104,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-COMPANION-001` bleibt bis zur C4-Abnahme aktiv. C4 ergänzt im vorhandenen JOBS-Bereich ausschließlich Steuerung und Status und delegiert jeden Write an den bereits validierten `AssistantControlService`. Danach ist `POOL-COMPANION-002` der kleinste spielerische Folgeschritt. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
+`POOL-COMPANION-002` ist aktiv. C5A sichert zuerst die Datenherkunft des Story-Nachhalls: Nur das bestätigte Paar aus Assistenten-Rundenmarker und exakt passender Jobbuchung darf einen Eintrag erzeugen. Danach kann C5B diese bereits abgesicherte Projection kompakt im vorhandenen JOBS-Bereich sichtbar machen. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.

@@ -2,9 +2,9 @@
 
 ## Was ist jetzt möglich?
 
-C1 hat die Sicherheitsregeln festgelegt. C2 speichert dauerhaft **Aus** oder **genau einen vorhandenen Scene Job**. C3 sorgt dafür, dass eine intern bestätigte Spielrunde den gewählten Job höchstens einmal ausführt. C4 macht diese vorhandene Steuerung jetzt direkt im **JOBS-Bereich** sichtbar und bedienbar.
+C1 hat die Sicherheitsregeln festgelegt. C2 speichert dauerhaft **Aus** oder **genau einen vorhandenen Scene Job**. C3 sorgt dafür, dass eine intern bestätigte Spielrunde den gewählten Job höchstens einmal ausführt. C4 macht diese vorhandene Steuerung direkt im **JOBS-Bereich** sichtbar und bedienbar.
 
-Es gibt bewusst kein zweites Assistenten-Dashboard. Der Freund sitzt dort, wo auch die normalen Scene Jobs stehen.
+C5A ergänzt nun die sichere Grundlage für kleine erzählerische Reaktionen. Wichtig: Es entsteht dadurch **kein Freundschaftslevel, keine XP-Leiste und keine zweite Progressionsengine**.
 
 ## So benutzt du den Freund
 
@@ -17,7 +17,24 @@ Es gibt bewusst kein zweites Assistenten-Dashboard. Der Freund sitzt dort, wo au
 
 Der Status oberhalb der Jobkarten zeigt, ob der Freund aus oder aktiv ist, welchen katalogisierten Job er gewählt hat und welche bestätigte Steuerrevision gespeichert ist.
 
-## Startet der Klick schon eine automatische Runde?
+## Wann darf künftig eine Freundschaftsreaktion erscheinen?
+
+C5A prüft dafür zwei bereits bestätigte Journal-Einträge gemeinsam:
+
+- `assistant.round_processed`: Die intern bestätigte Runde wurde vom Assistenten verarbeitet.
+- `finance.job_completed`: Der exakt zu dieser Runde gehörende Scene Job wurde tatsächlich dauerhaft verbucht.
+
+Nur wenn **beide Einträge zusammenpassen**, entsteht ein kleiner Nachhall-Eintrag. Ein normal manuell ausgeführter Job reicht nicht. Ein einzelner Rundenmarker reicht ebenfalls nicht. Eine Runde, in der der Assistent auf **Aus** stand, erzeugt keinen Freundschafts-Nachhall.
+
+Damit kann die spätere Anzeige nicht einfach aus einer Browseraktion oder aus einem halben Zwischenzustand eine Geschichte erfinden.
+
+## Was zeigt C5A bereits?
+
+Technisch kann die neue read-only Projektion bis zu drei letzte bestätigte Nachhall-Einträge aufbauen. Für jeden der fünf vorhandenen Scene Jobs gibt es einen kleinen externen deutschen Text. Die Texte liegen außerhalb der Spiellogik.
+
+C5A selbst hängt diese Texte **noch nicht sichtbar** in die Oberfläche ein. Das ist bewusst der nächste kleine Slice C5B. Dadurch bleibt dieser Schritt leicht prüfbar und die Herkunft der Storydaten ist zuerst abgesichert.
+
+## Startet ein Klick schon eine automatische Runde?
 
 Nein. Die Schaltflächen ändern ausschließlich den bereits vorhandenen `AssistantControlState`. Sie dürfen keine Spielrunde erfinden.
 
@@ -30,19 +47,13 @@ Bei der Assistentensteuerung nur die technische Command-ID und:
 - eine vorhandene `job_id`, wenn der Freund gestartet oder gewechselt wird,
 - `null`, wenn der Freund gestoppt wird.
 
-Lohn, Energie, Stress, Jobfolgen und Rundentrigger kommen nicht aus dem Browser. Zusätzliche Fachwerte werden nicht als Autorität akzeptiert.
+Lohn, Energie, Stress, Jobfolgen, Rundentrigger und Freundschaftsreaktionen kommen nicht aus dem Browser.
 
 ## Kann ich normale Scene Jobs weiterhin selbst ausführen?
 
-Ja. Die vorhandene normale Job-Schaltfläche bleibt unverändert. C4 ergänzt nur die Assistentensteuerung daneben.
-
-## Was passiert nach Neustart oder Recovery?
-
-Die Anzeige wird wieder aus dem bestätigten `AssistantControlState` aufgebaut. Die Oberfläche erfindet keinen eigenen Zustand. Verweist ein beschädigter oder veralteter Save auf eine Job-ID, die nicht mehr im kanonischen Scene-Job-Katalog existiert, bricht die Projektion fail-closed ab, statt einen Ersatzjob zu erfinden.
+Ja. Die vorhandene normale Job-Schaltfläche bleibt unverändert. Manuelle Jobs werden außerdem ausdrücklich **nicht** als Assistenten-Freundschaftsreaktion gewertet.
 
 ## Was bleibt durch C3 geschützt?
-
-Auch nach der neuen Bedienung gilt unverändert:
 
 - eine bestätigte Runde wird höchstens einmal verarbeitet,
 - Retry zahlt nicht doppelt,
@@ -52,4 +63,4 @@ Auch nach der neuen Bedienung gilt unverändert:
 
 ## Was kommt danach?
 
-C5 kann ausschließlich tatsächlich bestätigte Assistentenaktionen für kleine erzählerische Freundschaftsreaktionen verwenden. Eine eigene Freundschafts-Progressionsengine ist dafür nicht vorgesehen. Das spätere C6-End-to-End-Harness bleibt abhängig von einem echten kanonischen Rundenproduzenten.
+**C5B** kann die bereits abgesicherte Projektion kompakt im vorhandenen JOBS-Assistentenblock anzeigen, ohne ein zweites Dashboard zu bauen. **C6** bleibt abhängig von einem echten kanonischen Rundenproduzenten und soll später den kompletten Pfad Runde → Assistent → Scene Job → Journal → Recovery → Retry end-to-end prüfen.
