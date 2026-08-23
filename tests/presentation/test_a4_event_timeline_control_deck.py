@@ -24,21 +24,37 @@ class A4EventTimelineControlDeckTests(unittest.TestCase):
         self.assertIn('src="event_timeline.js"', INDEX)
         self.assertIn('href="#event-timeline-panel"', INDEX)
 
-    def test_browser_does_not_rebuild_or_write_timeline(self):
+    def test_local_filters_cover_all_street_crisis_and_district_without_persistence(self):
+        for filter_id, label in (
+            ('all', 'ALLE'),
+            ('street', 'STRASSE'),
+            ('crisis', 'KRISE'),
+            ('district', 'BEZIRK'),
+        ):
+            self.assertIn(f'{filter_id}: Object.freeze({{ label: "{label}"', TIMELINE_JS)
+        self.assertIn('controls.setAttribute("role", "group")', TIMELINE_JS)
+        self.assertIn('controls.setAttribute("aria-label", "Timeline filtern")', TIMELINE_JS)
+        self.assertIn('button.setAttribute("aria-pressed"', TIMELINE_JS)
+        self.assertIn('button.addEventListener("click", () => setFilter(filterId))', TIMELINE_JS)
+        self.assertNotIn("localStorage", TIMELINE_JS)
+        self.assertNotIn("sessionStorage", TIMELINE_JS)
+
+    def test_browser_does_not_rebuild_write_or_reorder_timeline(self):
         self.assertIn('fetch("/api/state"', TIMELINE_JS)
         self.assertNotIn('method: "POST"', TIMELINE_JS)
         self.assertNotIn("sendCommand", TIMELINE_JS)
         self.assertNotIn(".sort(", TIMELINE_JS)
-        self.assertNotIn("localStorage", TIMELINE_JS)
-        self.assertNotIn("sessionStorage", TIMELINE_JS)
+        self.assertNotIn(".reverse(", TIMELINE_JS)
         self.assertNotIn("Date.now", TIMELINE_JS)
         self.assertNotIn("Math.random", TIMELINE_JS)
 
-    def test_renderer_preserves_server_order_and_uses_text_content(self):
-        self.assertIn("for (const entry of confirmed)", TIMELINE_JS)
+    def test_filter_only_selects_existing_entries_and_renderer_preserves_source_order(self):
+        self.assertIn('confirmedEntries.filter((entry) => entry?.kind === selected.kind)', TIMELINE_JS)
+        self.assertIn("for (const entry of visible)", TIMELINE_JS)
         self.assertIn("title.textContent", TIMELINE_JS)
         self.assertIn("body.textContent", TIMELINE_JS)
         self.assertNotIn("innerHTML", TIMELINE_JS)
+        self.assertIn("Reihenfolge aus dem Journal.", TIMELINE_JS)
 
 
 if __name__ == "__main__":

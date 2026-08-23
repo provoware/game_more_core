@@ -2,11 +2,20 @@
 
 (() => {
   const POLL_MS = 4000;
-  const KIND_LABELS = {
+  const KIND_LABELS = Object.freeze({
     street: "STRASSE",
     district: "BEZIRK",
     crisis: "KRISE"
-  };
+  });
+  const FILTERS = Object.freeze({
+    all: Object.freeze({ label: "ALLE", kind: null }),
+    street: Object.freeze({ label: "STRASSE", kind: "street" }),
+    crisis: Object.freeze({ label: "KRISE", kind: "crisis" }),
+    district: Object.freeze({ label: "BEZIRK", kind: "district" })
+  });
+
+  let activeFilter = "all";
+  let confirmedEntries = [];
 
   function host() {
     return document.getElementById("event-timeline-list");
@@ -16,18 +25,42 @@
     return document.getElementById("event-timeline-status");
   }
 
-  function render(entries) {
+  function filterHost() {
+    return document.getElementById("event-timeline-filters");
+  }
+
+  function visibleEntries() {
+    const selected = FILTERS[activeFilter];
+    if (!selected || selected.kind === null) return confirmedEntries;
+    return confirmedEntries.filter((entry) => entry?.kind === selected.kind);
+  }
+
+  function syncFilterButtons() {
+    const controls = filterHost();
+    if (!controls) return;
+    for (const button of controls.querySelectorAll("[data-timeline-filter]")) {
+      button.setAttribute("aria-pressed", String(button.dataset.timelineFilter === activeFilter));
+    }
+  }
+
+  function renderCurrent() {
     const list = host();
     const live = status();
     if (!list || !live) return;
     list.replaceChildren();
-    const confirmed = Array.isArray(entries) ? entries : [];
-    if (!confirmed.length) {
+
+    if (!confirmedEntries.length) {
       live.textContent = "Noch keine bestätigten Ereignisse in der Timeline.";
       return;
     }
 
-    for (const entry of confirmed) {
+    const visible = visibleEntries();
+    if (!visible.length) {
+      live.textContent = `Keine bestätigten Ereignisse für Filter ${FILTERS[activeFilter].label}.`;
+      return;
+    }
+
+    for (const entry of visible) {
       const item = document.createElement("li");
       item.className = "equipment-row";
       const info = document.createElement("div");
@@ -40,7 +73,48 @@
       item.append(info);
       list.append(item);
     }
-    live.textContent = `${confirmed.length} bestätigte Ereignisse · Reihenfolge aus dem Journal.`;
+
+    const suffix = activeFilter === "all"
+      ? `${visible.length} bestätigte Ereignisse`
+      : `${visible.length} von ${confirmedEntries.length} bestätigten Ereignissen`;
+    live.textContent = `${suffix} · Reihenfolge aus dem Journal.`;
+  }
+
+  function render(entries) {
+    confirmedEntries = Array.isArray(entries) ? entries : [];
+    renderCurrent();
+  }
+
+  function setFilter(filterId) {
+    if (!Object.hasOwn(FILTERS, filterId)) return;
+    activeFilter = filterId;
+    syncFilterButtons();
+    renderCurrent();
+  }
+
+  function ensureFilters() {
+    if (filterHost()) return;
+    const panel = document.getElementById("event-timeline-panel");
+    const live = status();
+    if (!panel || !live) return;
+
+    const controls = document.createElement("div");
+    controls.id = "event-timeline-filters";
+    controls.className = "action-grid";
+    controls.setAttribute("role", "group");
+    controls.setAttribute("aria-label", "Timeline filtern");
+
+    for (const [filterId, filter] of Object.entries(FILTERS)) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.timelineFilter = filterId;
+      button.textContent = filter.label;
+      button.setAttribute("aria-pressed", String(filterId === activeFilter));
+      button.addEventListener("click", () => setFilter(filterId));
+      controls.append(button);
+    }
+
+    panel.insertBefore(controls, live);
   }
 
   async function refresh() {
@@ -56,7 +130,8 @@
     }
   }
 
-  window.BunkerEventTimeline = Object.freeze({ render, refresh });
+  window.BunkerEventTimeline = Object.freeze({ render, refresh, setFilter });
+  ensureFilters();
   refresh();
   window.setInterval(refresh, POLL_MS);
 })();

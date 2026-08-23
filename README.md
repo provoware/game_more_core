@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.8 Export Proof validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--EXPORT--PROOF_validiert-7dff00">
-  <img alt="Regeneration in Abnahme" src="https://img.shields.io/badge/Gameplay-RECOVERY--ACTIONS_in_Abnahme-00c2ff">
+  <img alt="Feature Stand 0.8.8 Recovery Actions validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--RECOVERY--ACTIONS_validiert-7dff00">
+  <img alt="Timeline Filter in Abnahme" src="https://img.shields.io/badge/UX-TIMELINE--FILTER_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -27,17 +27,17 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.8-UX-EXPORT-PROOF – Exportvorschau/Prüfsumme` |
-| **Aktive Iteration** | 🟡 `0.8.8-ECON-RECOVERY-ACTIONS – bestätigte Regeneration` |
-| **Nächste Iteration** | `0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-ECON-RECOVERY-ACTIONS – bestätigte Regeneration` |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter` |
+| **Nächste Iteration** | `0.8.8-ECON-RECOVERY-FEEDBACK – verständliches Regenerationsfeedback` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Crew Identity** | ✅ Logo/Fahne als syncbereites Datenrezept, kein Bildblob |
 | **Living World** | ✅ replaybare Street Encounters, persistente Districts, District World Events + 24h-Cadence |
-| **Timeline** | ✅ Street-, Krisen- und District-Ereignisse read-only im Control Deck sichtbar |
+| **Timeline** | ✅ bestätigte Street-/Krisen-/District-Ereignisse; 🟡 ALLE / STRASSE / KRISE / BEZIRK filtern nur lokal und erhalten Runtime-Reihenfolge |
 | **Ranking** | ✅ Competitive Top 10 + bestätigte Wochen-/Monatszyklen |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
 | **Berlin Ops Map 2** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan + Auswahlfokus |
-| **Scene Jobs** | ✅ Anti-Grind + bestätigte Lohnvorschau; 🟡 aktive Regeneration tauscht +20 Energie gegen +12 Stress, wenn die Runtime sie erlaubt |
+| **Scene Jobs** | ✅ Anti-Grind + bestätigte Lohnvorschau + bestätigte Regeneration `+20 Energie / +12 Stress` ohne Rechnerzeit |
 | **Assistent C1–C5B** | ✅ Autorität, Steuerung, Rundenausführung, JOBS-UI und bestätigter Freundschafts-Nachhall |
 | **Bankkonto D/D2** | ✅ Wallet↔Bank + 1 % bestätigter Sparzins/Zinseszins ohne Rechnerzeit-/Browserautorität |
 | **Kontoauszüge** | ✅ bestätigtes Finance-Ledger read-only als Joblohn, Bankbewegung und Sparzins; keine zweite Buchhaltung |
@@ -47,7 +47,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.8-UX-EXPORT-PROOF` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. RECOVERY-ACTIONS verwendet keine Rechnerzeit und keinen Browser-Ressourcenwert: Die Runtime prüft den bestätigten Character-State und erlaubt `Koffein & kalte Luft` nur bei Energie ≤ 80 und Stress ≤ 88. Der Browser sendet ausschließlich die stabile `recovery_id`.
+> `0.8.8-ECON-RECOVERY-ACTIONS` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. TIMELINE-FILTER verändert nur die lokale Sicht auf die bereits bestätigte Timeline: keine neue Storyquelle, keine Neusortierung, kein Journal-State und keine Speicherung des Filters.
 
 ---
 
@@ -105,6 +105,7 @@ PROPERTY / HALL OF TRIBUTE
 - ECON-ANTI-GRIND: Scene Jobs bleiben verfügbar; Joblohn wird bei nicht gedecktem Energieverbrauch proportional begrenzt, bei 0 Energie auf 0 Cent
 - ECON-JOB-PREVIEW: tatsächlicher Erschöpfungslohn vor Jobstart aus derselben kanonischen Runtime-Berechnung
 - UX-EXPORT-PROOF: Vorschau, Kopieren, Prüfsumme und Download verwenden denselben Exportinhalt
+- ECON-RECOVERY-ACTIONS: bestätigte `+20 Energie / +12 Stress` über bestehenden Character-Replay-Pfad, ohne Rechnerzeit oder zweite Ressource
 
 ---
 
@@ -254,8 +255,9 @@ Der Ausbau bleibt in getrennte, prüfbare Slices zerlegt:
 | **0.8.8-ECON-ANTI-GRIND** | Scene-Job-Erschöpfung | ✅ Jobs bleiben verfügbar; Lohn proportional aus bestätigter Vor-Job-Energie |
 | **0.8.8-ECON-JOB-PREVIEW** | tatsächlicher Erschöpfungslohn vor Jobstart | ✅ gleiche kanonische Berechnung in read-only Runtime-Projection; Browser rendert nur |
 | **0.8.8-UX-EXPORT-PROOF** | Exportvorschau/Prüfsumme | ✅ derselbe bestätigte Exportinhalt für Vorschau, Kopieren, Prüfsumme und Download |
-| **0.8.8-ECON-RECOVERY-ACTIONS** | bestätigte Regeneration | 🟡 +20 Energie gegen +12 Stress, Runtime prüft Headroom, keine Rechnerzeit |
-| **0.8.8-UX-TIMELINE-FILTER** | lokale Timeline-Filter | danach; rein lokaler Presentation-State |
+| **0.8.8-ECON-RECOVERY-ACTIONS** | bestätigte Regeneration | ✅ +20 Energie gegen +12 Stress, Runtime prüft Headroom, keine Rechnerzeit |
+| **0.8.8-UX-TIMELINE-FILTER** | lokale Timeline-Filter | 🟡 ALLE / STRASSE / KRISE / BEZIRK, rein lokaler Presentation-State |
+| **0.8.8-ECON-RECOVERY-FEEDBACK** | verständliches Regenerationsfeedback | danach; nur bestätigte Vorher→Nachher-Werte, keine neue Mechanik |
 
 Anlagen/Dividenden bleiben ein eigenständiger Folge-Slice, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
 
@@ -375,7 +377,8 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung, Aktionshervorhebung oder
 | 0.8.8-FIN-EXPORT | Kontoauszug TXT/CSV | `11c023f927ad...` |
 | 0.8.8-ECON-ANTI-GRIND | Scene-Job-Erschöpfung | `49d6947b9f1b...` |
 | 0.8.8-ECON-JOB-PREVIEW | bestätigte Lohnvorschau | `040be951665a...` |
-| **0.8.8-UX-EXPORT-PROOF** | **Exportvorschau/Prüfsumme** | `0909f3c38642...` |
+| 0.8.8-UX-EXPORT-PROOF | Exportvorschau/Prüfsumme | `0909f3c38642...` |
+| **0.8.8-ECON-RECOVERY-ACTIONS** | **bestätigte Regeneration** | `7ed085b111a0...` |
 
 ---
 
@@ -434,6 +437,7 @@ SAFE MERGE PASS
 | Scene-Job-Erschöpfung | [`docs/LAIENHILFE_SCENE_JOB_ERSCHOEPFUNG.md`](docs/LAIENHILFE_SCENE_JOB_ERSCHOEPFUNG.md) |
 | Scene-Job-Lohnvorschau | [`docs/LAIENHILFE_SCENE_JOB_LOHNVORSCHAU.md`](docs/LAIENHILFE_SCENE_JOB_LOHNVORSCHAU.md) |
 | Regeneration | [`docs/LAIENHILFE_REGENERATION.md`](docs/LAIENHILFE_REGENERATION.md) |
+| Timeline-Filter | [`docs/LAIENHILFE_TIMELINE_FILTER.md`](docs/LAIENHILFE_TIMELINE_FILTER.md) |
 | Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Kontoauszug-Export | [`docs/LAIENHILFE_FIN_EXPORT.md`](docs/LAIENHILFE_FIN_EXPORT.md) |
 | Berlin-Erinnerungen | [`docs/LAIENHILFE_DISTRICT_BIO.md`](docs/LAIENHILFE_DISTRICT_BIO.md) |
