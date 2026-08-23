@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.8.7-c1",
+  "version": "0.8.7-c5",
   "district_state_manifest_version": "0.8.5-d1",
   "city_map_manifest_version": "0.8.3-b2-foundation",
   "selection": {
@@ -15,6 +15,13 @@
     "client_can_activate": false,
     "client_can_supply_effects": false,
     "effects_apply_only_after_confirmed_resolution": true
+  },
+  "cadence": {
+    "authority": "confirmed_event_game_world_time",
+    "timestamp_source": "event.time_window.start_local",
+    "minimum_hours_between_events": 24,
+    "scope": "global",
+    "system_time_is_sole_authority": false
   },
   "effect_contract": {
     "metrics": ["heat", "prestige", "police_pressure", "scene_activity"],

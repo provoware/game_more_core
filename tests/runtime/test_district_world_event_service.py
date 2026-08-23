@@ -26,7 +26,7 @@ def context(command_id: str, district_id: str = "friedrichshain") -> JournalCont
         district_id,
         command_id,
         "district-world-event-test",
-        "0.8.7-c2",
+        "0.8.7-c5",
         "player-local",
     )
 
@@ -38,6 +38,7 @@ class DistrictWorldEventServiceTests(unittest.TestCase):
         self.kernel = PersistenceKernel(self.tmp.name, ALLOWED)
         self.districts = DistrictService(self.kernel, DISTRICTS, CITY_MAP)
         self.service = DistrictWorldEventService(self.districts, DISTRICT_EVENTS)
+        self.service._cadence_block_reason = lambda _trigger_id: None
 
     def test_same_seed_district_and_trigger_are_deterministic_across_saves(self):
         first = self.service.trigger(
@@ -52,6 +53,7 @@ class DistrictWorldEventServiceTests(unittest.TestCase):
         other_kernel = PersistenceKernel(other_tmp.name, ALLOWED)
         other_districts = DistrictService(other_kernel, DISTRICTS, CITY_MAP)
         other_service = DistrictWorldEventService(other_districts, DISTRICT_EVENTS)
+        other_service._cadence_block_reason = lambda _trigger_id: None
         second = other_service.trigger(
             world_seed="berlin-world-1",
             district_id="friedrichshain",
@@ -64,7 +66,7 @@ class DistrictWorldEventServiceTests(unittest.TestCase):
                 "friedrichshain",
                 "district-event-b",
                 "district-world-event-test",
-                "0.8.7-c2",
+                "0.8.7-c5",
                 "player-local",
             ),
         )

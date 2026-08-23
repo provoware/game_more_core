@@ -26,6 +26,7 @@ class DistrictWorldEventNoopTests(unittest.TestCase):
             kernel = PersistenceKernel(tmp, set(JOURNAL["event_types"]))
             districts = DistrictService(kernel, DISTRICTS, CITY_MAP)
             service = DistrictWorldEventService(districts, manifest)
+            service._cadence_block_reason = lambda _trigger_id: None
             before = districts.current_state().to_dict()
             context = JournalContext(
                 "2026-08-23T11:30:00+02:00",
@@ -35,14 +36,14 @@ class DistrictWorldEventNoopTests(unittest.TestCase):
                 "friedrichshain",
                 "district-event-noop",
                 "district-world-event-test",
-                "0.8.7-c3",
+                "0.8.7-c5",
                 "player-local",
             )
 
             result = service.trigger(
                 world_seed="confirmed-world",
                 district_id="friedrichshain",
-                trigger_id="settlement:no-eligible",
+                trigger_id="catalog-no-eligible-test",
                 context=context,
             )
 

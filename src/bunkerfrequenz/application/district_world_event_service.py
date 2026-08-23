@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 import hashlib
 from typing import Any, Mapping
 
@@ -21,7 +22,7 @@ class DistrictWorldEventResult:
 
 
 class DistrictWorldEventService:
-    """Select one catalogued district event deterministically and reuse DistrictService for persistence."""
+    """Select catalogued district events deterministically with confirmed-time cadence."""
 
     def __init__(self, district_service: DistrictService, event_manifest: Mapping[str, Any]) -> None:
         self.district_service = district_service
@@ -47,20 +48,26 @@ class DistrictWorldEventService:
             raise ValueError("Client darf District-Events weder aktivieren noch Effekte liefern")
         if policy.get("effects_apply_only_after_confirmed_resolution") is not True:
             raise ValueError("District-Event-Effekte benötigen bestätigte Auflösung")
+        cadence = self.manifest.get("cadence")
+        if not isinstance(cadence, Mapping):
+            raise ValueError("District-Event-Manifest benötigt cadence")
+        if cadence.get("authority") != "confirmed_event_game_world_time":
+            raise ValueError("District-Event-Cadence benötigt bestätigte Spielweltzeit")
+        if cadence.get("timestamp_source") != "event.time_window.start_local":
+            raise ValueError("District-Event-Cadence besitzt unbekannte Zeitquelle")
+        if cadence.get("scope") != "global" or cadence.get("system_time_is_sole_authority") is not False:
+            raise ValueError("District-Event-Cadence muss global und unabhängig von alleiniger Systemzeit sein")
+        minimum_hours = cadence.get("minimum_hours_between_events")
+        if isinstance(minimum_hours, bool) or not isinstance(minimum_hours, int) or minimum_hours < 1:
+            raise ValueError("District-Event-Cooldown muss positive Ganzzahlstunden besitzen")
+        self.minimum_cooldown = timedelta(hours=minimum_hours)
         events = self.manifest.get("events")
         if not isinstance(events, list) or not events:
             raise ValueError("District-Event-Katalog ist leer")
         self.events = tuple(deepcopy(events))
         self._validate_catalog(selection)
 
-    def trigger(
-        self,
-        *,
-        world_seed: str,
-        district_id: str,
-        trigger_id: str,
-        context: JournalContext,
-    ) -> DistrictWorldEventResult:
+    def trigger(self, *, world_seed: str, district_id: str, trigger_id: str, context: JournalContext) -> DistrictWorldEventResult:
         world_seed = self._text(world_seed, "world_seed")
         district_id = self._text(district_id, "district_id")
         trigger_id = self._text(trigger_id, "trigger_id")
@@ -71,34 +78,18 @@ class DistrictWorldEventService:
 
         source_prefix = f"district-event:{district_id}:{trigger_id}:"
         replay_event_id = self._existing_event_id(source_prefix)
-        if replay_event_id is None:
+        if replay_event_id is not None:
+            event = self._event_by_id(replay_event_id)
+        else:
+            cadence_reason = self._cadence_block_reason(trigger_id)
+            if cadence_reason is not None:
+                return self._no_event(district_id, trigger_id, cadence_reason)
             state = self.district_service.current_state()
             metrics = state.metrics[district_id]
             eligible = [event for event in self.events if self._requirements_met(event, metrics)]
             if not eligible:
-                return DistrictWorldEventResult(
-                    None,
-                    None,
-                    None,
-                    None,
-                    DistrictCommitResult(
-                        state=state,
-                        committed_event_ids=(),
-                        idempotent_replay=False,
-                        applied=False,
-                        metadata={
-                            "district_id": district_id,
-                            "source_type": "district_event",
-                            "source_id": f"district-event:{district_id}:{trigger_id}",
-                            "reason": "no_eligible_event",
-                        },
-                    ),
-                    triggered=False,
-                    no_event_reason="no_eligible_event",
-                )
+                return self._no_event(district_id, trigger_id, "no_eligible_event")
             event = self._select(eligible, world_seed=world_seed, district_id=district_id, trigger_id=trigger_id)
-        else:
-            event = self._event_by_id(replay_event_id)
 
         event_instance_id = f"{source_prefix}{event['event_id']}"
         result = self.district_service._apply(
@@ -108,13 +99,89 @@ class DistrictWorldEventService:
             requested_deltas=event["effects"],
             context=context,
         )
+        return DistrictWorldEventResult(event["event_id"], event["title_key"], event["body_key"], event_instance_id, result)
+
+    def _no_event(self, district_id: str, trigger_id: str, reason: str) -> DistrictWorldEventResult:
+        state = self.district_service.current_state()
         return DistrictWorldEventResult(
-            event["event_id"],
-            event["title_key"],
-            event["body_key"],
-            event_instance_id,
-            result,
+            None, None, None, None,
+            DistrictCommitResult(
+                state=state,
+                committed_event_ids=(),
+                idempotent_replay=False,
+                applied=False,
+                metadata={
+                    "district_id": district_id,
+                    "source_type": "district_event",
+                    "source_id": f"district-event:{district_id}:{trigger_id}",
+                    "reason": reason,
+                },
+            ),
+            triggered=False,
+            no_event_reason=reason,
         )
+
+    def _cadence_block_reason(self, trigger_id: str) -> str | None:
+        current_anchor = self._confirmed_game_time(trigger_id)
+        if current_anchor is None:
+            return "confirmed_time_unavailable"
+        prior_anchors: list[datetime] = []
+        for record in self.district_service.persistence.read_records():
+            if record.get("event_type") != "world.district_effect_applied":
+                continue
+            payload = record.get("payload")
+            if not isinstance(payload, Mapping) or payload.get("source_type") != "district_event":
+                continue
+            source_id = payload.get("source_id")
+            prior_trigger = self._trigger_from_event_source(source_id)
+            if prior_trigger is None or prior_trigger == trigger_id:
+                continue
+            anchor = self._confirmed_game_time(prior_trigger)
+            if anchor is None:
+                return "confirmed_time_unavailable"
+            prior_anchors.append(anchor)
+        if not prior_anchors:
+            return None
+        latest = max(prior_anchors)
+        if current_anchor < latest or current_anchor - latest < self.minimum_cooldown:
+            return "cooldown_active"
+        return None
+
+    def _confirmed_game_time(self, trigger_id: str) -> datetime | None:
+        prefix = "settlement:settlement:"
+        if not trigger_id.startswith(prefix):
+            return None
+        command_id = trigger_id[len(prefix):]
+        if not command_id:
+            return None
+        completed_id = f"{command_id}:completed"
+        record = next((item for item in self.district_service.persistence.read_records() if item.get("event_id") == completed_id), None)
+        if record is None or record.get("event_type") != "event.completed":
+            return None
+        payload = record.get("payload")
+        event = payload.get("event") if isinstance(payload, Mapping) else None
+        time_window = event.get("time_window") if isinstance(event, Mapping) else None
+        value = time_window.get("start_local") if isinstance(time_window, Mapping) else None
+        if not isinstance(value, str) or not value.strip():
+            return None
+        try:
+            parsed = datetime.fromisoformat(value.strip())
+        except ValueError:
+            return None
+        if parsed.tzinfo is None or parsed.utcoffset() is None:
+            return None
+        return parsed
+
+    def _trigger_from_event_source(self, source_id: Any) -> str | None:
+        if not isinstance(source_id, str) or not source_id.startswith("district-event:"):
+            return None
+        for event in self.events:
+            suffix = f":{event['event_id']}"
+            if source_id.endswith(suffix):
+                prefix = source_id[:-len(suffix)]
+                parts = prefix.split(":", 2)
+                return parts[2] if len(parts) == 3 and parts[2] else None
+        return None
 
     def _validate_catalog(self, selection: Mapping[str, Any]) -> None:
         effect_contract = self.manifest.get("effect_contract")
@@ -126,21 +193,13 @@ class DistrictWorldEventService:
             raise ValueError("District-Event-Metriken weichen vom District-State-Vertrag ab")
         minimum = effect_contract.get("per_event_delta_minimum")
         maximum = effect_contract.get("per_event_delta_maximum")
-        if (
-            isinstance(minimum, bool)
-            or not isinstance(minimum, int)
-            or isinstance(maximum, bool)
-            or not isinstance(maximum, int)
-            or minimum > maximum
-        ):
+        if isinstance(minimum, bool) or not isinstance(minimum, int) or isinstance(maximum, bool) or not isinstance(maximum, int) or minimum > maximum:
             raise ValueError("District-Event-Effektgrenzen sind ungültig")
         if effect_contract.get("district_bounds_remain") != self.district_service.manifest.get("bounds"):
             raise ValueError("District-Event-Grenzen weichen vom District-State-Vertrag ab")
-
         expected_weight = selection.get("weight_total")
         if isinstance(expected_weight, bool) or not isinstance(expected_weight, int) or expected_weight <= 0:
             raise ValueError("District-Event-Gesamtgewicht muss positive Ganzzahl sein")
-
         seen_ids: set[str] = set()
         total_weight = 0
         for index, event in enumerate(self.events):
@@ -152,12 +211,10 @@ class DistrictWorldEventService:
             seen_ids.add(event_id)
             self._text(event.get("title_key"), f"events[{index}]({event_id}).title_key")
             self._text(event.get("body_key"), f"events[{index}]({event_id}).body_key")
-
             weight = event.get("weight")
             if isinstance(weight, bool) or not isinstance(weight, int) or weight <= 0:
                 raise ValueError(f"events[{index}]({event_id}).weight muss positive Ganzzahl sein")
             total_weight += weight
-
             requirements = event.get("requirements", {})
             if not isinstance(requirements, Mapping):
                 raise ValueError(f"events[{index}]({event_id}).requirements muss Objekt sein")
@@ -173,21 +230,15 @@ class DistrictWorldEventService:
                     raise ValueError(f"{field} ist unbekannte Voraussetzung")
                 if metric not in expected_metrics:
                     raise ValueError(f"{field} verweist auf unbekannte Metrik '{metric}'")
-
             effects = event.get("effects")
             if not isinstance(effects, Mapping) or set(effects) != set(expected_metrics):
-                raise ValueError(
-                    f"events[{index}]({event_id}).effects muss exakt alle District-Metriken enthalten"
-                )
+                raise ValueError(f"events[{index}]({event_id}).effects muss exakt alle District-Metriken enthalten")
             for metric, value in effects.items():
                 field = f"events[{index}]({event_id}).effects.{metric}"
                 if isinstance(value, bool) or not isinstance(value, int) or not minimum <= value <= maximum:
                     raise ValueError(f"{field} liegt außerhalb des Vertrags [{minimum}, {maximum}]")
-
         if total_weight != expected_weight:
-            raise ValueError(
-                f"District-Event-Kataloggewicht {total_weight} weicht von selection.weight_total {expected_weight} ab"
-            )
+            raise ValueError(f"District-Event-Kataloggewicht {total_weight} weicht von selection.weight_total {expected_weight} ab")
 
     def _existing_event_id(self, source_prefix: str) -> str | None:
         state = self.district_service.current_state()
@@ -207,14 +258,7 @@ class DistrictWorldEventService:
             raise PersistenceError("Bestätigtes District-Event fehlt im aktuellen Katalog")
         return event
 
-    def _select(
-        self,
-        eligible: list[Mapping[str, Any]],
-        *,
-        world_seed: str,
-        district_id: str,
-        trigger_id: str,
-    ) -> Mapping[str, Any]:
+    def _select(self, eligible: list[Mapping[str, Any]], *, world_seed: str, district_id: str, trigger_id: str) -> Mapping[str, Any]:
         weighted: list[tuple[Mapping[str, Any], int]] = []
         total = 0
         for event in eligible:
