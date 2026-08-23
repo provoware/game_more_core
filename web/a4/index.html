@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="map_pro.js" defer></script>
   <script src="ui_prefs.js" defer></script>
+  <script src="event_timeline.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -38,6 +39,7 @@
 
   <nav class="quick-nav" aria-label="Schnellnavigation">
     <a href="#street-panel">STRASSE</a>
+    <a href="#event-timeline-panel">TIMELINE</a>
     <a href="#map-pro-panel">MAP</a>
     <a href="#property-panel">PROPERTY</a>
     <a href="#hall-panel">HALL</a>
@@ -114,6 +116,15 @@
       <p>Heat, Prestige, Polizeidruck und Szeneaktivität stammen ausschließlich aus bestätigten Spielereignissen. Diese Ansicht ist nur lesend.</p>
       <div id="district-list" class="equipment-list"></div>
       <div id="district-last-change" class="notice" aria-live="polite">Noch keine persistente Bezirksänderung.</div>
+    </section>
+
+    <section id="event-timeline-panel" class="panel" aria-labelledby="event-timeline-title">
+      <div class="panel-head">
+        <div><p class="eyebrow">STORY // BESTÄTIGTE EREIGNISSE</p><h2 id="event-timeline-title">Was bisher passiert ist</h2></div>
+      </div>
+      <p>Diese Chronik zeigt ausschließlich bestätigte Street-, Krisen- und Bezirksereignisse. Reihenfolge und Texte kommen aus der Runtime; der Browser schreibt und sortiert nichts.</p>
+      <p id="event-timeline-status" class="notice" role="status" aria-live="polite">Timeline wird geladen …</p>
+      <ol id="event-timeline-list" class="equipment-list" aria-label="Bestätigte Ereignis-Chronik"></ol>
     </section>
 
     <section id="map-pro-panel" class="panel map-pro-panel hidden" aria-labelledby="map-pro-title">
@@ -245,6 +256,6 @@
     </section>
   </main>
 
-  <footer>Control Deck 2.0 · localhost-only · UI-Optionen lokal · Map read-only · keine Domain-Regeln im Browser</footer>
+  <footer>Control Deck 2.0 · localhost-only · UI-Optionen lokal · Map read-only · Timeline read-only · keine Domain-Regeln im Browser</footer>
 </body>
 </html>

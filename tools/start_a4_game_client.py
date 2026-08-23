@@ -33,6 +33,7 @@ from bunkerfrequenz.infrastructure.persistence import (  # noqa: E402
     PersistenceKernel,
 )
 from bunkerfrequenz.presentation.a4_game_projection import build_a4_game_projection  # noqa: E402
+from bunkerfrequenz.presentation.event_timeline import build_event_timeline_projection  # noqa: E402
 
 MAX_BODY_BYTES = 64 * 1024
 STREET_WORLD_SEED = "bunkerfrequenz-a4-local-street-v1"
@@ -43,6 +44,7 @@ REQUIRED = (
     "web/a4/app.js",
     "web/a4/map_pro.js",
     "web/a4/ui_prefs.js",
+    "web/a4/event_timeline.js",
     "web/a4/starter.json",
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/INCIDENT_MANIFEST.json",
@@ -59,6 +61,8 @@ REQUIRED = (
     "manifests/SYNC_MANIFEST.json",
     "manifests/ZEIT_MANIFEST.json",
     "content/de/ui/street_encounters.json",
+    "content/de/ui/district_events.json",
+    "content/de/ui/incidents.json",
     "content/de/ui/character_forge.json",
 )
 
@@ -131,6 +135,8 @@ class A4ClientRuntime:
         self.zeit_manifest = _load_json(ROOT / "manifests" / "ZEIT_MANIFEST.json")
         self.ranking_text_catalog = _load_json(ROOT / "content" / "de" / "ui" / "character_forge.json")
         self.street_texts = _load_json(ROOT / "content" / "de" / "ui" / "street_encounters.json")
+        self.district_event_texts = _load_json(ROOT / "content" / "de" / "ui" / "district_events.json")
+        self.incident_texts = _load_json(ROOT / "content" / "de" / "ui" / "incidents.json")
         for encounter in self.street_manifest.get("encounters", ()):
             if not isinstance(encounter, dict):
                 raise SystemExit("START FEHLGESCHLAGEN – Street-Katalog ist ungültig")
@@ -201,7 +207,7 @@ class A4ClientRuntime:
 
     def projection(self) -> dict:
         with self.lock:
-            return build_a4_game_projection(
+            projection = build_a4_game_projection(
                 self.session.read_state(),
                 incident_catalog=self.incident_catalog,
                 district_manifest=self.district_manifest,
@@ -218,6 +224,15 @@ class A4ClientRuntime:
                 street_manifest=self.street_manifest,
                 street_text_catalog=self.street_texts,
             )
+            projection["event_timeline"] = build_event_timeline_projection(
+                self.kernel.read_records(),
+                street_text_catalog=self.street_texts,
+                district_event_manifest=self.district_event_manifest,
+                district_text_catalog=self.district_event_texts,
+                incident_catalog=self.incident_catalog,
+                incident_text_catalog=self.incident_texts,
+            )
+            return projection
 
     def _context(
         self,
