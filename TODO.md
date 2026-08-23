@@ -9,7 +9,7 @@
 - **0.8.7-C3 Application-Integration:** PR #95 · `SAFE MERGE PASS` · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
 - **0.8.7-C4A Timeline-Projection:** PR #98 · `SAFE MERGE PASS` · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
 - **District-Event-Robustheit:** `no_eligible_event` wird als expliziter schreibfreier No-op behandelt; kein künstliches Ersatz-Ereignis
-- **Aktive Entwicklungsstufe:** `0.8.7-C4B – sichtbares Control Deck`; Implementation auf Feature-Branch abgeschlossen, Remote-Abnahme noch ausstehend
+- **Aktive Entwicklungsstufe:** `0.8.7-C4B – sichtbares Control Deck`; PR #101, erster Implementierungs-Head `2abe543ff2e0cc60389de0a1104c4e6754f25c6f` 5/5 remote grün, endgültiger Doku-Head wird erneut geprüft
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
 ---
@@ -101,7 +101,8 @@
 - [x] Control Deck zeigt eine kompakte, tastatur- und screenreaderfreundliche Timeline
 - [x] Darstellung bleibt read-only und enthält keinen Command-/Write-Pfad
 - [x] bestehende C4A-Reihenfolge und Texte unverändert verwenden; Browser sortiert oder erfindet nichts neu
-- [ ] Remote-Gates auf dem endgültigen PR-Head vollständig grün
+- [x] erster Implementierungs-Head 5/5 remote grün: Runtime `32644257079`, Presentation `32644257099`, Repository Health `32644257196`, Release Acceptance `32644257124`, Release Package `32644257094`
+- [ ] endgültiger Doku-Head erneut 5/5 remote grün
 - [ ] 0 offene Review-Threads, aktuelles `main`, `/safe-merge` PASS
 
 ### Explizit NICHT in C4
