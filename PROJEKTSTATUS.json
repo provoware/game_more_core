@@ -3,26 +3,26 @@
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
   "active_iteration": "0.8.7-C",
-  "status": "0_8_7_c3_application_integration_remote_validated_next_c4",
-  "current_focus": "read_only_event_timeline",
-  "last_validated_feature_iteration": "0.8.7-C3",
+  "status": "0_8_7_c4a_event_timeline_projection_remote_validated_next_c4b",
+  "current_focus": "event_timeline_control_deck_visibility",
+  "last_validated_feature_iteration": "0.8.7-C4A",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #95 / head b225fed18581f6c386421459b528208fd37b9788 / merge fb62c5226997462cc2a9adc67529a7691e16ae2b",
+  "validation_reference": "PR #98 / head 164239daa7db56e83078ba38c12f9ddd0fc27ae3 / merge 4909fb9f7169baaa5b802e497cdba3e2c6da0dae",
   "remote_validation": {
-    "status": "success_for_0.8.7_c3_settlement_driven_district_event_application_integration",
-    "pull_request": 95,
-    "validated_head": "b225fed18581f6c386421459b528208fd37b9788",
-    "runtime_core_workflow_run": 32626952802,
-    "presentation_core_workflow_run": 32626952787,
-    "repository_health_workflow_run": 32626952891,
-    "release_acceptance_workflow_run": 32626952785,
-    "release_package_workflow_run": 32626952792,
+    "status": "success_for_0.8.7_c4a_read_only_event_timeline_projection",
+    "pull_request": 98,
+    "validated_head": "164239daa7db56e83078ba38c12f9ddd0fc27ae3",
+    "runtime_core_workflow_run": 32635126617,
+    "presentation_core_workflow_run": 32635126623,
+    "repository_health_workflow_run": 32635126624,
+    "release_acceptance_workflow_run": 32635126620,
+    "release_package_workflow_run": 32635126618,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "codex_review_execution": "blocked_by_external_usage_limit_not_counted_as_pass",
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "fb62c5226997462cc2a9adc67529a7691e16ae2b"
+    "merged_commit": "4909fb9f7169baaa5b802e497cdba3e2c6da0dae"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -46,7 +46,8 @@
     {"iteration": "0.8.7-B", "pull_request": 88, "merged_commit": "4d1a35bfbc086d07599b6ec7b3816e830bcea995", "feature": "control_deck_player_choices"},
     {"iteration": "0.8.7-C1", "pull_request": 90, "merged_commit": "337f8ad8f9719ec3389c372da9688bbbec593c16", "feature": "district_world_event_contract_catalog"},
     {"iteration": "0.8.7-C2", "pull_request": 92, "merged_commit": "df18bab2dc9120fec4fe20bb39388a102eef2148", "feature": "district_world_event_runtime_and_catalog_fail_fast"},
-    {"iteration": "0.8.7-C3", "pull_request": 95, "merged_commit": "fb62c5226997462cc2a9adc67529a7691e16ae2b", "feature": "settlement_driven_district_event_application_integration"}
+    {"iteration": "0.8.7-C3", "pull_request": 95, "merged_commit": "fb62c5226997462cc2a9adc67529a7691e16ae2b", "feature": "settlement_driven_district_event_application_integration"},
+    {"iteration": "0.8.7-C4A", "pull_request": 98, "merged_commit": "4909fb9f7169baaa5b802e497cdba3e2c6da0dae", "feature": "read_only_event_timeline_projection_and_text_layer"}
   ],
   "subsystems": {
     "character_forge": {
@@ -72,7 +73,7 @@
       "property_transactions_compensatable": false
     },
     "living_world": {
-      "status": "0_8_7_c3_application_integration_remote_validated",
+      "status": "0_8_7_c4a_projection_remote_validated",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -112,7 +113,7 @@
       "fake_local_champion_titles": false
     },
     "presentation": {
-      "status": "remote_validated_control_deck_2",
+      "status": "remote_validated_c4a_timeline_projection",
       "a4_localhost_client": true,
       "high_quality_berlin_ops_renderer": true,
       "map_read_only": true,
@@ -121,6 +122,9 @@
       "quick_navigation": true,
       "local_ui_preferences": ["compact", "high_contrast", "large_text"],
       "incident_effect_preview": true,
+      "event_timeline_projection_ready": true,
+      "event_timeline_max_entries": 12,
+      "event_timeline_sources": ["street.encounter_resolved", "event.incident_resolved", "world.district_effect_applied"],
       "browser_gameplay_authority": false
     },
     "network": {
@@ -139,10 +143,10 @@
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
   "next_iteration": "0.8.7-C",
-  "next_goal": "C4: Bestätigte District-, Street- und Crisis-Ereignisse read-only und ohne erfundene Historie im Control Deck sichtbar machen.",
+  "next_goal": "C4B: Die bereits validierte C4A-Projection read-only, kompakt und barrierearm im Control Deck sichtbar machen.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T10:56:56+02:00"
+  "updated_at": "2026-08-23T13:53:48+02:00"
 }
