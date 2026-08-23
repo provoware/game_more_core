@@ -13,6 +13,7 @@ from bunkerfrequenz.application.incident_service import IncidentService
 from bunkerfrequenz.application.profile_service import CharacterProfileService
 from bunkerfrequenz.application.property_service import PropertyService
 from bunkerfrequenz.application.property_upgrade_service import PropertyUpgradeService
+from bunkerfrequenz.application.scene_job_service import SceneJobService
 from bunkerfrequenz.application.settlement_service import SettlementService
 from bunkerfrequenz.application.street_encounter_service import StreetEncounterService
 from bunkerfrequenz.domain.character import CharacterState
@@ -24,6 +25,7 @@ from bunkerfrequenz.infrastructure.persistence import JournalContext, Persistenc
 _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "profile.update": frozenset({"type", "command_id", "changes"}),
     "street.walk": frozenset({"type", "command_id", "approach_id"}),
+    "job.run": frozenset({"type", "command_id", "job_id"}),
     "event.create": frozenset({"type", "command_id", "event"}),
     "event.update_planning": frozenset({"type", "command_id", "changes"}),
     "event.execute": frozenset({"type", "command_id", "action_id"}),
@@ -36,7 +38,7 @@ _COMMAND_FIELDS: dict[str, frozenset[str]] = {
     "settlement.complete": frozenset({"type", "command_id"}),
 }
 _COMMAND_TYPES = frozenset(_COMMAND_FIELDS)
-_CHARACTER_COMMANDS = frozenset({"profile.update", "street.walk"})
+_CHARACTER_COMMANDS = frozenset({"profile.update", "street.walk", "job.run"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -54,10 +56,11 @@ class GameClientSession:
     """Thin write adapter for the local A4 client.
 
     It owns no gameplay rules. Persistent commands are delegated to canonical
-    Profile/Street/Event/Economy/Property/Upgrade/Incident/Settlement/District services.
+    Profile/Street/SceneJob/Event/Economy/Property/Upgrade/Incident/Settlement/District services.
     District world events reuse the confirmed DistrictService state and are triggered
-    only from an already confirmed settlement source. District metrics, property prices,
-    upgrade costs/levels, owners and budget deltas are never accepted directly from the client.
+    only from an already confirmed settlement source. District metrics, job payouts,
+    property prices, upgrade costs/levels, owners and budget deltas are never accepted
+    directly from the client.
     """
 
     def __init__(
@@ -68,6 +71,7 @@ class GameClientSession:
         incident_contract_version: str,
         street_manifest: Mapping[str, Any] | None = None,
         street_world_seed: str | None = None,
+        scene_job_manifest: Mapping[str, Any] | None = None,
         district_manifest: Mapping[str, Any] | None = None,
         city_map_manifest: Mapping[str, Any] | None = None,
         district_event_manifest: Mapping[str, Any] | None = None,
@@ -95,6 +99,7 @@ class GameClientSession:
         self.profile = CharacterProfileService(persistence)
         self.street = StreetEncounterService(persistence, street_manifest) if street_manifest is not None else None
         self.street_world_seed = street_world_seed
+        self.scene_jobs = SceneJobService(persistence, scene_job_manifest) if scene_job_manifest is not None else None
         self.district = (
             DistrictService(persistence, district_manifest, city_map_manifest)
             if district_manifest is not None and city_map_manifest is not None
@@ -377,6 +382,29 @@ class GameClientSession:
                 context=context,
             )
             return self._confirmed((event_id,), False)
+
+        if command["type"] == "job.run":
+            if self.scene_jobs is None:
+                return self._rejected("scene_jobs_not_configured")
+            job_id = command.get("job_id")
+            if not isinstance(job_id, str) or not job_id.strip():
+                return self._rejected("invalid_job_id")
+            result = self.scene_jobs.run(job_id.strip(), context=context)
+            return self._confirmed(
+                result.committed_event_ids,
+                result.idempotent_replay,
+                metadata={
+                    "scene_job": {
+                        "job_id": result.job["job_id"],
+                        "label": result.job["label"],
+                        "duration_hours": result.job["duration_hours"],
+                        "payout_cents": result.job["payout_cents"],
+                        "energy_delta": result.job["energy_delta"],
+                        "stress_delta": result.job["stress_delta"],
+                    },
+                    "personal_finance": result.finance.to_dict(),
+                },
+            )
 
         if self.street is None or self.street_world_seed is None:
             return self._rejected("street_not_configured")
