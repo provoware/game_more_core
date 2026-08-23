@@ -1,6 +1,6 @@
 # FEATURE-POOL – BUNKERFREQUENZ
 
-Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die verbindliche aktive Arbeit.
+Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
 ## Statuswerte
 
@@ -18,29 +18,27 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 |---|---|---|---|
 | `POOL-RANK-001` | `DONE` | Competitive Top-10 Ranking | eindeutige Plätze + Challenger-Verdrängung |
 | `POOL-PROFILE-001` | `DONE` | A4-Profil personalisieren | Name, Alias, Spitznamen, Motto |
-| `POOL-STREET-001` | `DONE` | Kleine Straßen-Gimmicks | deterministisch/replaybar, kein Reload-Reroll |
+| `POOL-STREET-001` | `DONE` | Kleine Straßen-Gimmicks | deterministisch/replaybar |
 | `POOL-WORLD-001` | `DONE` | Dynamische Bezirkslage | persistente District-Metriken + Recovery |
 | `POOL-RANK-002` | `DONE` | Hall of Tribute | read-only Top 10 ohne erfundene Gegner |
 | `POOL-RANK-003` | `DONE` | Ranking-Bewegung | Aufstieg/Abstieg/gehalten/neu |
-| `POOL-PROPERTY-001` | `DONE` | Immobilien kaufen | Economy + Eigentum atomar; 0.8.6-A |
-| `POOL-PROPERTY-002` | `DONE` | Immobilien ausbauen | Level 1–3 + Recovery + Map-Werte; 0.8.6-B |
-| `POOL-MAP-001` | `DONE` | Berlin Ops Map PRO | 8 Districts/12 Locations, read-only; 0.8.6-C |
-| `POOL-RANK-005` | `DONE` | Saisonale Hall of Tribute | Wochen-/Monatszyklen, bestätigte Titel, keine Fake-Champions; 0.8.7-A / PR #87 |
-| `POOL-UX-001` | `DONE` | Control Deck 2.0 | HUD, Schnellnavigation, lokale Anzeigeoptionen; 0.8.7-B / PR #88 |
-| `POOL-STREET-004` | `DONE` | Street Approaches | vier Spieleransätze, nur Auswahlgewichte; 0.8.7-B / PR #88 |
-| `POOL-CRISIS-002` | `DONE` | Krisen-Folgenvorschau | katalogisierte Folgen vor der Wahl sichtbar; 0.8.7-B / PR #88 |
-| `POOL-QA-003` | `DONE` | District-Event-Katalogdiagnose mit Eintrags-ID | Fail-fast nennt Event-ID und Feldpfad; QA-Härtung in PR #94 |
-| `POOL-WORLD-002` | `DONE` | Bezirksbezogene Welt-/Zufallsereignisse | C1 Vertrag, C2 Runtime und C3 Settlement-Integration sicher gemergt; PR #95 |
+| `POOL-PROPERTY-001` | `DONE` | Immobilien kaufen | Economy + Eigentum atomar |
+| `POOL-PROPERTY-002` | `DONE` | Immobilien ausbauen | Level 1–3 + Recovery + Map-Werte |
+| `POOL-MAP-001` | `DONE` | Berlin Ops Map PRO | 8 Districts/12 Locations, read-only |
+| `POOL-RANK-005` | `DONE` | Saisonale Hall of Tribute | bestätigte Wochen-/Monatszyklen |
+| `POOL-UX-001` | `DONE` | Control Deck 2.0 | HUD, Schnellnavigation, lokale Anzeigeoptionen |
+| `POOL-STREET-004` | `DONE` | Street Approaches | vier Ansätze, katalogisierte Gewichte |
+| `POOL-CRISIS-002` | `DONE` | Krisen-Folgenvorschau | katalogisierte Folgen vor der Wahl |
+| `POOL-QA-003` | `DONE` | District-Event-Katalogdiagnose | Event-ID + Feldpfad im Fail-fast |
+| `POOL-WORLD-002` | `DONE` | District World Events | Vertrag, Runtime, Settlement-Integration |
+| `POOL-UX-002` | `DONE` | Ereignis-Timeline im Control Deck | C4A Projection + C4B sichtbare read-only Timeline |
+| `POOL-WORLD-004` | `DONE` | District-Event-Cadence/Cooldown | 24h bestätigte Spielweltzeit, kein Systemzeit-Fallback |
 
 ### Letzte Remote-Abnahmen
 
-- **0.8.6-C:** PR #85 · Merge `10c7d6b5e04838b07ae6899b8b76580cd87de607`
-- **0.8.7-A:** PR #87 · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
-- **0.8.7-B:** PR #88 · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
-- **0.8.7-C1:** PR #90 · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
-- **0.8.7-C2:** PR #92 · Merge `df18bab2dc9120fec4fe20bb39388a102eef2148` · Runtime + Fail-fast-Härtung
-- **0.8.7-C3:** PR #95 · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b` · autorisierter Settlement-Trigger
-- **0.8.7-C4A:** PR #98 · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae` · read-only Timeline-Projection/Textschicht
+- **0.8.7-C4A:** PR #98 · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
+- **0.8.7-C4B:** PR #101 · Merge `3d71f00c5717ae797e6b8f1ca4c65c036bf71c81`
+- **0.8.7-C5:** PR #102 · Merge `bd79da8d1e124ec60248a05bf332c6ef338ca7b6`
 
 ---
 
@@ -48,45 +46,53 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-UX-002` | `PULLED` | **Ereignis-Timeline im Control Deck** | bestätigte Welt-, Street- und Crisis-Ereignisse schneller nachvollziehen | C4A-Projection ist validiert; C4B bleibt reine Presentation ohne Browser-Autorität |
-| `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung ohne neue Engine | bestehender Street-Encounter-/Approach-Vertrag |
-| `POOL-PROFILE-002` | `READY` | Crewfarben und Emblem-Auswahl | stärkere Identität | nur Darstellungsdaten; Character-ID unverändert |
+| `POOL-PROFILE-002` | `PULLED` | **Crew-Logo/Fahne** | jeder Spieler erhält eine wiedererkennbare Crew-Identität | kleine synchronisierbare Datenrepräsentation; keine Bildblobs; Character-ID unverändert |
+| `POOL-ECON-003` | `READY` | **Scene Jobs** | jederzeit Geld ansparen und Leerlauf spielerisch nutzen | bestehende Economy-/Ressourcenwege; serverseitige Erträge; bestätigte Runde |
+| `POOL-COMPANION-001` | `DEPENDENCY` | **Secret Best Friend Assistant** | eine Aufgabe automatisch Runde für Runde betreiben | benötigt zuerst wiederverwendbare Job-/Task-Aktionen; genau eine aktive Aufgabe; bis Deaktivierung |
+| `POOL-FINANCE-001` | `READY` | **Bankkonto & Sparen** | Bargeld sichern, Ein-/Auszahlung, Zins und Zinseszins | eigene Ledger-Kinds auf bestehender Economy; bestätigte Spielzeit statt Systemzeit |
+| `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt `POOL-FINANCE-001`; keine echten Marktdaten notwendig; katalogisierte Spielkurse |
+| `POOL-FINANCE-003` | `DEPENDENCY` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Economy-/Bank-Ledger, keine zweite Buchhaltung |
+| `POOL-UX-004` | `READY` | **Control Deck Focus & Verdichtung** | weniger Wiederholungen, mehr Arbeitsfläche | Bereiche lokal maximieren/zurücksetzen; redundante Anzeigen entfernen; kein Save-State |
+| `POOL-UX-005` | `READY` | **Nächste-Aktion-Signal** | erlaubte nächste Schritte schneller erkennen | kontrastreicher Puls nur Presentation; Reduced Motion = statische Hervorhebung |
+| `POOL-MAP-002` | `READY` | **Berlin Ops Map 2** | bessere Bezirkslesbarkeit, Zoom/Pan und Objektübersicht | bestehende Map-Projection bleibt einzige Datenquelle; read-only |
+| `POOL-STORY-001` | `READY` | District-Event-Nachhall in Biografie | Weltfolgen werden Teil der Crew-Geschichte | nur bestätigte Journal-/Projection-Daten |
+| `POOL-UX-003` | `READY` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only; keine Sortierung, kein Save-/Journal-State |
+| `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-/Approach-Vertrag |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
-| `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | spätere Ereignisse können bestätigte frühere District-Ereignisse erzählerisch aufgreifen | erst nach validierter C4-Sichtbarkeit; keine versteckten Browserzustände |
-| `POOL-WORLD-004` | `IDEA` | District-Event-Cadence/Cooldown | verhindert Ereignis-Spam und macht seltene Ereignisse gewichtiger | Taktung aus bestätigter Spielzeit, nie aus Systemzeit allein |
-| `POOL-STORY-001` | `IDEA` | District-Event-Nachhall in Biografie | bestätigte Welt-Ereignisse können später als kurze erzählerische Erinnerung im Crew-Verlauf auftauchen | erst nach C4; nur bestätigte Journal-/Projection-Daten, keine neue Story-Autorität |
-| `POOL-UX-003` | `IDEA` | Lokaler Timeline-Fokusfilter | Spieler kann später nur Straße, Krise oder Bezirk einblenden, ohne die kanonische Reihenfolge oder Datenquelle zu verändern | Filter ausschließlich lokal/read-only; keine Sortierung, kein Save- oder Journal-State |
-| `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | erkennt, wenn `PROJEKTSTATUS.json` nach einem validierten Safe Merge hinter `main` zurückbleibt | Main-Integrity-/Merge-Provenienz wiederverwenden; keine zweite Release-Autorität |
-| `POOL-QA-005` | `IDEA` | District-Event-Katalog-Preflight als lesender Diagnosebefehl | Katalogfehler vor Spielstart gesammelt prüfen, ohne Save oder Gameplay zu berühren | zentrale `DistrictWorldEventService`-Validierung wiederverwenden; keine zweite Prüflogik |
-| `POOL-QA-006` | `IDEA` | Status-Sync nach Safe Merge automatisieren | reduziert wiederkehrende Evidenzdrift nach erfolgreichen Feature-Merges | nur kanonische Statusdateien aktualisieren; kein automatischer Produktversionsbump |
-| `POOL-QA-007` | `IDEA` | District-Event-Eligibility-Diagnose | zeigt im Entwicklerbereich lesend, welche Voraussetzungen aktuell alle Welt-Ereignisse ausschließen | dieselbe zentrale Requirements-Prüfung wiederverwenden; keine zweite Auswahlengine und keine Browser-Autorität |
-| `POOL-QA-008` | `IDEA` | Timeline-Projections-Freshness-Check | erkennt, wenn C4A-Daten vorhanden sind, aber A4 sie noch nicht transportiert oder sichtbar rendert | nur read-only Contract-Prüfung; keine zweite Timeline-Quelle |
-| `POOL-QA-009` | `IDEA` | Timeline-Metadaten-Diagnose | zählt lesend verworfene optionale Timeline-Metadaten und erleichtert beschädigte Journaldaten zu finden | Sanitizing der zentralen C4A-Projection wiederverwenden; kein Fallback-Content, kein Journal-Write |
 
 ---
 
-## C – Größere Folgebausteine
+## C – Spätere/abhängige Bausteine
 
-| ID | Status | Feature | Nutzen | Voraussetzung |
-|---|---|---|---|---|
-| `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Ausbauten beeinflussen Eventvorbereitung | separater Bonus-/Availability-Vertrag |
-| `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | tiefere Langzeitökonomie | Bilanz-/Ownership-Transfer-Vertrag |
-| `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | gemeinsames Ranking und Austausch | eigener Server-/Transportvertrag |
-| `POOL-RANK-004` | `DEPENDENCY` | echte Netzwerk-Rankingzyklen | mehrere Spieler konkurrieren | `POOL-NET-001` |
-| `POOL-STREET-003` | `IDEA` | seltene Mini-Kettenereignisse | kleine Geschichten unterwegs | eigener Ketten-/Replayvertrag |
-| `POOL-QA-001` | `READY` | Native GitHub Branch Protection / Ruleset | zusätzliche Repository-Härtung | geeigneter Admin-Schreibweg |
+| ID | Status | Feature | Voraussetzung |
+|---|---|---|---|
+| `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | Story-/Journalvertrag |
+| `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
+| `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
+| `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
+| `POOL-NET-002` | `DEPENDENCY` | Crew-Identity-Synchronisation | `POOL-NET-001` + kanonische Crew-Identity-Daten aus `POOL-PROFILE-002` |
+| `POOL-RANK-004` | `DEPENDENCY` | echte Netzwerk-Rankingzyklen | `POOL-NET-001` |
+| `POOL-STREET-003` | `IDEA` | seltene Mini-Kettenereignisse | Ketten-/Replayvertrag |
+| `POOL-QA-001` | `READY` | Native GitHub Branch Protection / Ruleset | geeigneter Admin-Schreibweg |
+| `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
+| `POOL-QA-005` | `IDEA` | District-Event-Katalog-Preflight | zentrale Service-Validierung wiederverwenden |
+| `POOL-QA-006` | `IDEA` | Status-Sync nach Safe Merge automatisieren | keine zweite Release-Autorität |
+| `POOL-QA-007` | `IDEA` | District-Event-Eligibility-Diagnose | zentrale Requirements-Prüfung |
+| `POOL-QA-008` | `IDEA` | Timeline-Projections-Freshness-Check | read-only Contract-Prüfung |
+| `POOL-QA-009` | `IDEA` | Timeline-Metadaten-Diagnose | Sanitizing der C4A-Projection |
 
 ---
 
 ## Pool-Regeln
 
 1. Keine stille Umsetzung: aktive Punkte werden auf `PULLED` gesetzt oder im TODO konkretisiert.
-2. Keine Doppelarchitektur: vorhandene Services/Projections zuerst wiederverwenden.
-3. Gameplay-Folgen nur über katalogisierte Events und zuständige Services.
-4. Presentation darf erklären, filtern und lokal darstellen, aber keine Fachwerte erfinden.
-5. Zufall/Zeit bleibt reproduzierbar; Systemzeit nie alleinige Autorität.
-6. Nach remote validiertem Safe Merge wird `PULLED` auf `DONE` gesetzt.
+2. Keine Doppelarchitektur: vorhandene Services, Ledger, States und Projections zuerst wiederverwenden.
+3. Gameplay-Folgen nur über katalogisierte Regeln und zuständige Services.
+4. Presentation darf erklären, filtern, zoomen, maximieren und hervorheben, aber keine Fachwerte erfinden.
+5. Zufall, Zinsen, Cadence und wiederholte Assistentenaktionen verwenden bestätigte Spielautorität; Systemzeit nie allein.
+6. Synchronisierbare Identität besteht aus kleinen validierten Daten, nicht aus unkontrollierten Binär-/Base64-Blobs.
+7. Nach remote validiertem Safe Merge wird `PULLED` auf `DONE` gesetzt.
 
 ## Nächste Entnahme
 
-`POOL-WORLD-002` ist mit C1–C3 abgeschlossen. `POOL-UX-002` bleibt aktiv: C4A ist sicher gemergt, C4B macht dieselbe read-only Ereignis-Timeline im Control Deck sichtbar. Danach bleibt `POOL-WORLD-004` für Cadence/Cooldown priorisiert. `POOL-STORY-001` hält den späteren erzählerischen Nachhall fest. `POOL-UX-003` hält einen späteren rein lokalen Fokusfilter für die Timeline fest, ohne die kanonische Reihenfolge anzutasten. `POOL-QA-004` und `POOL-QA-006` halten Freshness-Erkennung und spätere sichere Status-Synchronisierung fest; `POOL-QA-008` ergänzt einen späteren rein lesenden Check zwischen Projection, Transport und sichtbarer Timeline. `POOL-QA-009` hält eine spätere Diagnose für verworfene optionale Timeline-Metadaten fest, ohne die Projection- oder Journal-Autorität zu duplizieren.
+`POOL-PROFILE-002` ist als nächster kleiner Fundament-Slice gezogen. Danach folgt `POOL-ECON-003`, weil der Assistent auf wiederverwendbaren normalen Aufgaben aufbauen soll. Bank/Anlagen, Control-Deck-Verdichtung, Map 2, Story-Nachhall und Timeline-Filter bleiben getrennte PRs, damit Economy, Presentation, Story und Sync nicht in einer Mega-Änderung vermischt werden.
