@@ -34,6 +34,11 @@ class SceneJobService:
             raise ValueError("Scene Jobs dürfen weder Eventphase noch Systemzeit voraussetzen")
         if policy.get("client_can_supply_payout_or_effects") is not False:
             raise ValueError("Client darf Scene-Job-Auszahlungen oder Effekte nicht liefern")
+        assistant_policy = self.manifest.get("assistant_policy")
+        if not isinstance(assistant_policy, Mapping):
+            raise ValueError("Scene-Job-Manifest benötigt assistant_policy")
+        self.assistant_policy = deepcopy(dict(assistant_policy))
+        self._validate_assistant_policy()
         jobs = self.manifest.get("jobs")
         if not isinstance(jobs, list) or not jobs:
             raise ValueError("Scene-Job-Katalog ist leer")
@@ -134,6 +139,23 @@ class SceneJobService:
             (),
             replay,
         )
+
+    def _validate_assistant_policy(self) -> None:
+        policy = self.assistant_policy
+        if policy.get("task_source") != "scene_jobs":
+            raise ValueError("Assistent muss den kanonischen Scene-Job-Katalog wiederverwenden")
+        if policy.get("max_active_tasks") != 1:
+            raise ValueError("Assistent erlaubt exakt eine aktive Aufgabe")
+        if policy.get("requires_confirmed_round") is not True:
+            raise ValueError("Assistent benötigt eine bestätigte Spielrunde")
+        if policy.get("requires_system_time") is not False:
+            raise ValueError("Systemzeit darf keine Assistenten-Autorität sein")
+        if policy.get("client_can_supply_round_authority") is not False:
+            raise ValueError("Client darf keine Assistenten-Rundenautorität liefern")
+        if policy.get("client_can_supply_payout_or_effects") is not False:
+            raise ValueError("Client darf keine Assistenten-Auszahlung oder Effekte liefern")
+        if policy.get("stop_and_switch_required") is not True:
+            raise ValueError("Assistent benötigt expliziten Stop und Aufgabenwechsel")
 
     def _validate_jobs(self) -> dict[str, dict[str, Any]]:
         by_id: dict[str, dict[str, Any]] = {}
