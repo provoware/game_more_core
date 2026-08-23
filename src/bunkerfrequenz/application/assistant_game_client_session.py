@@ -161,7 +161,9 @@ class AssistantGameClientSession(GameClientSession):
                     "recovery_action": {
                         "recovery_id": result.action["recovery_id"],
                         "label": result.action["label"],
-                        "resource_changes": deepcopy(result.resource_changes),
+                        "energy_delta": result.action["energy_delta"],
+                        "stress_delta": result.action["stress_delta"],
+                        "character": result.character.to_dict(),
                     }
                 },
             )
