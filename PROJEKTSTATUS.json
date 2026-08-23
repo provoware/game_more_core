@@ -2,26 +2,26 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-ECON-ANTI-GRIND",
-  "status": "0_8_8_fin_export_remote_validated_anti_grind_in_validation",
-  "current_focus": "scene_job_energy_proportional_payout",
-  "last_validated_feature_iteration": "0.8.8-FIN-EXPORT",
+  "active_iteration": "0.8.8-ECON-JOB-PREVIEW",
+  "status": "0_8_8_anti_grind_remote_validated_job_preview_in_validation",
+  "current_focus": "scene_job_confirmed_effective_payout_preview",
+  "last_validated_feature_iteration": "0.8.8-ECON-ANTI-GRIND",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #119 / head 73257a4dd3ff06a546d8332af4c411fdc614967e / merge 11c023f927ad9a74673587fefd1709fe2322553f",
+  "validation_reference": "PR #120 / head 95882e97fdb8a1a84c14a17e377dc9978c342f1e / merge 49d6947b9f1b3a35d0785a958a7688e3b22a6bc1",
   "remote_validation": {
-    "status": "success_for_0.8.8_fin_export",
-    "pull_request": 119,
-    "validated_head": "73257a4dd3ff06a546d8332af4c411fdc614967e",
-    "runtime_core_workflow_run": 32669021501,
-    "presentation_core_workflow_run": 32669021500,
-    "repository_health_workflow_run": 32669021494,
-    "release_acceptance_workflow_run": 32669021495,
-    "release_package_workflow_run": 32669021502,
+    "status": "success_for_0.8.8_econ_anti_grind",
+    "pull_request": 120,
+    "validated_head": "95882e97fdb8a1a84c14a17e377dc9978c342f1e",
+    "runtime_core_workflow_run": 32670613358,
+    "presentation_core_workflow_run": 32670613422,
+    "repository_health_workflow_run": 32670613395,
+    "release_acceptance_workflow_run": 32670613449,
+    "release_package_workflow_run": 32670613455,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "11c023f927ad9a74673587fefd1709fe2322553f"
+    "merged_commit": "49d6947b9f1b3a35d0785a958a7688e3b22a6bc1"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -63,7 +63,8 @@
     {"iteration": "0.8.8-FIN-STATEMENTS", "pull_request": 116, "merged_commit": "81dda0d21170a5d876cd5a7ebf05a8409ec735c8", "feature": "read_only_personal_finance_statements"},
     {"iteration": "0.8.8-F", "pull_request": 117, "merged_commit": "8119bf71a6f169d5cac367d5123d2bc1e6a73193", "feature": "berlin_ops_map2_bounded_local_view_controls"},
     {"iteration": "0.8.8-STORY-DISTRICT-BIO", "pull_request": 118, "merged_commit": "2330669692391e3747a3c807ec9b2a1cb7b7cb6d", "feature": "confirmed_district_timeline_profile_afterglow"},
-    {"iteration": "0.8.8-FIN-EXPORT", "pull_request": 119, "merged_commit": "11c023f927ad9a74673587fefd1709fe2322553f", "feature": "read_only_finance_statement_txt_csv_export"}
+    {"iteration": "0.8.8-FIN-EXPORT", "pull_request": 119, "merged_commit": "11c023f927ad9a74673587fefd1709fe2322553f", "feature": "read_only_finance_statement_txt_csv_export"},
+    {"iteration": "0.8.8-ECON-ANTI-GRIND", "pull_request": 120, "merged_commit": "49d6947b9f1b3a35d0785a958a7688e3b22a6bc1", "feature": "scene_job_energy_proportional_payout"}
   ],
   "subsystems": {
     "character_forge": {
@@ -83,7 +84,7 @@
       "always_available_job_actions": true
     },
     "economy": {
-      "status": "fin_export_remote_validated_anti_grind_in_validation",
+      "status": "anti_grind_remote_validated_job_preview_in_validation",
       "equipment_market": true,
       "property_purchase_ledger_kind": "property_purchase",
       "property_upgrade_ledger_kind": "property_upgrade",
@@ -117,13 +118,17 @@
       "account_statement_export_recalculates_totals": false,
       "account_statement_export_write_back": false,
       "account_statement_export_invents_timestamp": false,
-      "scene_job_anti_grind_in_validation": true,
+      "scene_job_anti_grind_validated": true,
       "scene_job_exhaustion_mode": "pre_job_energy_proportional_payout",
       "scene_job_full_payout_requires_energy_cost": true,
       "scene_job_zero_energy_payout_cents": 0,
       "scene_job_exhaustion_requires_system_time": false,
       "scene_job_second_exhaustion_resource": false,
-      "assistant_uses_same_scene_job_exhaustion_rule": true
+      "assistant_uses_same_scene_job_exhaustion_rule": true,
+      "scene_job_effective_payout_preview_in_validation": true,
+      "scene_job_effective_payout_preview_source": "confirmed_character_energy",
+      "scene_job_effective_payout_preview_same_canonical_calculation": true,
+      "browser_calculates_scene_job_payout": false
     },
     "living_world": {
       "status": "story_district_bio_remote_validated",
@@ -173,7 +178,7 @@
       "fake_local_champion_titles": false
     },
     "presentation": {
-      "status": "fin_export_remote_validated",
+      "status": "anti_grind_remote_validated_job_preview_in_validation",
       "a4_localhost_client": true,
       "high_quality_berlin_ops_renderer": true,
       "map_read_only": true,
@@ -200,6 +205,9 @@
       "district_biography_invents_timestamp": false,
       "crew_identity_editor_visible": true,
       "scene_jobs_panel_validated": true,
+      "scene_job_effective_payout_preview_visible": true,
+      "scene_job_effective_payout_preview_location": "existing_jobs_panel",
+      "scene_job_effective_payout_preview_write_back": false,
       "assistant_controls_in_scene_jobs_panel": true,
       "assistant_second_dashboard": false,
       "assistant_afterglow_projection_implemented": true,
@@ -286,5 +294,5 @@
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-24T00:16:00+02:00"
+  "updated_at": "2026-08-24T00:36:00+02:00"
 }
