@@ -32,19 +32,22 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertEqual(len(matching), 1, pool_id)
             self.assertIn("`DONE`", matching[0], pool_id)
 
-    def test_c3_status_matches_the_remote_validated_application_integration(self):
+    def test_c4a_status_matches_the_remote_validated_projection_layer(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         living_world = status["subsystems"]["living_world"]
+        presentation = status["subsystems"]["presentation"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.7-C3")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.7-C4A")
         self.assertEqual(status["active_iteration"], "0.8.7-C")
         self.assertEqual(status["next_iteration"], "0.8.7-C")
-        self.assertEqual(status["current_focus"], "read_only_event_timeline")
+        self.assertEqual(status["current_focus"], "event_timeline_control_deck_visibility")
         self.assertTrue(living_world["district_event_runtime_implemented"])
         self.assertTrue(living_world["district_event_catalog_fail_fast"])
         self.assertTrue(living_world["district_event_application_integration"])
         self.assertEqual(living_world["district_event_authorized_trigger"], "settlement.complete")
         self.assertFalse(living_world["district_event_client_authority"])
+        self.assertTrue(presentation["event_timeline_projection_ready"])
+        self.assertFalse(living_world["district_event_timeline_visible"])
 
 
 if __name__ == "__main__":
