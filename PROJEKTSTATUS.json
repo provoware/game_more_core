@@ -3,8 +3,8 @@
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
   "active_iteration": "0.8.8-C",
-  "status": "0_8_8_b_remote_validated_secret_best_friend_c_next",
-  "current_focus": "secret_best_friend_single_task_confirmed_round_loop",
+  "status": "0_8_8_b_remote_validated_assistant_c1_contract_in_validation",
+  "current_focus": "secret_best_friend_authority_contract_then_control_state",
   "last_validated_feature_iteration": "0.8.8-B",
   "last_validated_release": "0.8.4-alpha.1",
   "validation_reference": "PR #105 / head 6a653e40e19c80aed4df827910f7c91110a8a679 / merge 83aa6d050909e949a42f3c1bb3ab5c267b386693",
@@ -148,10 +148,16 @@
       "browser_gameplay_authority": false
     },
     "assistant": {
-      "status": "planned_next",
+      "status": "c1_contract_in_validation_runtime_pending",
       "secret_best_friend_story_role": true,
+      "contract_policy_defined": true,
+      "task_source": "scene_jobs",
+      "max_active_tasks": 1,
+      "confirmed_round_required": true,
+      "system_time_authority": false,
+      "client_round_authority": false,
       "repeat_until_disabled": false,
-      "single_active_task": false
+      "single_active_task_runtime": false
     },
     "network": {
       "telegram_transport_implemented": false,
@@ -170,10 +176,10 @@
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
   "next_iteration": "0.8.8-C",
-  "next_goal": "Secret Best Friend Assistant: genau eine vorhandene kanonische Aufgabe aktivieren und pro bestätigter Spielrunde exakt einmal ausführen; Stop und Wechsel jederzeit, keine Systemzeit-Autorität.",
+  "next_goal": "C2: kleinen persistenten Assistenten-Steuerzustand für aus/gewaehlter_job anlegen; Start, Stop und Wechsel replaybar machen, noch ohne automatische Rundenausführung.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T18:35:00+02:00"
+  "updated_at": "2026-08-23T18:55:00+02:00"
 }

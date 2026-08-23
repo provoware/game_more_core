@@ -1,11 +1,20 @@
 {
   "schema_version": 1,
-  "version": "0.8.8-b1",
+  "version": "0.8.8-c1",
   "availability": {
     "always_available_with_character": true,
     "requires_event_phase": false,
     "requires_system_time": false,
     "client_can_supply_payout_or_effects": false
+  },
+  "assistant_policy": {
+    "task_source": "scene_jobs",
+    "max_active_tasks": 1,
+    "requires_confirmed_round": true,
+    "requires_system_time": false,
+    "client_can_supply_round_authority": false,
+    "client_can_supply_payout_or_effects": false,
+    "stop_and_switch_required": true
   },
   "jobs": [
     {

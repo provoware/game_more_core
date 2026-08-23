@@ -40,7 +40,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
 
-    def test_validated_scene_jobs_and_next_assistant_match_status(self):
+    def test_validated_scene_jobs_and_assistant_c1_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         living_world = status["subsystems"]["living_world"]
         event_runtime = status["subsystems"]["event_runtime"]
@@ -51,13 +51,19 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-B")
         self.assertEqual(status["active_iteration"], "0.8.8-C")
         self.assertEqual(status["next_iteration"], "0.8.8-C")
-        self.assertEqual(status["current_focus"], "secret_best_friend_single_task_confirmed_round_loop")
+        self.assertEqual(status["current_focus"], "secret_best_friend_authority_contract_then_control_state")
         self.assertTrue(event_runtime["always_available_job_actions"])
         self.assertTrue(economy["personal_finance_state_validated"])
         self.assertTrue(presentation["scene_jobs_panel_validated"])
-        self.assertEqual(assistant["status"], "planned_next")
+        self.assertEqual(assistant["status"], "c1_contract_in_validation_runtime_pending")
+        self.assertTrue(assistant["contract_policy_defined"])
+        self.assertEqual(assistant["task_source"], "scene_jobs")
+        self.assertEqual(assistant["max_active_tasks"], 1)
+        self.assertTrue(assistant["confirmed_round_required"])
+        self.assertFalse(assistant["system_time_authority"])
+        self.assertFalse(assistant["client_round_authority"])
         self.assertFalse(assistant["repeat_until_disabled"])
-        self.assertFalse(assistant["single_active_task"])
+        self.assertFalse(assistant["single_active_task_runtime"])
         self.assertTrue(living_world["district_event_timeline_visible"])
         self.assertTrue(living_world["district_event_cadence_enabled"])
         self.assertEqual(living_world["district_event_cooldown_hours"], 24)

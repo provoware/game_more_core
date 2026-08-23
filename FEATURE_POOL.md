@@ -50,7 +50,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-COMPANION-001` | `PULLED` | **Secret Best Friend Assistant** | eine vorhandene Aufgabe automatisch Runde für Runde betreiben | genau eine aktive Aufgabe; bestätigte Runde als Autorität; Stop/Wechsel jederzeit; Scene-Job-/Task-Service wiederverwenden |
+| `POOL-COMPANION-001` | `PULLED` | **Secret Best Friend Assistant** | eine vorhandene Aufgabe automatisch Runde für Runde betreiben | C1 definiert Authority direkt im Scene-Job-Vertrag; noch keine Automatik; C2 = kleiner persistenter Steuerzustand |
 | `POOL-FINANCE-001` | `READY` | **Bankkonto & Sparen** | Bargeld sichern, Ein-/Auszahlung, Zins und Zinseszins | Finance-State/Ledger aus Scene Jobs wiederverwenden; bestätigte Spielzeit statt Systemzeit |
 | `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt `POOL-FINANCE-001`; keine echten Marktdaten notwendig; katalogisierte Spielkurse |
 | `POOL-FINANCE-003` | `DEPENDENCY` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Finance-Ledger, keine zweite Buchhaltung |
@@ -69,6 +69,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 | ID | Status | Feature | Voraussetzung |
 |---|---|---|---|
+| `POOL-COMPANION-002` | `IDEA` | **Freundschafts-Nachhall** | bestätigte Assistenten-Ausführungen später als kleine Beziehungs-/Storyreaktionen projizieren; keine zweite Progressionsengine |
 | `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | Story-/Journalvertrag |
 | `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
@@ -98,4 +99,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-COMPANION-001` ist nach dem sicheren Merge von 0.8.8-B freigegeben und aktiv. Der Assistent muss dieselben kanonischen Job-/Task-Services verwenden statt eine zweite Automationslogik zu erzeugen. Danach folgt `POOL-FINANCE-001`; Bank und Anlagen bauen auf demselben persönlichen Finance-Ledger auf.
+`POOL-COMPANION-001` ist aktiv. C1 bindet seine Authority an den bestehenden Scene-Job-Vertrag; C2 soll ausschließlich den kleinen persistenten Steuerzustand für Auswahl/Stop/Wechsel ergänzen. Erst danach folgt die tatsächliche Rundenausführung. Bank und Anlagen bleiben ein eigener späterer Finance-Slice.
