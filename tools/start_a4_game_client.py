@@ -36,6 +36,7 @@ from bunkerfrequenz.presentation.a4_game_projection import build_a4_game_project
 
 MAX_BODY_BYTES = 64 * 1024
 STREET_WORLD_SEED = "bunkerfrequenz-a4-local-street-v1"
+DISTRICT_WORLD_SEED = "bunkerfrequenz-a4-local-district-v1"
 REQUIRED = (
     "web/a4/index.html",
     "web/a4/styles.css",
@@ -47,6 +48,7 @@ REQUIRED = (
     "manifests/INCIDENT_MANIFEST.json",
     "manifests/STREET_ENCOUNTER_MANIFEST.json",
     "manifests/DISTRICT_STATE_MANIFEST.json",
+    "manifests/DISTRICT_EVENT_MANIFEST.json",
     "manifests/CITY_MAP_MANIFEST.json",
     "manifests/PROPERTY_MANIFEST.json",
     "manifests/PROPERTY_UPGRADE_MANIFEST.json",
@@ -117,6 +119,7 @@ class A4ClientRuntime:
         incident_manifest = _load_json(ROOT / "manifests" / "INCIDENT_MANIFEST.json")
         self.street_manifest = _load_json(ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json")
         self.district_manifest = _load_json(ROOT / "manifests" / "DISTRICT_STATE_MANIFEST.json")
+        self.district_event_manifest = _load_json(ROOT / "manifests" / "DISTRICT_EVENT_MANIFEST.json")
         self.city_map_manifest = _load_json(ROOT / "manifests" / "CITY_MAP_MANIFEST.json")
         self.property_manifest = _load_json(ROOT / "manifests" / "PROPERTY_MANIFEST.json")
         self.property_upgrade_manifest = _load_json(ROOT / "manifests" / "PROPERTY_UPGRADE_MANIFEST.json")
@@ -188,6 +191,8 @@ class A4ClientRuntime:
             street_world_seed=STREET_WORLD_SEED,
             district_manifest=self.district_manifest,
             city_map_manifest=self.city_map_manifest,
+            district_event_manifest=self.district_event_manifest,
+            district_world_seed=DISTRICT_WORLD_SEED,
             property_manifest=self.property_manifest,
             property_upgrade_manifest=self.property_upgrade_manifest,
         )
