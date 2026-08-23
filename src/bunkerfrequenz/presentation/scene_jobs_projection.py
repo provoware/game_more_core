@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, Mapping, Sequence
 
+from bunkerfrequenz.application.recovery_action_service import RECOVERY_ACTIONS, recovery_action_availability
 from bunkerfrequenz.application.scene_job_service import calculate_scene_job_payout_cents
 from bunkerfrequenz.domain.assistant import AssistantControlState
 from bunkerfrequenz.domain.character import CharacterState
@@ -81,6 +82,21 @@ def _build_finance_statement_projection(
     }
 
 
+def _build_recovery_actions_projection(character: CharacterState | None) -> list[dict[str, Any]]:
+    projected: list[dict[str, Any]] = []
+    for raw_action in RECOVERY_ACTIONS:
+        action = deepcopy(raw_action)
+        availability = (
+            {"can_run": False, "blocker": "character_missing"}
+            if character is None
+            else recovery_action_availability(action, character)
+        )
+        action["can_run"] = availability["can_run"]
+        action["blocker"] = availability["blocker"]
+        projected.append(action)
+    return projected
+
+
 def build_scene_jobs_projection(
     state: Mapping[str, Any] | None,
     jobs: Sequence[Mapping[str, Any]],
@@ -88,8 +104,8 @@ def build_scene_jobs_projection(
     """Build the read-only A4 Scene-Jobs/Wallet/Bank/Assistant projection.
 
     `jobs` must come from the already validated SceneJobService catalog. The
-    projection exposes confirmed personal finance balances and assistant state,
-    but no writable payout/effect, target balance or round authority.
+    projection exposes confirmed personal finance balances, recovery availability
+    and assistant state, but no writable payout/effect, target balance or round authority.
     """
     raw = deepcopy(dict(state or {}))
     raw_character = raw.get("character")
@@ -142,6 +158,7 @@ def build_scene_jobs_projection(
         "finance_revision": finance.revision,
         "ledger_entries": len(finance.ledger),
         "finance_statement": _build_finance_statement_projection(finance, projected_jobs),
+        "recovery_actions": _build_recovery_actions_projection(character),
         "assistant": {
             "enabled": assistant.active_job_id is not None,
             "active_job_id": assistant.active_job_id,
