@@ -3,7 +3,7 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-B – Control Deck & Player Choices`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-B – Control Deck & Player Choices` · PR #88 · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
 - **0.8.7-C1 District-Event-Vertrag/Katalog:** PR #90 · `SAFE MERGE PASS` · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`; kanonischer Feature-Status wird erst in eigener Statuspflege weitergezogen
 - **Aktive Iteration:** `0.8.7-C2 – District-Event Runtime`; deterministische Auswahl + bestätigte District-Anwendung, noch ohne A4-Auslösung
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
