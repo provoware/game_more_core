@@ -41,60 +41,37 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
 
-    def test_validated_assistant_c5b_and_active_bank_transfer_match_status(self):
+    def test_validated_d_and_active_d2_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
-        event_runtime = status["subsystems"]["event_runtime"]
         economy = status["subsystems"]["economy"]
         presentation = status["subsystems"]["presentation"]
-        assistant = status["subsystems"]["assistant"]
+        process = status["subsystems"]["development_process"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-C5B")
-        self.assertEqual(status["active_iteration"], "0.8.8-D")
-        self.assertEqual(status["next_iteration"], "0.8.8-D2")
-        self.assertEqual(status["current_focus"], "personal_finance_atomic_wallet_bank_transfer")
-        self.assertTrue(event_runtime["always_available_job_actions"])
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-D")
+        self.assertEqual(status["active_iteration"], "0.8.8-D2")
+        self.assertEqual(status["next_iteration"], "0.8.8-E")
+        self.assertEqual(status["current_focus"], "confirmed_finance_period_savings_interest_exactly_once")
         self.assertTrue(economy["personal_finance_state_validated"])
         self.assertTrue(economy["bank_account_supported"])
         self.assertTrue(economy["bank_transfer_service_implemented"])
         self.assertTrue(economy["bank_transfer_recoverable"])
         self.assertTrue(economy["bank_transfer_idempotent"])
         self.assertFalse(economy["browser_can_supply_bank_target_balances"])
-        self.assertFalse(economy["savings_interest_supported"])
-        self.assertTrue(presentation["scene_jobs_panel_validated"])
-        self.assertTrue(presentation["assistant_controls_in_scene_jobs_panel"])
-        self.assertFalse(presentation["assistant_second_dashboard"])
-        self.assertTrue(presentation["assistant_afterglow_projection_implemented"])
-        self.assertTrue(presentation["assistant_afterglow_visible"])
-        self.assertEqual(presentation["assistant_afterglow_location"], "existing_jobs_assistant_control")
-        self.assertEqual(presentation["assistant_afterglow_entries_limit"], 3)
-        self.assertEqual(presentation["assistant_afterglow_variants_per_job"], 3)
-        self.assertFalse(presentation["assistant_afterglow_refresh_reroll"])
+        self.assertTrue(economy["savings_interest_supported"])
+        self.assertEqual(economy["savings_interest_basis_points_per_confirmed_period"], 100)
+        self.assertTrue(economy["savings_interest_compounds_on_current_bank_balance"])
+        self.assertTrue(economy["savings_interest_confirmed_period_required"])
+        self.assertTrue(economy["savings_interest_sequential_finance_tick"])
+        self.assertTrue(economy["savings_interest_zero_period_consumed"])
+        self.assertFalse(economy["savings_interest_system_time_sole_authority"])
+        self.assertFalse(economy["browser_can_confirm_savings_period"])
+        self.assertFalse(economy["browser_can_supply_interest_amount"])
         self.assertTrue(presentation["personal_bank_controls_in_jobs_panel"])
         self.assertFalse(presentation["personal_bank_second_dashboard"])
-        self.assertEqual(assistant["status"], "c5b_remote_validated")
-        self.assertTrue(assistant["contract_policy_defined"])
-        self.assertEqual(assistant["task_source"], "scene_jobs")
-        self.assertEqual(assistant["max_active_tasks"], 1)
-        self.assertTrue(assistant["confirmed_round_required"])
-        self.assertFalse(assistant["system_time_authority"])
-        self.assertFalse(assistant["client_round_authority"])
-        self.assertTrue(assistant["control_state_implemented"])
-        self.assertTrue(assistant["control_state_recoverable"])
-        self.assertTrue(assistant["automatic_round_execution"])
-        self.assertTrue(assistant["round_processed_marker"])
-        self.assertTrue(assistant["round_retry_idempotent"])
-        self.assertTrue(assistant["off_round_consumed_without_retroactive_execution"])
-        self.assertTrue(assistant["single_active_task_runtime"])
-        self.assertTrue(assistant["jobs_ui_integration"])
-        self.assertEqual(assistant["browser_control_fields"], ["job_id"])
-        self.assertFalse(assistant["browser_can_supply_round"])
-        self.assertFalse(assistant["browser_can_supply_payout_or_effects"])
-        self.assertTrue(assistant["friendship_afterglow_projection_implemented"])
-        self.assertTrue(assistant["friendship_afterglow_requires_round_and_job_pair"])
-        self.assertFalse(assistant["friendship_afterglow_progression_engine"])
-        self.assertTrue(assistant["friendship_afterglow_visible"])
-        self.assertTrue(assistant["friendship_afterglow_deterministic_variants"])
-        self.assertFalse(assistant["friendship_afterglow_persistent_state"])
+        self.assertTrue(process["focused_read_policy"])
+        self.assertTrue(process["planned_read_list_required"])
+        self.assertTrue(process["broad_scan_requires_concrete_reason"])
+        self.assertTrue(process["red_gate_reads_specific_failure_first"])
 
     def test_requested_0_8_8_foundations_have_single_pool_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -104,11 +81,20 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-COMPANION-001": "`DONE`",
             "POOL-COMPANION-002": "`DONE`",
             "POOL-FINANCE-001": "`PULLED`",
+            "POOL-FINANCE-003": "`READY`",
             "POOL-UX-004": "`READY`",
             "POOL-MAP-002": "`READY`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
+
+    def test_agents_requires_focused_read_before_broad_scan(self):
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        self.assertIn("## Focused-Read-Strategie – verbindlich", agents)
+        self.assertIn("Planned-Read-Liste", agents)
+        self.assertIn("Breitenscans", agents)
+        self.assertIn("der konkrete fehlerhafte Job", agents)
+        self.assertIn("Kein erneuter Breitenscan ohne neuen Befund", agents)
 
 
 if __name__ == "__main__":

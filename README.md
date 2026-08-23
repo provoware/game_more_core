@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.8 C4 validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--C4_validiert-7dff00">
-  <img alt="Secret Best Friend C5A in Abnahme" src="https://img.shields.io/badge/Secret_Best_Friend-0.8.8--C5A_in_Abnahme-00c2ff">
+  <img alt="Feature Stand 0.8.8 D validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--D_validiert-7dff00">
+  <img alt="Savings Interest D2 in Abnahme" src="https://img.shields.io/badge/Savings_Interest-0.8.8--D2_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -27,9 +27,9 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.8-C4 – JOBS-UI-Integration` |
-| **Aktive Iteration** | 🟡 `0.8.8-C5A – Confirmed Afterglow Projection` |
-| **Nächste Iteration** | `0.8.8-C5B – sichtbarer Freundschafts-Nachhall` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-D – Atomic Wallet ↔ Bank Transfers` |
+| **Aktive Iteration** | 🟡 `0.8.8-D2 – Confirmed Savings Interest` |
+| **Nächste Iteration** | `0.8.8-E – Control Deck Focus` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Crew Identity** | ✅ Logo/Fahne als syncbereites Datenrezept, kein Bildblob |
 | **Living World** | ✅ replaybare Street Encounters, persistente Districts, District World Events + 24h-Cadence |
@@ -38,13 +38,14 @@
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
 | **Berlin Ops Map PRO** | ✅ 8 Districts · 12 Locations · read-only |
 | **Scene Jobs** | ✅ fünf Jobs + persönlicher Wallet-/Ledger-Pfad remote validiert |
-| **Assistent C4** | ✅ Start, Wechsel, Stop und bestätigter Status direkt im vorhandenen JOBS-Bereich; keine neue Rundenautorität |
-| **Assistent C5A** | 🟡 read-only Nachhall nur aus bestätigtem Rundenmarker + exakt passender Jobbuchung; noch nicht sichtbar |
+| **Assistent C1–C5B** | ✅ Autorität, Steuerung, Rundenausführung, JOBS-UI und bestätigter Freundschafts-Nachhall |
+| **Bankkonto D** | ✅ atomare Wallet↔Bank-Transfers im bestehenden `PlayerFinanceState` und Finance-Ledger |
+| **Sparzinsen D2** | 🟡 1 % pro bereits bestätigtem Finance-Tick; Zinseszins, Retry-Schutz, keine Rechnerzeit-/Browserautorität |
 | **Control Deck 2.0** | ✅ HUD, Schnellnavigation und lokale Anzeigeoptionen |
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.8-C4` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. Die Produktversion bleibt bewusst `0.8.4-alpha.1`. C5A baut nur eine read-only Story-Projektion auf bestätigten Journalpaaren auf; es entstehen weder neue Progressionswerte noch Browser- oder Systemzeit-Autorität.
+> `0.8.8-D` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. D2 verarbeitet nur einen **bereits kanonisch bestätigten Finance-Periodentrigger**; D2 erzeugt selbst keine Zeitautorität. Systemzeit und Browser können weder eine Zinsperiode noch einen Zinsbetrag bestätigen.
 
 ---
 
@@ -53,7 +54,7 @@
 BUNKERFREQUENZ ist ein lokales Techno-/FreeTekno-Crew-RPG. Bestätigte Aktionen, Ereignisse und ihre Folgen formen Charakter, Crew und Stadt.
 
 ```text
-SCENE JOBS → PERSÖNLICHES BARGELD
+SCENE JOBS → PERSÖNLICHES BARGELD → BANK / SPAREN
       ↓
 STRASSE / SPIELERANSATZ
       ↓
@@ -97,6 +98,8 @@ PROPERTY / HALL OF TRIBUTE
 - Assistenten-Steuerzustand C2: Aus/Jobwahl, Stop/Wechsel und Recovery
 - Confirmed-Round Execution C3: jede bestätigte Runde höchstens eine Assistenten-Jobausführung, inklusive Retry-/Crash-Schutz
 - JOBS-UI C4: Start, Wechsel, Stop und bestätigter Status im vorhandenen JOBS-Bereich
+- Freundschafts-Nachhall C5A/C5B: nur bestätigte Assistentenarbeit, deterministische Texte, keine Progressionsengine
+- Bankkonto D: atomare Ein-/Auszahlung auf demselben persönlichen Finance-State/Ledger
 
 ---
 
@@ -154,11 +157,9 @@ B2 ergänzt einen kompakten JOBS-Bereich und eine Bargeldanzeige im OPS-HUD. Alt
 
 **Remote-Abnahme 0.8.8-B:** PR #105 · Head `6a653e40e19c80aed4df827910f7c91110a8a679` · Runtime `32649707398` · Presentation `32649707389` · Repository Health `32649707385` · Release Acceptance `32649707396` · Release Package `32649707391` · 0 Review-Threads · SAFE MERGE PASS · Merge `83aa6d050909e949a42f3c1bb3ab5c267b386693`.
 
-Bank, Zinsen, Investments und der Assistent bleiben getrennte Folge-Slices.
-
 ---
 
-## 🤝 0.8.8-C – Secret Best Friend Assistant
+## 🤝 0.8.8-C – Secret Best Friend Assistant ✅
 
 **C1 ✅** bindet den Assistenten an den vorhandenen Scene-Job-Vertrag: maximal eine Aufgabe, bestätigte Spielrunde als spätere Ausführungsautorität, keine Systemzeit und keine frei lieferbaren Browserfolgen. Remote-Abnahme: PR #107 · Head `3cf918ac98d5a76d2b4ff13b3f6e46b2a458d06f` · Runtime `32653528714` · Presentation `32653528815` · Repository Health `32653528779` · Release Acceptance `32653528627` · Release Package `32653528682` · SAFE MERGE PASS · Merge `a16436582928d02202f38366c63d7cf790d5deb6`.
 
@@ -168,9 +169,15 @@ Bank, Zinsen, Investments und der Assistent bleiben getrennte Folge-Slices.
 
 **C4 ✅** integriert die vorhandene Steuerung direkt in den bestehenden JOBS-Bereich. Jeder Job kann den Freund starten oder die Auswahl wechseln; der aktive Job wird sichtbar markiert und ein gemeinsamer Stop-Schalter setzt ihn auf Aus. Der Browser sendet nur `job_id`/`null` plus technische Command-ID. Rundentrigger, Lohn und Effekte bleiben außerhalb der Browserautorität. Remote-Abnahme: PR #110 · Head `06895cefb4fd715a7935578566452c7382fd7a1a` · Runtime `32659349173` · Presentation `32659349181` · Repository Health `32659349195` · Release Acceptance `32659349180` · Release Package `32659349202` · SAFE MERGE PASS · Merge `f8295564a4bddabddb4493c778e549d1cb083374`.
 
-**C5A 🟡** baut die sichere read-only Grundlage für Freundschafts-Nachhall. Ein Storyeintrag entsteht nur, wenn `assistant.round_processed` und der exakt zugehörige `finance.job_completed`-Record gemeinsam bestätigt vorliegen. Manuelle Jobs, Aus-Runden oder halbe Zwischenzustände erzeugen nichts. Es gibt keinen Freundschaftswert und keine neue Progressionsengine.
+**C5A/C5B ✅** sichern Freundschafts-Nachhall zuerst als read-only Projection aus `assistant.round_processed` plus passender `finance.job_completed`-Buchung ab und zeigen ihn anschließend deterministisch im vorhandenen JOBS-Assistentenblock. Es gibt keinen Freundschaftswert und keine zweite Progressionsengine. C5B Remote-Abnahme: PR #112 · Head `da76621ecea0cd8e1afecd967fe7201a7c1d4c6c` · Runtime `32660419399` · Presentation `32660419381` · Repository Health `32660419392` · Release Acceptance `32660419409` · Release Package `32660419390` · SAFE MERGE PASS · Merge `eaa615e48eecd84ba3ffb69551f8fb324fb42c12`.
 
-**C5B folgt:** Die abgesicherte Projection kompakt im vorhandenen JOBS-Assistentenblock sichtbar machen – ohne zweites Dashboard.
+---
+
+## 💳 0.8.8-D – Bankkonto & Sparen
+
+**D ✅** verschiebt persönliches Geld atomar zwischen Wallet und Bank. `PlayerFinanceState`, Finance-Ledger und Recovery bleiben die einzige Finanzarchitektur. Browserbefehle liefern nur Richtung und positiven Betrag; Zielstände bleiben Runtime-Autorität. Remote-Abnahme: PR #113 · Head `e41f2b40beb6508c21175a768ea3fb18050c79b1` · Runtime `32662002026` · Presentation `32662002022` · Repository Health `32662002030` · Release Acceptance `32662002025` · Release Package `32662002046` · SAFE MERGE PASS · Merge `c1a27a977ff76a397d95ae097395317c4d46950b`.
+
+**D2 🟡** ergänzt 1 % Sparzins pro bereits bestätigter Finance-Periode. Der fortlaufende `confirmed_finance_tick` wird genau einmal verarbeitet; Folgeperioden verzinsen den aktuellen Bankstand und erzeugen dadurch Zinseszins. D2 erzeugt selbst keine Periode und akzeptiert weder Systemzeit noch Browser als Autorität.
 
 ---
 
@@ -186,14 +193,14 @@ Der Ausbau bleibt in getrennte, prüfbare Slices zerlegt:
 | **0.8.8-C2** | Assistant Control State | ✅ genau eine persistente Auswahl oder Aus |
 | **0.8.8-C3** | Confirmed-Round Execution | ✅ bestätigte Runde → exakt eine idempotente kanonische Jobausführung |
 | **0.8.8-C4** | JOBS-UI-Integration | ✅ vorhandenen JOBS-Bereich für Assistenten-Auswahl/Stop/Status nutzen |
-| **0.8.8-C5A** | Confirmed Afterglow Projection | 🟡 Story nur aus bestätigtem Rundenmarker + passender Jobbuchung |
-| **0.8.8-C5B** | sichtbarer Freundschafts-Nachhall | Projection kompakt im bestehenden JOBS-Bereich anzeigen |
+| **0.8.8-C5A/C5B** | Freundschafts-Nachhall | ✅ Story nur aus bestätigter Assistentenarbeit, sichtbar ohne zweite Progressionsengine |
 | **0.8.8-C6** | Round-Authority Integration Harness | abhängig vom echten kanonischen Rundenproduzenten |
-| **0.8.8-D** | Bank & Investments | gemeinsames Finance-Ledger für Ein-/Auszahlung, Zins, Anlagen, Dividenden und Auszüge |
+| **0.8.8-D** | Wallet ↔ Bank | ✅ atomare Transfers auf bestehendem Finance-State/Ledger |
+| **0.8.8-D2** | bestätigte Sparzinsen | 🟡 fortlaufender bestätigter Finance-Tick, 1 %, Zinseszins, keine Rechnerzeit-Autorität |
 | **0.8.8-E** | Control Deck Focus | weniger doppelte Ansichten, lokale Bereichsmaximierung, klare nächste Aktionen |
 | **0.8.8-F** | Berlin Ops Map 2 | bezirksartige Zoom-/Pan-Ansicht mit besserer Objekt-Hierarchie |
 
-Story-Nachhall und lokaler Timeline-Fokusfilter bleiben eigenständige Folge-Slices, damit Story, Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
+Kontoauszüge, Anlagen/Dividenden und lokaler Timeline-Fokusfilter bleiben eigenständige Folge-Slices, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
 
 ---
 
@@ -275,7 +282,7 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung oder Aktionshervorhebung 
 - Quarantäne beschädigter Journal-Tails
 - Fault-Injection-Regressionen
 
-> **Ein UI-Refresh, Zoom, Filter oder andere Anzeigeeinstellung darf niemals Gameplay erneut würfeln, Jobs doppelt auszahlen oder bestätigte Fachwerte verändern.**
+> **Ein UI-Refresh, Zoom, Filter oder andere Anzeigeeinstellung darf niemals Gameplay erneut würfeln, Jobs doppelt auszahlen, Zinsen doppelt buchen oder bestätigte Fachwerte verändern.**
 
 ---
 
@@ -299,7 +306,9 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung oder Aktionshervorhebung 
 | 0.8.8-C1 | Assistant Authority Contract | `a16436582928...` |
 | 0.8.8-C2 | Assistant Control State | `5c597479afaf...` |
 | 0.8.8-C3 | Confirmed-Round Execution | `85e95995d5e8...` |
-| **0.8.8-C4** | **JOBS-UI-Integration** | `f8295564a4bd...` |
+| 0.8.8-C4 | JOBS-UI-Integration | `f8295564a4bd...` |
+| 0.8.8-C5B | sichtbarer Freundschafts-Nachhall | `eaa615e48eec...` |
+| **0.8.8-D** | **Atomic Wallet ↔ Bank Transfers** | `c1a27a977ff7...` |
 
 ---
 
@@ -355,6 +364,7 @@ SAFE MERGE PASS
 | Anfängerstart | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
 | Crew-Logo/Fahne | [`docs/LAIENHILFE_CREW_LOGO_FAHNE.md`](docs/LAIENHILFE_CREW_LOGO_FAHNE.md) |
 | Scene Jobs & Bargeld | [`docs/LAIENHILFE_SCENE_JOBS.md`](docs/LAIENHILFE_SCENE_JOBS.md) |
+| Bank & Sparen | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Geheimer bester Freund | [`docs/LAIENHILFE_ASSISTENT.md`](docs/LAIENHILFE_ASSISTENT.md) |
 | District-Event-Vertrag | [`manifests/DISTRICT_EVENT_MANIFEST.json`](manifests/DISTRICT_EVENT_MANIFEST.json) |
 | Berlin Ops Map | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |
@@ -364,6 +374,6 @@ SAFE MERGE PASS
 
 ## 🔧 Entwicklungsregel
 
-Eine Iteration bearbeitet eine klar begründete Zielstelle. Keine zweite Architektur, keine Browser-Fachlogik und keine stillen Versionssprünge. Normale PRs nach `main` werden ausschließlich über `/safe-merge` übernommen.
+Eine Iteration bearbeitet eine klar begründete Zielstelle. Vor dem ersten Patch wird gemäß `AGENTS.md` eine **Planned-Read-Liste** festgelegt: nur geplante Änderungsdateien, direkte Verträge und konkret nötige Regressionen werden eingelesen. Große oder fachfremde Dateien kommen erst nach einem konkreten Befund in den Scope. Keine zweite Architektur, keine Browser-Fachlogik und keine stillen Versionssprünge. Normale PRs nach `main` werden ausschließlich über `/safe-merge` übernommen.
 
 Details: [`AGENTS.md`](AGENTS.md) · [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md) · [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md)
