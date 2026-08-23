@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-EXPORT-PROOF – Exportvorschau/Prüfsumme` · PR #122 · Merge `0909f3c38642f97d4474cd200af11c960e1ada66`
-- **EXPORT-PROOF Remote-Abnahme:** Runtime `32672139829` · Presentation `32672139815` · Repository Health `32672139802` · Release Acceptance `32672139807` · Release Package `32672139805` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-ECON-RECOVERY-ACTIONS – bestätigte Regeneration`
-- **RECOVERY-ACTIONS-Status:** `Koffein & kalte Luft` tauscht bestätigt +20 Energie gegen +12 Stress; nur bei Energie ≤ 80 und Stress ≤ 88, ohne Rechnerzeit, XP, Traits oder zweite Ressourcenengine
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-RECOVERY-ACTIONS – bestätigte Regeneration` · PR #123 · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900`
+- **RECOVERY-ACTIONS Remote-Abnahme:** Runtime `32673385832` · Presentation `32673385764` · Repository Health `32673385757` · Release Acceptance `32673385796` · Release Package `32673385792` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter`
+- **TIMELINE-FILTER-Status:** ALLE / STRASSE / KRISE / BEZIRK filtern ausschließlich die vorhandene bestätigte Runtime-Timeline; keine Neusortierung, kein Journal-State, keine Speicherung
 - **Repository-Arbeitsmodus:** Basisdateien, Arbeitsdateien und Evidenz/Logs sind getrennt; grüne Logs werden nicht dauerhaft übertragen, rote Gates zuerst nur im konkreten Fehlerausschnitt gelesen
 - **Entwicklungsprozess:** Focused-Read bleibt verpflichtend; Codex-Code-Review bleibt vollständig außerhalb von Entwicklung, Gate-Evidenz und Mergeprozess
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -35,79 +35,77 @@
 ## 0.8.8-ECON-JOB-PREVIEW – Scene-Job-Lohnvorschau
 - [x] gleiche kanonische Anti-Grind-Berechnung für echte Auszahlung und read-only Projection
 - [x] Browser zeigt bei Teilenergie verständlich `bis zu … / aktuell …`
-- [x] kein Browser-Lohnrechner, kein neuer Command, kein Writeback
-- [x] PR #121 · Head `226d89bd758a05b5d0972ffebdcacb5cc5c4c359` · Runtime `32671395304` · Presentation `32671395288` · Repository Health `32671395282` · Release Acceptance `32671395294` · Release Package `32671395295` · 0 Review-Threads · `/safe-merge` PASS · Merge `040be951665a34dd8d81694ab695128e0b846bd5`
+- [x] PR #121 · Merge `040be951665a34dd8d81694ab695128e0b846bd5`
 
 ## 0.8.8-UX-EXPORT-PROOF – Exportvorschau/Prüfsumme
 - [x] Vorschau, Kopieren und Download verwenden dieselbe TXT-/CSV-Serialisierung
-- [x] lokale FNV-1a-32-Prüfsumme über UTF-8-Bytes; keine kryptografische oder Gameplay-Autorität
-- [x] PR #122 · Head `9af0ff007b47c18b9b38bcefe33f8879a3b97573` · Runtime `32672139829` · Presentation `32672139815` · Repository Health `32672139802` · Release Acceptance `32672139807` · Release Package `32672139805` · 0 Review-Threads · `/safe-merge` PASS · Merge `0909f3c38642f97d4474cd200af11c960e1ada66`
+- [x] PR #122 · Merge `0909f3c38642f97d4474cd200af11c960e1ada66`
+
+## 0.8.8-ECON-RECOVERY-ACTIONS – bestätigte Regeneration
+- [x] `Koffein & kalte Luft`: +20 Energie, +12 Stress
+- [x] keine Rechnerzeit, XP, Traits, zweite Ressource oder Browser-Deltas
+- [x] bestehendes `character.resources_changed` bleibt Replay-/Recovery-Wahrheit
+- [x] PR #123 · Head `31a3c2966549f54260c3d90b148e2d4cec4b6cad` · Runtime `32673385832` · Presentation `32673385764` · Repository Health `32673385757` · Release Acceptance `32673385796` · Release Package `32673385792` · 0 Review-Threads · `/safe-merge` PASS · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900`
 
 ---
 
-# Aktiv – 0.8.8-ECON-RECOVERY-ACTIONS
+# Aktiv – 0.8.8-UX-TIMELINE-FILTER
 
 ## Ziel
 
-Eine kleine bestätigte Spielerentscheidung soll Energie aktiv zurückgeben, ohne Rechnerzeit, automatisches Warten, kostenlosen Endlos-Reset oder zweite Ressourcenengine.
+Die bestehende bestätigte Timeline soll lokal nach `ALLE / STRASSE / KRISE / BEZIRK` filterbar sein, ohne ihre Reihenfolge, Quelle oder Persistenz zu verändern.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
 **Basisdateien**
-- `AGENTS.md` nur Prozess-/Autoritätsgrenzen
+- `AGENTS.md` – Focused Read, Presentation-/Merge-Grenzen
 - aktive Stellen aus `TODO.md`, `PROJEKTSTATUS.json`, `FEATURE_POOL.md`
-- bestehender Character-Ressourcen-/Replay-Vertrag
+- README nur wegen aktiver/folgender Iterationskonsistenz
 
 **Arbeitsdateien**
-- `src/bunkerfrequenz/application/recovery_action_service.py`
-- `src/bunkerfrequenz/application/assistant_game_client_session.py`
-- `src/bunkerfrequenz/presentation/scene_jobs_projection.py`
-- `web/a4/recovery_actions_ui.js`
-- `web/a4/ui_prefs.js`
-- direkte Runtime-/Presentation-Regressionen
+- `web/a4/event_timeline.js`
+- `tests/presentation/test_a4_event_timeline_control_deck.py`
+- `tests/runtime/test_feature_status_consistency.py`
+- `docs/LAIENHILFE_TIMELINE_FILTER.md`
 
 **Evidenz/Logs**
 - nur Run-ID/Status bei grünen Gates
-- vollständiger Log ausschließlich bei konkretem roten Gate
+- vollständiger Log ausschließlich bei einem konkreten roten Gate
 
-### RECOVERY-ACTIONS – kleinster kanonischer Gameplay-Slice
+### TIMELINE-FILTER – kleinster read-only UX-Slice
 
-- [x] `Koffein & kalte Luft`: +20 Energie, +12 Stress
-- [x] nur erlaubt bei bestätigter Energie ≤ 80 und Stress ≤ 88; Gewinn und Preis können dadurch nicht weggeclampt werden
-- [x] keine XP, Trait-Evidence, Zufallswürfe, Rechnerzeit oder automatische Regeneration
-- [x] bestehendes `character.resources_changed` bleibt Journal-/Recovery-Wahrheit; kein neuer Eventtyp
-- [x] Retry derselben Command-ID ist schreibfrei
-- [x] Scene-Jobs-Projection liefert `can_run` und Blocker aus bestätigtem Character-State
-- [x] Browser sendet nur `recovery_id`; keine Energie-/Stresswerte oder Schwellen
-- [x] Regeneration sitzt im bestehenden JOBS-Bereich, kein zweites Ressourcen-Dashboard
-- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32673048911` · Presentation `32673048896` · Repository Health `32673048885` · Release Acceptance `32673048901` · Release Package `32673048879`
+- [x] Filter `ALLE / STRASSE / KRISE / BEZIRK`
+- [x] Filterstate ausschließlich im Modul-RAM; kein Local-/Session-Storage
+- [x] Filterung ausschließlich mit `.filter(...)` auf der vorhandenen Runtime-Reihenfolge
+- [x] kein `.sort(...)`, `.reverse(...)`, POST, Command oder Save-/Journal-Write
+- [x] `aria-pressed`, Gruppennamen und verständlicher Status für Tastatur/Screenreader
+- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32673876348` · Presentation `32673876321` · Repository Health `32673876323` · Release Acceptance `32673876297` · Release Package `32673876299`
 - [ ] finalen Status-/Dokumentations-Head 5/5 grün bestätigen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch 0 Commits hinter `main` bestätigen
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in RECOVERY-ACTIONS
+### Bewusst nicht in TIMELINE-FILTER
 
-- keine Systemzeit, Echtzeitregeneration oder Cooldown-Uhr
-- keine zweite Energie-/Müdigkeitsressource
-- keine Finance-Kosten oder neue Buchhaltung
-- keine XP-/Trait-Farm-Aktion
-- keine Browser-Autorität über Deltas oder Schwellen
+- keine neue Timeline-Projection oder Storyquelle
+- keine neue Sortierlogik
+- keine Filterpersistenz
+- kein Journal-State
+- keine Änderung an Runtime-/Gameplay-Autorität
 - kein Produktversionsbump
 
 ### Danach
 
-- [ ] **0.8.8-UX-TIMELINE-FILTER:** bestätigte Timeline lokal nach Straße/Krise/Bezirk filtern; keine neue Journal-/Sortierautorität
+- [ ] **0.8.8-ECON-RECOVERY-FEEDBACK:** bestätigte Vorher→Nachher-Werte der Regeneration verständlich anzeigen; keine neue Mechanik
 - [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
-- [ ] **0.8.8-ECON-RECOVERY-VARIANTS:** erst später weitere Regenerationsoptionen erwägen, falls Balancingbeobachtung sie rechtfertigt
+- [ ] **0.8.8-STREET-PACK:** bestehende Straßenereignisse später über den vorhandenen Encounter-Vertrag erweitern
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Keine zweite Character-, Ressourcen-, Finance- oder Action-Engine.
-- `RecoveryActionService` schreibt ausschließlich die bestehende replaybare `character.resources_changed`-Semantik.
-- Availability und Ressourcendeltas kommen aus der Runtime; der Browser wählt nur die stabile `recovery_id`.
+- Timeline-Quelle bleibt ausschließlich die vorhandene bestätigte Runtime-Projection.
+- Filter dürfen Einträge nur ausblenden, nie umsortieren, neu erzeugen oder zurückschreiben.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
