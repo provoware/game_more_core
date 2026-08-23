@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import unittest
 
@@ -8,6 +9,7 @@ APP_JS = (ROOT / "web" / "a4" / "app.js").read_text(encoding="utf-8")
 INDEX = (ROOT / "web" / "a4" / "index.html").read_text(encoding="utf-8")
 STYLES = (ROOT / "web" / "a4" / "styles.css").read_text(encoding="utf-8")
 LAUNCHER = (ROOT / "tools" / "start_a4_game_client.py").read_text(encoding="utf-8")
+MAP_MANIFEST = json.loads((ROOT / "manifests" / "BERLIN_OPS_MAP_PRO_MANIFEST.json").read_text(encoding="utf-8"))
 
 
 class A4MapProContractTests(unittest.TestCase):
@@ -75,6 +77,11 @@ class A4MapProContractTests(unittest.TestCase):
         self.assertIn("function selectedCenter(model)", MAP_JS)
         self.assertNotIn("pointerdown", MAP_JS)
         self.assertNotIn("wheel", MAP_JS)
+        self.assertEqual(MAP_MANIFEST["interaction"]["zoom"], "local_bounded")
+        self.assertEqual(MAP_MANIFEST["interaction"]["pan"], "local_bounded")
+        self.assertTrue(MAP_MANIFEST["interaction"]["focus_selected"])
+        self.assertFalse(MAP_MANIFEST["interaction"]["persistent_selection"])
+        self.assertFalse(MAP_MANIFEST["interaction"]["domain_write"])
 
     def test_map2_transforms_only_existing_projection_coordinates(self):
         self.assertIn("district.map_box.x", MAP_JS)
