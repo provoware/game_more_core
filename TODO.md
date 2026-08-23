@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-C2 – Assistant Control State` · PR #108 · Merge `5c597479afafe64f63aa4ce015cea5365b2320bf`
-- **0.8.8-C2 Remote-Abnahme:** Runtime `32656644301` · Presentation `32656644312` · Repository Health `32656644321` · Release Acceptance `32656644302` · Release Package `32656644313` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-C3 – Confirmed-Round Execution`
-- **C3-Status:** bestätigte Runde wird intern genau einmal verarbeitet; vorhandener `SceneJobService` bleibt einzige Jobausführung und Retry darf weder doppelt zahlen noch Ressourcen doppelt verbuchen
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-C3 – Confirmed-Round Execution` · PR #109 · Merge `85e95995d5e84c53131e24a8ad3dec36717891c6`
+- **0.8.8-C3 Remote-Abnahme:** Runtime `32658555902` · Presentation `32658555885` · Repository Health `32658555929` · Release Acceptance `32658555886` · Release Package `32658555891` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-C4 – JOBS-UI-Integration`
+- **C4-Status:** Start, Wechsel, Stop und bestätigter Assistentenstatus sind direkt in den vorhandenen JOBS-Bereich integriert; Browser liefert nur `job_id`/`null` und erhält keine Runden-, Lohn- oder Effekt-Autorität
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
 ---
@@ -51,45 +51,55 @@
 - [x] identische Auswahl ist schreibfrei und verändert Character/Finance nicht
 - [x] PR #108 · finaler Head `a8d6b9ffe2c8369ff1a41320a87faad069610779` · 5/5 Gates · 0 Review-Threads · `/safe-merge` PASS · Merge `5c597479afafe64f63aa4ce015cea5365b2320bf`
 
+## 0.8.8-C3 – Confirmed-Round Execution
+
+- [x] interner `ConfirmedRoundTrigger` mit stabiler Runden-ID und Character-Bindung
+- [x] `AssistantRoundExecutionService` delegiert Jobfolgen vollständig an `SceneJobService`
+- [x] `assistant.round_processed` verbraucht jede bestätigte Runde genau einmal
+- [x] Retry, Jobwechsel und Crash-Zwischenzustand bleiben gegen Doppelzahlung und doppelte Ressourcenfolgen geschützt
+- [x] Runde im Zustand Aus kann später nicht rückwirkend Arbeit auslösen
+- [x] Systemzeit und Browser besitzen keine Rundenautorität
+- [x] PR #109 · finaler Head `4d9a571141815cd0a589672308a25e91421dfb70` · 5/5 Gates · 0 Review-Threads · `/safe-merge` PASS · Merge `85e95995d5e84c53131e24a8ad3dec36717891c6`
+
 ---
 
-# Aktiv – 0.8.8-C3 Confirmed-Round Execution
+# Aktiv – 0.8.8-C4 JOBS-UI-Integration
 
 ## Ziel
 
-Eine intern bestätigte Spielrunde darf den zu diesem Zeitpunkt gewählten Scene Job exakt einmal über den vorhandenen `SceneJobService` ausführen. Derselbe Rundentrigger bleibt bei Retry, Reload oder einem späteren Jobwechsel ohne zweite Auszahlung und ohne doppelte Energie-/Stressfolge.
+Der geheime beste Freund wird direkt im vorhandenen JOBS-Bereich bedient: einen bestehenden Scene Job auswählen, auf einen anderen wechseln, stoppen und den bestätigten aktuellen Zustand sehen. Es entsteht kein zweites Dashboard und keine neue Gameplay-Autorität.
 
-### C3 – kleinster Runtime-Slice
+### C4 – kleinster UI-/Adapter-Slice
 
-- [x] interner `ConfirmedRoundTrigger` mit stabiler Runden-ID und Character-Bindung; keine Browser-Command-Erweiterung
-- [x] `AssistantRoundExecutionService` orchestriert nur; fachliche Jobfolgen bleiben vollständig in `SceneJobService`
-- [x] deterministische Child-Command-ID pro Character + bestätigter Runde nutzt vorhandene Scene-Job-Idempotenz
-- [x] `assistant.round_processed` markiert jede Runde genau einmal, auch wenn der Assistent aus ist
-- [x] Runde im Zustand Aus kann nach späterer Jobwahl nicht rückwirkend Arbeit auslösen
-- [x] Crash-Fortsetzung erkennt bereits durable Jobausführung und beendet den ursprünglichen Rundenauftrag ohne Doppelzahlung
-- [x] Jobwechsel nach bereits verarbeiteter Runde ändert die alte Runde nicht
-- [x] Systemzeit ist weder Trigger noch Autorität; Browser erhält keine Rundenautorität
-- [x] gezielte Runtime-Regressionen für Retry, Aus-Zustand, Jobwechsel und Crash-Zwischenzustand
+- [x] bestätigter `AssistantControlState` wird in der bestehenden Scene-Jobs-Projektion read-only angezeigt
+- [x] unbekannte persistierte Assistant-Job-ID bricht die Projektion fail-closed ab
+- [x] dünner A4-Adapter delegiert `assistant.control` ausschließlich an `AssistantControlService`
+- [x] Browser darf bei Assistentensteuerung nur `job_id` oder `null` plus technische Command-ID senden
+- [x] Auszahlung, Energie, Stress und Rundentrigger werden als Zusatzfelder abgewiesen bzw. nicht angeboten
+- [x] Start/Wechsel/Stop sitzen direkt bei den vorhandenen Jobkarten; kein `assistant-panel`
+- [x] Status zeigt Aus/Aktiv, gewählten Katalogtitel und bestätigte Steuerrevision
+- [x] UI erklärt ausdrücklich: automatische Arbeit erst bei intern bestätigter Spielrunde, nicht durch Browser oder Rechnerzeit
+- [x] bestehende direkte `job.run`-Funktion bleibt unverändert
+- [x] gezielte Runtime- und Presentation-Regressionen ergänzt
+- [x] erster technischer CI-Befund behoben: veraltete Testannahme der Character-Command-Menge um `assistant.control` erweitert
 - [ ] finalen PR-Head durch Runtime Core, Presentation Core, Repository Health, Release Acceptance und Release Package prüfen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch weiterhin 0 Commits hinter `main`
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in C3
+### Bewusst nicht in C4
 
-- keine JOBS-UI-Steuerung für den Assistenten
-- keine neue Job-/Lohn-/Ressourcenlogik
-- keine Rechnerzeit- oder Browserautorität
-- keine Hintergrundschleife außerhalb bestätigter Runden
+- keine Änderung an C3-Rundenausführung
+- keine Browser- oder Systemzeit-Rundenautorität
+- kein zweites Assistenten-Dashboard
 - kein Freundschafts-/Beziehungsfortschritt
-- keine Bank, Zinsen, Anlagen oder Dividenden
+- keine neue Job-, Finance- oder Balance-Engine
 - kein Produktversionsbump
 
 ### Danach in C
 
-- [ ] **C4:** Assistent im bestehenden JOBS-Bereich auswählen, wechseln, stoppen und verständlich anzeigen; kein zweites Dashboard
-- [ ] **C5:** bestätigte Assistentenaktionen als kleinen Freundschafts-/Story-Nachhall projizieren; keine zweite Progressionsengine
-- [ ] gezielte Presentation-, Recovery- und Accessibility-Regressionen
+- [ ] **C5 – Freundschafts-Nachhall:** nur bestätigte `assistant.round_processed`-/Jobdaten für kleine Storyreaktionen lesen; keine zweite Progressionsengine
+- [ ] **C6 – Round-Authority Integration Harness:** späteren kanonischen Rundenproduzenten end-to-end gegen C3 prüfen: Runde → Assistent → Scene Job → Journal → Recovery → Retry
 
 ---
 
