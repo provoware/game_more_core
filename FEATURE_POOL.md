@@ -50,6 +50,7 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 | `POOL-UX-002` | `IDEA` | Ereignis-Timeline im Control Deck | bestätigte Welt-, Street- und Crisis-Ereignisse schneller nachvollziehen | reine Projection/Presentation; Journal bleibt Autorität |
 | `POOL-WORLD-003` | `IDEA` | District-Ereignisketten mit Erinnerung | spätere Ereignisse können bestätigte frühere District-Ereignisse erzählerisch aufgreifen | erst nach validierter 0.8.7-C Runtime; keine versteckten Browserzustände |
 | `POOL-WORLD-004` | `IDEA` | District-Event-Cadence/Cooldown | verhindert Ereignis-Spam und macht seltene Ereignisse gewichtiger | erst nach kanonischer Application-Integration; Taktung aus bestätigter Spielzeit, nie aus Systemzeit allein |
+| `POOL-QA-003` | `IDEA` | District-Event-Katalogdiagnose mit Eintrags-ID | Entwickler/Mods sehen bei ungültigem Katalog sofort den betroffenen Eintrag statt nur die Vertragsart | erst auf Basis der Fail-fast-Validierung; keine zweite Validierungslogik |
 
 ---
 
@@ -77,4 +78,4 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 ## Nächste Entnahme
 
-`POOL-WORLD-002` bleibt bis zum vollständigen 0.8.7-C-Slice aktiv. Nach C2 ist der kleinste nächste Schritt die autorisierte Application-Integration; erst danach sollte die read-only Ereignis-Timeline folgen. `POOL-WORLD-004` hält die spätere Cadence/Cooldown-Idee fest, damit Ereignisse nicht bei jeder Gelegenheit inflationär auftreten.
+`POOL-WORLD-002` bleibt bis zum vollständigen 0.8.7-C-Slice aktiv. Nach C2 ist der kleinste nächste Schritt die autorisierte Application-Integration; erst danach sollte die read-only Ereignis-Timeline folgen. `POOL-WORLD-004` hält die spätere Cadence/Cooldown-Idee fest, damit Ereignisse nicht bei jeder Gelegenheit inflationär auftreten. `POOL-QA-003` hält eine spätere, laienfreundlichere Katalogdiagnose fest, ohne die jetzt zentrale Fail-fast-Prüfung zu duplizieren.
