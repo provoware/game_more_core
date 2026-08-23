@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "version": "0.8.8-c1",
+  "assistant_id": "assistant.secret_best_friend",
+  "label": "Dein geheimer bester Freund",
+  "story": "Keiner auf der Gästeliste weiß genau, wann er auftaucht. Aber wenn du ihm eine klare Aufgabe gibst, zieht er sie still Runde für Runde durch – bis du ihn zurückpfeifst.",
+  "task_source": "scene_jobs",
+  "trigger": {
+    "authority": "confirmed_street_walk",
+    "round_id_source": "street.walk.command_id",
+    "execute_once_per_confirmed_round": true,
+    "system_time_allowed": false
+  },
+  "selection": {
+    "single_active_task": true,
+    "player_can_assign": true,
+    "player_can_deactivate": true,
+    "client_can_supply_payout_or_effects": false
+  }
+}
