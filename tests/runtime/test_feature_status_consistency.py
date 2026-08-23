@@ -40,21 +40,23 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
 
-    def test_validated_assistant_c2_and_active_c3_match_status(self):
+    def test_validated_assistant_c3_and_active_c4_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         event_runtime = status["subsystems"]["event_runtime"]
         economy = status["subsystems"]["economy"]
         presentation = status["subsystems"]["presentation"]
         assistant = status["subsystems"]["assistant"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-C2")
-        self.assertEqual(status["active_iteration"], "0.8.8-C3")
-        self.assertEqual(status["next_iteration"], "0.8.8-C4")
-        self.assertEqual(status["current_focus"], "assistant_confirmed_round_exactly_once_scene_job_execution")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-C3")
+        self.assertEqual(status["active_iteration"], "0.8.8-C4")
+        self.assertEqual(status["next_iteration"], "0.8.8-C5")
+        self.assertEqual(status["current_focus"], "assistant_jobs_ui_control_without_new_round_authority")
         self.assertTrue(event_runtime["always_available_job_actions"])
         self.assertTrue(economy["personal_finance_state_validated"])
         self.assertTrue(presentation["scene_jobs_panel_validated"])
-        self.assertEqual(assistant["status"], "c2_remote_validated_c3_confirmed_round_in_validation")
+        self.assertTrue(presentation["assistant_controls_in_scene_jobs_panel"])
+        self.assertFalse(presentation["assistant_second_dashboard"])
+        self.assertEqual(assistant["status"], "c3_remote_validated_c4_jobs_ui_in_validation")
         self.assertTrue(assistant["contract_policy_defined"])
         self.assertEqual(assistant["task_source"], "scene_jobs")
         self.assertEqual(assistant["max_active_tasks"], 1)
@@ -68,6 +70,11 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(assistant["round_retry_idempotent"])
         self.assertTrue(assistant["off_round_consumed_without_retroactive_execution"])
         self.assertTrue(assistant["single_active_task_runtime"])
+        self.assertTrue(assistant["jobs_ui_integration"])
+        self.assertEqual(assistant["browser_control_fields"], ["job_id"])
+        self.assertFalse(assistant["browser_can_supply_round"])
+        self.assertFalse(assistant["browser_can_supply_payout_or_effects"])
+        self.assertFalse(assistant["friendship_afterglow_implemented"])
 
     def test_requested_0_8_8_foundations_have_single_pool_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
