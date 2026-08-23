@@ -22,6 +22,23 @@ Dieses Repository wird sparsam, modular und nachvollziehbar weiterentwickelt. Je
 14. Pro Iteration eine konkrete spätere Erweiterungs-/Verbesserungsidee mit Nutzen und Begründung in der zuständigen Info-Datei ergänzen.
 15. pro iteration eine optimierung oder erweiterung der Laienspielanleitung.
 
+## Focused-Read-Strategie – verbindlich
+
+Vor jeder Implementierung wird ein **kleiner geplanter Datei-Lesesatz** festgelegt. Ziel ist, nur die Informationen in die Analyse zu laden, die für den konkreten Slice wirklich nötig sind.
+
+1. Zuerst werden ausschließlich `AGENTS.md`, die aktive Status-/TODO-Stelle und die **voraussichtlich zu ändernden Dateien** oder unmittelbar zuständigen Verträge gelesen.
+2. Weitere Dateien dürfen erst eingelesen werden, wenn ein konkreter Befund, Import, Vertrag, Testfehler oder eine Abhängigkeit ihre Relevanz belegt.
+3. Große Historien-, README-, Changelog-, Asset-, generierte oder fachfremde Dateien werden **nicht vorsorglich komplett** gelesen.
+4. Für große Dateien sind, wenn technisch möglich, nur relevante Zeilenbereiche, Suchtreffer oder einzelne Diff-/Patch-Ausschnitte einzulesen.
+5. Repository-weite Suchen oder Breitenscans sind nur zulässig, wenn die Zielstelle unbekannt ist oder ein konkreter Widerspruch nicht lokal auflösbar ist.
+6. Vor dem ersten Patch wird eine **Planned-Read-Liste** festgehalten: geplante Änderungsdateien, direkte Verträge und geplante Regressionen. Diese Liste ist zugleich die Analysegrenze.
+7. Wird außerhalb dieser Liste gelesen oder geändert, muss vorher der neue Grund benannt und der Scope sichtbar erweitert werden.
+8. Nach einem roten Gate werden zuerst nur der konkrete fehlerhafte Job, Logabschnitt und die direkt betroffene Datei gelesen. Kein erneuter Breitenscan ohne neuen Befund.
+9. Dokumentationsdateien werden nur dann vollständig ersetzt, wenn ihr kompletter Inhalt sicher vorliegt; andernfalls wird eine gezielte Patch-/Teiländerung bevorzugt oder die Werkzeuggrenze transparent dokumentiert.
+10. Der Iterationsabschluss nennt kurz, ob der Focused-Read-Plan eingehalten oder aus welchem konkreten Grund erweitert wurde.
+
+**Leitregel:** Erst Zielstelle und Beweis lesen, dann patchen. Nicht das gesamte Repository in die Analyse ziehen, nur um Sicherheit zu simulieren.
+
 ## Pflichtangaben je Iteration
 - **Fortschritt:** Entwicklungsfortschritt in %
 - **Ziel:** gewünschter Zustand in einem Satz.
