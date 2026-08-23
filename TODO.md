@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-FIN-EXPORT – Kontoauszug TXT/CSV` · PR #119 · Merge `11c023f927ad9a74673587fefd1709fe2322553f`
-- **FIN-EXPORT Remote-Abnahme:** Runtime `32669021501` · Presentation `32669021500` · Repository Health `32669021494` · Release Acceptance `32669021495` · Release Package `32669021502` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-ECON-ANTI-GRIND – Scene-Job-Erschöpfung`
-- **ANTI-GRIND-Status:** Scene Jobs bleiben jederzeit verfügbar; voller Lohn nur bei gedecktem Energieverbrauch, Teilenergie proportional, 0 Energie = 0 Cent; manueller Job und Assistent verwenden denselben `SceneJobService`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-ANTI-GRIND – Scene-Job-Erschöpfung` · PR #120 · Merge `49d6947b9f1b3a35d0785a958a7688e3b22a6bc1`
+- **ANTI-GRIND Remote-Abnahme:** Runtime `32670613358` · Presentation `32670613422` · Repository Health `32670613395` · Release Acceptance `32670613449` · Release Package `32670613455` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-ECON-JOB-PREVIEW – Scene-Job-Lohnvorschau`
+- **JOB-PREVIEW-Status:** aktuelle Auszahlung wird serverseitig aus bestätigter Character-Energie mit derselben kanonischen Anti-Grind-Berechnung projiziert; Browser rendert nur „bis zu … / aktuell …“
 - **Repository-Arbeitsmodus:** Basisdateien, Arbeitsdateien und Evidenz/Logs sind getrennt; grüne Logs werden nicht dauerhaft übertragen, rote Gates zuerst nur im konkreten Fehlerausschnitt gelesen
 - **Entwicklungsprozess:** Focused-Read bleibt verpflichtend; Codex-Code-Review bleibt vollständig außerhalb von Entwicklung, Gate-Evidenz und Mergeprozess
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -51,66 +51,70 @@
 - [x] Quelle ausschließlich `state.projection.scene_jobs.finance_statement`
 - [x] TXT/CSV lokal; vollständiger unterstützter Kontoauszug unabhängig vom lokalen Filter
 - [x] keine Ledger-Neuberechnung, kein Import, kein `/api/command`, keine erfundene Zeitangabe
-- [x] PR #119 · Head `73257a4dd3ff06a546d8332af4c411fdc614967e` · Runtime `32669021501` · Presentation `32669021500` · Repository Health `32669021494` · Release Acceptance `32669021495` · Release Package `32669021502` · 0 Review-Threads · `/safe-merge` PASS · Merge `11c023f927ad9a74673587fefd1709fe2322553f`
+- [x] PR #119 · Merge `11c023f927ad9a74673587fefd1709fe2322553f`
+
+## 0.8.8-ECON-ANTI-GRIND – Scene-Job-Erschöpfung
+- [x] Scene Jobs bleiben jederzeit verfügbar
+- [x] voller Lohn nur bei gedecktem Energieverbrauch; Teilenergie proportional; 0 Energie = 0 Cent
+- [x] manueller Job und Assistent verwenden denselben `SceneJobService`
+- [x] keine Rechnerzeit, kein Cooldown, keine zweite Erschöpfungsressource
+- [x] PR #120 · Head `95882e97fdb8a1a84c14a17e377dc9978c342f1e` · Runtime `32670613358` · Presentation `32670613422` · Repository Health `32670613395` · Release Acceptance `32670613449` · Release Package `32670613455` · 0 Review-Threads · `/safe-merge` PASS · Merge `49d6947b9f1b3a35d0785a958a7688e3b22a6bc1`
 
 ---
 
-# Aktiv – 0.8.8-ECON-ANTI-GRIND
+# Aktiv – 0.8.8-ECON-JOB-PREVIEW
 
 ## Ziel
 
-Scene Jobs bleiben phasenunabhängig und jederzeit verfügbar, erzeugen bei extrem niedriger bestätigter Energie aber nur noch den tatsächlich energetisch gedeckten Anteil des katalogisierten Joblohns.
+Vor dem Start eines Scene Jobs soll die JOBS-Ansicht den tatsächlich durch die aktuelle bestätigte Energie möglichen Lohn zeigen, ohne die Anti-Grind-Rechnung im Browser zu duplizieren.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
 **Basisdateien**
-- `AGENTS.md` nur Prozess-/Dateiklassenvertrag
+- `AGENTS.md` nur unveränderter Prozess-/Dateiklassenvertrag
 - aktive Stellen aus `TODO.md`, `PROJEKTSTATUS.json`, `FEATURE_POOL.md`
-- `manifests/SCENE_JOB_MANIFEST.json`
 
 **Arbeitsdateien**
-- `src/bunkerfrequenz/application/scene_job_service.py`
-- `src/bunkerfrequenz/application/assistant_round_service.py` nur Delegationsnachweis, keine Änderung geplant
-- `src/bunkerfrequenz/domain/finance.py` nur Nullbuchungs-Vertragsprüfung
-- `tests/runtime/test_scene_job_service.py`
-- `tests/runtime/test_assistant_round_service.py`
+- `src/bunkerfrequenz/application/scene_job_service.py` nur kanonische Berechnungsfunktion
+- `src/bunkerfrequenz/presentation/scene_jobs_projection.py`
+- `web/a4/ui_prefs.js`
+- neues `web/a4/scene_job_payout_preview.js`
+- `tests/presentation/test_a4_assistant_jobs_ui.py`
 - `tests/runtime/test_feature_status_consistency.py`
-- `docs/LAIENHILFE_SCENE_JOB_ERSCHOEPFUNG.md`
+- `docs/LAIENHILFE_SCENE_JOB_LOHNVORSCHAU.md`
 
 **Evidenz/Logs**
-- nur Run-ID/Status im Normalfall
-- vollständiger CI-Log ausschließlich bei rotem Gate und nur für den konkreten Fehlerjob
+- nur Run-ID/Status bei grünen Gates
+- vollständiger Log ausschließlich bei konkretem roten Gate
 
-### ANTI-GRIND – Balancevertrag und kleinster Runtime-Slice
+### JOB-PREVIEW – kleinster Projection-/Presentation-Slice
 
-- [x] `exhaustion_policy` im bestehenden Scene-Job-Manifest definiert und fail-closed validiert
-- [x] Jobs bleiben mit vorhandenem Character jederzeit verfügbar
-- [x] voller katalogisierter Lohn, wenn Vor-Job-Energie den katalogisierten Energieverbrauch deckt
-- [x] Teilenergie: `basislohn * verfügbare_energie // energieverbrauch`
-- [x] 0 Energie: Job bleibt ausführbar, erzeugt aber 0 Cent Joblohn
-- [x] bestehendes Finance-Ledger und `finance.job_completed` bleiben einzige Joblohn-Buchung
-- [x] kein Rechnerzeit-Cooldown und keine zweite Erschöpfungsressource
-- [x] Client darf keinen Lohnfaktor oder Zielbetrag liefern
-- [x] Assistent delegiert unverändert an denselben `SceneJobService`; gezielte Regression beweist dieselbe Niedrigenergie-Regel
-- [x] Retry/Recovery-Vertrag bleibt unverändert
-- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32670308989` · Presentation `32670309016` · Repository Health `32670308982` · Release Acceptance `32670308991` · Release Package `32670308980`
+- [x] Anti-Grind-Rechnung als kanonische Pure Function `calculate_scene_job_payout_cents(...)` im bestehenden Scene-Job-Service verfügbar
+- [x] echte Jobausführung nutzt exakt dieselbe Funktion
+- [x] Scene-Jobs-Projection berechnet `effective_payout_cents` ausschließlich aus bestätigter Character-Energie
+- [x] Projection markiert `payout_reduced_by_energy`
+- [x] bei voller Energie normaler Lohn sichtbar
+- [x] bei Teilenergie verständlich `Lohn bis zu … · aktuell …`
+- [x] bei 0 Energie aktueller Lohn 0,00 €, Job bleibt auswählbar
+- [x] Browser enthält keine Lohnformel, keinen neuen Command, kein `fetch` und keinen Write-Pfad
+- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32671111228` · Presentation `32671111261` · Repository Health `32671111236` · Release Acceptance `32671111251` · Release Package `32671111226`
 - [ ] finalen Status-/Dokumentations-Head erneut 5/5 prüfen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch 0 Commits hinter `main` bestätigen
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in ANTI-GRIND
+### Bewusst nicht in JOB-PREVIEW
 
-- keine Sperre der Scene Jobs bei 0 Energie
-- keine neue Erschöpfungsleiste, Müdigkeitswährung oder Cooldown-Uhr
-- keine neue Assistant-Jobengine
-- keine Änderung an Bank, Zinsen, Investments oder Eventbudget
-- kein Browser-Lohnrechner als Autorität
+- keine zweite Job- oder Balanceengine
+- keine Berechnung aus Browser-Energie
+- keine Änderung des Anti-Grind-Balancevertrags
+- keine neue Ressource oder Zeitautorität
+- keine neue Assistant-Regel
 - kein Produktversionsbump
 
 ### Danach
 
-- [ ] **0.8.8-UX-EXPORT-PROOF:** Exportvorschau/Kopieren oder kleine Prüfsumme ausschließlich aus derselben FIN-STATEMENTS-Projection; read-only
+- [ ] **0.8.8-UX-EXPORT-PROOF:** Exportvorschau/Kopieren oder deterministische Prüfsumme ausschließlich aus demselben FIN-EXPORT-Inhalt; read-only
 - [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
 - [ ] **0.8.8-ECON-RECOVERY-ACTIONS:** später echte bestätigte Regenerationsaktionen prüfen, ohne Systemzeit-Autorität einzuführen
 
@@ -120,7 +124,8 @@ Scene Jobs bleiben phasenunabhängig und jederzeit verfügbar, erzeugen bei extr
 
 - Keine Mega-PR und keine zweite Economy-, Finance-, Assistant- oder Erschöpfungsengine.
 - Der `SceneJobService` bleibt die einzige Jobauszahlungsstelle für manuellen Job und Assistent.
-- Character-Energie direkt vor dem Job ist die einzige Erschöpfungsautorität dieses Slices.
+- Die Projection darf den kanonischen Lohn nur aus bestätigtem Character-State ableiten und bleibt read-only.
+- Der Browser rendert bestätigte Vorschauwerte und darf keine Auszahlung autorisieren.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
