@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+from bunkerfrequenz.domain.crew_identity import default_crew_identity, normalize_crew_identity
+
 START_SKILLS = (
     "technik", "musik", "organisation", "kreativitaet", "kommunikation",
     "menschenkenntnis", "orientierung", "handwerk", "logistik",
@@ -24,6 +26,7 @@ class CharacterState:
     alias: str = ""
     motto: str = ""
     additional_nicknames: list[str] = field(default_factory=list)
+    crew_identity: dict[str, str] = field(default_factory=default_crew_identity)
     level: int = 1
     total_xp: int = 0
     resonance_xp: int = 0
@@ -49,6 +52,9 @@ class CharacterState:
             not isinstance(value, str) or not value.strip() for value in self.additional_nicknames
         ):
             raise ValueError("Zusätzliche Spitznamen müssen nicht leere Texte sein")
+        normalized_identity = normalize_crew_identity(self.crew_identity)
+        if self.crew_identity != normalized_identity:
+            raise ValueError("Crew-Identität ist nicht kanonisch normalisiert")
         if self.level < 1 or self.total_xp < 0 or self.resonance_xp < 0 or self.resonance_rank < 0:
             raise ValueError("Ungültiger Fortschrittsstand")
         if isinstance(self.energy, bool) or not isinstance(self.energy, int) or not RESOURCE_MIN <= self.energy <= RESOURCE_MAX:
@@ -70,6 +76,7 @@ class CharacterState:
             "alias": self.alias,
             "additional_nicknames": list(self.additional_nicknames),
             "motto": self.motto,
+            "crew_identity": dict(self.crew_identity),
             "level": self.level,
             "total_xp": self.total_xp,
             "resonance_xp": self.resonance_xp,
@@ -93,6 +100,7 @@ class CharacterState:
             alias=data.get("alias", ""),
             additional_nicknames=list(data.get("additional_nicknames", [])),
             motto=data.get("motto", ""),
+            crew_identity=normalize_crew_identity(data.get("crew_identity")),
             level=int(data.get("level", 1)),
             total_xp=int(data.get("total_xp", 0)),
             resonance_xp=int(data.get("resonance_xp", 0)),
