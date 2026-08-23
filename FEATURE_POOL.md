@@ -40,6 +40,7 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 - **0.8.7-C1:** PR #90 · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
 - **0.8.7-C2:** PR #92 · Merge `df18bab2dc9120fec4fe20bb39388a102eef2148` · Runtime + Fail-fast-Härtung
 - **0.8.7-C3:** PR #95 · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b` · autorisierter Settlement-Trigger
+- **0.8.7-C4A:** PR #98 · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae` · read-only Timeline-Projection/Textschicht
 
 ---
 
@@ -47,7 +48,7 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-UX-002` | `PULLED` | **Ereignis-Timeline im Control Deck** | bestätigte Welt-, Street- und Crisis-Ereignisse schneller nachvollziehen | reine Projection/Presentation; Journal und bestätigte States bleiben Autorität |
+| `POOL-UX-002` | `PULLED` | **Ereignis-Timeline im Control Deck** | bestätigte Welt-, Street- und Crisis-Ereignisse schneller nachvollziehen | C4A-Projection ist validiert; C4B bleibt reine Presentation ohne Browser-Autorität |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung ohne neue Engine | bestehender Street-Encounter-/Approach-Vertrag |
 | `POOL-PROFILE-002` | `READY` | Crewfarben und Emblem-Auswahl | stärkere Identität | nur Darstellungsdaten; Character-ID unverändert |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
@@ -58,6 +59,7 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 | `POOL-QA-005` | `IDEA` | District-Event-Katalog-Preflight als lesender Diagnosebefehl | Katalogfehler vor Spielstart gesammelt prüfen, ohne Save oder Gameplay zu berühren | zentrale `DistrictWorldEventService`-Validierung wiederverwenden; keine zweite Prüflogik |
 | `POOL-QA-006` | `IDEA` | Status-Sync nach Safe Merge automatisieren | reduziert wiederkehrende Evidenzdrift nach erfolgreichen Feature-Merges | nur kanonische Statusdateien aktualisieren; kein automatischer Produktversionsbump |
 | `POOL-QA-007` | `IDEA` | District-Event-Eligibility-Diagnose | zeigt im Entwicklerbereich lesend, welche Voraussetzungen aktuell alle Welt-Ereignisse ausschließen | dieselbe zentrale Requirements-Prüfung wiederverwenden; keine zweite Auswahlengine und keine Browser-Autorität |
+| `POOL-QA-008` | `IDEA` | Timeline-Projections-Freshness-Check | erkennt, wenn C4A-Daten vorhanden sind, aber A4 sie noch nicht transportiert oder sichtbar rendert | nur read-only Contract-Prüfung; keine zweite Timeline-Quelle |
 
 ---
 
@@ -85,4 +87,4 @@ Dieser Pool ist der Ideen- und Ausbauvorrat des Projekts. `TODO.md` bleibt die v
 
 ## Nächste Entnahme
 
-`POOL-WORLD-002` ist mit C1–C3 abgeschlossen. Als nächster Feature-Slice bleibt `POOL-UX-002` gesetzt: eine read-only Ereignis-Timeline, die ausschließlich bestätigte vorhandene Quellen sichtbar macht. Danach bleibt `POOL-WORLD-004` für Cadence/Cooldown priorisiert. `POOL-STORY-001` hält den späteren erzählerischen Nachhall fest. `POOL-QA-004` und `POOL-QA-006` halten Freshness-Erkennung und spätere sichere Status-Synchronisierung fest; `POOL-QA-007` ergänzt eine spätere rein lesende Diagnose für Fälle ohne zulässiges District-Ereignis.
+`POOL-WORLD-002` ist mit C1–C3 abgeschlossen. `POOL-UX-002` bleibt aktiv: C4A ist sicher gemergt, C4B macht dieselbe read-only Ereignis-Timeline im Control Deck sichtbar. Danach bleibt `POOL-WORLD-004` für Cadence/Cooldown priorisiert. `POOL-STORY-001` hält den späteren erzählerischen Nachhall fest. `POOL-QA-004` und `POOL-QA-006` halten Freshness-Erkennung und spätere sichere Status-Synchronisierung fest; `POOL-QA-008` ergänzt einen späteren rein lesenden Check zwischen Projection, Transport und sichtbarer Timeline.
