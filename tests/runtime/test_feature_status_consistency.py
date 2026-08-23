@@ -93,7 +93,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn("## Focused-Read-Strategie – verbindlich", agents)
         self.assertIn("Planned-Read-Liste", agents)
         self.assertIn("Breitenscans", agents)
-        self.assertIn("konkrete fehlerhafte Job", agents)
+        self.assertIn("der konkrete fehlerhafte Job", agents)
+        self.assertIn("Kein erneuter Breitenscan ohne neuen Befund", agents)
 
 
 if __name__ == "__main__":
