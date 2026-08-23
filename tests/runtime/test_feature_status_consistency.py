@@ -36,27 +36,28 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         for pool_id in (
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
-            "POOL-UX-002", "POOL-WORLD-004", "POOL-PROFILE-002",
+            "POOL-UX-002", "POOL-WORLD-004", "POOL-PROFILE-002", "POOL-ECON-003",
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
 
-    def test_validated_crew_identity_and_active_scene_jobs_match_status(self):
+    def test_validated_scene_jobs_and_next_assistant_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         living_world = status["subsystems"]["living_world"]
-        character_forge = status["subsystems"]["character_forge"]
         event_runtime = status["subsystems"]["event_runtime"]
         economy = status["subsystems"]["economy"]
         presentation = status["subsystems"]["presentation"]
+        assistant = status["subsystems"]["assistant"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-A")
-        self.assertEqual(status["active_iteration"], "0.8.8-B")
-        self.assertEqual(status["next_iteration"], "0.8.8-B")
-        self.assertEqual(status["current_focus"], "scene_jobs_wallet_and_a4_visibility")
-        self.assertTrue(character_forge["crew_identity_logo_flag"])
-        self.assertTrue(presentation["crew_identity_editor_visible"])
-        self.assertFalse(event_runtime["always_available_job_actions"])
-        self.assertFalse(economy["personal_finance_state_validated"])
-        self.assertFalse(presentation["scene_jobs_panel_validated"])
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-B")
+        self.assertEqual(status["active_iteration"], "0.8.8-C")
+        self.assertEqual(status["next_iteration"], "0.8.8-C")
+        self.assertEqual(status["current_focus"], "secret_best_friend_single_task_confirmed_round_loop")
+        self.assertTrue(event_runtime["always_available_job_actions"])
+        self.assertTrue(economy["personal_finance_state_validated"])
+        self.assertTrue(presentation["scene_jobs_panel_validated"])
+        self.assertEqual(assistant["status"], "planned_next")
+        self.assertFalse(assistant["repeat_until_disabled"])
+        self.assertFalse(assistant["single_active_task"])
         self.assertTrue(living_world["district_event_timeline_visible"])
         self.assertTrue(living_world["district_event_cadence_enabled"])
         self.assertEqual(living_world["district_event_cooldown_hours"], 24)
@@ -67,8 +68,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         expected = {
             "POOL-PROFILE-002": "`DONE`",
-            "POOL-ECON-003": "`PULLED`",
-            "POOL-COMPANION-001": "`DEPENDENCY`",
+            "POOL-ECON-003": "`DONE`",
+            "POOL-COMPANION-001": "`PULLED`",
             "POOL-FINANCE-001": "`READY`",
             "POOL-UX-004": "`READY`",
             "POOL-MAP-002": "`READY`",
