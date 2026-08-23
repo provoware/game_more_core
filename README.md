@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.8 C1 validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--C1_validiert-7dff00">
-  <img alt="Secret Best Friend C2 in Abnahme" src="https://img.shields.io/badge/Secret_Best_Friend-0.8.8--C2_in_Abnahme-00c2ff">
+  <img alt="Feature Stand 0.8.8 C2 validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--C2_validiert-7dff00">
+  <img alt="Secret Best Friend C3 in Abnahme" src="https://img.shields.io/badge/Secret_Best_Friend-0.8.8--C3_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -27,9 +27,9 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.8-C1 – Assistant Authority Contract` |
-| **Aktive Iteration** | 🟡 `0.8.8-C2 – Assistant Control State` |
-| **Nächste Iteration** | `0.8.8-C3 – Confirmed-Round Execution` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-C2 – Assistant Control State` |
+| **Aktive Iteration** | 🟡 `0.8.8-C3 – Confirmed-Round Execution` |
+| **Nächste Iteration** | `0.8.8-C4 – JOBS-UI-Integration` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Crew Identity** | ✅ Logo/Fahne als syncbereites Datenrezept, kein Bildblob |
 | **Living World** | ✅ replaybare Street Encounters, persistente Districts, District World Events + 24h-Cadence |
@@ -38,12 +38,12 @@
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
 | **Berlin Ops Map PRO** | ✅ 8 Districts · 12 Locations · read-only |
 | **Scene Jobs** | ✅ fünf Jobs + persönlicher Wallet-/Ledger-Pfad remote validiert |
-| **Assistent C2** | 🟡 Aus/Jobwahl, Stop/Wechsel und Recovery implementiert; noch keine automatische Ausführung |
+| **Assistent C3** | 🟡 bestätigte Runde → genau eine vorhandene Scene-Job-Ausführung; Retry-/Crash-Schutz in Abnahme |
 | **Control Deck 2.0** | ✅ HUD, Schnellnavigation und lokale Anzeigeoptionen |
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.8-C1` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. Die Produktversion bleibt bewusst `0.8.4-alpha.1`. `0.8.8-C2` speichert nur die Assistenten-Steuerentscheidung; automatische Jobausführung folgt erst in C3.
+> `0.8.8-C2` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. Die Produktversion bleibt bewusst `0.8.4-alpha.1`. C3 ergänzt nur die intern bestätigte Rundenausführung; Browser und Systemzeit erhalten keine Rundenautorität.
 
 ---
 
@@ -93,6 +93,7 @@ PROPERTY / HALL OF TRIBUTE
 - Crew-Logo/Fahne als kleine synchronisierbare Identitätsdaten statt Bilddatei
 - Scene Jobs mit persönlichem Bargeld, Retry-Schutz und Recovery
 - Assistenten-Autoritätsvertrag C1: bestehender Scene-Job-Katalog, maximal eine Aufgabe, bestätigte Runde statt Systemzeit
+- Assistenten-Steuerzustand C2: Aus/Jobwahl, Stop/Wechsel und Recovery ohne automatische Ausführung
 
 ---
 
@@ -158,9 +159,11 @@ Bank, Zinsen, Investments und der Assistent bleiben getrennte Folge-Slices.
 
 **C1 ✅** bindet den Assistenten an den vorhandenen Scene-Job-Vertrag: maximal eine Aufgabe, bestätigte Spielrunde als spätere Ausführungsautorität, keine Systemzeit und keine frei lieferbaren Browserfolgen. Remote-Abnahme: PR #107 · Head `3cf918ac98d5a76d2b4ff13b3f6e46b2a458d06f` · Runtime `32653528714` · Presentation `32653528815` · Repository Health `32653528779` · Release Acceptance `32653528627` · Release Package `32653528682` · SAFE MERGE PASS · Merge `a16436582928d02202f38366c63d7cf790d5deb6`.
 
-**C2 🟡** ergänzt ausschließlich den recoverbaren Steuerzustand `Aus / gewählter Scene Job`. Start, Wechsel und Stop laufen über den bestehenden Persistence-Kernel und `assistant.control_changed`. Eine wiederholte identische Auswahl ist schreibfrei; dieselbe Command-ID kann nicht nachträglich eine andere Auswahl bedeuten. C2 führt noch keinen Job aus und verändert weder Bargeld noch Energie oder Stress.
+**C2 ✅** ergänzt ausschließlich den recoverbaren Steuerzustand `Aus / gewählter Scene Job`. Start, Wechsel und Stop laufen über den bestehenden Persistence-Kernel und `assistant.control_changed`. Eine wiederholte identische Auswahl ist schreibfrei; dieselbe Command-ID kann nicht nachträglich eine andere Auswahl bedeuten. Remote-Abnahme: PR #108 · Head `a8d6b9ffe2c8369ff1a41320a87faad069610779` · Runtime `32656644301` · Presentation `32656644312` · Repository Health `32656644321` · Release Acceptance `32656644302` · Release Package `32656644313` · SAFE MERGE PASS · Merge `5c597479afafe64f63aa4ce015cea5365b2320bf`.
 
-**C3 folgt:** Erst eine bestätigte Spielrunde darf den aktuell gewählten Scene Job exakt einmal über den vorhandenen `SceneJobService` ausführen. Retry derselben bestätigten Runde muss gegen Doppelzahlung und doppelte Ressourcenfolgen geschützt bleiben.
+**C3 🟡** bindet einen bereits intern bestätigten Rundentrigger an genau eine Ausführung des aktuell gewählten Scene Jobs. `AssistantRoundExecutionService` orchestriert nur; Auszahlung und Ressourcenfolgen bleiben im `SceneJobService`. `assistant.round_processed` verhindert rückwirkende Ausführung alter Trigger und ergänzt einen Crash-sicheren Abschlussmarker. Browser und Systemzeit erhalten keine Rundenautorität.
+
+**C4 folgt:** Auswahl, Wechsel, Stop und Status werden kompakt in den vorhandenen JOBS-Bereich integriert – ohne zweites Dashboard.
 
 ---
 
@@ -173,8 +176,9 @@ Der Ausbau bleibt in getrennte, prüfbare Slices zerlegt:
 | **0.8.8-A** | Crew-Logo/Fahne | ✅ synchronisierbare Identitätsdaten statt Bildblob |
 | **0.8.8-B** | Scene Jobs | ✅ katalogisierte Jobs + persönliches Bargeld; Browser sendet nur `job_id` |
 | **0.8.8-C1** | Assistant Authority | ✅ bestehender Jobvertrag; keine Systemzeit-/Browserautorität |
-| **0.8.8-C2** | Assistant Control State | 🟡 genau eine persistente Auswahl oder Aus; noch keine Ausführung |
-| **0.8.8-C3** | Confirmed-Round Execution | bestätigte Runde → höchstens eine kanonische Jobausführung |
+| **0.8.8-C2** | Assistant Control State | ✅ genau eine persistente Auswahl oder Aus; noch keine Ausführung |
+| **0.8.8-C3** | Confirmed-Round Execution | 🟡 bestätigte Runde → exakt eine idempotente kanonische Jobausführung |
+| **0.8.8-C4** | JOBS-UI-Integration | vorhandenen JOBS-Bereich für Assistenten-Auswahl/Stop/Status nutzen |
 | **0.8.8-D** | Bank & Investments | gemeinsames Finance-Ledger für Ein-/Auszahlung, Zins, Anlagen, Dividenden und Auszüge |
 | **0.8.8-E** | Control Deck Focus | weniger doppelte Ansichten, lokale Bereichsmaximierung, klare nächste Aktionen |
 | **0.8.8-F** | Berlin Ops Map 2 | bezirksartige Zoom-/Pan-Ansicht mit besserer Objekt-Hierarchie |
@@ -282,7 +286,8 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung oder Aktionshervorhebung 
 | 0.8.7-C5 | District-Event Cadence/Cooldown | `bd79da8d1e12...` |
 | 0.8.8-A | Crew Identity Logo/Fahne | `7e0ed1e36dcc...` |
 | 0.8.8-B | Scene Jobs & persönliches Bargeld | `83aa6d050909...` |
-| **0.8.8-C1** | **Assistant Authority Contract** | `a16436582928...` |
+| 0.8.8-C1 | Assistant Authority Contract | `a16436582928...` |
+| **0.8.8-C2** | **Assistant Control State** | `5c597479afaf...` |
 
 ---
 

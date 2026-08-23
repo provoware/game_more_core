@@ -44,6 +44,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-A:** PR #104 · Merge `7e0ed1e36dcc89436c0430d49e547fe2106f756b` · Crew-Logo/Fahne ohne Bildblob
 - **0.8.8-B:** PR #105 · Merge `83aa6d050909e949a42f3c1bb3ab5c267b386693` · Scene Jobs + persönliches Bargeld
 - **0.8.8-C1:** PR #107 · Merge `a16436582928d02202f38366c63d7cf790d5deb6` · Assistant Authority Contract
+- **0.8.8-C2:** PR #108 · Merge `5c597479afafe64f63aa4ce015cea5365b2320bf` · persistenter Assistant Control State
 
 ---
 
@@ -51,7 +52,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
-| `POOL-COMPANION-001` | `PULLED` | **Secret Best Friend Assistant** | eine vorhandene Aufgabe automatisch Runde für Runde betreiben | C1 remote validiert; C2 persistenter Aus/Jobwahl-Zustand implementiert, noch ohne Automatik |
+| `POOL-COMPANION-001` | `PULLED` | **Secret Best Friend Assistant** | eine vorhandene Aufgabe automatisch Runde für Runde betreiben | C1/C2 remote validiert; C3 bindet bestätigte Runde idempotent an `SceneJobService`, UI folgt separat |
 | `POOL-FINANCE-001` | `READY` | **Bankkonto & Sparen** | Bargeld sichern, Ein-/Auszahlung, Zins und Zinseszins | Finance-State/Ledger aus Scene Jobs wiederverwenden; bestätigte Spielzeit statt Systemzeit |
 | `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt `POOL-FINANCE-001`; keine echten Marktdaten notwendig; katalogisierte Spielkurse |
 | `POOL-FINANCE-003` | `DEPENDENCY` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Finance-Ledger, keine zweite Buchhaltung |
@@ -100,4 +101,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-COMPANION-001` bleibt aktiv. C2 speichert ausschließlich die Auswahl/Stop-Entscheidung. Erst C3 darf einen bestätigten Runden-Trigger an genau eine Ausführung über den vorhandenen `SceneJobService` binden. Danach folgt die kompakte JOBS-UI-Integration. Bank und Anlagen bleiben ein eigener Finance-Slice.
+`POOL-COMPANION-001` bleibt aktiv. C3 verbraucht jeden bestätigten Rundentrigger genau einmal und delegiert die eigentliche Arbeit ausschließlich an `SceneJobService`; ein alter Trigger kann weder nach Jobwechsel noch nach einem Absturz doppelt zahlen. Als nächster Slice folgt C4: kompakte Assistenten-Steuerung und Status im bestehenden JOBS-Bereich, ohne zweites Dashboard. Danach kann `POOL-COMPANION-002` als kleiner Story-Nachhall folgen.

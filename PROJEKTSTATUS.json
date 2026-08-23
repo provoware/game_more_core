@@ -2,27 +2,27 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-C2",
-  "status": "0_8_8_c1_remote_validated_assistant_c2_control_state_in_validation",
-  "current_focus": "assistant_persistent_control_state_without_execution",
-  "last_validated_feature_iteration": "0.8.8-C1",
+  "active_iteration": "0.8.8-C3",
+  "status": "0_8_8_c2_remote_validated_assistant_c3_confirmed_round_in_validation",
+  "current_focus": "assistant_confirmed_round_exactly_once_scene_job_execution",
+  "last_validated_feature_iteration": "0.8.8-C2",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #107 / head 3cf918ac98d5a76d2b4ff13b3f6e46b2a458d06f / merge a16436582928d02202f38366c63d7cf790d5deb6",
+  "validation_reference": "PR #108 / head a8d6b9ffe2c8369ff1a41320a87faad069610779 / merge 5c597479afafe64f63aa4ce015cea5365b2320bf",
   "remote_validation": {
-    "status": "success_for_0.8.8_c1_assistant_authority_contract",
-    "pull_request": 107,
-    "validated_head": "3cf918ac98d5a76d2b4ff13b3f6e46b2a458d06f",
-    "runtime_core_workflow_run": 32653528714,
-    "presentation_core_workflow_run": 32653528815,
-    "repository_health_workflow_run": 32653528779,
-    "release_acceptance_workflow_run": 32653528627,
-    "release_package_workflow_run": 32653528682,
+    "status": "success_for_0.8.8_c2_assistant_control_state",
+    "pull_request": 108,
+    "validated_head": "a8d6b9ffe2c8369ff1a41320a87faad069610779",
+    "runtime_core_workflow_run": 32656644301,
+    "presentation_core_workflow_run": 32656644312,
+    "repository_health_workflow_run": 32656644321,
+    "release_acceptance_workflow_run": 32656644302,
+    "release_package_workflow_run": 32656644313,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "codex_review_execution": "blocked_by_external_usage_limit_not_counted_as_pass",
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "a16436582928d02202f38366c63d7cf790d5deb6"
+    "merged_commit": "5c597479afafe64f63aa4ce015cea5365b2320bf"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -52,7 +52,8 @@
     {"iteration": "0.8.7-C5", "pull_request": 102, "merged_commit": "bd79da8d1e124ec60248a05bf332c6ef338ca7b6", "feature": "confirmed_game_world_time_district_event_cadence"},
     {"iteration": "0.8.8-A", "pull_request": 104, "merged_commit": "7e0ed1e36dcc89436c0430d49e547fe2106f756b", "feature": "crew_identity_logo_flag_sync_ready_recipe"},
     {"iteration": "0.8.8-B", "pull_request": 105, "merged_commit": "83aa6d050909e949a42f3c1bb3ab5c267b386693", "feature": "scene_jobs_personal_cash_and_a4_visibility"},
-    {"iteration": "0.8.8-C1", "pull_request": 107, "merged_commit": "a16436582928d02202f38366c63d7cf790d5deb6", "feature": "assistant_authority_contract"}
+    {"iteration": "0.8.8-C1", "pull_request": 107, "merged_commit": "a16436582928d02202f38366c63d7cf790d5deb6", "feature": "assistant_authority_contract"},
+    {"iteration": "0.8.8-C2", "pull_request": 108, "merged_commit": "5c597479afafe64f63aa4ce015cea5365b2320bf", "feature": "assistant_persistent_control_state"}
   ],
   "subsystems": {
     "character_forge": {
@@ -149,7 +150,7 @@
       "browser_gameplay_authority": false
     },
     "assistant": {
-      "status": "c1_remote_validated_c2_control_state_in_validation",
+      "status": "c2_remote_validated_c3_confirmed_round_in_validation",
       "secret_best_friend_story_role": true,
       "contract_policy_defined": true,
       "task_source": "scene_jobs",
@@ -159,8 +160,11 @@
       "client_round_authority": false,
       "control_state_implemented": true,
       "control_state_recoverable": true,
-      "automatic_round_execution": false,
-      "repeat_until_disabled": false,
+      "automatic_round_execution": true,
+      "round_processed_marker": true,
+      "round_retry_idempotent": true,
+      "off_round_consumed_without_retroactive_execution": true,
+      "repeat_until_disabled": true,
       "single_active_task_runtime": true
     },
     "network": {
@@ -179,11 +183,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.8-C3",
-  "next_goal": "C3: bestätigten Runden-Trigger idempotent an genau eine Ausführung des aktuell gewählten Scene Jobs binden; keine Systemzeit- oder Browser-Autorität.",
+  "next_iteration": "0.8.8-C4",
+  "next_goal": "C4: Assistent im vorhandenen JOBS-Bereich auswählen, wechseln, stoppen und Status verständlich anzeigen; kein zweites Dashboard und keine neue Gameplay-Autorität.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T19:52:00+02:00"
+  "updated_at": "2026-08-23T20:45:00+02:00"
 }
