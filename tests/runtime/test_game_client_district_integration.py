@@ -16,6 +16,7 @@ JOURNAL = json.loads((ROOT / "manifests" / "JOURNAL_MANIFEST.json").read_text(en
 INCIDENTS = json.loads((ROOT / "manifests" / "INCIDENT_MANIFEST.json").read_text(encoding="utf-8"))
 STREET = json.loads((ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json").read_text(encoding="utf-8"))
 DISTRICTS = json.loads((ROOT / "manifests" / "DISTRICT_STATE_MANIFEST.json").read_text(encoding="utf-8"))
+DISTRICT_EVENTS = json.loads((ROOT / "manifests" / "DISTRICT_EVENT_MANIFEST.json").read_text(encoding="utf-8"))
 CITY_MAP = json.loads((ROOT / "manifests" / "CITY_MAP_MANIFEST.json").read_text(encoding="utf-8"))
 ALLOWED = set(JOURNAL["event_types"])
 
@@ -29,7 +30,7 @@ def ctx(command_id: str, entity_type: str = "event", entity_id: str = "event-loc
         entity_id,
         command_id,
         "district-integration-test",
-        "0.8.5-d1",
+        "0.8.7-c3",
         "player-local",
     )
 
@@ -81,6 +82,8 @@ class GameClientDistrictIntegrationTests(unittest.TestCase):
             street_world_seed="district-integration-seed",
             district_manifest=DISTRICTS,
             city_map_manifest=CITY_MAP,
+            district_event_manifest=DISTRICT_EVENTS,
+            district_world_seed="district-world-integration-seed",
         )
         self.session.bootstrap_character(CharacterState("player-local", "District Crew"))
         self.assertEqual(self.session.dispatch(
@@ -104,6 +107,7 @@ class GameClientDistrictIntegrationTests(unittest.TestCase):
         self.assertEqual(result.status, "confirmed")
         self.assertIn("district", result.metadata)
         self.assertTrue(result.metadata["district"]["applied"])
+        self.assertNotIn("district_world_event", result.metadata)
         state = self.session.read_state()
         self.assertIn("districts", state)
         self.assertEqual(state["event"], before_event)
@@ -118,7 +122,7 @@ class GameClientDistrictIntegrationTests(unittest.TestCase):
         self.assertTrue(retry.idempotent_replay)
         self.assertEqual(len([r for r in self.kernel.read_records() if r["event_type"] == "world.district_effect_applied"]), 1)
 
-    def test_settlement_derives_district_effect_exactly_once(self):
+    def test_settlement_triggers_one_deterministic_district_world_event(self):
         commands = [
             {"type": "event.execute", "command_id": "planning", "action_id": "begin_planning"},
             {"type": "event.execute", "command_id": "procurement", "action_id": "begin_procurement"},
@@ -142,17 +146,29 @@ class GameClientDistrictIntegrationTests(unittest.TestCase):
         self.assertEqual(first.status, "confirmed")
         self.assertIn("district", first.metadata)
         self.assertTrue(first.metadata["district"]["applied"])
+        self.assertIn("district_world_event", first.metadata)
+        world_event = first.metadata["district_world_event"]
+        self.assertIn(world_event["event_id"], {item["event_id"] for item in DISTRICT_EVENTS["events"]})
+        self.assertEqual(world_event["district_id"], first.metadata["district"]["district_id"])
+        self.assertTrue(world_event["event_instance_id"].startswith(
+            f"district-event:{world_event['district_id']}:settlement:"
+        ))
+
         state = self.session.read_state()
         self.assertEqual(state["event"]["phase"], "completed")
         self.assertIn("districts", state)
-        self.assertEqual(state["districts"]["last_change"]["source_type"], "settlement")
+        self.assertEqual(state["districts"]["last_change"]["source_type"], "district_event")
         district_records = [r for r in self.kernel.read_records() if r["event_type"] == "world.district_effect_applied"]
-        self.assertEqual(len(district_records), 1)
+        self.assertEqual(len(district_records), 2)
+        self.assertEqual([r["payload"]["source_type"] for r in district_records], ["settlement", "district_event"])
 
+        record_count = len(self.kernel.read_records())
         retry = self.event_command(settlement_command)
         self.assertEqual(retry.status, "confirmed")
         self.assertTrue(retry.idempotent_replay)
-        self.assertEqual(len([r for r in self.kernel.read_records() if r["event_type"] == "world.district_effect_applied"]), 1)
+        self.assertEqual(retry.metadata["district_world_event"]["event_id"], world_event["event_id"])
+        self.assertEqual(len(self.kernel.read_records()), record_count)
+        self.assertEqual(len([r for r in self.kernel.read_records() if r["event_type"] == "world.district_effect_applied"]), 2)
 
 
 if __name__ == "__main__":
