@@ -66,7 +66,7 @@ class AssistantControlServiceTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(ValueError, "passt nicht"):
             self.service.set_active_job("scene.flyer_shift", context=wrong)
-        self.assertEqual(self.kernel.read_records(), [])
+        self.assertEqual(self.kernel.read_records(), ())
 
     def test_retry_is_idempotent_and_command_id_cannot_change_meaning(self):
         first = self.service.set_active_job("scene.load_in_help", context=context("assistant-retry"))
