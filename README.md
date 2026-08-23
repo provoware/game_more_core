@@ -8,11 +8,9 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.7 B validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.7--B_validiert-7dff00">
-  <img alt="Berlin Ops Map PRO validiert" src="https://img.shields.io/badge/Berlin_Ops_Map_PRO-validiert-00c2ff">
-  <img alt="Seasonal Hall validiert" src="https://img.shields.io/badge/Seasonal_Hall-0.8.7--A_validiert-ff7ad9">
-  <img alt="Control Deck validiert" src="https://img.shields.io/badge/Control_Deck-0.8.7--B_validiert-7dff00">
-  <img alt="District Events Contract in validation" src="https://img.shields.io/badge/District_Events-0.8.7--C1_in_Abnahme-f2c744">
+  <img alt="Feature Stand 0.8.7 C5 validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.7--C5_validiert-7dff00">
+  <img alt="Timeline sichtbar" src="https://img.shields.io/badge/Timeline-C4B_sichtbar-00c2ff">
+  <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -29,26 +27,25 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.7-B – Control Deck & Player Choices` |
-| **Aktive Iteration** | 🟡 `0.8.7-C – Bezirksbezogene Welt-Ereignisse`, C1 Vertrag/Katalog in Abnahme |
+| **Validierter Feature-Stand** | ✅ `0.8.7-C5 – District-Event Cadence/Cooldown` |
+| **Aktive Iteration** | 🟡 `0.8.8-A – Crew Identity Foundation` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
-| **Living World** | ✅ replaybare Street Encounters + persistente District-Metriken; 🟡 District-Event-Vertrag C1 |
+| **Living World** | ✅ replaybare Street Encounters, persistente Districts, District World Events + 24h-Cadence |
+| **Timeline** | ✅ Street-, Krisen- und District-Ereignisse read-only im Control Deck sichtbar |
 | **Ranking** | ✅ Competitive Top 10 + bestätigte Wochen-/Monatszyklen |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
 | **Berlin Ops Map PRO** | ✅ 8 Districts · 12 Locations · read-only |
 | **Control Deck 2.0** | ✅ HUD, Schnellnavigation und lokale Anzeigeoptionen |
-| **Spielerentscheidungen** | ✅ Street Approaches + Krisen-Folgenvorschau |
-| **Recovery** | ✅ Combined Replay für persistente Kernblöcke; District-Event-Recovery folgt erst in C2 |
-| **Netzwerk/Telegram** | nicht implementiert; keine erfundenen Remote-Spieler |
+| **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.7-B` ist remote validiert und sicher gemergt. `0.8.7-C` startet bewusst mit einem **nicht schreibenden Fachvertrag** für District-Ereignisse. Der Katalog allein macht noch keine neuen Ereignisse spielbar. Die Produktversion bleibt `0.8.4-alpha.1`.
+> `0.8.7-C5` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. Die Produktversion bleibt bewusst `0.8.4-alpha.1`. Feature-Fortschritt ist kein stiller Release.
 
 ---
 
-## 🎮 Was ist BUNKERFREQUENZ?
+## 🎮 Spielkern
 
-BUNKERFREQUENZ ist ein lokales Techno-/FreeTekno-Crew-RPG. Entscheidungen, bestätigte Aktionen und ihr Verlauf formen Charakter und Stadt.
+BUNKERFREQUENZ ist ein lokales Techno-/FreeTekno-Crew-RPG. Bestätigte Aktionen, Ereignisse und ihre Folgen formen Charakter, Crew und Stadt.
 
 ```text
 STRASSE / SPIELERANSATZ
@@ -65,13 +62,13 @@ KRISE? → FOLGEN ANSEHEN → ENTSCHEIDEN
       ↓
 SETTLEMENT
       ↓
-RUF · SKILLS · BIOGRAFIE
+DISTRICT WORLD EVENT (CADENCE-GEFÜHRT)
+      ↓
+RUF · SKILLS · BIOGRAFIE · TIMELINE
       ↓
 LIVING DISTRICTS / BERLIN OPS MAP
       ↓
-PROPERTY / AUSBAU
-      ↓
-HALL OF TRIBUTE / SAISON
+PROPERTY / HALL OF TRIBUTE
 ```
 
 ### Bereits validiert
@@ -83,95 +80,55 @@ HALL OF TRIBUTE / SAISON
 - persistente District-Werte
 - Property Purchase + dreistufige Upgrades
 - Berlin Ops Map PRO
-- Competitive Top 10
-- Wochen-/Monatszyklen der Hall of Tribute
+- Competitive Top 10 + Wochen-/Monatszyklen
 - Control Deck 2.0 mit Street Approaches und Krisen-Folgenvorschau
+- sichtbare read-only Ereignis-Timeline
+- District World Events mit deterministischer Auswahl und 24h-Cadence aus bestätigter Spielweltzeit
 
 ---
 
-## 🏆 0.8.7-A – Saisonale Hall of Tribute ✅
+## 🌆 0.8.7-C – District World Events & Timeline ✅
 
-Die Hall verwendet weiterhin dieselbe Competitive-Ranking-Engine. Neu sind bestätigte Wochen-/Monatszyklen und Titelprojektionen.
+### C1–C3: Vertrag, Runtime, Application
 
-### Sicherheitsregeln
+Vier erste Bezirksereignisse verwenden stabile IDs, katalogisierte Voraussetzungen und kleine District-Effekte. Die Auswahl bleibt deterministisch aus `world_seed + district_id + trigger_id`. Der Browser kann weder Ereignisse aktivieren noch Gewichte oder Effekte einspeisen. `settlement.complete` ist der einzige autorisierte Application-Trigger.
 
-- Systemzeit ist **niemals** alleinige Saisonautorität.
-- Ein abgeschlossenes bestätigtes Event kann einen stabilen lokalen `game_world_time`-Anker liefern.
-- Endgültige Titel brauchen einen bestätigten geschlossenen Zyklus.
-- Ein endgültiger Championtitel braucht echte bestätigte Konkurrenz.
-- Ein lokaler Einzelspieler-Rang 1 erzeugt keinen Fake-Champion.
-- Kein zweites Ranking-System wurde eingeführt.
+### C4A/C4B: Ereignis-Timeline
 
-**Remote-Abnahme:** PR #87 · Head `b887f912675ed2cf5efa8eb85631ab7858721836` · 5/5 Gates · SAFE MERGE PASS · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`.
+Die Timeline liest ausschließlich bestätigte Journalrecords für Street Encounters, gelöste Krisen und District-Ereignisse. C4A liefert die kanonische Projection; C4B zeigt sie im Control Deck an. Der Browser übernimmt Reihenfolge und Texte read-only und besitzt keinen zweiten Story- oder Save-Pfad.
 
----
+**Remote-Abnahme C4B:** PR #101 · Head `e23271c5dcb1463d68178b37faa2602d24d6eb46` · 5/5 Gates · SAFE MERGE PASS · Merge `3d71f00c5717ae797e6b8f1ca4c65c036bf71c81`.
 
-## 🎛️ 0.8.7-B – Control Deck & Player Choices ✅
+### C5: Cadence/Cooldown
 
-Dieser Slice verbessert Optik, Bedienung und echte Auswahlmöglichkeiten und ist remote validiert sowie sicher gemergt.
+District-Ereignisse werden global über **24 Stunden bestätigte Spielweltzeit** dosiert. Autorität ist `event.time_window.start_local`; Systemzeit ist kein Fallback. Ein Trigger innerhalb des Cooldowns bleibt ein schreibfreier No-op. Retry und Reload würfeln bestätigte Trigger nicht neu.
 
-### Control Deck 2.0
-
-- sticky HUD für Phase, Budget, Energie, Stress, Ruf und Eigentum
-- Schnellnavigation zu Straße, Map, Property, Hall, Event, Equipment und Save
-- stärkere Industrial-Control-Room-Hierarchie
-- responsive Desktop-/Tablet-/Mobilansicht
-- Entscheidungselemente werden deutlicher als reine Statusflächen dargestellt
-
-### Lokale Anzeigeoptionen
-
-Im Browser können drei reine Darstellungsoptionen gewählt werden:
-
-- **Kompakt** – weniger Abstand, mehr Informationen gleichzeitig
-- **Hoher Kontrast** – stärkere Linien und Statusflächen
-- **Große Schrift** – bessere Lesbarkeit
-
-Diese Einstellungen werden nur lokal im Browser gespeichert. Sie besitzen **keine** Domain-, Save-, Economy- oder Ranking-Autorität.
-
-### Street Approaches
-
-Vor einer Straßenrunde kann der Spieler einen Ansatz wählen:
-
-| Ansatz | Idee |
-|---|---|
-| **Ausgeglichen** | exakt die bisherige Encounter-Verteilung |
-| **Runterkommen** | mehr Ruhe, Wasser, Kaffee und Erholung |
-| **Kontakte** | stärker auf bekannte Gesichter/Crews ausgerichtet |
-| **Scout** | mehr Wege/Funde, aber etwas mehr Ärger möglich |
-
-Der Ansatz verändert **nur katalogisierte Auswahlgewichte**. Der Encounter selbst bleibt die einzige Effekt-Autorität. Der Browser sendet nur `approach_id`; Gewichte oder Effekte können nicht eingespeist werden.
-
-Alte `0.8.5-c1`-Street-Records bleiben replaybar und werden als `balanced` interpretiert.
-
-### Krisenentscheidungen
-
-Die vorhandene Crisis Engine bleibt unverändert zuständig. Das Control Deck zeigt vor der Antwort lediglich die bereits katalogisierten Auswirkungen, z. B. Budget, Ruf, Crew-Stress, Stabilität, Heat und Zielphase. Der Browser sendet weiterhin nur die bestehende `response_id`.
-
-**Remote-Abnahme:** PR #88 · Head `6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c` · 5/5 Gates · SAFE MERGE PASS · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`.
+**Remote-Abnahme C5:** PR #102 · Head `05eef417efa24f299ebc7de7f2104f6a625d5582` · Runtime `32646269065` · Presentation `32646269053` · Repository Health `32646269009` · Release Acceptance `32646269064` · Release Package `32646269010` · SAFE MERGE PASS · Merge `bd79da8d1e124ec60248a05bf332c6ef338ca7b6`.
 
 ---
 
-## 🌆 0.8.7-C – Bezirksbezogene Welt-Ereignisse 🟡
+## 🧭 0.8.8 – geplanter Ausbau
 
-C1 legt zuerst den Fachvertrag fest. Vier kleine Ereignisse bilden den Startkatalog:
+Der nächste Ausbau wird bewusst in getrennte, prüfbare Slices zerlegt:
 
-- **Das Netz flackert**
-- **Die Nachricht macht die Runde**
-- **Mehr Blau in den Nebenstraßen**
-- **Eine Tür steht plötzlich offen**
+| Slice | Ziel | Kernregel |
+|---|---|---|
+| **0.8.8-A** | Crew-Logo/Fahne | synchronisierbare Identitätsdaten statt Bildblob |
+| **0.8.8-B** | Scene Jobs | jederzeit nutzbare, katalogisierte Geld-/Ressourcenaktionen |
+| **0.8.8-C** | Secret Best Friend Assistant | genau eine wiederholte Aufgabe bis Deaktivierung |
+| **0.8.8-D** | Bank & Investments | journalisierte Ein-/Auszahlungen, Zins, Zinseszins, Anlagen, Dividenden, Auszüge |
+| **0.8.8-E** | Control Deck Focus | weniger doppelte Ansichten, lokale Bereichsmaximierung, klare nächste Aktionen |
+| **0.8.8-F** | Berlin Ops Map 2 | bezirksartige Zoom-/Pan-Ansicht mit besserer Objekt-Hierarchie |
 
-Der Vertrag bindet sich an den vorhandenen `DISTRICT_STATE_MANIFEST` und dessen vier Werte `heat`, `prestige`, `police_pressure` und `scene_activity`. Die Auswahl ist als `sha256_stable_weighted` mit `world_seed + district_id + trigger_id` definiert. Systemzeit ist kein Seed, Reload darf nicht neu würfeln und der Browser darf weder ein Ereignis aktivieren noch Effekte einspeisen.
-
-**Bewusste Grenze von C1:** Es gibt noch keinen neuen Runtime-Service, keine neue Journal-Eventart und keine sichtbare District-Event-Karte. C2 implementiert erst danach Auswahl, bestätigte Anwendung und Recovery.
+Story-Nachhall und lokaler Timeline-Fokusfilter bleiben eigenständige Folge-Slices, damit Story, Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
 
 ---
 
 ## 🗺️ Berlin Ops Map PRO ✅
 
-Die Karte bleibt eine reine Presentation-Schicht:
+Die aktuelle Karte bleibt eine reine Presentation-Schicht:
 
-- 8 District-Flächen
-- 12 Locations
+- 8 District-Flächen und 12 Locations
 - Heat, Prestige, Polizeidruck, Szeneaktivität
 - Score/Tier/Rang
 - Eigentum + Ausbau
@@ -179,7 +136,7 @@ Die Karte bleibt eine reine Presentation-Schicht:
 - Filter `all / owned / prime / hall`
 - Tastaturfokus + ARIA + Reduced Motion
 
-`map_pro.js` besitzt keine eigene Domainlogik, kein `/api/command`, kein Geocoding und keinen externen Kartendienst.
+`map_pro.js` besitzt keine eigene Domainlogik, kein `/api/command`, kein Geocoding und keinen externen Kartendienst. Die geplante Map 2 darf diese Grenze nicht aufbrechen.
 
 ---
 
@@ -229,7 +186,9 @@ A4 CONTROL DECK
 | Application | Use Cases und Orchestrierung | Persistenz umgehen |
 | Infrastructure | Journal/State/Snapshot/Recovery | Gameplay erfinden |
 | Presentation | bestätigte Daten erklären/darstellen | Domain-/Save-State direkt schreiben |
-| Browser-UI | Auswahl-IDs senden, lokale Darstellung | Preise, Effekte, Gewichte oder Regeln autorisieren |
+| Browser-UI | Auswahl-IDs und lokale Darstellung senden | Preise, Erträge, Effekte, Zinsen oder Regeln autorisieren |
+
+Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung oder Aktionshervorhebung bleiben lokale Presentation. Wiederholte Assistentenaktionen, Zinsen und Dividenden benötigen bestätigte Spielautorität und dürfen nicht durch die Rechneruhr allein fortschreiten.
 
 ---
 
@@ -243,7 +202,7 @@ A4 CONTROL DECK
 - Quarantäne beschädigter Journal-Tails
 - Fault-Injection-Regressionen
 
-> **Ein UI-Refresh oder eine andere Anzeigeeinstellung darf niemals Gameplay erneut würfeln oder bestätigte Fachwerte verändern.**
+> **Ein UI-Refresh, Zoom, Filter oder andere Anzeigeeinstellung darf niemals Gameplay erneut würfeln oder bestätigte Fachwerte verändern.**
 
 ---
 
@@ -251,7 +210,6 @@ A4 CONTROL DECK
 
 | Iteration | Kern | Merge |
 |---|---|---|
-| 0.8.4 | schreibender A4 Game Client | `28459c197489...` |
 | 0.8.4-alpha.1 | erster freigegebener lokaler Release | `3fdb5cc3d57e...` |
 | 0.8.5-C | replaybare Street Encounters | `38de9f42c290...` |
 | 0.8.5-D | Living Districts | `98c8b84715cc...` |
@@ -260,8 +218,9 @@ A4 CONTROL DECK
 | 0.8.6-B | Property Upgrades | `0b301bc9004f...` |
 | 0.8.6-C | Berlin Ops Map PRO | `10c7d6b5e048...` |
 | 0.8.7-A | Saisonale Hall of Tribute | `841258a37915...` |
-| **0.8.7-B** | **Control Deck & Player Choices** | `4d1a35bfbc08...` |
-| **0.8.7-C1** | **District-Event-Vertrag/Katalog** | *in Abnahme* |
+| 0.8.7-B | Control Deck & Player Choices | `4d1a35bfbc08...` |
+| 0.8.7-C4B | sichtbare Ereignis-Timeline | `3d71f00c5717...` |
+| **0.8.7-C5** | **District-Event Cadence/Cooldown** | `bd79da8d1e12...` |
 
 ---
 
@@ -315,9 +274,7 @@ SAFE MERGE PASS
 | Ausbauvorrat | [`FEATURE_POOL.md`](FEATURE_POOL.md) |
 | Projektmanifest | [`PROJEKTMANIFEST.json`](PROJEKTMANIFEST.json) |
 | Anfängerstart | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
-| Street-Vertrag | [`manifests/STREET_ENCOUNTER_MANIFEST.json`](manifests/STREET_ENCOUNTER_MANIFEST.json) |
 | District-Event-Vertrag | [`manifests/DISTRICT_EVENT_MANIFEST.json`](manifests/DISTRICT_EVENT_MANIFEST.json) |
-| Hall-Saison | [`manifests/HALL_SEASON_MANIFEST.json`](manifests/HALL_SEASON_MANIFEST.json) |
 | Berlin Ops Map | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |
 | Safe Merge | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
 
@@ -325,8 +282,6 @@ SAFE MERGE PASS
 
 ## 🔧 Entwicklungsregel
 
-Eine Iteration bearbeitet eine klar begründete Zielstelle. Keine zweite Architektur, keine Browser-Fachlogik und keine stillen Versionssprünge.
-
-Normale PRs nach `main` werden ausschließlich über `/safe-merge` übernommen.
+Eine Iteration bearbeitet eine klar begründete Zielstelle. Keine zweite Architektur, keine Browser-Fachlogik und keine stillen Versionssprünge. Normale PRs nach `main` werden ausschließlich über `/safe-merge` übernommen.
 
 Details: [`AGENTS.md`](AGENTS.md) · [`docs/REPOSITORY_GUARD.md`](docs/REPOSITORY_GUARD.md) · [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md)
