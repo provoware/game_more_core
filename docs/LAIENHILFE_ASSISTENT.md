@@ -4,7 +4,7 @@
 
 C1 hat die Sicherheitsregeln festgelegt. C2 speichert dauerhaft **Aus** oder **genau einen vorhandenen Scene Job**. C3 sorgt dafür, dass eine intern bestätigte Spielrunde den gewählten Job höchstens einmal ausführt. C4 macht diese vorhandene Steuerung direkt im **JOBS-Bereich** sichtbar und bedienbar.
 
-C5A ergänzt nun die sichere Grundlage für kleine erzählerische Reaktionen. Wichtig: Es entsteht dadurch **kein Freundschaftslevel, keine XP-Leiste und keine zweite Progressionsengine**.
+C5A hat anschließend die sichere Datenherkunft für kleine erzählerische Reaktionen abgesichert. C5B zeigt diesen Nachhall nun direkt im vorhandenen Assistentenblock. Wichtig: Es entsteht dadurch **kein Freundschaftslevel, keine XP-Leiste und keine zweite Progressionsengine**.
 
 ## So benutzt du den Freund
 
@@ -17,22 +17,35 @@ C5A ergänzt nun die sichere Grundlage für kleine erzählerische Reaktionen. Wi
 
 Der Status oberhalb der Jobkarten zeigt, ob der Freund aus oder aktiv ist, welchen katalogisierten Job er gewählt hat und welche bestätigte Steuerrevision gespeichert ist.
 
-## Wann darf künftig eine Freundschaftsreaktion erscheinen?
+## Wann erscheint eine Freundschaftsreaktion?
 
-C5A prüft dafür zwei bereits bestätigte Journal-Einträge gemeinsam:
+Der Nachhall braucht immer zwei bereits bestätigte Journal-Einträge:
 
 - `assistant.round_processed`: Die intern bestätigte Runde wurde vom Assistenten verarbeitet.
 - `finance.job_completed`: Der exakt zu dieser Runde gehörende Scene Job wurde tatsächlich dauerhaft verbucht.
 
-Nur wenn **beide Einträge zusammenpassen**, entsteht ein kleiner Nachhall-Eintrag. Ein normal manuell ausgeführter Job reicht nicht. Ein einzelner Rundenmarker reicht ebenfalls nicht. Eine Runde, in der der Assistent auf **Aus** stand, erzeugt keinen Freundschafts-Nachhall.
+Nur wenn **beide Einträge zusammenpassen**, erscheint ein kleiner Storytext. Ein normal manuell ausgeführter Job reicht nicht. Ein einzelner Rundenmarker reicht ebenfalls nicht. Eine Runde, in der der Assistent auf **Aus** stand, erzeugt keinen Freundschafts-Nachhall.
 
-Damit kann die spätere Anzeige nicht einfach aus einer Browseraktion oder aus einem halben Zwischenzustand eine Geschichte erfinden.
+Damit kann die Oberfläche nicht aus einer Browseraktion oder aus einem halben Zwischenzustand eine Geschichte erfinden.
 
-## Was zeigt C5A bereits?
+## Wo sehe ich den Nachhall?
 
-Technisch kann die neue read-only Projektion bis zu drei letzte bestätigte Nachhall-Einträge aufbauen. Für jeden der fünf vorhandenen Scene Jobs gibt es einen kleinen externen deutschen Text. Die Texte liegen außerhalb der Spiellogik.
+Direkt im vorhandenen **Geheimer-bester-Freund-Bereich** oberhalb der Jobkarten. Dort steht unter **„Was dein Freund dazu sagt“** der kleine Nachhall der letzten bestätigten Assistentenarbeiten. Es gibt bewusst **kein zweites Freundschafts-Dashboard**.
 
-C5A selbst hängt diese Texte **noch nicht sichtbar** in die Oberfläche ein. Das ist bewusst der nächste kleine Slice C5B. Dadurch bleibt dieser Schritt leicht prüfbar und die Herkunft der Storydaten ist zuerst abgesichert.
+Bis zu drei letzte bestätigte Einträge werden angezeigt. Jeder Eintrag zeigt einen kurzen Spruch und den zugehörigen katalogisierten Scene Job.
+
+## Warum wechseln die Texte, aber nicht bei jedem Neuladen?
+
+Für jeden der fünf vorhandenen Scene Jobs gibt es mehrere externe deutsche Textvarianten. Die Auswahl wird aus der bereits bestätigten Kombination aus **Character-ID + Runden-ID + Job-ID** deterministisch bestimmt.
+
+Das heißt:
+
+- verschiedene bestätigte Runden können unterschiedliche Sprüche bekommen,
+- dieselbe bestätigte Runde zeigt nach Refresh oder Retry immer denselben Spruch,
+- die Rechneruhr und Browser-Zufall bestimmen keinen Storytext,
+- es entsteht kein neuer gespeicherter Freundschaftszustand.
+
+Die Variation ist damit nur Darstellung bestätigter Geschichte – kein neues Gameplay-System.
 
 ## Startet ein Klick schon eine automatische Runde?
 
@@ -63,4 +76,4 @@ Ja. Die vorhandene normale Job-Schaltfläche bleibt unverändert. Manuelle Jobs 
 
 ## Was kommt danach?
 
-**C5B** kann die bereits abgesicherte Projektion kompakt im vorhandenen JOBS-Assistentenblock anzeigen, ohne ein zweites Dashboard zu bauen. **C6** bleibt abhängig von einem echten kanonischen Rundenproduzenten und soll später den kompletten Pfad Runde → Assistent → Scene Job → Journal → Recovery → Retry end-to-end prüfen.
+Der nächste unabhängige Gameplay-Slice ist **0.8.8-D – Bankkonto & Sparen** auf dem bereits vorhandenen persönlichen Finance-Ledger. **C6 – Round-Authority Integration Harness** bleibt bewusst abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist; dann soll der komplette Pfad Runde → Assistent → Scene Job → Journal → Recovery → Retry end-to-end geprüft werden.

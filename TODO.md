@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-C4 – JOBS-UI-Integration` · PR #110 · Merge `f8295564a4bddabddb4493c778e549d1cb083374`
-- **0.8.8-C4 Remote-Abnahme:** Runtime `32659349173` · Presentation `32659349181` · Repository Health `32659349195` · Release Acceptance `32659349180` · Release Package `32659349202` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-C5A – Confirmed Afterglow Projection`
-- **C5A-Status:** kleiner read-only Freundschafts-Nachhall wird ausschließlich aus einem bestätigten `assistant.round_processed`-Marker plus exakt zugehörigem `finance.job_completed`-Record projiziert; noch keine sichtbare UI und keine neue Progressionsengine
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-C5A – Confirmed Afterglow Projection` · PR #111 · Merge `dc22935d92cf9fea0d72aaac449921a6093a431f`
+- **0.8.8-C5A Remote-Abnahme:** Runtime `32659895098` · Presentation `32659895080` · Repository Health `32659895087` · Release Acceptance `32659895072` · Release Package `32659895070` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-C5B – Visible Friendship Afterglow`
+- **C5B-Status:** die bereits abgesicherte read-only Nachhall-Projektion wird kompakt im vorhandenen JOBS-Assistentenblock angezeigt; mehrere Textvarianten werden deterministisch aus bestätigten Character-/Runden-/Job-IDs gewählt und können bei Refresh/Retry nicht neu gewürfelt werden
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
 ---
@@ -72,43 +72,53 @@
 - [x] direkte `job.run`-Funktion bleibt unverändert
 - [x] PR #110 · finaler Head `06895cefb4fd715a7935578566452c7382fd7a1a` · 5/5 Gates · 0 Review-Threads · `/safe-merge` PASS · Merge `f8295564a4bddabddb4493c778e549d1cb083374`
 
+## 0.8.8-C5A – Confirmed Afterglow Projection
+
+- [x] externer deutscher Nachhall-Katalog für alle fünf vorhandenen Scene Jobs
+- [x] neue read-only `assistant_afterglow_projection` ohne Journal- oder Save-Write
+- [x] Storyeintrag nur bei Paar `assistant.round_processed` + exakt passendem `finance.job_completed`
+- [x] manuelle Jobs, Assistent-Aus-Runden und unvollständige Paare erzeugen keinen Nachhall
+- [x] unbekannte Job-ID im bestätigten Marker bricht fail-closed ab
+- [x] Ausgabe auf die letzten drei bestätigten Einträge begrenzt, geordnet und vom Quelljournal entkoppelt
+- [x] PR #111 · finaler Head `5f875cd066fd9608a482ec26092f64ec0b992437` · 5/5 Gates · `/safe-merge` PASS · Merge `dc22935d92cf9fea0d72aaac449921a6093a431f`
+
 ---
 
-# Aktiv – 0.8.8-C5A Confirmed Afterglow Projection
+# Aktiv – 0.8.8-C5B Visible Friendship Afterglow
 
 ## Ziel
 
-Eine kleine Story-Projektion darf nur dann Freundschafts-Nachhall erzeugen, wenn eine tatsächlich bestätigte Assistentenrunde und deren exakt zugehörige Scene-Job-Buchung gemeinsam im Journal vorliegen. Es entsteht noch kein neuer Spielzustand und keine neue Progressionsengine.
+Die abgesicherte C5A-Projektion wird im vorhandenen JOBS-Assistentenblock sichtbar, abwechslungsreich und weiterhin rein lesend dargestellt. Kein Browserzustand, keine XP und keine zweite Freundschaftsengine entstehen.
 
-### C5A – kleinster Story-/Robustheits-Slice
+### C5B – kleinster sichtbarer Story-Slice
 
-- [x] externer deutscher Textkatalog mit genau einem kleinen Nachhall pro vorhandenem Scene Job
-- [x] neue read-only `assistant_afterglow_projection` ohne Journal- oder Save-Write
-- [x] Storyeintrag nur bei Paar `assistant.round_processed` + passendem `finance.job_completed`
-- [x] manuelle Jobs erzeugen keinen Assistenten-Nachhall
-- [x] im Zustand Aus verarbeitete Runden erzeugen keinen Nachhall
-- [x] unbekannte Job-ID im bestätigten Marker bricht fail-closed ab
-- [x] Ausgabe ist auf die letzten drei bestätigten Einträge begrenzt, geordnet und vom Quelljournal entkoppelt
-- [x] gezielte Presentation-Regressionen für bestätigtes Paar, Manual Job, Marker-only, Aus-Runde und Limit/Detachment
-- [ ] Projection in C5B sichtbar und kompakt in den bestehenden JOBS-Bereich einhängen
+- [x] Nachhall unter `scene_jobs.assistant_afterglow` an den bestehenden A4-State hängen
+- [x] Journalrecords im A4-Projektionslauf einmal lesen und für Timeline sowie Nachhall wiederverwenden
+- [x] Nachhall direkt im bestehenden `jobs-assistant-control` anzeigen; kein zweites Dashboard
+- [x] drei externe Textvarianten pro vorhandenem Scene Job
+- [x] Variantenauswahl deterministisch aus bestätigter `character_id + round_id + job_id`; kein Refresh-/Retry-Reroll
+- [x] UI rendert ausschließlich projizierte Überschrift, Text und katalogisierten Jobtitel
+- [x] kein `fetch`, `localStorage`, Browser-Rundentrigger oder eigener Story-Write im Nachhallrenderer
+- [x] gezielte Presentation-Regressionen für Wiring, UI-Grenze, Determinismus, unvollständige Paare und Reihenfolge
 - [ ] finalen PR-Head durch Runtime Core, Presentation Core, Repository Health, Release Acceptance und Release Package prüfen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch weiterhin 0 Commits hinter `main`
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in C5A
+### Bewusst nicht in C5B
 
-- keine UI-Erweiterung außer der vorbereiteten read-only Projection
-- kein Freundschaftslevel, XP, Beziehungspunkt oder Unlock
-- keine neue Journal-Eventart
-- keine Änderung an C3-Rundenausführung oder C4-Steuerung
+- kein Freundschaftslevel, XP, Beziehungspunkt, Unlock oder Belohnungsbonus
+- keine neue Journal-Eventart und kein neuer persistenter Story-State
+- keine Änderung an C3-Rundenausführung, C4-Steuerung oder `SceneJobService`
 - keine Browser- oder Systemzeit-Autorität
+- keine zweite Timeline oder Assistentenansicht
 - kein Produktversionsbump
 
-### Danach in C
+### Danach
 
-- [ ] **C5B – sichtbarer Freundschafts-Nachhall:** die letzten bestätigten Nachhallzeilen kompakt im vorhandenen JOBS-Assistentenblock anzeigen; keine zweite Ansicht
-- [ ] **C6 – Round-Authority Integration Harness:** späteren kanonischen Rundenproduzenten end-to-end gegen C3 prüfen: Runde → Assistent → Scene Job → Journal → Recovery → Retry
+- [ ] **0.8.8-D – Bankkonto & Sparen:** vorhandenes persönliches Finance-Ledger für Ein-/Auszahlung und später bestätigte Zinsperioden nutzen
+- [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end Runde → Assistent → Scene Job → Journal → Recovery → Retry prüfen
+- [ ] **0.8.8-E – Control Deck Focus:** bestehende Oberfläche verdichten und lokale Fokus-/Maximierungssteuerung ergänzen
 
 ---
 
@@ -130,6 +140,7 @@ Eine kleine Story-Projektion darf nur dann Freundschafts-Nachhall erzeugen, wenn
 - Ein gespeicherter Assistenten-Steuerzustand ist noch keine Ausführungsberechtigung.
 - Ein verarbeiteter Rundentrigger bleibt fachlich unveränderlich; Retry darf keine spätere Auswahl rückwirkend anwenden.
 - Story-Projections lesen nur bestätigte Journal-/Katalogdaten und schreiben keinen Progressionszustand.
+- Story-Textvariation muss deterministisch aus bestätigten IDs erfolgen und darf bei Refresh nicht neu würfeln.
 - Map-Zoom, Focus-Maximierung und Timeline-Filter sind lokale UI-Zustände und gehören nicht ins Journal.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 

@@ -47,6 +47,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-C2:** PR #108 · Merge `5c597479afafe64f63aa4ce015cea5365b2320bf` · persistenter Assistant Control State
 - **0.8.8-C3:** PR #109 · Merge `85e95995d5e84c53131e24a8ad3dec36717891c6` · bestätigte Runde exakt einmal an Scene Job gebunden
 - **0.8.8-C4:** PR #110 · Merge `f8295564a4bddabddb4493c778e549d1cb083374` · Assistent direkt im bestehenden JOBS-Bereich steuerbar
+- **0.8.8-C5A:** PR #111 · Merge `dc22935d92cf9fea0d72aaac449921a6093a431f` · bestätigte Assistentenarbeit als read-only Nachhall-Projektion abgesichert
 
 ---
 
@@ -55,7 +56,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | ID | Status | Feature | Nutzen | Grenze |
 |---|---|---|---|---|
 | `POOL-COMPANION-001` | `DONE` | **Secret Best Friend Assistant – Steuerung & Ausführung** | vorhandene Aufgabe automatisch Runde für Runde betreiben | C1–C4 remote validiert; bestehende Scene Jobs, keine neue Rundenautorität |
-| `POOL-COMPANION-002` | `PULLED` | **Freundschafts-Nachhall** | bestätigte Assistentenarbeit bekommt kleine Storyreaktion | C5A nur read-only Projection aus bestätigtem Rundenmarker + passender Jobbuchung; keine Progressionsengine |
+| `POOL-COMPANION-002` | `PULLED` | **Freundschafts-Nachhall** | bestätigte Assistentenarbeit bekommt kleine Storyreaktion | C5A remote validiert; C5B zeigt deterministisch variierende Nachhalltexte im bestehenden JOBS-Assistentenblock; keine Progressionsengine |
 | `POOL-FINANCE-001` | `READY` | **Bankkonto & Sparen** | Bargeld sichern, Ein-/Auszahlung, Zins und Zinseszins | Finance-State/Ledger aus Scene Jobs wiederverwenden; bestätigte Spielzeit statt Systemzeit |
 | `POOL-FINANCE-002` | `DEPENDENCY` | **Anlagen & Dividenden** | langfristige Geldanlage mit Ertrag | benötigt `POOL-FINANCE-001`; keine echten Marktdaten notwendig; katalogisierte Spielkurse |
 | `POOL-FINANCE-003` | `DEPENDENCY` | **Kontoauszüge** | Geldbewegungen nachvollziehbar prüfen | liest bestätigtes Finance-Ledger, keine zweite Buchhaltung |
@@ -104,4 +105,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-COMPANION-002` ist aktiv. C5A sichert zuerst die Datenherkunft des Story-Nachhalls: Nur das bestätigte Paar aus Assistenten-Rundenmarker und exakt passender Jobbuchung darf einen Eintrag erzeugen. Danach kann C5B diese bereits abgesicherte Projection kompakt im vorhandenen JOBS-Bereich sichtbar machen. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
+`POOL-COMPANION-002` bleibt bis zur C5B-Abnahme aktiv. C5A hat die Datenherkunft abgesichert; C5B macht genau diese Projection im vorhandenen JOBS-Bereich sichtbar und variiert Texte deterministisch, ohne neuen Spielzustand. Danach ist `POOL-FINANCE-001` der stärkste unabhängige Gameplay-Slice. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.

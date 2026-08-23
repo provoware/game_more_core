@@ -60,6 +60,24 @@ class A4AssistantJobsUiTests(unittest.TestCase):
         self.assertIn('"assistant.control"', LAUNCHER)
         self.assertIn('"web/a4/assistant_jobs_ui.js"', LAUNCHER)
 
+    def test_afterglow_is_read_only_and_stays_inside_existing_jobs_control(self):
+        self.assertIn('afterglow.id = "jobs-assistant-afterglow"', ASSISTANT_UI)
+        self.assertIn('afterglowList.id = "jobs-assistant-afterglow-list"', ASSISTANT_UI)
+        self.assertIn("NACHHALL // BESTÄTIGTE ARBEIT", ASSISTANT_UI)
+        self.assertIn("bestätigte Assistentenrunde", ASSISTANT_UI)
+        self.assertIn("entry.headline", ASSISTANT_UI)
+        self.assertIn("entry.body", ASSISTANT_UI)
+        self.assertNotIn("fetch(", ASSISTANT_UI)
+        self.assertNotIn("localStorage", ASSISTANT_UI)
+        self.assertNotIn("friendship_xp", ASSISTANT_UI)
+
+    def test_launcher_builds_afterglow_only_from_journal_records_and_catalog(self):
+        self.assertIn("build_assistant_afterglow_projection", LAUNCHER)
+        self.assertIn('"content/de/ui/assistant_afterglow.json"', LAUNCHER)
+        self.assertIn("records = self.kernel.read_records()", LAUNCHER)
+        self.assertIn('projection["scene_jobs"]["assistant_afterglow"]', LAUNCHER)
+        self.assertIn("self.assistant_afterglow_texts", LAUNCHER)
+
 
 if __name__ == "__main__":
     unittest.main()

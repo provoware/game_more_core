@@ -33,6 +33,7 @@ from bunkerfrequenz.infrastructure.persistence import (  # noqa: E402
     PersistenceKernel,
 )
 from bunkerfrequenz.presentation.a4_game_projection import build_a4_game_projection  # noqa: E402
+from bunkerfrequenz.presentation.assistant_afterglow_projection import build_assistant_afterglow_projection  # noqa: E402
 from bunkerfrequenz.presentation.event_timeline import build_event_timeline_projection  # noqa: E402
 from bunkerfrequenz.presentation.scene_jobs_projection import build_scene_jobs_projection  # noqa: E402
 
@@ -67,6 +68,7 @@ REQUIRED = (
     "content/de/ui/district_events.json",
     "content/de/ui/incidents.json",
     "content/de/ui/character_forge.json",
+    "content/de/ui/assistant_afterglow.json",
 )
 
 
@@ -141,6 +143,7 @@ class A4ClientRuntime:
         self.street_texts = _load_json(ROOT / "content" / "de" / "ui" / "street_encounters.json")
         self.district_event_texts = _load_json(ROOT / "content" / "de" / "ui" / "district_events.json")
         self.incident_texts = _load_json(ROOT / "content" / "de" / "ui" / "incidents.json")
+        self.assistant_afterglow_texts = _load_json(ROOT / "content" / "de" / "ui" / "assistant_afterglow.json")
         for encounter in self.street_manifest.get("encounters", ()):
             if not isinstance(encounter, dict):
                 raise SystemExit("START FEHLGESCHLAGEN – Street-Katalog ist ungültig")
@@ -213,6 +216,7 @@ class A4ClientRuntime:
     def projection(self) -> dict:
         with self.lock:
             confirmed_state = self.session.read_state()
+            records = self.kernel.read_records()
             projection = build_a4_game_projection(
                 confirmed_state,
                 incident_catalog=self.incident_catalog,
@@ -234,8 +238,13 @@ class A4ClientRuntime:
                 confirmed_state,
                 self.session.scene_jobs.jobs if self.session.scene_jobs is not None else (),
             )
+            projection["scene_jobs"]["assistant_afterglow"] = build_assistant_afterglow_projection(
+                records,
+                self.session.scene_jobs.jobs if self.session.scene_jobs is not None else (),
+                self.assistant_afterglow_texts,
+            )
             projection["event_timeline"] = build_event_timeline_projection(
-                self.kernel.read_records(),
+                records,
                 street_text_catalog=self.street_texts,
                 district_event_manifest=self.district_event_manifest,
                 district_text_catalog=self.district_event_texts,
