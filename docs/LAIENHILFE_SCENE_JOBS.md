@@ -50,6 +50,12 @@ Damit später nicht drei verschiedene Geldsysteme entstehen. Scene Jobs legen di
 
 Diese Funktionen sind in B2 aber noch nicht freigeschaltet.
 
+## Ist B2 schon geprüft?
+
+Ja. **0.8.8-B** wurde als PR #105 mit allen fünf vorgesehenen Remote-Gates geprüft und ausschließlich über `/safe-merge` übernommen. Der bestätigte Merge ist `83aa6d050909e949a42f3c1bb3ab5c267b386693`.
+
+Das bedeutet: Scene Jobs, Bargeldanzeige, Retry-Schutz und Recovery gehören jetzt zur validierten Feature-Basis. Der nächste geplante Ausbau ist der **Secret Best Friend Assistant**, der dieselben Jobs wiederverwenden soll statt ein zweites Arbeitssystem zu bekommen.
+
 ## Bekannte Balance-Grenze
 
 Die Jobs sind absichtlich phasenunabhängig. Eine spätere Balanceiteration soll noch festlegen, wie starke Erschöpfung oder wiederholtes Endlosarbeiten behandelt wird, ohne die einfache Grundidee „jederzeit einen normalen Job annehmen“ unnötig kompliziert zu machen.
