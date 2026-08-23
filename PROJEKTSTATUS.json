@@ -2,27 +2,27 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.7-C",
-  "status": "0_8_7_c2_district_event_runtime_remote_validated_and_hardened_next_c3",
-  "current_focus": "district_world_event_application_integration",
-  "last_validated_feature_iteration": "0.8.7-C2",
+  "active_iteration": "0.8.7-C4",
+  "status": "0_8_7_c3_application_integration_remote_validated_next_c4",
+  "current_focus": "read_only_event_timeline",
+  "last_validated_feature_iteration": "0.8.7-C3",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #92 / head d34f3e9446ca29ab6eb5bbc01559c73261ad8f6b / merge df18bab2dc9120fec4fe20bb39388a102eef2148",
+  "validation_reference": "PR #95 / head b225fed18581f6c386421459b528208fd37b9788 / merge fb62c5226997462cc2a9adc67529a7691e16ae2b",
   "remote_validation": {
-    "status": "success_for_0.8.7_c2_district_event_runtime_and_catalog_fail_fast",
-    "pull_request": 92,
-    "validated_head": "d34f3e9446ca29ab6eb5bbc01559c73261ad8f6b",
-    "runtime_core_workflow_run": 32619278615,
-    "presentation_core_workflow_run": 32619278616,
-    "repository_health_workflow_run": 32619278620,
-    "release_acceptance_workflow_run": 32619278610,
-    "release_package_workflow_run": 32619278589,
+    "status": "success_for_0.8.7_c3_settlement_driven_district_event_application_integration",
+    "pull_request": 95,
+    "validated_head": "b225fed18581f6c386421459b528208fd37b9788",
+    "runtime_core_workflow_run": 32626952802,
+    "presentation_core_workflow_run": 32626952787,
+    "repository_health_workflow_run": 32626952891,
+    "release_acceptance_workflow_run": 32626952785,
+    "release_package_workflow_run": 32626952792,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "codex_review_execution": "blocked_by_external_usage_limit_not_counted_as_pass",
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "df18bab2dc9120fec4fe20bb39388a102eef2148"
+    "merged_commit": "fb62c5226997462cc2a9adc67529a7691e16ae2b"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -45,7 +45,8 @@
     {"iteration": "0.8.7-A", "pull_request": 87, "merged_commit": "841258a37915e05d7f87eed7841c8e4b8d79bf46", "feature": "seasonal_hall_of_tribute"},
     {"iteration": "0.8.7-B", "pull_request": 88, "merged_commit": "4d1a35bfbc086d07599b6ec7b3816e830bcea995", "feature": "control_deck_player_choices"},
     {"iteration": "0.8.7-C1", "pull_request": 90, "merged_commit": "337f8ad8f9719ec3389c372da9688bbbec593c16", "feature": "district_world_event_contract_catalog"},
-    {"iteration": "0.8.7-C2", "pull_request": 92, "merged_commit": "df18bab2dc9120fec4fe20bb39388a102eef2148", "feature": "district_world_event_runtime_and_catalog_fail_fast"}
+    {"iteration": "0.8.7-C2", "pull_request": 92, "merged_commit": "df18bab2dc9120fec4fe20bb39388a102eef2148", "feature": "district_world_event_runtime_and_catalog_fail_fast"},
+    {"iteration": "0.8.7-C3", "pull_request": 95, "merged_commit": "fb62c5226997462cc2a9adc67529a7691e16ae2b", "feature": "settlement_driven_district_event_application_integration"}
   ],
   "subsystems": {
     "character_forge": {
@@ -71,7 +72,7 @@
       "property_transactions_compensatable": false
     },
     "living_world": {
-      "status": "0_8_7_c2_runtime_remote_validated_and_hardened",
+      "status": "0_8_7_c3_application_integration_remote_validated",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -82,8 +83,10 @@
       "district_event_catalog_size": 4,
       "district_event_runtime_implemented": true,
       "district_event_catalog_fail_fast": true,
-      "district_event_application_integration": false,
-      "district_event_client_authority": false
+      "district_event_application_integration": true,
+      "district_event_authorized_trigger": "settlement.complete",
+      "district_event_client_authority": false,
+      "district_event_timeline_visible": false
     },
     "properties": {
       "status": "remote_validated_and_safe_merged",
@@ -135,11 +138,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.7-C3",
-  "next_goal": "Einen autorisierten District-Event-Trigger in den bestehenden Game-Client/Application-Flow einhängen, ohne Client-Effektwerte oder Browser-Zufallsautorität.",
+  "next_iteration": "0.8.7-C4",
+  "next_goal": "Bestätigte District-, Street- und Crisis-Ereignisse read-only und ohne erfundene Historie im Control Deck sichtbar machen.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T07:54:08+02:00"
+  "updated_at": "2026-08-23T10:56:56+02:00"
 }
