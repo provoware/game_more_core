@@ -36,7 +36,6 @@ def recovery_action_availability(action: Mapping[str, Any], character: Character
 class RecoveryActionResult:
     character: CharacterState
     action: dict[str, Any]
-    resource_changes: dict[str, Any]
     committed_event_ids: tuple[str, ...]
     idempotent_replay: bool
 
@@ -68,7 +67,7 @@ class RecoveryActionService:
             payload = existing.get("payload", {})
             if payload.get("source_recovery_id") != recovery_id:
                 raise PersistenceError("Command-ID wurde bereits für andere Regenerationsaktion verwendet")
-            return self._current_result(action, payload, replay=True)
+            return self._current_result(action, replay=True)
 
         state = deepcopy(self.persistence.load_state() or {})
         raw_character = state.get("character")
@@ -114,21 +113,9 @@ class RecoveryActionService:
             derived_state=derived,
             context=context,
         )
-        return RecoveryActionResult(
-            character_after,
-            deepcopy(action),
-            self._resource_changes_from_payload(payload),
-            receipt.event_ids,
-            False,
-        )
+        return RecoveryActionResult(character_after, deepcopy(action), receipt.event_ids, False)
 
-    def _current_result(
-        self,
-        action: Mapping[str, Any],
-        payload: Mapping[str, Any],
-        *,
-        replay: bool,
-    ) -> RecoveryActionResult:
+    def _current_result(self, action: Mapping[str, Any], *, replay: bool) -> RecoveryActionResult:
         state = self.persistence.load_state() or {}
         raw_character = state.get("character")
         if not isinstance(raw_character, dict):
@@ -136,25 +123,9 @@ class RecoveryActionService:
         return RecoveryActionResult(
             CharacterState.from_dict(raw_character),
             deepcopy(dict(action)),
-            self._resource_changes_from_payload(payload),
             (),
             replay,
         )
-
-    @staticmethod
-    def _resource_changes_from_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
-        changes: dict[str, Any] = {}
-        for resource in ("energy", "stress"):
-            raw = payload.get(resource)
-            if not isinstance(raw, Mapping):
-                raise PersistenceError("Regenerations-Receipt enthält unvollständige Ressourcenänderung")
-            values = {key: raw.get(key) for key in ("old", "delta", "new")}
-            if any(isinstance(value, bool) or not isinstance(value, int) for value in values.values()):
-                raise PersistenceError("Regenerations-Receipt enthält ungültige Ressourcenwerte")
-            if values["old"] + values["delta"] != values["new"]:
-                raise PersistenceError("Regenerations-Receipt enthält widersprüchliche Ressourcenwerte")
-            changes[resource] = values
-        return changes
 
     def _validate_actions(self) -> dict[str, dict[str, Any]]:
         by_id: dict[str, dict[str, Any]] = {}
@@ -181,6 +152,6 @@ class RecoveryActionService:
             if max_energy + energy_delta > 100:
                 raise ValueError("Regenerations-Energiegewinn darf an Zulässigkeitsgrenze nicht clampen")
             if max_stress + stress_delta > 100:
-                raise ValueError("Regenerations-Stresspreis darf an Zulässigkeitsgrenze nicht clampen")
+                raise ValueError("Regeneration benötigt gültige Stressgrenze")
             by_id[recovery_id] = deepcopy(raw)
         return by_id
