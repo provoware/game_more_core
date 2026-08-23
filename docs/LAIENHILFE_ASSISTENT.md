@@ -2,27 +2,34 @@
 
 ## Was ist bereits vorbereitet?
 
-Der geplante Assistent soll später genau **einen vorhandenen Scene Job** für dich übernehmen können. C1 legt dafür zuerst die Sicherheitsregeln fest. Der Assistent ist damit noch **nicht automatisch aktiv** und führt in diesem Schritt noch keine Jobs selbst aus.
+C1 hat die Sicherheitsregeln des Assistenten festgelegt. C2 ergänzt jetzt den kleinen dauerhaften Steuerzustand: **Aus** oder **genau ein vorhandener Scene Job gewählt**.
 
-## Warum wird nicht einfach sofort automatisch gearbeitet?
+Der Assistent führt in C2 weiterhin **noch keinen Job automatisch aus**. Der neue Zustand merkt nur deine Auswahl sicher über Speichern, Neustart und Recovery hinweg.
 
-Automatik darf keine zweite Spielwelt erfinden. Deshalb gelten vor der Runtime-Umsetzung feste Grenzen:
+## Was kann C2?
 
-- Der Assistent benutzt denselben Scene-Job-Katalog wie du.
-- Es darf höchstens eine aktive Aufgabe geben.
-- Eine Wiederholung darf nur durch eine bestätigte Spielrunde ausgelöst werden.
-- Die Rechneruhr darf keine Arbeit starten.
-- Der Browser darf weder Runde, Lohn noch Energie-/Stressfolgen bestimmen.
-- Stop und Aufgabenwechsel müssen später ausdrücklich möglich sein.
+- einen vorhandenen Scene Job als Assistenten-Aufgabe auswählen,
+- auf einen anderen vorhandenen Scene Job wechseln,
+- den Assistenten wieder auf **Aus** stellen,
+- dieselbe Auswahl ohne zusätzlichen Journal-Eintrag erneut bestätigen,
+- den Zustand aus bestätigten Journal-Einträgen rekonstruieren.
 
-## Was bringt C1 konkret?
+Es kann niemals mehr als eine ausgewählte Aufgabe gleichzeitig geben, weil der Zustand nur eine einzige `active_job_id` besitzt.
 
-Fehlerhafte oder manipulierte Assistenten-Regeln werden bereits beim Laden des Scene-Job-Vertrags abgewiesen. Dadurch kann die nächste Runtime-Stufe nicht still einen zweiten Jobkatalog, freie Browser-Auszahlungen oder zeitgesteuerte Hintergrundarbeit einführen.
+## Was darf C2 ausdrücklich nicht?
 
-## Was kommt als Nächstes?
+C2 löst noch keine Arbeit aus. Es verändert deshalb weder Bargeld noch Energie, Stress oder Eventbudget. Auch Rechnerzeit und Browser dürfen keine automatische Runde starten.
 
-C2 kann auf diesem Vertrag den kleinen dauerhaften Steuerzustand für **Aus / Job gewählt / Stop / Wechsel** aufbauen. Erst danach wird eine bestätigte Spielrunde mit genau einer Jobausführung verbunden.
+Erst eine spätere C3-Stufe darf eine **bestätigte Spielrunde** mit genau einer Ausführung des gewählten Scene Jobs verbinden. Dabei muss dieselbe bestätigte Runde bei Retry weiterhin gegen Doppelzahlung geschützt sein.
+
+## Was passiert bei einem falschen Job?
+
+Die Runtime akzeptiert ausschließlich IDs aus dem bestehenden Scene-Job-Katalog. Eine unbekannte ID oder ein falscher Character-Kontext wird vor jedem Write abgewiesen.
+
+## Warum wird der Zustand journalisiert?
+
+Start, Stop und Wechsel sollen nach Neustart oder Recovery nicht verloren gehen oder anders interpretiert werden. Deshalb schreibt C2 nur die bestätigte Steuerentscheidung als `assistant.control_changed` in den vorhandenen Persistence-Pfad. Es entsteht keine zweite Save- oder Assistenten-Datenbank.
 
 ## Wichtig
 
-Deine normalen Scene Jobs funktionieren unverändert weiter. C1 verändert weder Löhne noch Energie, Stress oder persönliches Bargeld.
+Deine normalen Scene Jobs funktionieren unverändert weiter. C2 verändert keine Jobwerte und startet keine Hintergrundarbeit.
