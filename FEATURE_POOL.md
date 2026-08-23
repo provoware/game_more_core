@@ -43,6 +43,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-ECON-JOB-PREVIEW:** PR #121 · Merge `040be951665a34dd8d81694ab695128e0b846bd5` · aktuelle Auszahlung vor Jobstart aus derselben kanonischen Anti-Grind-Berechnung sichtbar
 - **0.8.8-UX-EXPORT-PROOF:** PR #122 · Merge `0909f3c38642f97d4474cd200af11c960e1ada66` · Vorschau/Kopieren/Prüfsumme aus exakt derselben TXT-/CSV-Serialisierung
 - **0.8.8-ECON-RECOVERY-ACTIONS:** PR #123 · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900` · bestätigte +20 Energie gegen +12 Stress, ohne Systemzeit oder zweite Ressourcenengine
+- **0.8.8-UX-TIMELINE-FILTER:** PR #124 · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01` · ALLE / STRASSE / KRISE / BEZIRK rein lokal, Runtime-Reihenfolge unverändert
 
 ---
 
@@ -60,12 +61,12 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-UX-005` | `DONE` | Nächste-Aktion-Signal | freigegebene Schritte schneller erkennen | nur vorhandene Runtime-Aktion |
 | `POOL-MAP-002` | `DONE` | Berlin Ops Map 2 | bessere Kartenlesbarkeit | bestehende Projection bleibt Quelle |
 | `POOL-STORY-001` | `DONE` | District-Event-Nachhall im Profil | bestätigte Weltfolgen sichtbar | keine Progressionsengine |
-| `POOL-UX-003` | `PULLED` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only; keine Sortier-/Journalautorität |
+| `POOL-UX-003` | `DONE` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | PR #124 sicher gemergt; keine Sortier-/Journalautorität |
 | `POOL-ECON-004` | `DONE` | Job-Erschöpfung / Anti-Grind | verhindert Endlosfarmen ohne Energie | gleicher SceneJobService |
 | `POOL-ECON-005` | `DONE` | Scene-Job-Lohnvorschau | tatsächlichen Erschöpfungslohn vor Jobstart sehen | PR #121 sicher gemergt; Browser rendert nur |
 | `POOL-UX-006` | `DONE` | Exportvorschau / Prüfsumme | TXT/CSV vor Download prüfen und kopieren | PR #122 sicher gemergt; gleiche Serialisierung, kein Finanz-Write |
 | `POOL-ECON-006` | `DONE` | Bestätigte Regenerationsaktionen | Energie aktiv zurückgewinnen | PR #123 sicher gemergt; +20 Energie gegen +12 Stress |
-| `POOL-ECON-007` | `READY` | Regenerationsfeedback | Vorher→Nachher nach bestätigter Regeneration verständlich zeigen | nur Runtime-Daten, keine neue Mechanik |
+| `POOL-ECON-007` | `PULLED` | Regenerationsfeedback | Vorher→Nachher nach bestätigter Regeneration verständlich zeigen | nur bestätigte Projection-Snapshots, keine neue Mechanik |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-Vertrag |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 
@@ -101,4 +102,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-UX-003` ist für 0.8.8-UX-TIMELINE-FILTER aktiv. Die Filter ALLE / STRASSE / KRISE / BEZIRK verändern ausschließlich die lokale Sicht auf die vorhandene bestätigte Runtime-Reihenfolge. Danach ist `POOL-ECON-007` der kleinste unabhängige UX-/Economy-Anschluss; `POOL-COMPANION-003` bleibt abhängig.
+`POOL-ECON-007` ist für 0.8.8-ECON-RECOVERY-FEEDBACK aktiv. Das UI zeigt nur bestätigte Vorher-/Nachher-Snapshots und den danach projizierten Runtime-Blocker. Danach ist `POOL-STREET-002` der nächste unabhängige Gameplay-Slice; `POOL-COMPANION-003` bleibt abhängig.
