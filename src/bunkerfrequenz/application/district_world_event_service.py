@@ -43,10 +43,13 @@ class DistrictWorldEventService:
             raise ValueError("District-Event-Kontext erlaubt exakt eine aktive Instanz")
         if policy.get("client_can_activate") is not False or policy.get("client_can_supply_effects") is not False:
             raise ValueError("Client darf District-Events weder aktivieren noch Effekte liefern")
+        if policy.get("effects_apply_only_after_confirmed_resolution") is not True:
+            raise ValueError("District-Event-Effekte benötigen bestätigte Auflösung")
         events = self.manifest.get("events")
         if not isinstance(events, list) or not events:
             raise ValueError("District-Event-Katalog ist leer")
         self.events = tuple(deepcopy(events))
+        self._validate_catalog(selection)
 
     def trigger(
         self,
@@ -91,6 +94,73 @@ class DistrictWorldEventService:
             event_instance_id,
             result,
         )
+
+    def _validate_catalog(self, selection: Mapping[str, Any]) -> None:
+        effect_contract = self.manifest.get("effect_contract")
+        if not isinstance(effect_contract, Mapping):
+            raise ValueError("District-Event-Manifest benötigt effect_contract")
+        metrics = effect_contract.get("metrics")
+        expected_metrics = list(self.district_service.manifest.get("metrics", ()))
+        if metrics != expected_metrics:
+            raise ValueError("District-Event-Metriken weichen vom District-State-Vertrag ab")
+        minimum = effect_contract.get("per_event_delta_minimum")
+        maximum = effect_contract.get("per_event_delta_maximum")
+        if (
+            isinstance(minimum, bool)
+            or not isinstance(minimum, int)
+            or isinstance(maximum, bool)
+            or not isinstance(maximum, int)
+            or minimum > maximum
+        ):
+            raise ValueError("District-Event-Effektgrenzen sind ungültig")
+        if effect_contract.get("district_bounds_remain") != self.district_service.manifest.get("bounds"):
+            raise ValueError("District-Event-Grenzen weichen vom District-State-Vertrag ab")
+
+        expected_weight = selection.get("weight_total")
+        if isinstance(expected_weight, bool) or not isinstance(expected_weight, int) or expected_weight <= 0:
+            raise ValueError("District-Event-Gesamtgewicht muss positive Ganzzahl sein")
+
+        seen_ids: set[str] = set()
+        total_weight = 0
+        for event in self.events:
+            if not isinstance(event, Mapping):
+                raise ValueError("District-Event-Katalogeintrag muss Objekt sein")
+            event_id = self._text(event.get("event_id"), "events.event_id")
+            if event_id in seen_ids:
+                raise ValueError("District-Event-Katalog besitzt doppelte Event-ID")
+            seen_ids.add(event_id)
+            self._text(event.get("title_key"), f"{event_id}.title_key")
+            self._text(event.get("body_key"), f"{event_id}.body_key")
+
+            weight = event.get("weight")
+            if isinstance(weight, bool) or not isinstance(weight, int) or weight <= 0:
+                raise ValueError("District-Event-Gewicht muss positive Ganzzahl sein")
+            total_weight += weight
+
+            requirements = event.get("requirements", {})
+            if not isinstance(requirements, Mapping):
+                raise ValueError("District-Event-requirements muss Objekt sein")
+            for key, value in requirements.items():
+                if isinstance(value, bool) or not isinstance(value, int):
+                    raise ValueError("District-Event-Voraussetzung muss Ganzzahl sein")
+                if key.startswith("minimum_"):
+                    metric = key.removeprefix("minimum_")
+                elif key.startswith("maximum_"):
+                    metric = key.removeprefix("maximum_")
+                else:
+                    raise ValueError("Unbekannte District-Event-Voraussetzung")
+                if metric not in expected_metrics:
+                    raise ValueError("District-Event-Voraussetzung verweist auf unbekannte Metrik")
+
+            effects = event.get("effects")
+            if not isinstance(effects, Mapping) or set(effects) != set(expected_metrics):
+                raise ValueError("District-Event-Effekte müssen exakt alle District-Metriken enthalten")
+            for value in effects.values():
+                if isinstance(value, bool) or not isinstance(value, int) or not minimum <= value <= maximum:
+                    raise ValueError("District-Event-Effekt liegt außerhalb des Vertrags")
+
+        if total_weight != expected_weight:
+            raise ValueError("District-Event-Kataloggewicht weicht von selection.weight_total ab")
 
     def _existing_event_id(self, source_prefix: str) -> str | None:
         state = self.district_service.current_state()
