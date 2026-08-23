@@ -9,7 +9,7 @@
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
   <img alt="Feature Stand 0.8.7 C5 validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.7--C5_validiert-7dff00">
-  <img alt="Timeline sichtbar" src="https://img.shields.io/badge/Timeline-C4B_sichtbar-00c2ff">
+  <img alt="Crew Identity 0.8.8 A in validation" src="https://img.shields.io/badge/Crew_Identity-0.8.8--A_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -28,7 +28,7 @@
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
 | **Validierter Feature-Stand** | ✅ `0.8.7-C5 – District-Event Cadence/Cooldown` |
-| **Aktive Iteration** | 🟡 `0.8.8-A – Crew Identity Foundation` |
+| **Aktive Iteration** | 🟡 `0.8.8-A – Crew Identity Logo/Fahne` · PR #104 in Abnahme |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Living World** | ✅ replaybare Street Encounters, persistente Districts, District World Events + 24h-Cadence |
 | **Timeline** | ✅ Street-, Krisen- und District-Ereignisse read-only im Control Deck sichtbar |
@@ -36,10 +36,10 @@
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
 | **Berlin Ops Map PRO** | ✅ 8 Districts · 12 Locations · read-only |
 | **Control Deck 2.0** | ✅ HUD, Schnellnavigation und lokale Anzeigeoptionen |
-| **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
+| **Netzwerk/Telegram** | noch nicht implementiert; Crew-Identity ist bereits als später syncbare Datenrepräsentation vorbereitet |
 
 > [!IMPORTANT]
-> `0.8.7-C5` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. Die Produktversion bleibt bewusst `0.8.4-alpha.1`. Feature-Fortschritt ist kein stiller Release.
+> `0.8.7-C5` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. Die Produktversion bleibt bewusst `0.8.4-alpha.1`. `0.8.8-A` ist bis zum erfolgreichen Remote-Gate + Safe Merge noch keine validierte Feature-Stufe.
 
 ---
 
@@ -107,9 +107,25 @@ District-Ereignisse werden global über **24 Stunden bestätigte Spielweltzeit**
 
 ---
 
+## 🏴 0.8.8-A – Crew Identity Logo/Fahne 🟡
+
+PR #104 führt eine personalisierbare Crew-Identität ein, ohne Bilder in Save oder Journal einzubetten. Gespeichert wird nur ein kleines validiertes Rezept:
+
+- Typ `logo` oder `flag`
+- Flächenstil `solid`, `split`, `band` oder `diagonal`
+- katalogisiertes Symbol
+- drei katalogisierte Farb-IDs
+- optionale Kurzmarke mit maximal vier Zeichen
+
+Der bestehende `profile.update`-Pfad bleibt die einzige Schreibgrenze. A4 zeigt einen Live-Editor mit Preview; beim Speichern sendet der Browser nur diese IDs und die Kurzmarke. Unbekannte Felder – insbesondere Bild-/Base64-Daten – werden von der Runtime abgewiesen. Alte Saves erhalten beim Laden eine stabile neutrale Standardidentität, ohne dass alte Journalrecords umgeschrieben werden.
+
+Für einen späteren Multiplayer-Sync muss damit nur `character_id + crew_identity` übertragen werden; Bildbytes oder eine zweite Grafikpersistenz sind nicht erforderlich.
+
+---
+
 ## 🧭 0.8.8 – geplanter Ausbau
 
-Der nächste Ausbau wird bewusst in getrennte, prüfbare Slices zerlegt:
+Der Ausbau wird bewusst in getrennte, prüfbare Slices zerlegt:
 
 | Slice | Ziel | Kernregel |
 |---|---|---|
@@ -274,6 +290,7 @@ SAFE MERGE PASS
 | Ausbauvorrat | [`FEATURE_POOL.md`](FEATURE_POOL.md) |
 | Projektmanifest | [`PROJEKTMANIFEST.json`](PROJEKTMANIFEST.json) |
 | Anfängerstart | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
+| Crew-Logo/Fahne | [`docs/LAIENHILFE_CREW_LOGO_FAHNE.md`](docs/LAIENHILFE_CREW_LOGO_FAHNE.md) |
 | District-Event-Vertrag | [`manifests/DISTRICT_EVENT_MANIFEST.json`](manifests/DISTRICT_EVENT_MANIFEST.json) |
 | Berlin Ops Map | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |
 | Safe Merge | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
