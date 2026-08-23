@@ -7,6 +7,7 @@
 - **0.8.7-C1 District-Event-Vertrag/Katalog:** PR #90 · `SAFE MERGE PASS` · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
 - **0.8.7-C2 District-Event Runtime:** PR #91 · `SAFE MERGE PASS` · Merge `5e32d6de2a5859b1cadca62543dd10949717e4fc`; anschließend Katalog-Fail-fast über PR #92 gehärtet
 - **0.8.7-C3 Application-Integration:** PR #95 · `SAFE MERGE PASS` · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
+- **District-Event-Robustheit:** `no_eligible_event` wird als expliziter schreibfreier No-op behandelt; kein künstliches Ersatz-Ereignis
 - **Nächste Entwicklungsstufe:** `0.8.7-C4 – read-only Ereignis-Timeline im Control Deck`
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
@@ -64,6 +65,7 @@
 - [x] ungültigen District-Kontext vor jedem Write ablehnen
 - [x] Runtime-Katalog beim Initialisieren vollständig auf IDs, Gewichte, Voraussetzungen, Metriken und Effektgrenzen prüfen
 - [x] ungültige Katalogeinträge nennen Event-ID und Feldpfad statt nur die Vertragsart (QA-003 / PR #94)
+- [x] kein zulässiges Ereignis ist ein expliziter `no_eligible_event`-No-op ohne Journal-Write oder District-Mutation
 - [x] C2-Status/Evidenz nach PR #92 kanonisch in `PROJEKTSTATUS.json`, TODO und Feature-Pool synchronisieren
 
 ## 0.8.7-C3 – Application-Integration ✅
@@ -103,7 +105,7 @@
 
 1. **0.8.7-C5 – Cadence/Cooldown:** District-Events über bestätigte Spielzeit dosieren, niemals über Systemzeit allein.
 2. **0.8.7-D – Street Content Packs:** mehr Abwechslung über denselben validierten Ansatz-/Encounter-Vertrag.
-3. **QA – No-eligible-event-Fall:** expliziten sicheren No-op-Vertrag für Districts ohne aktuell zulässiges Ereignis ergänzen.
+3. **QA – District-Event-Diagnose:** read-only anzeigen, welche Voraussetzungen aktuell Ereignisse ausschließen; zentrale Katalogregeln wiederverwenden, keine zweite Auswahlengine.
 
 ---
 

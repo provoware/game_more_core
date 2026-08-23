@@ -11,11 +11,13 @@ from bunkerfrequenz.infrastructure.persistence import JournalContext, Persistenc
 
 @dataclass(frozen=True, slots=True)
 class DistrictWorldEventResult:
-    event_id: str
-    title_key: str
-    body_key: str
-    event_instance_id: str
+    event_id: str | None
+    title_key: str | None
+    body_key: str | None
+    event_instance_id: str | None
     district_result: DistrictCommitResult
+    triggered: bool = True
+    no_event_reason: str | None = None
 
 
 class DistrictWorldEventService:
@@ -74,7 +76,26 @@ class DistrictWorldEventService:
             metrics = state.metrics[district_id]
             eligible = [event for event in self.events if self._requirements_met(event, metrics)]
             if not eligible:
-                raise PersistenceError("Für diesen District-Kontext ist kein katalogisiertes Ereignis zulässig")
+                return DistrictWorldEventResult(
+                    None,
+                    None,
+                    None,
+                    None,
+                    DistrictCommitResult(
+                        state=state,
+                        committed_event_ids=(),
+                        idempotent_replay=False,
+                        applied=False,
+                        metadata={
+                            "district_id": district_id,
+                            "source_type": "district_event",
+                            "source_id": f"district-event:{district_id}:{trigger_id}",
+                            "reason": "no_eligible_event",
+                        },
+                    ),
+                    triggered=False,
+                    no_event_reason="no_eligible_event",
+                )
             event = self._select(eligible, world_seed=world_seed, district_id=district_id, trigger_id=trigger_id)
         else:
             event = self._event_by_id(replay_event_id)
