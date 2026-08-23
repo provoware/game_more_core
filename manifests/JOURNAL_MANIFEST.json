@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.6-b1",
+  "version": "0.8.8-b1",
   "append_only": true,
   "canonical_order_key": ["sequence", "event_id"],
   "hash_chain": true,
@@ -40,6 +40,7 @@
     "economy.catalog_initialized",
     "economy.transaction_posted",
     "economy.transaction_compensated",
+    "finance.job_completed",
     "club.created",
     "club.updated",
     "club.share_transaction",
@@ -80,6 +81,7 @@
       "character.level_up",
       "character.resonance_xp_gained",
       "character.resonance_rank_up",
+      "finance.job_completed",
       "street.encounter_resolved",
       "world.district_effect_applied",
       "world.property_purchased",
