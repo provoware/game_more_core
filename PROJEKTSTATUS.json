@@ -2,9 +2,9 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.7-B",
-  "status": "0_8_7_b_remote_validated_safe_merged_next_0_8_7_c_planned",
-  "current_focus": "post_merge_consistency_and_next_district_world_event_preparation",
+  "active_iteration": "0.8.7-C",
+  "status": "0_8_7_c_district_event_contract_in_validation_last_validated_0_8_7_b",
+  "current_focus": "district_world_event_contract_catalog_and_regression",
   "last_validated_feature_iteration": "0.8.7-B",
   "last_validated_release": "0.8.4-alpha.1",
   "validation_reference": "PR #88 / head 6482daa2ac4d7e0c370ef6bca4a1d8a079438b6c / merge 4d1a35bfbc086d07599b6ec7b3816e830bcea995",
@@ -69,13 +69,17 @@
       "property_transactions_compensatable": false
     },
     "living_world": {
-      "status": "remote_validated_with_control_deck",
+      "status": "0_8_7_c_contract_in_validation",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
       "street_approaches": ["balanced", "recovery", "network", "scout"],
       "street_approaches_remote_validation_pending": false,
-      "hall_of_tribute_visible": true
+      "hall_of_tribute_visible": true,
+      "district_event_contract_version": "0.8.7-c1",
+      "district_event_catalog_size": 4,
+      "district_event_runtime_implemented": false,
+      "district_event_client_authority": false
     },
     "properties": {
       "status": "remote_validated_and_safe_merged",
@@ -127,11 +131,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.7-C",
-  "next_goal": "Bezirksbezogene Welt-Ereignisse als reproduzierbare Instanzen auf dem persistenten DistrictState aufbauen.",
+  "next_iteration": "0.8.7-C2",
+  "next_goal": "District-Event-Auswahl deterministisch aus world_seed + district_id + trigger_id ableiten und bestätigte Folgen über District-Service + Journal anwenden.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-23T00:54:34+02:00"
+  "updated_at": "2026-08-23T04:53:32+02:00"
 }
