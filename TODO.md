@@ -5,7 +5,8 @@
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-B – Scene Jobs & persönliches Bargeld` · PR #105 · Merge `83aa6d050909e949a42f3c1bb3ab5c267b386693`
 - **0.8.8-B Remote-Abnahme:** Runtime `32649707398` · Presentation `32649707389` · Repository Health `32649707385` · Release Acceptance `32649707396` · Release Package `32649707391` · `SAFE MERGE PASS`
-- **Nächste Entwicklungsstufe:** `0.8.8-C – Secret Best Friend Assistant`
+- **Aktive Entwicklungsstufe:** `0.8.8-C – Secret Best Friend Assistant`
+- **C1:** Assistenten-Autoritätsvertrag am bestehenden Scene-Job-Katalog implementiert; Remote-Abnahme dieses PRs steht noch aus
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
 ---
@@ -44,25 +45,40 @@
 
 ---
 
-# Nächster Slice – 0.8.8-C Secret Best Friend Assistant
+# Aktiv – 0.8.8-C Secret Best Friend Assistant
 
 ## Ziel
 
 Genau eine vorhandene kanonische Aufgabe aktivieren und pro bestätigter Spielrunde exakt einmal durch den „geheimen besten Freund“ ausführen lassen; Stop und Wechsel bleiben jederzeit möglich.
 
-## Abnahmekriterien
+### C1 – Autoritäts- und Wiederverwendungsvertrag
 
-- [ ] vorhandene Scene-Job-/Task-Services wiederverwenden; keine zweite Job- oder Finance-Engine
-- [ ] höchstens eine aktive Aufgabe gleichzeitig
-- [ ] wiederholte Ausführung ausschließlich durch bestätigte Spielrunde/Spielautorität, niemals Systemzeit allein
+- [x] Assistenten-Regeln direkt in `SCENE_JOB_MANIFEST.json`; kein zweiter Aufgaben- oder Jobkatalog
+- [x] `task_source=scene_jobs` und `max_active_tasks=1` fail-closed validiert
+- [x] bestätigte Spielrunde zwingend; Systemzeit ausdrücklich keine Autorität
+- [x] Browser darf weder Rundenautorität noch Lohn/Effekte liefern
+- [x] Stop und Aufgabenwechsel als Pflicht für die spätere Steuerung vertraglich festgelegt
+- [x] gezielte Runtime-Regression gegen unsichere/duplizierte Assistenten-Policy
+- [x] Laienhilfe erklärt klar: C1 definiert Regeln, aktiviert aber noch keine Automatik
+
+### C2 – kleinster nächster Runtime-Slice
+
+- [ ] kleinen dauerhaften Assistenten-Steuerzustand für `aus / gewählter job` anlegen
+- [ ] Start, Stop und Wechsel replaybar/recoverbar machen
+- [ ] ausschließlich vorhandene Scene-Job-IDs akzeptieren
+- [ ] noch keine automatische Rundenausführung in denselben Patch mischen
+
+### Danach in C
+
+- [ ] bestätigten Runden-Trigger an genau eine Assistenten-Ausführung binden
 - [ ] derselbe bestätigte Runden-Trigger kann weder erneut auszahlen noch erneut Ressourcen verbuchen
-- [ ] Stop und Aufgabenwechsel sind explizit, replaybar und recoverbar
-- [ ] Browser sendet nur erlaubte Aufgaben-ID/Steuerbefehl; keine Löhne, Effekte oder Rundennummern als Autorität
 - [ ] kompakte erzählerische Integration im bestehenden JOBS-Kontext statt zweitem Assistenten-Dashboard
-- [ ] gezielte Runtime-, Recovery- und Presentation-Regressionen
+- [ ] gezielte Recovery- und Presentation-Regressionen
 
-### Bewusst nicht in C
+### Bewusst nicht in C1
 
+- keine automatische Jobausführung
+- keine neue Journal-Eventart
 - keine Bankeinzahlung/-auszahlung
 - keine Zinsen, Anlagen oder Dividenden
 - keine Hintergrundausführung per Rechneruhr
@@ -82,7 +98,7 @@ Genau eine vorhandene kanonische Aufgabe aktivieren und pro bestätigter Spielru
 ## Architektur- und Sicherheitsgrenzen
 
 - Keine Mega-PR: pro fachlichem Modul eigener kleiner Slice.
-- Keine zweite Economy-, Finance-, Map-, Timeline-, Profile- oder Sync-Engine.
+- Keine zweite Economy-, Finance-, Map-, Timeline-, Profile-, Assistant-Task- oder Sync-Engine.
 - Persönliches Bargeld ist nicht das Eventbudget; beide bleiben fachlich getrennt.
 - Browser sendet nur erlaubte IDs; Geld, Jobfolgen, Zinsen, Dividenden und Assistentenfolgen werden serverseitig bestimmt.
 - Wiederholte Assistentenaktionen und Finanzzyklen brauchen bestätigte Spielrunde/Spielweltzeit; niemals Systemzeit allein.
