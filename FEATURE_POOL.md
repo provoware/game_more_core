@@ -49,6 +49,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-F:** PR #117 · Merge `8119bf71a6f169d5cac367d5123d2bc1e6a73193` · begrenzter lokaler Zoom/Pan + Auswahlfokus auf bestehender Map-Projection
 - **0.8.8-STORY-DISTRICT-BIO:** PR #118 · Merge `2330669692391e3747a3c807ec9b2a1cb7b7cb6d` · bestätigte District-Timeline als read-only Berlin-Erinnerungen im Profil
 - **0.8.8-FIN-EXPORT:** PR #119 · Merge `11c023f927ad9a74673587fefd1709fe2322553f` · TXT/CSV direkt aus validierter FIN-STATEMENTS-Projection ohne Rückschreibpfad
+- **0.8.8-ECON-ANTI-GRIND:** PR #120 · Merge `49d6947b9f1b3a35d0785a958a7688e3b22a6bc1` · voller Joblohn nur bei gedecktem Energieverbrauch; Teilenergie proportional, 0 Energie = 0 Cent
 
 ---
 
@@ -67,7 +68,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-MAP-002` | `DONE` | **Berlin Ops Map 2** | bessere Kartenlesbarkeit durch Zoom/Pan und Auswahlfokus | 0.8.8-F remote validiert; bestehende 0–100-Projection bleibt einzige Datenquelle |
 | `POOL-STORY-001` | `DONE` | **District-Event-Nachhall im Profil** | bestätigte Weltfolgen werden als Berlin-Erinnerungen sichtbar | STORY-DISTRICT-BIO remote validiert; nur bestätigte Timeline, keine Progressions-/Journalengine |
 | `POOL-UX-003` | `READY` | Lokaler Timeline-Fokusfilter | Straße/Krise/Bezirk gezielt einblenden | lokal/read-only; keine Sortierung, kein Save-/Journal-State |
-| `POOL-ECON-004` | `PULLED` | **Job-Erschöpfung / Anti-Grind** | verhindert Endlosfarmen ohne Energie und erhält jederzeit verfügbare Scene Jobs | voller Lohn nur bei gedecktem Energieverbrauch; Teilenergie proportional, 0 Energie = 0 Cent; keine Zeit-/Zweitressource |
+| `POOL-ECON-004` | `DONE` | **Job-Erschöpfung / Anti-Grind** | verhindert Endlosfarmen ohne Energie und erhält jederzeit verfügbare Scene Jobs | ANTI-GRIND remote validiert; gleicher SceneJobService für manuell + Assistent |
+| `POOL-ECON-005` | `PULLED` | **Scene-Job-Lohnvorschau** | vor Jobstart den tatsächlich bestätigten Erschöpfungslohn sehen | Runtime-Projection nutzt dieselbe kanonische Berechnung; Browser rendert nur |
 | `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-/Approach-Vertrag |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 
@@ -104,4 +106,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-ECON-004` ist für 0.8.8-ECON-ANTI-GRIND aktiv. Die einzige Erschöpfungsautorität ist die bestätigte Character-Energie direkt vor dem kanonischen Scene Job; manueller Job und Assistent verwenden denselben Service. Danach ist `POOL-UX-006` der kleinste unabhängige read-only Slice. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
+`POOL-ECON-005` ist für 0.8.8-ECON-JOB-PREVIEW aktiv. Der aktuell mögliche Joblohn wird aus bestätigter Character-Energie durch dieselbe kanonische Berechnung wie die echte Jobausführung projiziert; der Browser berechnet keinen Lohn. Danach ist `POOL-UX-006` der kleinste unabhängige read-only Slice. `POOL-COMPANION-003` bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
