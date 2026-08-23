@@ -49,14 +49,26 @@
       const response = await fetch("/api/state", { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const payload = await response.json();
-      render(payload?.state?.event_timeline);
+      const gameState = payload?.state;
+      render(gameState?.event_timeline);
+      window.BunkerAssistantUI?.render(gameState);
     } catch (error) {
       const live = status();
       if (live) live.textContent = `Timeline vorübergehend nicht verfügbar: ${error.message}`;
     }
   }
 
+  function loadAssistantUi() {
+    if (document.querySelector('script[data-assistant-ui="true"]')) return;
+    const script = document.createElement("script");
+    script.src = "assistant_ui.js";
+    script.dataset.assistantUi = "true";
+    script.addEventListener("load", refresh, { once: true });
+    document.head.append(script);
+  }
+
   window.BunkerEventTimeline = Object.freeze({ render, refresh });
+  loadAssistantUi();
   refresh();
   window.setInterval(refresh, POLL_MS);
 })();
