@@ -2,6 +2,7 @@
 
 (function installAssistantJobsUi() {
   const baseRenderSceneJobs = renderSceneJobs;
+  let statementFilter = "all";
 
   function assistantCommandId() {
     const suffix = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -103,6 +104,58 @@
     return control;
   }
 
+  function ensureFinanceStatementControl(parent) {
+    let statement = document.getElementById("jobs-finance-statement");
+    if (statement) return statement;
+
+    statement = document.createElement("section");
+    statement.id = "jobs-finance-statement";
+    statement.setAttribute("aria-labelledby", "jobs-finance-statement-title");
+
+    const eyebrow = document.createElement("p");
+    eyebrow.className = "eyebrow";
+    eyebrow.textContent = "KONTOAUSZUG // BESTÄTIGTES LEDGER";
+    const title = document.createElement("h4");
+    title.id = "jobs-finance-statement-title";
+    title.textContent = "Deine Geldbewegungen";
+    const explanation = document.createElement("p");
+    explanation.textContent = "Nur bereits bestätigte Ledgerbuchungen werden angezeigt. Es wird kein Datum erfunden und keine Buchung verändert.";
+
+    const summary = document.createElement("p");
+    summary.id = "jobs-finance-statement-summary";
+
+    const filters = document.createElement("div");
+    filters.id = "jobs-finance-statement-filters";
+    filters.className = "inline-actions";
+    filters.setAttribute("role", "group");
+    filters.setAttribute("aria-label", "Kontoauszug filtern");
+    for (const [filter, label] of [["all", "ALLE"], ["jobs", "JOBLOHN"], ["bank", "BANK"], ["interest", "ZINSEN"]]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.statementFilter = filter;
+      button.textContent = label;
+      button.setAttribute("aria-pressed", String(statementFilter === filter));
+      button.addEventListener("click", () => {
+        statementFilter = filter;
+        renderFinanceStatements(state.projection?.scene_jobs);
+      });
+      filters.append(button);
+    }
+
+    const list = document.createElement("div");
+    list.id = "jobs-finance-statement-list";
+    list.className = "equipment-list";
+    list.setAttribute("aria-live", "polite");
+
+    const note = document.createElement("p");
+    note.id = "jobs-finance-statement-note";
+    note.className = "notice";
+
+    statement.append(eyebrow, title, explanation, summary, filters, list, note);
+    parent.append(statement);
+    return statement;
+  }
+
   function ensureBankControl() {
     let control = document.getElementById("jobs-bank-control");
     if (control) return control;
@@ -158,6 +211,7 @@
     status.textContent = "Noch kein Banktransfer in dieser Ansicht.";
 
     control.append(eyebrow, title, balances, explanation, amountLabel, actions, status);
+    ensureFinanceStatementControl(control);
     const assistant = document.getElementById("jobs-assistant-control");
     if (assistant) assistant.after(control);
     else list.before(control);
@@ -195,6 +249,60 @@
     }
   }
 
+  function statementAmountText(entry) {
+    if (entry.kind === "job_income") return `+${money(entry.amount_cents)} Bargeld`;
+    if (entry.kind === "bank_deposit") return `${money(entry.amount_cents)} Bargeld → Bank`;
+    if (entry.kind === "bank_withdrawal") return `${money(entry.amount_cents)} Bank → Bargeld`;
+    if (entry.kind === "savings_interest") return `+${money(entry.amount_cents)} Bank`;
+    return money(entry.amount_cents);
+  }
+
+  function renderFinanceStatements(sceneJobs) {
+    const control = ensureBankControl();
+    if (!control) return;
+    const statement = sceneJobs?.finance_statement;
+    const list = document.getElementById("jobs-finance-statement-list");
+    const summary = document.getElementById("jobs-finance-statement-summary");
+    const note = document.getElementById("jobs-finance-statement-note");
+    if (!list || !summary || !note) return;
+
+    const totals = statement?.totals || {};
+    summary.textContent = `JOBLOHN ${money(totals.job_income_cents || 0)} · EINZAHLUNGEN ${money(totals.bank_deposit_cents || 0)} · AUSZAHLUNGEN ${money(totals.bank_withdrawal_cents || 0)} · ZINSEN ${money(totals.savings_interest_cents || 0)}`;
+
+    for (const button of document.querySelectorAll("[data-statement-filter]")) {
+      button.setAttribute("aria-pressed", String(button.dataset.statementFilter === statementFilter));
+      button.classList.toggle("primary", button.dataset.statementFilter === statementFilter);
+    }
+
+    list.replaceChildren();
+    const entries = Array.isArray(statement?.entries)
+      ? statement.entries.filter((entry) => statementFilter === "all" || entry.group === statementFilter)
+      : [];
+    if (entries.length === 0) {
+      const empty = document.createElement("p");
+      empty.textContent = "Für diesen Filter gibt es noch keine bestätigte Geldbewegung.";
+      list.append(empty);
+    } else {
+      for (const entry of entries) {
+        const row = document.createElement("article");
+        row.className = "equipment-row";
+        const info = document.createElement("div");
+        const heading = document.createElement("strong");
+        heading.textContent = `${entry.label} · ${statementAmountText(entry)}`;
+        const detail = document.createElement("span");
+        detail.textContent = `Buchung #${entry.sequence} · ${entry.source_label} · danach Bargeld ${money(entry.cash_after_cents)} · Bank ${money(entry.bank_after_cents)}`;
+        info.append(heading, detail);
+        row.append(info);
+        list.append(row);
+      }
+    }
+
+    const other = Number.isInteger(statement?.other_entries) ? statement.other_entries : 0;
+    note.textContent = other > 0
+      ? `${other} weitere bestätigte Ledgerbuchung(en) gehören nicht zu diesem Kontoauszug-Slice und werden hier bewusst nicht interpretiert.`
+      : `${statement?.supported_entries || 0} bestätigte Buchung(en) im Kontoauszug. Keine Datumsangabe wird erfunden.`;
+  }
+
   function renderBankControl(sceneJobs) {
     const control = ensureBankControl();
     if (!control) return;
@@ -206,6 +314,7 @@
     const withdraw = document.getElementById("jobs-bank-withdraw");
     if (deposit) deposit.disabled = cash <= 0;
     if (withdraw) withdraw.disabled = bank <= 0;
+    renderFinanceStatements(sceneJobs);
   }
 
   function renderAssistantControl(sceneJobs, hasCharacter) {
