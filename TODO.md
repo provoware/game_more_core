@@ -3,10 +3,11 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-C2 – District-Event Runtime & Fail-fast-Härtung` · PR #92 · Merge `df18bab2dc9120fec4fe20bb39388a102eef2148`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-C3 – Settlement-getriebene District-Event Application-Integration` · PR #95 · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
 - **0.8.7-C1 District-Event-Vertrag/Katalog:** PR #90 · `SAFE MERGE PASS` · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
 - **0.8.7-C2 District-Event Runtime:** PR #91 · `SAFE MERGE PASS` · Merge `5e32d6de2a5859b1cadca62543dd10949717e4fc`; anschließend Katalog-Fail-fast über PR #92 gehärtet
-- **Aktive Entwicklungsstufe:** `0.8.7-C3 – Application-Integration` · PR #95 · in Remote-Validierung
+- **0.8.7-C3 Application-Integration:** PR #95 · `SAFE MERGE PASS` · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
+- **Nächste Entwicklungsstufe:** `0.8.7-C4 – read-only Ereignis-Timeline im Control Deck`
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
 
 ---
@@ -65,36 +66,44 @@
 - [x] ungültige Katalogeinträge nennen Event-ID und Feldpfad statt nur die Vertragsart (QA-003 / PR #94)
 - [x] C2-Status/Evidenz nach PR #92 kanonisch in `PROJEKTSTATUS.json`, TODO und Feature-Pool synchronisieren
 
----
-
-# Aktiv – 0.8.7-C3 Application-Integration
+## 0.8.7-C3 – Application-Integration ✅
 
 - [x] genau einen autorisierten Trigger festlegen: `settlement.complete`
 - [x] District-Event erst nach bestätigtem Settlement und bestätigter District-Zuordnung auslösen
 - [x] stabilen Trigger aus der bestätigten Settlement-Quelle ableiten; Browser liefert weder Trigger-ID noch Effekte
 - [x] bestehenden `DistrictWorldEventService` und `DistrictService` wiederverwenden
 - [x] A4-Runtime mit vorhandenem `DISTRICT_EVENT_MANIFEST.json` konfigurieren
-- [x] Regression absichern: Street-Walk löst weiterhin kein District-Welt-Ereignis aus
-- [x] Regression absichern: Settlement-Retry würfelt nicht neu und schreibt nicht doppelt
-- [ ] Remote-Gates 5/5 grün
-- [ ] 0 offene Review-Threads, aktuelles `main`, `/safe-merge` PASS
+- [x] Regression abgesichert: Street-Walk löst weiterhin kein District-Welt-Ereignis aus
+- [x] Regression abgesichert: Settlement-Retry würfelt nicht neu und schreibt nicht doppelt
+- [x] Runtime Core, Presentation Core, Repository Health, Release Acceptance und Release Package grün
+- [x] 0 offene Review-Threads, aktuelles `main`, `/safe-merge` PASS · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
 
-### Explizit NICHT in C3
+---
 
-- keine District-Event-Timeline im Browser
-- kein zweiter Trigger über Street oder Systemzeit
-- keine neue Journal-Eventart
-- keine JavaScript-District-Regeln
-- kein Cadence-/Cooldown-System
+# Aktiv – 0.8.7-C4 Ereignis-Timeline
+
+- [ ] bestätigte District-, Street- und Crisis-Ereignisse aus bereits autoritativen Quellen lesen
+- [ ] Projection bleibt read-only und erfindet keine Ereignisse oder Reihenfolge
+- [ ] Control Deck zeigt eine kompakte, tastatur- und screenreaderfreundliche Timeline
+- [ ] sichtbare Story-Texte kommen aus vorhandenen Textkatalogen, nicht aus Domain-Logik
+- [ ] leere Historie bleibt ehrlich leer statt Demo-Inhalte zu erfinden
+- [ ] Regressionen für Datenquelle, Reihenfolge, Textauflösung und fehlende/ungültige Records ergänzen
+
+### Explizit NICHT in C4
+
+- keine neuen Gameplay-Effekte
+- keine zweite Journal-/Timeline-Persistenz
+- keine Client-Autorität
+- kein Cooldown/Cadence-System
 - kein Produktversionsbump ohne eigene Release-Abnahme
 
 ---
 
 # Danach – priorisierter Ausbau
 
-1. **0.8.7-C4 – Ereignis-Timeline:** bestätigte District-, Street- und Crisis-Ereignisse read-only im Control Deck zeigen.
-2. **0.8.7-C5 – Cadence/Cooldown:** District-Events über bestätigte Spielzeit dosieren, niemals über Systemzeit allein.
-3. **0.8.7-D – Street Content Packs:** mehr Abwechslung über denselben validierten Ansatz-/Encounter-Vertrag.
+1. **0.8.7-C5 – Cadence/Cooldown:** District-Events über bestätigte Spielzeit dosieren, niemals über Systemzeit allein.
+2. **0.8.7-D – Street Content Packs:** mehr Abwechslung über denselben validierten Ansatz-/Encounter-Vertrag.
+3. **QA – No-eligible-event-Fall:** expliziten sicheren No-op-Vertrag für Districts ohne aktuell zulässiges Ereignis ergänzen.
 
 ---
 
