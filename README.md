@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.8 Anti Grind validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--ANTI--GRIND_validiert-7dff00">
-  <img alt="Scene Job Lohnvorschau in Abnahme" src="https://img.shields.io/badge/Scene_Jobs-JOB--PREVIEW_in_Abnahme-00c2ff">
+  <img alt="Feature Stand 0.8.8 Export Proof validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--EXPORT--PROOF_validiert-7dff00">
+  <img alt="Regeneration in Abnahme" src="https://img.shields.io/badge/Gameplay-RECOVERY--ACTIONS_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -27,9 +27,9 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.8-ECON-ANTI-GRIND – Scene-Job-Erschöpfung` |
-| **Aktive Iteration** | 🟡 `0.8.8-ECON-JOB-PREVIEW – Scene-Job-Lohnvorschau` |
-| **Nächste Iteration** | `0.8.8-UX-EXPORT-PROOF – Exportvorschau/Prüfsumme` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-UX-EXPORT-PROOF – Exportvorschau/Prüfsumme` |
+| **Aktive Iteration** | 🟡 `0.8.8-ECON-RECOVERY-ACTIONS – bestätigte Regeneration` |
+| **Nächste Iteration** | `0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Crew Identity** | ✅ Logo/Fahne als syncbereites Datenrezept, kein Bildblob |
 | **Living World** | ✅ replaybare Street Encounters, persistente Districts, District World Events + 24h-Cadence |
@@ -37,17 +37,17 @@
 | **Ranking** | ✅ Competitive Top 10 + bestätigte Wochen-/Monatszyklen |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
 | **Berlin Ops Map 2** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan + Auswahlfokus |
-| **Scene Jobs** | ✅ Anti-Grind verhindert Endlosfarmen ohne Energie; 🟡 JOB-PREVIEW zeigt vor dem Start den aktuell bestätigten Runtime-Lohn statt nur den Maximalbetrag |
+| **Scene Jobs** | ✅ Anti-Grind + bestätigte Lohnvorschau; 🟡 aktive Regeneration tauscht +20 Energie gegen +12 Stress, wenn die Runtime sie erlaubt |
 | **Assistent C1–C5B** | ✅ Autorität, Steuerung, Rundenausführung, JOBS-UI und bestätigter Freundschafts-Nachhall |
 | **Bankkonto D/D2** | ✅ Wallet↔Bank + 1 % bestätigter Sparzins/Zinseszins ohne Rechnerzeit-/Browserautorität |
 | **Kontoauszüge** | ✅ bestätigtes Finance-Ledger read-only als Joblohn, Bankbewegung und Sparzins; keine zweite Buchhaltung |
-| **FIN-EXPORT** | ✅ vollständige validierte Kontoauszug-Projection lokal als TXT/CSV; kein Import oder Finanz-Write |
+| **FIN-EXPORT** | ✅ TXT/CSV + Vorschau/Kopieren/Prüfsumme aus derselben Serialisierung; kein Import oder Finanz-Write |
 | **Berlin-Erinnerungen** | ✅ bis zu fünf bestätigte District-Ereignisse als read-only Nachhall im Profil; keine Progressionsengine |
 | **Control Deck E** | ✅ lokaler Bereichsfokus + Runtime-abgeleitetes Nächste-Aktion-Signal |
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.8-ECON-ANTI-GRIND` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. JOB-PREVIEW berechnet keinen Lohn im Browser: Die bestehende Scene-Jobs-Projection verwendet dieselbe kanonische Anti-Grind-Berechnung wie `SceneJobService.run()` und liefert nur `effective_payout_cents` plus Kürzungsstatus an die Oberfläche. Der Browser rendert diese Werte, kann aber weder Energie, Lohnfaktor noch Auszahlung autorisieren.
+> `0.8.8-UX-EXPORT-PROOF` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. RECOVERY-ACTIONS verwendet keine Rechnerzeit und keinen Browser-Ressourcenwert: Die Runtime prüft den bestätigten Character-State und erlaubt `Koffein & kalte Luft` nur bei Energie ≤ 80 und Stress ≤ 88. Der Browser sendet ausschließlich die stabile `recovery_id`.
 
 ---
 
@@ -103,6 +103,8 @@ PROPERTY / HALL OF TRIBUTE
 - STORY-DISTRICT-BIO: bestätigte District-Timeline als read-only Berlin-Erinnerungen im Profil
 - FIN-EXPORT: TXT/CSV ausschließlich aus der validierten FIN-STATEMENTS-Projection, ohne Rückschreibpfad
 - ECON-ANTI-GRIND: Scene Jobs bleiben verfügbar; Joblohn wird bei nicht gedecktem Energieverbrauch proportional begrenzt, bei 0 Energie auf 0 Cent
+- ECON-JOB-PREVIEW: tatsächlicher Erschöpfungslohn vor Jobstart aus derselben kanonischen Runtime-Berechnung
+- UX-EXPORT-PROOF: Vorschau, Kopieren, Prüfsumme und Download verwenden denselben Exportinhalt
 
 ---
 
@@ -250,10 +252,12 @@ Der Ausbau bleibt in getrennte, prüfbare Slices zerlegt:
 | **0.8.8-STORY-DISTRICT-BIO** | Berlin-Erinnerungen | ✅ ausschließlich bestätigte District-Timeline im Profil, keine Progressionsengine |
 | **0.8.8-FIN-EXPORT** | Kontoauszug TXT/CSV | ✅ ausschließlich aus validierter FIN-STATEMENTS-Projection |
 | **0.8.8-ECON-ANTI-GRIND** | Scene-Job-Erschöpfung | ✅ Jobs bleiben verfügbar; Lohn proportional aus bestätigter Vor-Job-Energie |
-| **0.8.8-ECON-JOB-PREVIEW** | tatsächlicher Erschöpfungslohn vor Jobstart | 🟡 gleiche kanonische Berechnung in read-only Runtime-Projection; Browser rendert nur |
-| **0.8.8-UX-EXPORT-PROOF** | Exportvorschau/Prüfsumme | danach; ausschließlich derselbe bestätigte Exportinhalt, read-only |
+| **0.8.8-ECON-JOB-PREVIEW** | tatsächlicher Erschöpfungslohn vor Jobstart | ✅ gleiche kanonische Berechnung in read-only Runtime-Projection; Browser rendert nur |
+| **0.8.8-UX-EXPORT-PROOF** | Exportvorschau/Prüfsumme | ✅ derselbe bestätigte Exportinhalt für Vorschau, Kopieren, Prüfsumme und Download |
+| **0.8.8-ECON-RECOVERY-ACTIONS** | bestätigte Regeneration | 🟡 +20 Energie gegen +12 Stress, Runtime prüft Headroom, keine Rechnerzeit |
+| **0.8.8-UX-TIMELINE-FILTER** | lokale Timeline-Filter | danach; rein lokaler Presentation-State |
 
-Anlagen/Dividenden und lokaler Timeline-Fokusfilter bleiben eigenständige Folge-Slices, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
+Anlagen/Dividenden bleiben ein eigenständiger Folge-Slice, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
 
 ---
 
@@ -369,7 +373,9 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung, Aktionshervorhebung oder
 | 0.8.8-F | Berlin Ops Map 2 | `8119bf71a6f1...` |
 | 0.8.8-STORY-DISTRICT-BIO | Berlin-Erinnerungen | `233066969239...` |
 | 0.8.8-FIN-EXPORT | Kontoauszug TXT/CSV | `11c023f927ad...` |
-| **0.8.8-ECON-ANTI-GRIND** | **Scene-Job-Erschöpfung** | `49d6947b9f1b...` |
+| 0.8.8-ECON-ANTI-GRIND | Scene-Job-Erschöpfung | `49d6947b9f1b...` |
+| 0.8.8-ECON-JOB-PREVIEW | bestätigte Lohnvorschau | `040be951665a...` |
+| **0.8.8-UX-EXPORT-PROOF** | **Exportvorschau/Prüfsumme** | `0909f3c38642...` |
 
 ---
 
@@ -427,6 +433,7 @@ SAFE MERGE PASS
 | Scene Jobs & Bargeld | [`docs/LAIENHILFE_SCENE_JOBS.md`](docs/LAIENHILFE_SCENE_JOBS.md) |
 | Scene-Job-Erschöpfung | [`docs/LAIENHILFE_SCENE_JOB_ERSCHOEPFUNG.md`](docs/LAIENHILFE_SCENE_JOB_ERSCHOEPFUNG.md) |
 | Scene-Job-Lohnvorschau | [`docs/LAIENHILFE_SCENE_JOB_LOHNVORSCHAU.md`](docs/LAIENHILFE_SCENE_JOB_LOHNVORSCHAU.md) |
+| Regeneration | [`docs/LAIENHILFE_REGENERATION.md`](docs/LAIENHILFE_REGENERATION.md) |
 | Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Kontoauszug-Export | [`docs/LAIENHILFE_FIN_EXPORT.md`](docs/LAIENHILFE_FIN_EXPORT.md) |
 | Berlin-Erinnerungen | [`docs/LAIENHILFE_DISTRICT_BIO.md`](docs/LAIENHILFE_DISTRICT_BIO.md) |
