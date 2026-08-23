@@ -5,17 +5,19 @@ BUNKERFREQUENZ trennt bewusst **Produktrelease** und **Entwicklungsstand**. Desh
 ## Die drei wichtigsten Angaben
 
 1. **Release-Baseline** – das zuletzt bewusst als Produktpaket freigegebene Release. Aktuell: `0.8.4-alpha.1`.
-2. **Letzte validierte Feature-Stufe** – der neueste Entwicklungsstand, der die vorgesehenen GitHub-Prüfungen bestanden hat und sicher gemergt wurde. Aktuell: `0.8.7-C2`.
-3. **Nächste Iteration** – der nächste geplante Entwicklungsschritt. Aktuell: `0.8.7-C3`.
+2. **Letzte validierte Feature-Stufe** – der neueste Entwicklungsstand, der die vorgesehenen GitHub-Prüfungen bestanden hat und sicher gemergt wurde. Aktuell: `0.8.7-C3`.
+3. **Nächste Iteration** – der nächste geplante Entwicklungsschritt. Aktuell: `0.8.7-C4`.
 
-## Was bedeutet C2 konkret?
+## Was bedeutet C3 konkret?
 
-C2 bedeutet: Die District-Welt-Ereignisse besitzen bereits eine deterministische Runtime. Derselbe bestätigte Kontext würfelt beim Reload nicht neu, Effekte laufen über den vorhandenen DistrictService und der Ereigniskatalog wird beim Start auf typische Fehler geprüft.
+C3 bedeutet: Die District-Welt-Ereignisse besitzen nicht nur eine deterministische Runtime, sondern sind jetzt kontrolliert in den normalen Application-Flow eingebunden. Genau ein autorisierter Trigger ist aktiv: `settlement.complete`. Erst nach einem bestätigten Settlement und einer bestätigten District-Zuordnung darf ein District-Ereignis ausgelöst werden.
 
-Noch **nicht** enthalten ist die automatische Auslösung aus dem normalen A4-Spielablauf. Genau das ist der nächste Schritt C3.
+Der Browser liefert dabei weder die Trigger-ID noch Effekte oder Zufallswerte. Retry und Reload dürfen deshalb weder neu würfeln noch dieselbe District-Folge doppelt anwenden.
+
+Noch **nicht** enthalten ist eine eigene erzählerische Ereignis-Timeline im Control Deck. Genau das ist der nächste geplante Schritt C4.
 
 ## Wo nachsehen?
 
 `PROJEKTSTATUS.json` ist die kanonische Maschinenquelle für diesen Stand. `TODO.md` erklärt die nächste Arbeit in lesbarer Form. `FEATURE_POOL.md` enthält spätere Ideen.
 
-Wenn sich diese drei Dateien widersprechen, ist das ein Entwicklungsfehler und kein zweiter gültiger Projektstand. Der Runtime-Test `test_feature_status_consistency.py` prüft deshalb zusätzlich die wichtigsten C2-Aussagen.
+Wenn sich diese drei Dateien widersprechen, ist das ein Entwicklungsfehler und kein zweiter gültiger Projektstand. Der Runtime-Test `test_feature_status_consistency.py` prüft deshalb zusätzlich die wichtigsten C3-Aussagen.
