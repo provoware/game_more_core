@@ -39,28 +39,35 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
             "POOL-UX-002", "POOL-WORLD-004", "POOL-PROFILE-002", "POOL-ECON-003",
             "POOL-COMPANION-001", "POOL-COMPANION-002", "POOL-FINANCE-001",
+            "POOL-UX-004", "POOL-UX-005",
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
 
-    def test_validated_d2_and_active_e_match_status(self):
+    def test_validated_e_and_active_fin_statements_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         economy = status["subsystems"]["economy"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-D2")
-        self.assertEqual(status["active_iteration"], "0.8.8-E")
-        self.assertEqual(status["next_iteration"], "0.8.8-FIN-STATEMENTS")
-        self.assertEqual(status["current_focus"], "control_deck_local_panel_focus_and_runtime_next_action_signal")
-        self.assertEqual(economy["status"], "d2_remote_validated")
-        self.assertTrue(economy["savings_interest_supported"])
-        self.assertEqual(economy["savings_interest_basis_points_per_confirmed_period"], 100)
-        self.assertFalse(economy["savings_interest_system_time_sole_authority"])
-        self.assertFalse(economy["browser_can_confirm_savings_period"])
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-E")
+        self.assertEqual(status["active_iteration"], "0.8.8-FIN-STATEMENTS")
+        self.assertEqual(status["next_iteration"], "0.8.8-F")
+        self.assertEqual(status["current_focus"], "read_only_personal_finance_ledger_statements")
+        self.assertEqual(economy["status"], "e_remote_validated_fin_statements_in_validation")
+        self.assertTrue(economy["account_statements_supported"])
+        self.assertTrue(economy["account_statements_read_only"])
+        self.assertEqual(
+            economy["account_statement_kinds"],
+            ["job_income", "bank_deposit", "bank_withdrawal", "savings_interest"],
+        )
+        self.assertTrue(economy["account_statement_totals_from_confirmed_ledger"])
+        self.assertFalse(economy["account_statement_invents_timestamp"])
+        self.assertFalse(economy["account_statement_second_ledger"])
+        self.assertTrue(presentation["personal_finance_statement_visible"])
+        self.assertEqual(presentation["personal_finance_statement_location"], "existing_jobs_bank_control")
+        self.assertFalse(presentation["personal_finance_statement_filter_persisted"])
         self.assertTrue(presentation["focus_maximize_restore"])
-        self.assertFalse(presentation["focus_state_persisted"])
         self.assertTrue(presentation["next_action_attention_signal"])
-        self.assertEqual(presentation["next_action_source"], "enabled_runtime_event_action_dom")
         self.assertFalse(presentation["browser_gameplay_authority"])
         self.assertTrue(process["focused_read_policy"])
         self.assertTrue(process["planned_read_list_required"])
@@ -77,9 +84,9 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-COMPANION-001": "`DONE`",
             "POOL-COMPANION-002": "`DONE`",
             "POOL-FINANCE-001": "`DONE`",
-            "POOL-FINANCE-003": "`READY`",
-            "POOL-UX-004": "`PULLED`",
-            "POOL-UX-005": "`PULLED`",
+            "POOL-FINANCE-003": "`PULLED`",
+            "POOL-UX-004": "`DONE`",
+            "POOL-UX-005": "`DONE`",
             "POOL-MAP-002": "`READY`",
         }
         for pool_id, state in expected.items():

@@ -8,13 +8,13 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.8 D validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--D_validiert-7dff00">
-  <img alt="Savings Interest D2 in Abnahme" src="https://img.shields.io/badge/Savings_Interest-0.8.8--D2_in_Abnahme-00c2ff">
+  <img alt="Feature Stand 0.8.8 E validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--E_validiert-7dff00">
+  <img alt="Finance Statements in Abnahme" src="https://img.shields.io/badge/Finance_Statements-0.8.8--FIN_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
-> **Entdecken → arbeiten → ansparen → entscheiden → planen → handeln → eskalieren → abrechnen → Stadt verändern → ausbauen → aufsteigen.**
+> **Entdecken → arbeiten → ansparen → nachvollziehen → entscheiden → planen → handeln → eskalieren → abrechnen → Stadt verändern → ausbauen → aufsteigen.**
 
 </div>
 
@@ -27,9 +27,9 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.8-D – Atomic Wallet ↔ Bank Transfers` |
-| **Aktive Iteration** | 🟡 `0.8.8-D2 – Confirmed Savings Interest` |
-| **Nächste Iteration** | `0.8.8-E – Control Deck Focus` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-E – Control Deck Focus` |
+| **Aktive Iteration** | 🟡 `0.8.8-FIN-STATEMENTS – Kontoauszüge` |
+| **Nächste Iteration** | `0.8.8-F – Berlin Ops Map 2` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Crew Identity** | ✅ Logo/Fahne als syncbereites Datenrezept, kein Bildblob |
 | **Living World** | ✅ replaybare Street Encounters, persistente Districts, District World Events + 24h-Cadence |
@@ -39,13 +39,13 @@
 | **Berlin Ops Map PRO** | ✅ 8 Districts · 12 Locations · read-only |
 | **Scene Jobs** | ✅ fünf Jobs + persönlicher Wallet-/Ledger-Pfad remote validiert |
 | **Assistent C1–C5B** | ✅ Autorität, Steuerung, Rundenausführung, JOBS-UI und bestätigter Freundschafts-Nachhall |
-| **Bankkonto D** | ✅ atomare Wallet↔Bank-Transfers im bestehenden `PlayerFinanceState` und Finance-Ledger |
-| **Sparzinsen D2** | 🟡 1 % pro bereits bestätigtem Finance-Tick; Zinseszins, Retry-Schutz, keine Rechnerzeit-/Browserautorität |
-| **Control Deck 2.0** | ✅ HUD, Schnellnavigation und lokale Anzeigeoptionen |
+| **Bankkonto D/D2** | ✅ Wallet↔Bank + 1 % bestätigter Sparzins/Zinseszins ohne Rechnerzeit-/Browserautorität |
+| **Kontoauszüge** | 🟡 bestätigtes Finance-Ledger read-only als Joblohn, Bankbewegung und Sparzins; keine zweite Buchhaltung |
+| **Control Deck E** | ✅ lokaler Bereichsfokus + Runtime-abgeleitetes Nächste-Aktion-Signal |
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.8-D` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. D2 verarbeitet nur einen **bereits kanonisch bestätigten Finance-Periodentrigger**; D2 erzeugt selbst keine Zeitautorität. Systemzeit und Browser können weder eine Zinsperiode noch einen Zinsbetrag bestätigen.
+> `0.8.8-E` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. FIN-STATEMENTS liest nur das bereits bestätigte persönliche Finance-Ledger. Der Browser erzeugt keine Buchungen, Beträge oder Zeitstempel; Filter und Summen sind reine read-only Presentation.
 
 ---
 
@@ -54,7 +54,7 @@
 BUNKERFREQUENZ ist ein lokales Techno-/FreeTekno-Crew-RPG. Bestätigte Aktionen, Ereignisse und ihre Folgen formen Charakter, Crew und Stadt.
 
 ```text
-SCENE JOBS → PERSÖNLICHES BARGELD → BANK / SPAREN
+SCENE JOBS → PERSÖNLICHES BARGELD → BANK / SPAREN → KONTOAUSZUG
       ↓
 STRASSE / SPIELERANSATZ
       ↓
@@ -89,17 +89,14 @@ PROPERTY / HALL OF TRIBUTE
 - Property Purchase + dreistufige Upgrades
 - Berlin Ops Map PRO
 - Competitive Top 10 + Wochen-/Monatszyklen
-- Control Deck 2.0 mit Street Approaches und Krisen-Folgenvorschau
 - sichtbare read-only Ereignis-Timeline
 - District World Events mit deterministischer Auswahl und 24h-Cadence aus bestätigter Spielweltzeit
 - Crew-Logo/Fahne als kleine synchronisierbare Identitätsdaten statt Bilddatei
 - Scene Jobs mit persönlichem Bargeld, Retry-Schutz und Recovery
-- Assistenten-Autoritätsvertrag C1: bestehender Scene-Job-Katalog, maximal eine Aufgabe, bestätigte Runde statt Systemzeit
-- Assistenten-Steuerzustand C2: Aus/Jobwahl, Stop/Wechsel und Recovery
-- Confirmed-Round Execution C3: jede bestätigte Runde höchstens eine Assistenten-Jobausführung, inklusive Retry-/Crash-Schutz
-- JOBS-UI C4: Start, Wechsel, Stop und bestätigter Status im vorhandenen JOBS-Bereich
-- Freundschafts-Nachhall C5A/C5B: nur bestätigte Assistentenarbeit, deterministische Texte, keine Progressionsengine
+- Assistent C1–C5B: Autorität, Steuerzustand, exakt-einmal Rundenausführung, JOBS-UI und bestätigter Freundschafts-Nachhall
 - Bankkonto D: atomare Ein-/Auszahlung auf demselben persönlichen Finance-State/Ledger
+- Sparzinsen D2: bestätigter Finance-Tick, Zinseszins, Retry-Schutz, keine Rechnerzeit-Autorität
+- Control Deck E: lokaler Fokus/Zurücksetzen und Nächste-Aktion-Signal ausschließlich aus vorhandener Runtime-Freigabe
 
 ---
 
@@ -173,11 +170,32 @@ B2 ergänzt einen kompakten JOBS-Bereich und eine Bargeldanzeige im OPS-HUD. Alt
 
 ---
 
-## 💳 0.8.8-D – Bankkonto & Sparen
+## 💳 0.8.8-D – Bankkonto & Sparen ✅
 
 **D ✅** verschiebt persönliches Geld atomar zwischen Wallet und Bank. `PlayerFinanceState`, Finance-Ledger und Recovery bleiben die einzige Finanzarchitektur. Browserbefehle liefern nur Richtung und positiven Betrag; Zielstände bleiben Runtime-Autorität. Remote-Abnahme: PR #113 · Head `e41f2b40beb6508c21175a768ea3fb18050c79b1` · Runtime `32662002026` · Presentation `32662002022` · Repository Health `32662002030` · Release Acceptance `32662002025` · Release Package `32662002046` · SAFE MERGE PASS · Merge `c1a27a977ff76a397d95ae097395317c4d46950b`.
 
-**D2 🟡** ergänzt 1 % Sparzins pro bereits bestätigter Finance-Periode. Der fortlaufende `confirmed_finance_tick` wird genau einmal verarbeitet; Folgeperioden verzinsen den aktuellen Bankstand und erzeugen dadurch Zinseszins. D2 erzeugt selbst keine Periode und akzeptiert weder Systemzeit noch Browser als Autorität.
+**D2 ✅** ergänzt 1 % Sparzins pro bereits bestätigter Finance-Periode. Der fortlaufende `confirmed_finance_tick` wird genau einmal verarbeitet; Folgeperioden verzinsen den aktuellen Bankstand und erzeugen dadurch Zinseszins. D2 erzeugt selbst keine Periode und akzeptiert weder Systemzeit noch Browser als Autorität. Remote-Abnahme: PR #114 · Head `897b5717776012376ef20e33093b413700744e07` · Runtime `32663103520` · Presentation `32663103517` · Repository Health `32663103523` · Release Acceptance `32663103519` · Release Package `32663103518` · SAFE MERGE PASS · Merge `bbebc9c3cafeac7f71eebeea1b89d4861b304e76`.
+
+---
+
+## 🎛️ 0.8.8-E – Control Deck Focus ✅
+
+E verdichtet das vorhandene Control Deck ohne neuen Gameplay-State. Sichtbare Bereiche können lokal fokussiert und mit `GESAMTANSICHT` zurückgestellt werden. Das Nächste-Aktion-Signal markiert ausschließlich einen bereits von der Runtime freigegebenen Event-Button; der Browser erfindet keine Gate-Regel. Fokus wird nicht gespeichert, Reduced Motion bleibt statisch nutzbar.
+
+**Remote-Abnahme E:** PR #115 · Head `131d7a8eff787a04ced995b1385ae85e7bdff89f` · Runtime `32664026523` · Presentation `32664026458` · Repository Health `32664026461` · Release Acceptance `32664026528` · Release Package `32664026553` · SAFE MERGE PASS · Merge `6ac72d794ad3565bc40eb23dd501626382aa679a`.
+
+---
+
+## 🧾 0.8.8-FIN-STATEMENTS – Kontoauszüge 🟡
+
+FIN-STATEMENTS verwendet **keine zweite Buchhaltung**. Die bestehende Scene-Jobs-/Bank-Projektion liest ausschließlich bestätigte Zeilen aus `PlayerFinanceState.ledger` und stellt vier bereits vorhandene Buchungsarten verständlich dar:
+
+- `job_income` → Joblohn
+- `bank_deposit` → Einzahlung
+- `bank_withdrawal` → Auszahlung
+- `savings_interest` → Sparzins
+
+Die neueste unterstützte Buchung steht oben. Summen entstehen ausschließlich aus den vorhandenen Ledgerzeilen. `ALLE / JOBLOHN / BANK / ZINSEN` sind lokale Anzeige-Filter und schreiben weder Save noch Journal. Da das aktuelle persönliche Ledger keinen kanonisch bestätigten Buchungszeitpunkt trägt, zeigt die UI eine stabile `Buchung #N` und **erfindet kein Datum**. Spätere/andere Ledgerarten werden nicht interpretiert, sondern nur transparent gezählt.
 
 ---
 
@@ -189,18 +207,14 @@ Der Ausbau bleibt in getrennte, prüfbare Slices zerlegt:
 |---|---|---|
 | **0.8.8-A** | Crew-Logo/Fahne | ✅ synchronisierbare Identitätsdaten statt Bildblob |
 | **0.8.8-B** | Scene Jobs | ✅ katalogisierte Jobs + persönliches Bargeld; Browser sendet nur `job_id` |
-| **0.8.8-C1** | Assistant Authority | ✅ bestehender Jobvertrag; keine Systemzeit-/Browserautorität |
-| **0.8.8-C2** | Assistant Control State | ✅ genau eine persistente Auswahl oder Aus |
-| **0.8.8-C3** | Confirmed-Round Execution | ✅ bestätigte Runde → exakt eine idempotente kanonische Jobausführung |
-| **0.8.8-C4** | JOBS-UI-Integration | ✅ vorhandenen JOBS-Bereich für Assistenten-Auswahl/Stop/Status nutzen |
-| **0.8.8-C5A/C5B** | Freundschafts-Nachhall | ✅ Story nur aus bestätigter Assistentenarbeit, sichtbar ohne zweite Progressionsengine |
+| **0.8.8-C1–C5B** | Secret Best Friend | ✅ bestehende Jobs, bestätigte Runde, sichere Steuerung und read-only Nachhall |
 | **0.8.8-C6** | Round-Authority Integration Harness | abhängig vom echten kanonischen Rundenproduzenten |
-| **0.8.8-D** | Wallet ↔ Bank | ✅ atomare Transfers auf bestehendem Finance-State/Ledger |
-| **0.8.8-D2** | bestätigte Sparzinsen | 🟡 fortlaufender bestätigter Finance-Tick, 1 %, Zinseszins, keine Rechnerzeit-Autorität |
-| **0.8.8-E** | Control Deck Focus | weniger doppelte Ansichten, lokale Bereichsmaximierung, klare nächste Aktionen |
+| **0.8.8-D/D2** | Bank & bestätigte Sparzinsen | ✅ gleicher Finance-State/Ledger, keine Rechnerzeit-Autorität |
+| **0.8.8-E** | Control Deck Focus | ✅ lokaler Fokus + Runtime-abgeleitete nächste Aktion |
+| **0.8.8-FIN-STATEMENTS** | Kontoauszüge | 🟡 bestehendes bestätigtes Ledger read-only verständlich machen |
 | **0.8.8-F** | Berlin Ops Map 2 | bezirksartige Zoom-/Pan-Ansicht mit besserer Objekt-Hierarchie |
 
-Kontoauszüge, Anlagen/Dividenden und lokaler Timeline-Fokusfilter bleiben eigenständige Folge-Slices, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
+Anlagen/Dividenden, Kontoauszug-Export und lokaler Timeline-Fokusfilter bleiben eigenständige Folge-Slices, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
 
 ---
 
@@ -308,7 +322,9 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung oder Aktionshervorhebung 
 | 0.8.8-C3 | Confirmed-Round Execution | `85e95995d5e8...` |
 | 0.8.8-C4 | JOBS-UI-Integration | `f8295564a4bd...` |
 | 0.8.8-C5B | sichtbarer Freundschafts-Nachhall | `eaa615e48eec...` |
-| **0.8.8-D** | **Atomic Wallet ↔ Bank Transfers** | `c1a27a977ff7...` |
+| 0.8.8-D | Atomic Wallet ↔ Bank Transfers | `c1a27a977ff7...` |
+| 0.8.8-D2 | Confirmed Savings Interest | `bbebc9c3cafe...` |
+| **0.8.8-E** | **Control Deck Focus** | `6ac72d794ad3...` |
 
 ---
 
@@ -364,7 +380,7 @@ SAFE MERGE PASS
 | Anfängerstart | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
 | Crew-Logo/Fahne | [`docs/LAIENHILFE_CREW_LOGO_FAHNE.md`](docs/LAIENHILFE_CREW_LOGO_FAHNE.md) |
 | Scene Jobs & Bargeld | [`docs/LAIENHILFE_SCENE_JOBS.md`](docs/LAIENHILFE_SCENE_JOBS.md) |
-| Bank & Sparen | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
+| Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Geheimer bester Freund | [`docs/LAIENHILFE_ASSISTENT.md`](docs/LAIENHILFE_ASSISTENT.md) |
 | District-Event-Vertrag | [`manifests/DISTRICT_EVENT_MANIFEST.json`](manifests/DISTRICT_EVENT_MANIFEST.json) |
 | Berlin Ops Map | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |

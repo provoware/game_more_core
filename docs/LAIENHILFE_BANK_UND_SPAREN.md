@@ -1,10 +1,10 @@
-# Laienhilfe – Bankkonto & Sparen
+# Laienhilfe – Bankkonto, Sparen & Kontoauszug
 
 ## Was ist jetzt möglich?
 
-Dein persönliches Geld besteht aus **Bargeld** und **Bankguthaben**. Beides gehört zum selben persönlichen Finance-State und zum selben bestätigten Ledger.
+Dein persönliches Geld besteht aus **Bargeld** und **Bankguthaben**. Beides gehört zum selben persönlichen `PlayerFinanceState` und zum selben bestätigten Finance-Ledger.
 
-Seit 0.8.8-D kannst du Geld zwischen Bargeld und Bank verschieben. D2 ergänzt darauf aufbauend Sparzinsen.
+Seit 0.8.8-D kannst du Geld zwischen Bargeld und Bank verschieben. D2 ergänzt bestätigte Sparzinsen. FIN-STATEMENTS macht diese bereits bestätigten Geldbewegungen jetzt verständlich sichtbar.
 
 ## Wie funktionieren die Zinsen?
 
@@ -18,30 +18,46 @@ Beispiel:
 - erste bestätigte Periode: +1,00 € → 101,00 €
 - zweite bestätigte Periode: +1,01 € → 102,01 €
 
-Damit entsteht echter Zinseszins, ohne eine zweite Finanzlogik einzuführen.
+Damit entsteht Zinseszins, ohne eine zweite Finanzlogik einzuführen.
 
 ## Warum kann eine Periode nicht doppelt zahlen?
 
-Jede bestätigte Finance-Periode besitzt eine stabile ID und einen fortlaufenden Finance-Tick. Derselbe Tick darf nur einmal verarbeitet werden.
+Jede bestätigte Finance-Periode besitzt eine stabile ID und einen fortlaufenden Finance-Tick. Derselbe Tick darf nur einmal verarbeitet werden. Ein Retry oder Neustart zahlt deshalb nicht noch einmal.
 
-Wird dieselbe Periode wegen Retry oder Neustart erneut geliefert, erkennt die Runtime die bereits bestätigte Buchung und zahlt **kein zweites Mal**.
+Auch eine Periode mit 0 Cent Zins wird als verarbeitet markiert. Später eingezahltes Geld kann dadurch keine alte Periode rückwirkend verzinsen.
 
-## Was passiert bei 0 € Bankguthaben?
+## Was zeigt der Kontoauszug?
 
-Auch eine Periode mit 0 Cent Zins wird als verarbeitet markiert. Das ist wichtig: Du kannst später nicht Geld einzahlen und eine alte, bereits vergangene Periode rückwirkend noch einmal verzinsen lassen.
+Der Kontoauszug sitzt direkt beim vorhandenen **Bankkonto im JOBS-Bereich**. Er liest ausschließlich bereits vorhandene, bestätigte Ledgerbuchungen und verändert nichts.
 
-## Kann der Browser Zinsen auslösen?
+Aktuell werden vier Arten verständlich dargestellt:
 
-Nein.
+- **Joblohn** – Geld aus einem bestätigten Scene Job
+- **Einzahlung** – Bargeld wurde auf die Bank verschoben
+- **Auszahlung** – Bankguthaben wurde zu Bargeld
+- **Sparzins** – bestätigter Zins wurde dem Bankkonto gutgeschrieben
 
-Der Browser darf weder:
+Die neueste unterstützte Geldbewegung steht oben. Zusätzlich siehst du den Bargeld- und Bankstand **nach** der jeweiligen Buchung.
 
-- eine Finance-Periode bestätigen,
-- einen Finance-Tick erfinden,
-- einen Zinsbetrag vorgeben,
-- Rechnerzeit als Auslöser verwenden.
+## Warum steht dort „Buchung #…“ statt Datum und Uhrzeit?
 
-D2 besitzt außerdem bewusst **keinen eigenen Zeitproduzenten**. Es verarbeitet nur einen bereits autorisierten internen Periodentrigger.
+Das persönliche Ledger enthält für diese Geldbewegungen derzeit **keinen kanonisch bestätigten Buchungszeitpunkt**. Deshalb erfindet das Spiel kein Datum und keine Uhrzeit.
+
+`Buchung #12` bedeutet nur: Das war die zwölfte Ledgerposition. Sobald später ein bestätigter Zeitvertrag existiert, kann eine eigene Iteration echte Zeitangaben ergänzen. Rechnerzeit allein reicht dafür nicht.
+
+## Was machen die Filter?
+
+`ALLE`, `JOBLOHN`, `BANK` und `ZINSEN` ändern nur, welche bereits bestätigten Zeilen du gerade siehst. Der Filter wird nicht ins Journal geschrieben und verändert kein Geld.
+
+Auch die angezeigten Summen werden ausschließlich aus den vorhandenen Ledgerzeilen berechnet. Der Browser erfindet keine Buchungen und keine Beträge.
+
+## Was passiert mit späteren Geldarten wie Investments?
+
+Unbekannte oder spätere Ledgerarten werden in diesem Slice **nicht gedeutet**. Der Kontoauszug weist nur darauf hin, dass weitere bestätigte Buchungen existieren. Damit kann eine spätere Investment-Iteration eigene Regeln hinzufügen, ohne dass FIN-STATEMENTS heute etwas Falsches behauptet.
+
+## Kann der Browser Zinsen oder Kontoauszugsbuchungen auslösen?
+
+Nein. Der Browser darf weder Finance-Perioden noch Zinsbeträge bestätigen. Für den Kontoauszug existiert außerdem **kein eigener Schreib-Command**: Er ist eine reine Anzeige des bestehenden bestätigten Ledgers.
 
 ## Ist das Eventbudget betroffen?
 
@@ -49,4 +65,4 @@ Nein. Persönliches Bargeld und Bankguthaben bleiben fachlich getrennt vom Event
 
 ## Was kommt als Nächstes?
 
-Als nächster unabhängiger Slice ist **0.8.8-E – Control Deck Focus** vorgesehen: weniger doppelte Informationen, lokal maximierbare Arbeitsbereiche und deutlichere nächste Aktionen. Der Round-Authority-Harness C6 bleibt abhängig, bis ein echter kanonischer Rundenproduzent vorhanden ist.
+Nach validiertem FIN-STATEMENTS ist **0.8.8-F – Berlin Ops Map 2** der stärkste unabhängige Slice: lokaler Zoom/Pan, bessere Bezirks- und Objekthierarchie sowie fokussierte Details auf derselben read-only Map-Projection. C6 bleibt abhängig, bis ein echter kanonischer Rundenproduzent existiert.

@@ -17,6 +17,67 @@ _PUBLIC_JOB_FIELDS = (
     "stress_delta",
 )
 
+_STATEMENT_KIND_META = {
+    "job_income": {"label": "Joblohn", "group": "jobs"},
+    "bank_deposit": {"label": "Einzahlung", "group": "bank"},
+    "bank_withdrawal": {"label": "Auszahlung", "group": "bank"},
+    "savings_interest": {"label": "Sparzins", "group": "interest"},
+}
+
+
+def _build_finance_statement_projection(
+    finance: PlayerFinanceState,
+    projected_jobs: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Project supported personal ledger rows without inventing time or balances."""
+    job_labels = {job["job_id"]: job["label"] for job in projected_jobs}
+    totals = {
+        "job_income_cents": 0,
+        "bank_deposit_cents": 0,
+        "bank_withdrawal_cents": 0,
+        "savings_interest_cents": 0,
+    }
+    entries: list[dict[str, Any]] = []
+    other_entries = 0
+
+    for index, raw_entry in enumerate(finance.ledger):
+        kind = raw_entry["kind"]
+        meta = _STATEMENT_KIND_META.get(kind)
+        if meta is None:
+            other_entries += 1
+            continue
+
+        amount_cents = raw_entry["amount_cents"]
+        totals[f"{kind}_cents"] += amount_cents
+        if kind == "job_income":
+            source_label = job_labels.get(raw_entry["source_id"], "Scene Job")
+        elif kind in {"bank_deposit", "bank_withdrawal"}:
+            source_label = "Persönliche Bank"
+        else:
+            source_label = "Bestätigte Sparperiode"
+
+        entries.append({
+            "sequence": index + 1,
+            "transaction_id": raw_entry["transaction_id"],
+            "kind": kind,
+            "group": meta["group"],
+            "label": meta["label"],
+            "amount_cents": amount_cents,
+            "cash_after_cents": raw_entry["cash_after_cents"],
+            "bank_after_cents": raw_entry["bank_after_cents"],
+            "source_label": source_label,
+        })
+
+    entries.reverse()
+    return {
+        "available": True,
+        "entries": entries,
+        "supported_entries": len(entries),
+        "other_entries": other_entries,
+        "totals": totals,
+        "filters": ["all", "jobs", "bank", "interest"],
+    }
+
 
 def build_scene_jobs_projection(
     state: Mapping[str, Any] | None,
@@ -65,6 +126,7 @@ def build_scene_jobs_projection(
         "bank_cents": finance.bank_cents,
         "finance_revision": finance.revision,
         "ledger_entries": len(finance.ledger),
+        "finance_statement": _build_finance_statement_projection(finance, projected_jobs),
         "assistant": {
             "enabled": assistant.active_job_id is not None,
             "active_job_id": assistant.active_job_id,
