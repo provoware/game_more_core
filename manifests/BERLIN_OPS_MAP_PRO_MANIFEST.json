@@ -9,6 +9,9 @@
   "interaction": {
     "focus": true,
     "click": true,
+    "zoom": "local_bounded",
+    "pan": "local_bounded",
+    "focus_selected": true,
     "persistent_selection": false,
     "domain_write": false
   },
