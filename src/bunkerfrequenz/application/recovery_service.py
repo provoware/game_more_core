@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from copy import deepcopy
+
 from bunkerfrequenz.domain.character import CharacterState, RESOURCE_MAX, RESOURCE_MIN
 from bunkerfrequenz.domain.progression import add_trait_evidence, apply_skill_xp
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceKernel, RecoveryReceipt
@@ -68,8 +70,8 @@ def replay_character_event(derived_state: dict, record: dict) -> dict:
         character.specialization = payload.get("new")
     elif event_type == "character.profile_updated":
         for key, value in payload.get("new", {}).items():
-            if key in {"display_name", "alias", "additional_nicknames", "motto"}:
-                setattr(character, key, value)
+            if key in {"display_name", "alias", "additional_nicknames", "motto", "crew_identity"}:
+                setattr(character, key, deepcopy(value))
     # Level-/trait-up and biography events are consequences/information and are
     # intentionally not applied a second time during replay.
     derived_state = dict(derived_state)
