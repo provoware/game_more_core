@@ -65,6 +65,7 @@ Vor jeder Implementierung wird ein **kleiner geplanter Datei-Lesesatz** festgele
 - Ein PR-Head muss den aktuellen `main` enthalten; veraltete Branch-Basen werden vor Merge aktualisiert oder rebased.
 - Versionsgebundene alte Feature-Branches unterhalb der aktiven Iteration sind keine gültige Merge-Quelle nach `main`.
 - `repository-health` schützt Struktur und Informationskonsistenz; fachliche Runtime-/Presentation-Gates bleiben zusätzlich verpflichtend.
+- **Codex-Code-Review ist kein Bestandteil des Entwicklungs-, Review-, Gate- oder Merge-Prozesses und wird weder angefordert noch als Evidenz geführt.** Maßgeblich sind die repository-eigenen Tests, CI-Gates, Review-Threads und `/safe-merge`.
 - **Normale PRs nach `main` werden nicht direkt über Merge-Button/API gemergt.** Nach grünen Gates wird als eigener PR-Kommentar exakt `/safe-merge` verwendet.
 - `/safe-merge` prüft Benutzerberechtigung, aktuellen `main`, exakten PR-Head, alle drei grünen Gates, Mergefähigkeit und ungelöste Review-Threads und validiert den erzeugten Merge-Commit erneut.
 - Agenten und Automationen dürfen für normale Feature-/Dokumentations-PRs keinen direkten `merge_pull_request`-Weg verwenden, wenn `/safe-merge` verfügbar ist.
@@ -145,6 +146,7 @@ Offene Punkte werden als prüfbare Aufgaben in `TODO.md` formuliert.
 - keine generierten Nachweise ohne dokumentierten Erzeugungsweg
 - keine Vermischung von lokalem PASS und Remote-CI
 - keine konkurrierenden Implementierungen derselben kanonischen Datei parallel mergen
+- keinen Codex-Code-Review in Entwicklungs-, PR- oder Mergeabläufe aufnehmen
 - keinen bekannten roten oder fehlenden Required-Check nach `main` übernehmen
 - keinen Repository-Guard durch alten Branch, Force-Ref oder ungeprüften Direktmerge umgehen
 - keinen normalen PR direkt mergen, solange `/safe-merge` verfügbar ist

@@ -59,9 +59,19 @@
     apply();
   }
 
+  function ensureFocusModule() {
+    if (document.querySelector('script[data-control-deck-focus="true"]')) return;
+    const script = document.createElement("script");
+    script.src = "control_deck_focus.js";
+    script.defer = true;
+    script.dataset.controlDeckFocus = "true";
+    document.head.append(script);
+  }
+
   function init() {
     load();
     apply();
+    ensureFocusModule();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
     }
