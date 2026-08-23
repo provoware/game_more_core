@@ -62,6 +62,7 @@
 - [x] vorhandenen District-Recovery-Pfad für den resultierenden Journalrecord regressiv absichern
 - [x] ungültigen District-Kontext vor jedem Write ablehnen
 - [x] Runtime-Katalog beim Initialisieren vollständig auf IDs, Gewichte, Voraussetzungen, Metriken und Effektgrenzen prüfen
+- [x] ungültige Katalogeinträge nennen Event-ID und Feldpfad statt nur die Vertragsart (QA-003 / PR #94)
 - [x] C2-Status/Evidenz nach PR #92 kanonisch in `PROJEKTSTATUS.json`, TODO und Feature-Pool synchronisieren
 - [ ] Runtime aus einem kanonischen Game-Client/Application-Flow auslösen; Browser sendet dabei keine Effekte
 - [ ] District-Event read-only in Projection/A4 sichtbar machen
