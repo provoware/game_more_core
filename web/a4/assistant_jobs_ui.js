@@ -54,9 +54,57 @@
     stop.addEventListener("click", () => setAssistantJob(null));
     actions.append(stop);
 
-    control.append(eyebrow, title, status, explanation, actions);
+    const afterglow = document.createElement("div");
+    afterglow.id = "jobs-assistant-afterglow";
+    afterglow.setAttribute("aria-labelledby", "jobs-assistant-afterglow-title");
+
+    const afterglowEyebrow = document.createElement("p");
+    afterglowEyebrow.className = "eyebrow";
+    afterglowEyebrow.textContent = "NACHHALL // BESTÄTIGTE ARBEIT";
+
+    const afterglowTitle = document.createElement("h4");
+    afterglowTitle.id = "jobs-assistant-afterglow-title";
+    afterglowTitle.textContent = "Was dein Freund dazu sagt";
+
+    const afterglowList = document.createElement("div");
+    afterglowList.id = "jobs-assistant-afterglow-list";
+    afterglowList.setAttribute("aria-live", "polite");
+
+    afterglow.append(afterglowEyebrow, afterglowTitle, afterglowList);
+    control.append(eyebrow, title, status, explanation, actions, afterglow);
     list.before(control);
     return control;
+  }
+
+  function renderAssistantAfterglow(afterglow) {
+    const list = document.getElementById("jobs-assistant-afterglow-list");
+    if (!list) return;
+    list.replaceChildren();
+
+    const entries = Array.isArray(afterglow?.entries) ? afterglow.entries : [];
+    if (!afterglow?.available || entries.length === 0) {
+      const empty = document.createElement("p");
+      empty.textContent = "Noch kein Nachhall: Erst eine bestätigte Assistentenrunde mit tatsächlich gebuchtem Job erzeugt hier eine Reaktion.";
+      list.append(empty);
+      return;
+    }
+
+    for (const entry of entries) {
+      const article = document.createElement("article");
+      article.className = "assistant-afterglow-entry";
+
+      const heading = document.createElement("strong");
+      heading.textContent = entry.headline || entry.job_label || "Bestätigte Freundesrunde";
+
+      const body = document.createElement("p");
+      body.textContent = entry.body || "";
+
+      const meta = document.createElement("small");
+      meta.textContent = entry.job_label ? `Job: ${entry.job_label}` : "Bestätigte Assistentenarbeit";
+
+      article.append(heading, body, meta);
+      list.append(article);
+    }
   }
 
   function renderAssistantControl(sceneJobs, hasCharacter) {
@@ -78,6 +126,8 @@
         : `AUS · kein Job gewählt · Steuerstand ${assistant.revision}`;
     }
     if (stop) stop.disabled = !assistant.enabled;
+
+    renderAssistantAfterglow(sceneJobs.assistant_afterglow);
 
     const rows = Array.from(document.querySelectorAll("#jobs-list .equipment-row"));
     for (const [index, job] of (sceneJobs.jobs || []).entries()) {
