@@ -95,6 +95,15 @@
     document.head.append(script);
   }
 
+  function ensureRecoveryActionsModule() {
+    if (document.querySelector('script[data-recovery-actions="true"]')) return;
+    const script = document.createElement("script");
+    script.src = "recovery_actions_ui.js";
+    script.defer = true;
+    script.dataset.recoveryActions = "true";
+    document.head.append(script);
+  }
+
   function init() {
     load();
     apply();
@@ -102,6 +111,7 @@
     ensureDistrictBiographyModule();
     ensureFinanceStatementExportModule();
     ensureSceneJobPayoutPreviewModule();
+    ensureRecoveryActionsModule();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
     }

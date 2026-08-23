@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-JOB-PREVIEW – Scene-Job-Lohnvorschau` · PR #121 · Merge `040be951665a34dd8d81694ab695128e0b846bd5`
-- **JOB-PREVIEW Remote-Abnahme:** Runtime `32671395304` · Presentation `32671395288` · Repository Health `32671395282` · Release Acceptance `32671395294` · Release Package `32671395295` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-UX-EXPORT-PROOF – Exportvorschau/Prüfsumme`
-- **EXPORT-PROOF-Status:** TXT/CSV werden vor dem Download lokal aus exakt derselben Serialisierung angezeigt; Kopieren und kleine deterministische Prüfsumme verwenden denselben Inhalt
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-EXPORT-PROOF – Exportvorschau/Prüfsumme` · PR #122 · Merge `0909f3c38642f97d4474cd200af11c960e1ada66`
+- **EXPORT-PROOF Remote-Abnahme:** Runtime `32672139829` · Presentation `32672139815` · Repository Health `32672139802` · Release Acceptance `32672139807` · Release Package `32672139805` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-ECON-RECOVERY-ACTIONS – bestätigte Regeneration`
+- **RECOVERY-ACTIONS-Status:** `Koffein & kalte Luft` tauscht bestätigt +20 Energie gegen +12 Stress; nur bei Energie ≤ 80 und Stress ≤ 88, ohne Rechnerzeit, XP, Traits oder zweite Ressourcenengine
 - **Repository-Arbeitsmodus:** Basisdateien, Arbeitsdateien und Evidenz/Logs sind getrennt; grüne Logs werden nicht dauerhaft übertragen, rote Gates zuerst nur im konkreten Fehlerausschnitt gelesen
 - **Entwicklungsprozess:** Focused-Read bleibt verpflichtend; Codex-Code-Review bleibt vollständig außerhalb von Entwicklung, Gate-Evidenz und Mergeprozess
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -38,66 +38,76 @@
 - [x] kein Browser-Lohnrechner, kein neuer Command, kein Writeback
 - [x] PR #121 · Head `226d89bd758a05b5d0972ffebdcacb5cc5c4c359` · Runtime `32671395304` · Presentation `32671395288` · Repository Health `32671395282` · Release Acceptance `32671395294` · Release Package `32671395295` · 0 Review-Threads · `/safe-merge` PASS · Merge `040be951665a34dd8d81694ab695128e0b846bd5`
 
+## 0.8.8-UX-EXPORT-PROOF – Exportvorschau/Prüfsumme
+- [x] Vorschau, Kopieren und Download verwenden dieselbe TXT-/CSV-Serialisierung
+- [x] lokale FNV-1a-32-Prüfsumme über UTF-8-Bytes; keine kryptografische oder Gameplay-Autorität
+- [x] PR #122 · Head `9af0ff007b47c18b9b38bcefe33f8879a3b97573` · Runtime `32672139829` · Presentation `32672139815` · Repository Health `32672139802` · Release Acceptance `32672139807` · Release Package `32672139805` · 0 Review-Threads · `/safe-merge` PASS · Merge `0909f3c38642f97d4474cd200af11c960e1ada66`
+
 ---
 
-# Aktiv – 0.8.8-UX-EXPORT-PROOF
+# Aktiv – 0.8.8-ECON-RECOVERY-ACTIONS
 
 ## Ziel
 
-TXT/CSV vor dem Download lokal sichtbar und vergleichbar machen, ohne Export- oder Finanzlogik zu duplizieren.
+Eine kleine bestätigte Spielerentscheidung soll Energie aktiv zurückgeben, ohne Rechnerzeit, automatisches Warten, kostenlosen Endlos-Reset oder zweite Ressourcenengine.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
 **Basisdateien**
-- `AGENTS.md`
+- `AGENTS.md` nur Prozess-/Autoritätsgrenzen
 - aktive Stellen aus `TODO.md`, `PROJEKTSTATUS.json`, `FEATURE_POOL.md`
-- README nur falls Repository Health die aktive Iteration dort verlangt
+- bestehender Character-Ressourcen-/Replay-Vertrag
 
 **Arbeitsdateien**
-- `web/a4/finance_statement_export.js`
-- `tests/presentation/test_a4_finance_export.py`
-- `docs/LAIENHILFE_FIN_EXPORT.md`
+- `src/bunkerfrequenz/application/recovery_action_service.py`
+- `src/bunkerfrequenz/application/assistant_game_client_session.py`
+- `src/bunkerfrequenz/presentation/scene_jobs_projection.py`
+- `web/a4/recovery_actions_ui.js`
+- `web/a4/ui_prefs.js`
+- direkte Runtime-/Presentation-Regressionen
 
 **Evidenz/Logs**
 - nur Run-ID/Status bei grünen Gates
 - vollständiger Log ausschließlich bei konkretem roten Gate
 
-### EXPORT-PROOF – kleinster read-only UX-Slice
+### RECOVERY-ACTIONS – kleinster kanonischer Gameplay-Slice
 
-- [x] eine gemeinsame `serializeStatement(...)`-Stelle für TXT/CSV
-- [x] Vorschau verwendet exakt denselben serialisierten String wie der Download
-- [x] Kopieren verwendet exakt den aktuell geprüften String
-- [x] kleine deterministische 32-Bit-FNV-1a-Prüfsumme über exakt denselben String
-- [x] Prüfsumme ausdrücklich nicht als kryptografischer Nachweis dargestellt
-- [x] keine Ledger-/Summen-Neuberechnung, kein Finance-Command, kein Save-/Journal-Write
-- [x] Laienhilfe um Prüfen → Kopieren → Download und Prüfsummen-Grenze erweitert
-- [ ] finalen Remote-Prüfstand 5/5 grün bestätigen
+- [x] `Koffein & kalte Luft`: +20 Energie, +12 Stress
+- [x] nur erlaubt bei bestätigter Energie ≤ 80 und Stress ≤ 88; Gewinn und Preis können dadurch nicht weggeclampt werden
+- [x] keine XP, Trait-Evidence, Zufallswürfe, Rechnerzeit oder automatische Regeneration
+- [x] bestehendes `character.resources_changed` bleibt Journal-/Recovery-Wahrheit; kein neuer Eventtyp
+- [x] Retry derselben Command-ID ist schreibfrei
+- [x] Scene-Jobs-Projection liefert `can_run` und Blocker aus bestätigtem Character-State
+- [x] Browser sendet nur `recovery_id`; keine Energie-/Stresswerte oder Schwellen
+- [x] Regeneration sitzt im bestehenden JOBS-Bereich, kein zweites Ressourcen-Dashboard
+- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32673048911` · Presentation `32673048896` · Repository Health `32673048885` · Release Acceptance `32673048901` · Release Package `32673048879`
+- [ ] finalen Status-/Dokumentations-Head 5/5 grün bestätigen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch 0 Commits hinter `main` bestätigen
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in EXPORT-PROOF
+### Bewusst nicht in RECOVERY-ACTIONS
 
-- keine SHA-256-/Signatur-Infrastruktur
-- kein Exportmanifest
-- kein Import
-- keine Finance-Neuberechnung
-- keine Änderung an Runtime, Ledger oder Projection
+- keine Systemzeit, Echtzeitregeneration oder Cooldown-Uhr
+- keine zweite Energie-/Müdigkeitsressource
+- keine Finance-Kosten oder neue Buchhaltung
+- keine XP-/Trait-Farm-Aktion
+- keine Browser-Autorität über Deltas oder Schwellen
 - kein Produktversionsbump
 
 ### Danach
 
-- [ ] **0.8.8-ECON-RECOVERY-ACTIONS:** echte bestätigte Regenerationsaktionen prüfen, ohne Systemzeit-Autorität
-- [ ] **0.8.8-UX-TIMELINE-FILTER:** Timeline lokal nach Straße/Krise/Bezirk filtern
+- [ ] **0.8.8-UX-TIMELINE-FILTER:** bestätigte Timeline lokal nach Straße/Krise/Bezirk filtern; keine neue Journal-/Sortierautorität
 - [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
+- [ ] **0.8.8-ECON-RECOVERY-VARIANTS:** erst später weitere Regenerationsoptionen erwägen, falls Balancingbeobachtung sie rechtfertigt
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Keine zweite Finance-, Export- oder Kontoauszugsengine.
-- Exportquelle bleibt ausschließlich die bestehende `finance_statement`-Projection.
-- Vorschau, Kopieren, Prüfsumme und Download bleiben lokale Presentation.
+- Keine zweite Character-, Ressourcen-, Finance- oder Action-Engine.
+- `RecoveryActionService` schreibt ausschließlich die bestehende replaybare `character.resources_changed`-Semantik.
+- Availability und Ressourcendeltas kommen aus der Runtime; der Browser wählt nur die stabile `recovery_id`.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)

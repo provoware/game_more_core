@@ -7,20 +7,23 @@ from typing import Any, Mapping
 from bunkerfrequenz.application.assistant_control_service import AssistantControlService
 from bunkerfrequenz.application.game_client_session import GameClientCommandResult, GameClientSession
 from bunkerfrequenz.application.personal_finance_service import PersonalFinanceService
+from bunkerfrequenz.application.recovery_action_service import RecoveryActionService
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 
 
 _ASSISTANT_FIELDS = frozenset({"type", "command_id", "job_id"})
 _FINANCE_TRANSFER_FIELDS = frozenset({"type", "command_id", "direction", "amount_cents"})
+_RECOVERY_FIELDS = frozenset({"type", "command_id", "recovery_id"})
 
 
 class AssistantGameClientSession(GameClientSession):
-    """Extend the existing A4 session with assistant control and personal bank transfers.
+    """Extend the existing A4 session with assistant, finance and recovery controls.
 
     Non-special commands remain owned by ``GameClientSession``. Assistant control
     delegates to ``AssistantControlService``. Personal wallet/bank transfers delegate
-    to ``PersonalFinanceService``. Neither surface accepts round authority, payouts,
-    resource effects or client-supplied target balances.
+    to ``PersonalFinanceService``. Recovery delegates to ``RecoveryActionService``.
+    None of these surfaces accepts round authority, payouts, resource deltas or
+    client-supplied target balances.
     """
 
     def __init__(
@@ -41,6 +44,7 @@ class AssistantGameClientSession(GameClientSession):
             else None
         )
         self.personal_finance = PersonalFinanceService(persistence)
+        self.recovery_actions = RecoveryActionService(persistence)
 
     def dispatch(
         self,
@@ -51,6 +55,8 @@ class AssistantGameClientSession(GameClientSession):
         command_type = command.get("type")
         if command_type == "finance.transfer":
             return self._dispatch_finance_transfer(command, context=context)
+        if command_type == "recovery.run":
+            return self._dispatch_recovery(command, context=context)
         if command_type != "assistant.control":
             return super().dispatch(command, context=context)
 
@@ -93,6 +99,71 @@ class AssistantGameClientSession(GameClientSession):
                     "assistant_control": {
                         **deepcopy(result.assistant.to_dict()),
                         "changed": result.changed,
+                    }
+                },
+            )
+        except PersistenceError as exc:
+            return self._rejected("persistence_error", str(exc))
+        except (ValueError, KeyError, TypeError) as exc:
+            return self._rejected("validation_error", str(exc))
+        except RuntimeError as exc:
+            return self._rejected("runtime_error", str(exc))
+
+    def _dispatch_recovery(
+        self,
+        command: Mapping[str, Any],
+        *,
+        context: JournalContext,
+    ) -> GameClientCommandResult:
+        unknown_fields = set(command) - _RECOVERY_FIELDS
+        if unknown_fields:
+            return self._rejected(
+                "unexpected_command_fields",
+                ", ".join(sorted(str(field) for field in unknown_fields)),
+            )
+        command_id = command.get("command_id")
+        if not isinstance(command_id, str) or not command_id.strip():
+            return self._rejected("invalid_command_id")
+        command_id = command_id.strip()
+        if context.command_id != command_id:
+            return self._rejected("command_context_mismatch")
+
+        state = self.read_state()
+        raw_character = state.get("character")
+        if not isinstance(raw_character, dict):
+            return self._rejected("character_missing")
+        character_id = raw_character.get("character_id")
+        if not isinstance(character_id, str) or not character_id:
+            return self._rejected("character_missing")
+        if context.character_id and context.character_id != character_id:
+            return self._rejected("character_context_mismatch")
+        recovery_context = replace(
+            context,
+            entity_type="character",
+            entity_id=character_id,
+            character_id=character_id,
+        )
+
+        recovery_id = command.get("recovery_id")
+        if not isinstance(recovery_id, str) or not recovery_id.strip():
+            return self._rejected("invalid_recovery_id")
+
+        try:
+            result = self.recovery_actions.run(recovery_id.strip(), context=recovery_context)
+            return GameClientCommandResult(
+                "confirmed",
+                self.read_state(),
+                result.committed_event_ids,
+                result.idempotent_replay,
+                None,
+                None,
+                {
+                    "recovery_action": {
+                        "recovery_id": result.action["recovery_id"],
+                        "label": result.action["label"],
+                        "energy_delta": result.action["energy_delta"],
+                        "stress_delta": result.action["stress_delta"],
+                        "character": result.character.to_dict(),
                     }
                 },
             )
