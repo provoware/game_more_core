@@ -3,135 +3,69 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-C4A – read-only Ereignis-Timeline Projection/Textschicht` · PR #98 · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
-- **0.8.7-C1 District-Event-Vertrag/Katalog:** PR #90 · `SAFE MERGE PASS` · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
-- **0.8.7-C2 District-Event Runtime:** PR #91 · `SAFE MERGE PASS` · Merge `5e32d6de2a5859b1cadca62543dd10949717e4fc`; anschließend Katalog-Fail-fast über PR #92 gehärtet
-- **0.8.7-C3 Application-Integration:** PR #95 · `SAFE MERGE PASS` · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
-- **0.8.7-C4A Timeline-Projection:** PR #98 · `SAFE MERGE PASS` · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
-- **District-Event-Robustheit:** `no_eligible_event` wird als expliziter schreibfreier No-op behandelt; kein künstliches Ersatz-Ereignis
-- **Aktive Entwicklungsstufe:** `0.8.7-C4B – sichtbares Control Deck`; PR #101, erster Implementierungs-Head `2abe543ff2e0cc60389de0a1104c4e6754f25c6f` 5/5 remote grün, endgültiger Doku-Head wird erneut geprüft
-- **Release-Blocker:** keiner für `0.8.4-alpha.1`; ein neuer Produktrelease benötigt weiterhin eine eigene Release-Abnahme
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.7-C5 – District-Event Cadence/Cooldown` · PR #102 · Merge `bd79da8d1e124ec60248a05bf332c6ef338ca7b6`
+- **0.8.7-C4B sichtbare Timeline:** PR #101 · 5/5 Gates · `SAFE MERGE PASS` · Merge `3d71f00c5717ae797e6b8f1ca4c65c036bf71c81`
+- **0.8.7-C5 Cadence/Cooldown:** PR #102 · 5/5 Gates · `SAFE MERGE PASS` · Merge `bd79da8d1e124ec60248a05bf332c6ef338ca7b6`
+- **District-Event-Taktung:** global 24 bestätigte Spielweltstunden; Autorität `event.time_window.start_local`; keine Systemzeit-Freigabe
+- **Aktive Entwicklungsstufe:** `0.8.8-A – Crew Identity Foundation`
+- **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
 ---
 
 # Abgeschlossen ✅
 
-## 0.8.1–0.8.6 – Kernspiel, Living World, Property & Map
+## 0.8.7-C – District World Events & Timeline
 
-- [x] Character Forge, Event-State, Economy, Crisis und Settlement
-- [x] schreibender lokaler A4-Client mit Save/Snapshot/Recovery
-- [x] Competitive Ranking, Profilpersonalisierung und replaybare Street Encounters
-- [x] persistente Living Districts
-- [x] Property Purchase + Property Upgrades
-- [x] Berlin Ops Map PRO mit 8 Districts, 12 Locations, Eigentum/Ausbau und read-only Filtern
-
-## 0.8.7-A – Saisonale Hall of Tribute ✅
-
-- [x] Wochen- und Monatszyklen mit explizitem Saisonvertrag
-- [x] bestehende Competitive-Ranking-Engine wiederverwendet
-- [x] `game_world_time` aus abgeschlossenem bestätigtem Event als stabiler lokaler Anker
-- [x] Systemzeit niemals alleinige Saisonautorität
-- [x] endgültige Titel nur bei geschlossenem bestätigtem Zyklus + echter bestätigter Konkurrenz
-- [x] lokale Einzelspieler-Hall vergibt keine Fake-Championtitel
-- [x] Wochen-/Monatssicht im A4-Client
-- [x] `/safe-merge` PASS · Merge `841258a37915e05d7f87eed7841c8e4b8d79bf46`
-
-## 0.8.7-B – Control Deck & Player Choices ✅
-
-- [x] Sticky HUD und Schnellnavigation
-- [x] Kompaktmodus, hoher Kontrast und große Schrift ausschließlich lokal
-- [x] vier Street Approaches mit katalogisierten Auswahlgewichten
-- [x] Encounter bleibt einzige Effekt-Autorität
-- [x] Krisenentscheidungen zeigen katalogisierte Folgen vor dem Klick
-- [x] Browser sendet weiterhin nur erlaubte IDs
-- [x] `/safe-merge` PASS · Merge `4d1a35bfbc086d07599b6ec7b3816e830bcea995`
-
-## 0.8.7-C1 – District-Event-Vertrag/Katalog ✅
-
-- [x] vorhandenen DistrictState-Vertrag als einzige Metrik-/Bounds-Basis referenzieren
-- [x] vier Ereignisse mit stabilen IDs, Gewichten, Voraussetzungen und kleinen Effekten definieren
-- [x] Auswahlvertrag deterministisch/replaybar halten; Systemzeit nie als Seed
-- [x] Browser-Aktivierung und Browser-Effektwerte ausdrücklich verbieten
-- [x] deutsche Story-Texte separat von Spiellogik katalogisieren
-- [x] gezielte Vertragsregressionen ergänzen
-- [x] `/safe-merge` PASS · Merge `337f8ad8f9719ec3389c372da9688bbbec593c16`
-
-## 0.8.7-C2 – District-Event Runtime ✅
-
-- [x] Auswahlservice aus bestätigtem `world_seed + district_id + trigger_id` implementieren
-- [x] Voraussetzungen vor der gewichteten Auswahl gegen aktuellen DistrictState prüfen
-- [x] bestätigte Folgen über den vorhandenen `DistrictService` und `world.district_effect_applied` journalisieren
-- [x] derselbe District-/Trigger-Kontext darf auch bei verändertem Retry-Seed nicht erneut würfeln oder doppelt anwenden
-- [x] vorhandenen District-Recovery-Pfad für den resultierenden Journalrecord regressiv absichern
-- [x] ungültigen District-Kontext vor jedem Write ablehnen
-- [x] Runtime-Katalog beim Initialisieren vollständig auf IDs, Gewichte, Voraussetzungen, Metriken und Effektgrenzen prüfen
-- [x] ungültige Katalogeinträge nennen Event-ID und Feldpfad statt nur die Vertragsart (QA-003 / PR #94)
-- [x] kein zulässiges Ereignis ist ein expliziter `no_eligible_event`-No-op ohne Journal-Write oder District-Mutation
-- [x] C2-Status/Evidenz nach PR #92 kanonisch in `PROJEKTSTATUS.json`, TODO und Feature-Pool synchronisieren
-
-## 0.8.7-C3 – Application-Integration ✅
-
-- [x] genau einen autorisierten Trigger festlegen: `settlement.complete`
-- [x] District-Event erst nach bestätigtem Settlement und bestätigter District-Zuordnung auslösen
-- [x] stabilen Trigger aus der bestätigten Settlement-Quelle ableiten; Browser liefert weder Trigger-ID noch Effekte
-- [x] bestehenden `DistrictWorldEventService` und `DistrictService` wiederverwenden
-- [x] A4-Runtime mit vorhandenem `DISTRICT_EVENT_MANIFEST.json` konfigurieren
-- [x] Regression abgesichert: Street-Walk löst weiterhin kein District-Welt-Ereignis aus
-- [x] Regression abgesichert: Settlement-Retry würfelt nicht neu und schreibt nicht doppelt
-- [x] Runtime Core, Presentation Core, Repository Health, Release Acceptance und Release Package grün
-- [x] 0 offene Review-Threads, aktuelles `main`, `/safe-merge` PASS · Merge `fb62c5226997462cc2a9adc67529a7691e16ae2b`
+- [x] C1: stabiler District-Event-Katalog mit deterministischer Auswahl
+- [x] C2: Runtime, Journal-/Recovery-Nutzung, Fail-fast-Katalogprüfung
+- [x] C3: ausschließlich `settlement.complete` als autorisierter Application-Trigger
+- [x] C4A: read-only Timeline-Projection aus bestätigten Journalrecords
+- [x] C4B: Timeline im Control Deck sichtbar, Browser sortiert oder schreibt nichts
+- [x] C5: 24h-Cadence aus bestätigter Spielweltzeit; Retry/Reload bleibt idempotent
+- [x] `no_eligible_event`, fehlende bestätigte Zeit und aktiver Cooldown bleiben schreibfreie No-ops
+- [x] C4B Remote-Abnahme: Runtime `32644333670`, Presentation `32644333674`, Repository Health `32644333688`, Release Acceptance `32644333694`, Release Package `32644333686`
+- [x] C5 Remote-Abnahme: Runtime `32646269065`, Presentation `32646269053`, Repository Health `32646269009`, Release Acceptance `32646269064`, Release Package `32646269010`
 
 ---
 
-# Aktiv – 0.8.7-C4 Ereignis-Timeline
+# Aktiv – 0.8.8-A Crew Identity Foundation
 
-## C4A – bestätigte Projection-/Textschicht ✅
+## Ziel
 
-- [x] bestätigte District-, Street- und Crisis-Ereignisse ausschließlich aus Journalrecords lesen
-- [x] Reihenfolge ausschließlich aus kanonischer Journal-`sequence` ableiten
-- [x] Street- und District-Texte aus vorhandenen Textkatalogen auflösen; Incident-Schlüssel erhalten einen eigenen UI-Textkatalog
-- [x] leere Historie bleibt leer; fehlende/ungültige Records oder Texte erzeugen keinen erfundenen Ersatzinhalt
-- [x] Projection liefert maximal die letzten 12 bestätigten Einträge und bleibt vollständig vom Eingabejournal entkoppelt
-- [x] Regressionen für Reihenfolge, Textauflösung, leere Historie, ungültige Records, Limit und Detached Data ergänzen
-- [x] `/safe-merge` PASS · PR #98 · Merge `4909fb9f7169baaa5b802e497cdba3e2c6da0dae`
+Jeder Spieler erhält eine eigene Crew-Identität als **Logo oder Fahne**, die später ohne Bilddatei-Konflikte synchronisierbar ist.
 
-## C4B – sichtbares Control Deck
-
-- [x] C4A-Projection über die bestehende A4-Runtime an den Client reichen
-- [x] Control Deck zeigt eine kompakte, tastatur- und screenreaderfreundliche Timeline
-- [x] Darstellung bleibt read-only und enthält keinen Command-/Write-Pfad
-- [x] bestehende C4A-Reihenfolge und Texte unverändert verwenden; Browser sortiert oder erfindet nichts neu
-- [x] erster Implementierungs-Head 5/5 remote grün: Runtime `32644257079`, Presentation `32644257099`, Repository Health `32644257196`, Release Acceptance `32644257124`, Release Package `32644257094`
-- [ ] endgültiger Doku-Head erneut 5/5 remote grün
-- [ ] 0 offene Review-Threads, aktuelles `main`, `/safe-merge` PASS
-
-### Explizit NICHT in C4
-
-- keine neuen Gameplay-Effekte
-- keine zweite Journal-/Timeline-Persistenz
-- keine Client-Autorität
-- kein Cooldown/Cadence-System
-- kein Produktversionsbump ohne eigene Release-Abnahme
+- [ ] kanonischen Crew-Identity-Vertrag als kleine Datenrepräsentation definieren: Stil, Symbol, Primär-/Sekundärfarbe, Akzent, optionale Kurzmarke
+- [ ] keine frei eingebetteten Base64-/Datei-Bildblobs im Character-State; Renderer erzeugt Logo/Fahne aus bestätigten Daten
+- [ ] Profiländerung ausschließlich über bestehenden `profile.update`-Pfad
+- [ ] Character-ID und Gameplaywerte bleiben unverändert
+- [ ] Projection/Control Deck zeigt die bestätigte Crew-Identität
+- [ ] zukünftiger Sync-Vertrag muss Crew-Identity-Daten bei allen bestätigten Spielern nachziehen können
+- [ ] Legacy-Saves ohne Crew-Identity erhalten einen stabilen neutralen Default, ohne Journal-Umschreibung
+- [ ] Runtime-, Presentation- und Recovery-Regressionen ergänzen
 
 ---
 
-# Danach – priorisierter Ausbau
+# Priorisierter Ausbau nach 0.8.8-A
 
-1. **0.8.7-C5 – Cadence/Cooldown:** District-Events über bestätigte Spielzeit dosieren, niemals über Systemzeit allein.
-2. **0.8.7-D – Street Content Packs:** mehr Abwechslung über denselben validierten Ansatz-/Encounter-Vertrag.
-3. **QA – Timeline-Diagnose:** optional read-only anzeigen, warum ein bestätigter Journalrecord wegen fehlendem/ungültigem Text nicht projiziert wurde; keine Fallback-Story erfinden.
+1. **0.8.8-B – Scene Jobs & Sparschleife:** jederzeit verfügbare legale/szenetypische Jobs mit klaren Zeit-/Energie-/Stress-/Geldfolgen; vorhandene Economy-Persistenz wiederverwenden.
+2. **0.8.8-C – Secret Best Friend Assistant:** genau eine Aufgabe aktiv; Assistent führt sie pro bestätigter Runde wiederholt aus, bis der Spieler deaktiviert oder umstellt; keine Hintergrund-Systemzeit.
+3. **0.8.8-D – Bank & Investments:** Bargeld einzahlen/abheben, Sparzins, Zinseszins, Anlagen/Dividenden und nachvollziehbare Kontoauszüge; alles journalisiert und replaybar.
+4. **0.8.8-E – Control Deck Focus:** Informationen verdichten, doppelte Ansichten entfernen, jeden Arbeitsbereich lokal maximieren/zurücksetzen, nächste erlaubte Aktion deutlich hervorheben; Reduced Motion respektieren.
+5. **0.8.8-F – Berlin Ops Map 2:** bezirksartige Darstellung, Zoom/Pan, bessere Objekt-Hierarchie und Detailansicht; Karte bleibt read-only.
+6. **POOL-STORY-001 – Ereignis-Nachhall:** bestätigte wichtige District-Ereignisse später in der Crew-Biografie aufgreifen.
+7. **POOL-UX-003 – Timeline-Fokusfilter:** lokal Straße/Krise/Bezirk filtern, ohne Reihenfolge oder Save-State zu verändern.
 
 ---
 
-## Arbeitsregeln
+## Architektur- und Sicherheitsgrenzen für den Ausbau
 
-- Pro Iteration kleinster sinnvoller Scope.
-- Keine zweite Implementierung vorhandener Services/States.
-- UI/Renderer schreibt Domain-State niemals direkt.
-- Economy nur über kanonische Economy-Services/Events.
-- Journal bleibt append-only.
-- Systemzeit ist niemals alleinige Zufalls-, Saison- oder Replayautorität.
-- Normaler Merge ausschließlich nach aktuellem `main`, grünen Required Checks, 0 offenen Review-Threads und `/safe-merge`.
+- Keine Mega-PR: pro fachlichem Modul eigener kleiner Slice.
+- Keine zweite Economy-, Map-, Timeline-, Profile- oder Sync-Engine.
+- Browser sendet nur erlaubte IDs/Darstellungswerte; Geld, Effekte, Zinsen, Dividenden und Assistentenfolgen werden serverseitig bestimmt.
+- Wiederholte Assistentenaktionen und Finanzzyklen brauchen bestätigte Spielrunde/Spielweltzeit; niemals Systemzeit allein.
+- Blink-/Puls-Hinweise sind reine lokale Presentation, dürfen Gameplay nicht blockieren und müssen bei Reduced Motion statisch werden.
+- Map-Zoom, Focus-Maximierung und Timeline-Filter sind lokale UI-Zustände und gehören nicht ins Journal.
+- Crew-Logo/Fahne wird als kleine kanonische Identitätsdaten synchronisiert, nicht als unkontrollierter Bildblob.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
