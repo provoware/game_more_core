@@ -2,6 +2,7 @@
 
 (() => {
   const STORAGE_KEY = "bunkerfrequenz.ui-prefs.v1";
+  const ASSET_REVISION = document.querySelector('meta[name="bunker-asset-revision"]')?.content || "";
   const DEFAULTS = Object.freeze({ compact: false, highContrast: false, largeText: false });
   const CLASS_BY_PREF = Object.freeze({
     compact: "ui-compact",
@@ -9,6 +10,13 @@
     largeText: "ui-large-text"
   });
   let current = { ...DEFAULTS };
+
+  function assetUrl(filename) {
+    if (!ASSET_REVISION) return filename;
+    const url = new URL(filename, document.baseURI);
+    url.searchParams.set("v", ASSET_REVISION);
+    return url.href;
+  }
 
   function normalize(value) {
     const source = value && typeof value === "object" ? value : {};
@@ -59,58 +67,37 @@
     apply();
   }
 
-  function ensureFocusModule() {
-    if (document.querySelector('script[data-control-deck-focus="true"]')) return;
+  function appendModule(filename, datasetKey) {
+    if (document.querySelector(`script[data-${datasetKey}="true"]`)) return;
     const script = document.createElement("script");
-    script.src = "control_deck_focus.js";
+    script.src = assetUrl(filename);
     script.defer = true;
-    script.dataset.controlDeckFocus = "true";
+    script.dataset[datasetKey.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())] = "true";
     document.head.append(script);
+  }
+
+  function ensureFocusModule() {
+    appendModule("control_deck_focus.js", "control-deck-focus");
   }
 
   function ensureDistrictBiographyModule() {
-    if (document.querySelector('script[data-district-biography="true"]')) return;
-    const script = document.createElement("script");
-    script.src = "district_biography.js";
-    script.defer = true;
-    script.dataset.districtBiography = "true";
-    document.head.append(script);
+    appendModule("district_biography.js", "district-biography");
   }
 
   function ensureFinanceStatementExportModule() {
-    if (document.querySelector('script[data-finance-statement-export="true"]')) return;
-    const script = document.createElement("script");
-    script.src = "finance_statement_export.js";
-    script.defer = true;
-    script.dataset.financeStatementExport = "true";
-    document.head.append(script);
+    appendModule("finance_statement_export.js", "finance-statement-export");
   }
 
   function ensureSceneJobPayoutPreviewModule() {
-    if (document.querySelector('script[data-scene-job-payout-preview="true"]')) return;
-    const script = document.createElement("script");
-    script.src = "scene_job_payout_preview.js";
-    script.defer = true;
-    script.dataset.sceneJobPayoutPreview = "true";
-    document.head.append(script);
+    appendModule("scene_job_payout_preview.js", "scene-job-payout-preview");
   }
 
   function ensureRecoveryActionsModule() {
-    if (document.querySelector('script[data-recovery-actions="true"]')) return;
-    const script = document.createElement("script");
-    script.src = "recovery_actions_ui.js";
-    script.defer = true;
-    script.dataset.recoveryActions = "true";
-    document.head.append(script);
+    appendModule("recovery_actions_ui.js", "recovery-actions");
   }
 
   function ensureMapUsabilityModule() {
-    if (document.querySelector('script[data-map-usability="true"]')) return;
-    const script = document.createElement("script");
-    script.src = "map_usability.js";
-    script.defer = true;
-    script.dataset.mapUsability = "true";
-    document.head.append(script);
+    appendModule("map_usability.js", "map-usability");
   }
 
   function init() {
@@ -129,5 +116,5 @@
     if (resetButton) resetButton.addEventListener("click", reset);
   }
 
-  window.BunkerUIPrefs = Object.freeze({ init, set, get, reset });
+  window.BunkerUIPrefs = Object.freeze({ init, set, get, reset, assetRevision: ASSET_REVISION });
 })();
