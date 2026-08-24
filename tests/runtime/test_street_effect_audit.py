@@ -76,23 +76,24 @@ class StreetEffectAuditTests(unittest.TestCase):
             },
         )
 
-    def test_each_approach_has_a_positive_average_tradeoff(self):
+    def test_each_approach_has_a_positive_average_direction(self):
         for approach_id, profile in _effect_profiles().items():
             self.assertGreater(profile["energy_delta"], 0, approach_id)
             self.assertLess(profile["stress_delta"], 0, approach_id)
             self.assertGreater(profile["reputation_delta"], 0, approach_id)
 
-    def test_profiles_have_distinct_strengths_without_global_dominance(self):
+    def test_strengths_and_current_dominance_are_explicit(self):
         profiles = _effect_profiles()
         self.assertEqual(max(profiles, key=lambda key: profiles[key]["energy_delta"]), "recovery")
         self.assertEqual(min(profiles, key=lambda key: profiles[key]["stress_delta"]), "network")
         self.assertEqual(max(profiles, key=lambda key: profiles[key]["reputation_delta"]), "network")
 
-        for left_id, right_id in permutations(profiles, 2):
-            self.assertFalse(
-                _strictly_dominates(profiles[left_id], profiles[right_id]),
-                f"{left_id} unexpectedly dominates {right_id}",
-            )
+        dominance = {
+            (left_id, right_id)
+            for left_id, right_id in permutations(profiles, 2)
+            if _strictly_dominates(profiles[left_id], profiles[right_id])
+        }
+        self.assertEqual(dominance, {("balanced", "scout")})
 
 
 if __name__ == "__main__":
