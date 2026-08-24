@@ -235,6 +235,47 @@
   white-space: nowrap;
 }
 
+.hall-local-crew {
+  display: grid;
+  place-items: center;
+  flex: 0 0 2.4rem;
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.hall-local-crew-preview {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  overflow: hidden;
+  border: 2px solid var(--crew-accent, #ff5a1f);
+  border-radius: .42rem;
+  background: #101114;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.1) inset, 0 .2rem .6rem rgba(0,0,0,.35);
+  color: var(--crew-accent, #ff5a1f);
+}
+
+.hall-local-crew-preview[data-mode="logo"] {
+  border-radius: 50%;
+}
+
+.hall-local-crew-preview .hud-crew-symbol {
+  width: 1.35rem;
+  height: 1.35rem;
+  font-size: .85rem;
+}
+
+.hall-local-crew-preview .hud-crew-mark {
+  right: .05rem;
+  bottom: .04rem;
+  max-width: 1.8rem;
+  padding: .02rem .1rem;
+  font-size: .3rem;
+}
+
 @media (max-width: 1100px) {
   .hud-crew-identity {
     display: none;
@@ -271,6 +312,22 @@
   .crew-identity-preview[data-mode="logo"] {
     width: min(78vw, 176px);
   }
+
+  .hall-local-crew {
+    flex-basis: 2.1rem;
+    width: 2.1rem;
+    height: 2.1rem;
+  }
+
+  .hall-local-crew-preview {
+    width: 1.95rem;
+    height: 1.95rem;
+  }
+}
+
+body.ui-high-contrast .hall-local-crew-preview {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px #000, 0 0 0 3px var(--crew-accent, #ff5a1f);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -278,7 +335,8 @@
   .crew-identity-symbol,
   .crew-identity-mark,
   .hud-crew-identity,
-  .hud-crew-preview {
+  .hud-crew-preview,
+  .hall-local-crew-preview {
     transition: none !important;
     animation: none !important;
   }
