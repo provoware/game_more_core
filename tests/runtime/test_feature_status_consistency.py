@@ -33,7 +33,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
 
-    def test_validated_pool_items_and_active_replay_precision_owner_are_consistent(self):
+    def test_validated_pool_items_and_active_street_effect_owner_are_consistent(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         for pool_id in (
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
@@ -43,22 +43,24 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-MAP-002", "POOL-STORY-001", "POOL-ECON-004", "POOL-ECON-005",
             "POOL-UX-006", "POOL-ECON-006", "POOL-UX-003", "POOL-ECON-007",
             "POOL-STREET-002", "POOL-ECON-008", "POOL-QA-007", "POOL-QA-008",
+            "POOL-QA-002",
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-002"))
-        self.assertIn("`READY`", _pool_row(pool, "POOL-QA-009"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-009"))
+        self.assertIn("`READY`", _pool_row(pool, "POOL-UX-007"))
+        self.assertIn("`READY`", _pool_row(pool, "POOL-STREET-005"))
 
-    def test_validated_map_usability_and_active_replay_precision_match_status(self):
+    def test_validated_replay_precision_and_active_street_effect_audit_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         economy = status["subsystems"]["economy"]
         living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-MAP-USABILITY")
-        self.assertEqual(status["active_iteration"], "0.8.8-QA-REPLAY-PRECISION")
-        self.assertEqual(status["next_iteration"], "0.8.8-STREET-EFFECT-AUDIT")
-        self.assertEqual(status["current_focus"], "district_event_receipt_semantics_regression")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-QA-REPLAY-PRECISION")
+        self.assertEqual(status["active_iteration"], "0.8.8-STREET-EFFECT-AUDIT")
+        self.assertEqual(status["next_iteration"], "0.8.8-STREET-SCOUT-BALANCE")
+        self.assertEqual(status["current_focus"], "street_effect_expected_value_audit")
         self.assertFalse(economy["recovery_balance_audit_in_validation"])
         self.assertTrue(economy["recovery_balance_audit_validated"])
         self.assertEqual(economy["recovery_balance_audit_state_matrix_size"], 10201)
@@ -66,13 +68,26 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertFalse(economy["recovery_balance_audit_clamping_allowed"])
         self.assertFalse(economy["recovery_balance_audit_telemetry"])
         self.assertFalse(economy["recovery_balance_audit_gameplay_changes"])
-        self.assertTrue(living_world["district_replay_receipt_precision_in_validation"])
+        self.assertFalse(living_world["district_replay_receipt_precision_in_validation"])
+        self.assertTrue(living_world["district_replay_receipt_precision_validated"])
         self.assertEqual(
             living_world["district_replay_receipt_semantics"],
             ["applied", "idempotent_replay", "not_triggered"],
         )
         self.assertFalse(living_world["district_replay_receipt_second_architecture"])
         self.assertFalse(living_world["district_replay_receipt_gameplay_changes"])
+        self.assertTrue(living_world["street_effect_audit_in_validation"])
+        self.assertFalse(living_world["street_effect_audit_validated"])
+        self.assertFalse(living_world["street_effect_audit_telemetry"])
+        self.assertFalse(living_world["street_effect_audit_gameplay_changes"])
+        self.assertEqual(
+            living_world["street_effect_current_strict_dominance"],
+            [["balanced", "scout"]],
+        )
+        self.assertEqual(
+            living_world["street_effect_expected_hundredths"]["network"],
+            {"energy": 53, "stress": -59, "reputation": 65},
+        )
         self.assertTrue(presentation["map_usability_legend"])
         self.assertTrue(presentation["map_usability_optional_labels"])
         self.assertFalse(presentation["map_usability_gameplay_authority"])
@@ -111,7 +126,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-ECON-008": "`DONE`",
             "POOL-QA-007": "`DONE`",
             "POOL-QA-008": "`DONE`",
-            "POOL-QA-002": "`PULLED`",
+            "POOL-QA-002": "`DONE`",
+            "POOL-QA-009": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
