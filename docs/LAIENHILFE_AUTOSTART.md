@@ -41,20 +41,35 @@ Der Starter führt **kein `sudo`** aus, installiert keine Systempakete und verä
 
 ## START_STATUS.txt
 
-Während des Starts entsteht **`START_STATUS.txt`**. Darin stehen die bereits durchlaufenen Phasen, ihre Ampelzustände und alle automatisch vorgenommenen Auflösungen. Dadurch ist jederzeit nachvollziehbar, was der Starter getan hat.
+Während des Starts entsteht **`START_STATUS.txt`**. Darin stehen die bereits durchlaufenen Phasen, ihre Ampelzustände und alle automatisch vorgenommenen Auflösungen. Zusätzlich gibt es jetzt eine kompakte **Auto-Auflösungsbilanz**. So ist auf einen Blick erkennbar, ob der Starter nichts ändern musste oder bereits eine oder mehrere Bedingungen automatisch gelöst hat.
 
 Falls der Programmordner selbst nicht beschreibbar ist, verwendet der Starter automatisch einen beschreibbaren temporären Statusordner und zeigt dessen Pfad an.
 
 ## START_DIAGNOSE.txt
 
-Nur bei einem echten Fehler entsteht **`START_DIAGNOSE.txt`**. Der Bericht nennt:
+Nur bei einem echten Fehler entsteht **`START_DIAGNOSE.txt`**. Der Bericht ist bewusst wie eine kleine Reparaturkarte aufgebaut und nennt:
 
-- den konkreten Grund,
-- den Projektordner,
-- die verwendete Python-Version,
-- den Pfad zur Statusdatei,
-- konkrete empfohlene nächste Schritte,
-- bereits automatisch gelöste Bedingungen.
+- eine stabile **Fehlerklasse**,
+- die verständliche Bedeutung dieser Fehlerklasse,
+- die Startphase, in der der Fehler erkannt wurde,
+- den konkreten technischen Grund,
+- einen Abschnitt **`JETZT BEHEBEN`** mit nummerierten Handlungsschritten,
+- eine kompakte **Auto-Auflösungsbilanz**,
+- bei bereits vorgenommenen Korrekturen ein **transparentes Auflösungsprotokoll**,
+- Projektordner, Python-Version und Pfad zur Statusdatei.
+
+Aktuell unterscheidet die Diagnose unter anderem diese Klassen:
+
+- `release_integrity` – Release unvollständig oder Dateien aus verschiedenen Ständen vermischt,
+- `python_runtime` – Python-Version nicht geeignet,
+- `filesystem_permissions` – Spielstandordner oder Dateirechte blockieren,
+- `port_configuration` – ungültige Portkonfiguration,
+- `server_start` – lokaler Server wird nicht bereit,
+- `api_health` – lokale API antwortet nicht sicher,
+- `browser_validation` – automatische UI-Prüfung schlägt fehl,
+- `post_validation` – Start verliert nach der Übergabe seine Bereitschaft.
+
+Der Diagnosehelfer **entscheidet nichts neu**. Er erklärt nur einen Fehler, den der bestehende Orchestrator bereits erkannt hat. Er führt selbst keine Reparatur, Installation, Gameplay-Änderung oder zusätzliche Recovery aus.
 
 Ein gelber Browserhinweis allein ist kein Spielabbruch.
 

@@ -28,6 +28,7 @@ TOOL_FILES = {
     "tools/start_a4_game_client.py",
     "tools/start_a4_acceptance.py",
     "tools/start_orchestrator.py",
+    "tools/start_diagnosis.py",
     "tools/build_release.py",
 }
 
