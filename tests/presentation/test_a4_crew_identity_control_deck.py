@@ -30,6 +30,38 @@ class A4CrewIdentityControlDeckTests(unittest.TestCase):
         self.assertNotIn("fetch(", STYLES)
         self.assertIn(".crew-identity-preview", STYLES)
 
+    def test_avatar_geometry_is_stable_and_mode_specific(self):
+        for token in (
+            "aspect-ratio: 8 / 5",
+            '.crew-identity-preview[data-mode="logo"]',
+            "aspect-ratio: 1",
+            "border-radius: 50%",
+            "width: min(100%, 210px)",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, STYLES)
+        self.assertNotIn("min-height: 132px", STYLES)
+        self.assertNotIn("min-height: 112px", STYLES)
+
+    def test_avatar_symbol_mark_and_controls_are_clipping_safe(self):
+        for token in (
+            ".crew-identity-symbol",
+            "width: clamp(4.5rem, 42%, 6rem)",
+            ".crew-identity-mark",
+            "max-width: calc(100% - 1.1rem)",
+            "text-overflow: ellipsis",
+            ".crew-identity-controls select:focus-visible",
+            "min-width: 0",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, STYLES)
+
+    def test_avatar_presentation_remains_local_and_reduced_motion_safe(self):
+        self.assertIn("@media (prefers-reduced-motion: reduce)", STYLES)
+        for forbidden in ("url(http", "@import", "javascript:", "/api/", "fetch("):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, STYLES)
+
 
 if __name__ == "__main__":
     unittest.main()
