@@ -5,6 +5,7 @@
   const API_TIMEOUT_MS = 8000;
   const SAFE_GET_RETRY_DELAYS_MS = [250, 900];
   const IDEMPOTENT_WRITE_RETRY_DELAYS_MS = [400];
+  const REPLAY_SAFE_POST_PATHS = new Set(["/api/command"]);
 
   function emit(name, detail) {
     window.dispatchEvent(new CustomEvent(name, { detail }));
@@ -27,9 +28,11 @@
     }
   }
 
-  function retryDelays(method, init) {
+  function retryDelays(method, init, url) {
     if (["GET", "HEAD"].includes(method)) return SAFE_GET_RETRY_DELAYS_MS;
-    if (method === "POST" && hasCommandId(init.body)) return IDEMPOTENT_WRITE_RETRY_DELAYS_MS;
+    if (method === "POST" && REPLAY_SAFE_POST_PATHS.has(url.pathname) && hasCommandId(init.body)) {
+      return IDEMPOTENT_WRITE_RETRY_DELAYS_MS;
+    }
     return [];
   }
 
@@ -60,8 +63,8 @@
     const timer = window.setTimeout(() => controller.abort(new DOMException("API timeout", "TimeoutError")), timeoutMs);
     try {
       const response = await nativeFetch(input, { ...init, cache: "no-store", signal: controller.signal });
-      const payload = await response.arrayBuffer();
-      return new Response(payload.byteLength ? payload : null, {
+      const body = await response.arrayBuffer();
+      return new Response(body, {
         status: response.status,
         statusText: response.statusText,
         headers: response.headers
@@ -76,7 +79,7 @@
     const info = requestInfo(input, init);
     if (!sameOriginApi(info.url)) return nativeFetch(input, init);
 
-    const delays = retryDelays(info.method, init);
+    const delays = retryDelays(info.method, init, info.url);
     let lastError = null;
     for (let attempt = 0; attempt <= delays.length; attempt += 1) {
       try {
@@ -121,6 +124,7 @@
   window.BunkerClientResilience = Object.freeze({
     apiTimeoutMs: API_TIMEOUT_MS,
     safeGetRetries: SAFE_GET_RETRY_DELAYS_MS.length,
-    idempotentWriteRetries: IDEMPOTENT_WRITE_RETRY_DELAYS_MS.length
+    idempotentWriteRetries: IDEMPOTENT_WRITE_RETRY_DELAYS_MS.length,
+    replaySafePostPaths: Object.freeze([...REPLAY_SAFE_POST_PATHS])
   });
 })();
