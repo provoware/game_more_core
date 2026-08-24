@@ -204,7 +204,17 @@ class AutostartChaosMatrixTests(unittest.TestCase):
             self.assertEqual(_FakeServer.created_ports, [8044, 0])
             status = (state_dir / "START_STATUS.txt").read_text(encoding="utf-8")
             self.assertIn("Nachvalidierung erkannte einen Server-/API-Ausfall", status)
-            self.assertIn("Server-/API-Recovery erfolgreich", status)
+            self.assertIn("erneut auf UI-Reaktionsfähigkeit geprüft", status)
+
+    def test_post_handoff_recovery_contract_rechecks_new_server_ui(self):
+        source = (ROOT / "tools" / "start_orchestrator.py").read_text(encoding="utf-8")
+        recovery = source[source.index("if post_error is not None:"):source.index("reporter.step(\n            95")]
+        self.assertIn("_probe_startup_api(address, reporter)", recovery)
+        self.assertIn("ui_verified, browser_address = _verify_browser_ui(address, reporter)", recovery)
+        self.assertLess(
+            recovery.index("_probe_startup_api(address, reporter)"),
+            recovery.index("ui_verified, browser_address = _verify_browser_ui(address, reporter)"),
+        )
 
 
 if __name__ == "__main__":
