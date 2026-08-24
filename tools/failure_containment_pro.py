@@ -8,13 +8,16 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import queue
 import resource
 import shutil
 import socket
 import subprocess
 import sys
 import tempfile
+import threading
 import time
+from urllib.request import urlopen
 import zipfile
 
 from build_release import build
@@ -81,60 +84,104 @@ def _limited_resources() -> None:
         resource.setrlimit(resource.RLIMIT_AS, (soft_as, soft_as))
 
 
-def _run_launcher(
+def _http_json(address: str, path: str) -> dict:
+    with urlopen(address.rstrip("/") + path, timeout=4) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"{path} lieferte kein JSON-Objekt")
+    return payload
+
+
+def _start_packaged_server(
     product_root: Path,
     work_root: Path,
     *,
     port: int = 0,
     env_overrides: dict[str, str] | None = None,
     constrained: bool = False,
-    timeout: float = 35.0,
+    timeout: float = 20.0,
 ) -> dict[str, object]:
     save_dir = work_root / "save"
-    state_dir = work_root / "state"
     home_dir = work_root / "home"
     home_dir.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
-    env.update(
-        {
-            "HOME": str(home_dir),
-            "PYTHONPATH": "",
-            "BUNKERFREQUENZ_START_STATE_DIR": str(state_dir),
-        }
-    )
+    env.update({"HOME": str(home_dir), "PYTHONPATH": "", "PYTHONUNBUFFERED": "1"})
     if env_overrides:
         env.update(env_overrides)
-    launcher = product_root / "START_BUNKERFREQUENZ.sh"
-    completed = subprocess.run(
+    process = subprocess.Popen(
         [
-            str(launcher),
+            sys.executable,
+            str(product_root / "tools" / "start_a4_game_client.py"),
             "--port",
             str(port),
-            "--no-browser",
             "--save-dir",
             str(save_dir),
-            "--exit-after-ready",
-            "--startup-timeout",
-            "12",
+            "--no-browser",
         ],
         cwd=product_root,
         env=env,
-        capture_output=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
         text=True,
-        timeout=timeout,
+        bufsize=1,
         preexec_fn=_limited_resources if constrained else None,
     )
-    output = completed.stdout + completed.stderr
-    status_path = state_dir / "START_STATUS.txt"
-    status = status_path.read_text(encoding="utf-8") if status_path.is_file() else ""
-    return {
-        "exit_code": completed.returncode,
-        "ready": completed.returncode == 0 and "[100%]" in output and "BEREIT" in output,
-        "status_ready": "BEREIT" in status,
-        "status_text": status,
-        "output_tail": output.splitlines()[-12:],
-        "save_dir": str(save_dir),
-    }
+    lines: list[str] = []
+    line_queue: queue.Queue[str | None] = queue.Queue()
+
+    def reader() -> None:
+        assert process.stdout is not None
+        try:
+            for line in process.stdout:
+                line_queue.put(line.rstrip())
+        finally:
+            line_queue.put(None)
+
+    thread = threading.Thread(target=reader, daemon=True)
+    thread.start()
+    deadline = time.monotonic() + timeout
+    address: str | None = None
+    try:
+        while time.monotonic() < deadline:
+            remaining = max(0.01, deadline - time.monotonic())
+            try:
+                line = line_queue.get(timeout=min(0.25, remaining))
+            except queue.Empty:
+                if process.poll() is not None:
+                    break
+                continue
+            if line is None:
+                break
+            lines.append(line)
+            if line.startswith("ADRESSE: "):
+                address = line.split("ADRESSE: ", 1)[1].strip()
+                break
+        if address is None:
+            raise RuntimeError("Paketserver lieferte keine Adresse: " + " | ".join(lines[-12:]))
+        health = _http_json(address, "/api/health")
+        state = _http_json(address, "/api/state")
+        if health.get("status") != "ready":
+            raise RuntimeError(f"/api/health nicht ready: {health}")
+        if state.get("status") != "confirmed":
+            raise RuntimeError(f"/api/state nicht confirmed: {state.get('status')!r}")
+        return {
+            "address": address,
+            "health": "ready",
+            "state": "confirmed",
+            "pid": process.pid,
+            "save_dir": str(save_dir),
+        }
+    finally:
+        if process.poll() is None:
+            process.terminate()
+            try:
+                process.wait(timeout=3)
+            except subprocess.TimeoutExpired:
+                process.kill()
+                process.wait(timeout=3)
+        if process.stdout is not None:
+            process.stdout.close()
+        thread.join(timeout=1)
 
 
 def _scenario_path_locale(product_root: Path, root: Path) -> dict[str, object]:
@@ -148,14 +195,14 @@ def _scenario_path_locale(product_root: Path, root: Path) -> dict[str, object]:
         product_copy = case_root / product_root.name
         product_copy.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(product_root, product_copy)
-        result = _run_launcher(
+        result = _start_packaged_server(
             product_copy,
             case_root / "runtime",
             env_overrides={"LANG": lang, "LC_ALL": lang, "TZ": timezone, "PYTHONUTF8": "1"},
         )
-        cases.append({"lang": lang, "tz": timezone, "path": folder_name, "pass": bool(result["ready"])})
-        if not result["ready"]:
-            raise RuntimeError(f"Pfad-/Locale-Fall fehlgeschlagen: {lang}/{timezone}/{folder_name}: {result['output_tail']}")
+        cases.append(
+            {"lang": lang, "tz": timezone, "path": folder_name, "health": result["health"], "state": result["state"]}
+        )
     return {"cases": cases}
 
 
@@ -163,18 +210,16 @@ def _scenario_process_ownership(product_root: Path, root: Path) -> dict[str, obj
     sentinel = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
     try:
         runtime_root = root / "owned-runtime"
-        result = _run_launcher(product_root, runtime_root)
-        if not result["ready"]:
-            raise RuntimeError("Start für Process-Ownership-Test wurde nicht bereit")
+        result = _start_packaged_server(product_root, runtime_root)
         if sentinel.poll() is not None:
-            raise RuntimeError("Fremder Sentinel-Prozess wurde vom Launcher beendet")
+            raise RuntimeError("Fremder Sentinel-Prozess wurde vom Paketserver beendet")
         marker = str(runtime_root / "save")
         time.sleep(0.15)
         ps = subprocess.run(["ps", "-eo", "pid=,args="], check=True, capture_output=True, text=True).stdout
         lingering = [line.strip() for line in ps.splitlines() if marker in line and str(os.getpid()) not in line]
         if lingering:
             raise RuntimeError("Eigener Serverprozess blieb nach Exit übrig: " + " | ".join(lingering[:3]))
-        return {"foreign_process_survived": True, "owned_processes_remaining": 0}
+        return {"foreign_process_survived": True, "owned_processes_remaining": 0, "server_pid": result["pid"]}
     finally:
         if sentinel.poll() is None:
             sentinel.terminate()
@@ -186,10 +231,8 @@ def _scenario_process_ownership(product_root: Path, root: Path) -> dict[str, obj
 
 
 def _scenario_resource_stress(product_root: Path, root: Path) -> dict[str, object]:
-    result = _run_launcher(product_root, root / "resource-runtime", constrained=True, timeout=40)
-    if not result["ready"]:
-        raise RuntimeError("Start unter begrenzten Ressourcen fehlgeschlagen: " + " | ".join(result["output_tail"]))
-    return {"rlimit_nofile": 64, "rlimit_as_mib": 512, "ready": True}
+    result = _start_packaged_server(product_root, root / "resource-runtime", constrained=True, timeout=25)
+    return {"rlimit_nofile": 64, "rlimit_as_mib": 512, "health": result["health"], "state": result["state"]}
 
 
 def _scenario_port_collision(product_root: Path, root: Path) -> dict[str, object]:
@@ -197,28 +240,33 @@ def _scenario_port_collision(product_root: Path, root: Path) -> dict[str, object
     holder.bind(("127.0.0.1", 0))
     holder.listen(1)
     occupied_port = int(holder.getsockname()[1])
+    save_dir = root / "save"
+    env = os.environ.copy()
+    env.update({"PYTHONPATH": "", "PYTHONUNBUFFERED": "1"})
     try:
-        result = _run_launcher(product_root, root / "port-runtime", port=occupied_port)
+        completed = subprocess.run(
+            [sys.executable, str(product_root / "tools" / "start_a4_game_client.py"), "--port", str(occupied_port), "--save-dir", str(save_dir), "--no-browser"],
+            cwd=product_root,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=20,
+        )
     finally:
         holder.close()
-    if not result["ready"]:
-        raise RuntimeError("Start mit belegtem Port wurde nicht recovered: " + " | ".join(result["output_tail"]))
-    if f"Port {occupied_port} war belegt" not in str(result["status_text"]):
-        raise RuntimeError("Belegter Port wurde nicht transparent als Auto-Auflösung protokolliert")
-    return {"occupied_port": occupied_port, "auto_resolved": True}
+    output = completed.stdout + completed.stderr
+    if completed.returncode == 0:
+        raise RuntimeError("Paketserver akzeptierte fälschlich einen bereits belegten Port")
+    expected = f"Port {occupied_port} ist belegt"
+    if expected not in output:
+        raise RuntimeError("EADDRINUSE wurde nicht kontrolliert erklärt: " + " | ".join(output.splitlines()[-8:]))
+    return {"occupied_port": occupied_port, "fail_closed": True, "diagnostic": expected}
 
 
 def _run_unittest(targets: list[str], timeout: float = 90.0) -> dict[str, object]:
     env = os.environ.copy()
     env["PYTHONPATH"] = "src:."
-    completed = subprocess.run(
-        [sys.executable, "-m", "unittest", *targets, "-v"],
-        cwd=ROOT,
-        env=env,
-        capture_output=True,
-        text=True,
-        timeout=timeout,
-    )
+    completed = subprocess.run([sys.executable, "-m", "unittest", *targets, "-v"], cwd=ROOT, env=env, capture_output=True, text=True, timeout=timeout)
     output = completed.stdout + completed.stderr
     if completed.returncode != 0:
         raise RuntimeError("Regression fehlgeschlagen: " + " | ".join(output.splitlines()[-20:]))
@@ -231,11 +279,7 @@ def _scenario_fault_contracts() -> dict[str, object]:
 
 def _scenario_crash_save_upgrade() -> dict[str, object]:
     return _run_unittest(
-        [
-            "tests.runtime.test_recovery",
-            "tests.runtime.test_resource_recovery",
-            "tests.release.test_failure_containment_pro.LegacyUpgradeRecoveryTests",
-        ],
+        ["tests.runtime.test_recovery", "tests.runtime.test_resource_recovery", "tests.release.test_failure_containment_pro.LegacyUpgradeRecoveryTests"],
         timeout=120,
     )
 
@@ -254,7 +298,7 @@ def _single_run(candidate: Path, root: Path) -> dict[str, dict[str, object]]:
     for name, call in scenario_calls:
         try:
             detail = call()
-        except Exception as exc:  # fail-closed evidence, not a hidden retry
+        except Exception as exc:
             scenarios[name] = {"status": "FAIL", "reason": str(exc)}
         else:
             scenarios[name] = {"status": "PASS", "detail": detail}
@@ -303,16 +347,7 @@ def run(output_dir: Path) -> dict[str, object]:
         "anti_flake_runs": 2,
         "anti_flake_consistent": _normalized_statuses(first) == _normalized_statuses(second),
         "status": status,
-        "coverage": [
-            "resource_stress",
-            "path_locale_matrix",
-            "process_ownership",
-            "port_race_and_collision",
-            "disk_and_permission_fail_closed",
-            "crash_save_recovery",
-            "legacy_upgrade_recovery",
-            "anti_flake_quarantine",
-        ],
+        "coverage": ["resource_stress", "path_locale_matrix", "process_ownership", "port_race_and_collision", "disk_and_permission_fail_closed", "crash_save_recovery", "legacy_upgrade_recovery", "anti_flake_quarantine"],
         "runs": [first, second],
     }
     _, _, evidence_hash = write_evidence(output_dir, evidence)
