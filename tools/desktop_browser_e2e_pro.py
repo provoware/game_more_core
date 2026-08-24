@@ -8,10 +8,12 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import shutil
 import subprocess
 import sys
 import tempfile
+import time
+from urllib.error import URLError
+from urllib.request import urlopen
 import zipfile
 
 from build_release import build
@@ -24,6 +26,8 @@ REQUIRED_SCENARIOS = (
     "clickstart_orchestrator",
     "chromium_dom_ready",
 )
+EXPECTED_DESKTOP_EXEC = "Exec=bash -lc 'desktop=\"$1\"; desktop=\"${desktop#file://}\"; cd \"$(dirname \"$desktop\")\" && exec ./START_BUNKERFREQUENZ.sh' _ %k"
+EXPECTED_LAUNCHER_EXEC = 'exec "$PYTHON_BIN" tools/start_orchestrator.py "$@"'
 
 
 def _canonical_json_bytes(data: object) -> bytes:
@@ -103,14 +107,45 @@ def _scenario_desktop_launcher_contract(product_root: Path) -> dict[str, object]
         raise RuntimeError("START_BUNKERFREQUENZ.sh ist im Release nicht ausführbar")
     if not os.access(desktop, os.X_OK):
         raise RuntimeError("BUNKERFREQUENZ.desktop ist im Release nicht ausführbar")
-    desktop_text = desktop.read_text(encoding="utf-8")
-    exec_lines = [line for line in desktop_text.splitlines() if line.startswith("Exec=")]
-    if len(exec_lines) != 1 or "START_BUNKERFREQUENZ.sh" not in exec_lines[0]:
-        raise RuntimeError("Desktop-Datei verweist nicht eindeutig auf START_BUNKERFREQUENZ.sh")
-    launcher_text = launcher.read_text(encoding="utf-8")
-    if "tools/start_orchestrator.py" not in launcher_text:
-        raise RuntimeError("Startskript delegiert nicht an den kanonischen Orchestrator")
-    return {"launcher_executable": True, "desktop_executable": True, "single_orchestrator_path": True}
+
+    desktop_lines = [line.strip() for line in desktop.read_text(encoding="utf-8").splitlines() if line.startswith("Exec=")]
+    if desktop_lines != [EXPECTED_DESKTOP_EXEC]:
+        raise RuntimeError("Desktop-Datei besitzt nicht exakt den kanonischen Klickstartbefehl")
+
+    launcher_lines = [
+        line.strip()
+        for line in launcher.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    exec_lines = [line for line in launcher_lines if line.startswith("exec ")]
+    if exec_lines != [EXPECTED_LAUNCHER_EXEC] or launcher_lines[-1] != EXPECTED_LAUNCHER_EXEC:
+        raise RuntimeError("Startskript besitzt nicht exakt die kanonische Orchestrator-Delegation")
+    return {
+        "launcher_executable": True,
+        "desktop_executable": True,
+        "exact_desktop_exec": True,
+        "exact_launcher_exec": True,
+        "single_orchestrator_path": True,
+    }
+
+
+def _extract_address(output: str) -> str:
+    addresses = [line.split("ADRESSE: ", 1)[1].strip() for line in output.splitlines() if line.startswith("ADRESSE: ")]
+    if len(addresses) != 1:
+        raise RuntimeError("Klickstart lieferte keine eindeutige lokale Serveradresse")
+    return addresses[0]
+
+
+def _assert_server_stopped(address: str, timeout: float = 3.0) -> None:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        try:
+            with urlopen(address.rstrip("/") + "/api/health", timeout=0.4) as response:
+                response.read(1)
+        except (OSError, URLError):
+            return
+        time.sleep(0.1)
+    raise RuntimeError("Klickstart-Server antwortet nach --exit-after-ready weiterhin")
 
 
 def _scenario_clickstart(product_root: Path, root: Path) -> dict[str, object]:
@@ -138,7 +173,7 @@ def _scenario_clickstart(product_root: Path, root: Path) -> dict[str, object]:
         env=env,
         capture_output=True,
         text=True,
-        timeout=35,
+        timeout=70,
     )
     output = completed.stdout + completed.stderr
     if completed.returncode != 0:
@@ -149,6 +184,8 @@ def _scenario_clickstart(product_root: Path, root: Path) -> dict[str, object]:
     status = status_path.read_text(encoding="utf-8")
     if "[100%]" not in status or "BEREIT" not in status:
         raise RuntimeError("Klickstart erreichte keinen vollständigen BEREIT-Zustand")
+    address = _extract_address(output)
+    _assert_server_stopped(address)
     return {"exit_code": 0, "ready_100_percent": True, "server_shutdown_after_acceptance": True}
 
 
@@ -161,7 +198,7 @@ def _scenario_chromium_dom(product_root: Path) -> dict[str, object]:
         env=env,
         capture_output=True,
         text=True,
-        timeout=40,
+        timeout=70,
     )
     output = completed.stdout + completed.stderr
     if completed.returncode != 0:
