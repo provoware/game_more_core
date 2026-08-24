@@ -63,8 +63,8 @@
     const timer = window.setTimeout(() => controller.abort(new DOMException("API timeout", "TimeoutError")), timeoutMs);
     try {
       const response = await nativeFetch(input, { ...init, cache: "no-store", signal: controller.signal });
-      const body = await response.arrayBuffer();
-      return new Response(body, {
+      const payload = await response.arrayBuffer();
+      return new Response(payload.byteLength ? payload : null, {
         status: response.status,
         statusText: response.statusText,
         headers: response.headers
