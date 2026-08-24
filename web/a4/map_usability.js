@@ -4,14 +4,25 @@
   const STYLE_ID = "map-usability-styles";
   const LEGEND_ID = "map-usability-legend";
   const LABEL_ACTION = "labels";
+  const ASSET_REVISION = document.querySelector('meta[name="bunker-asset-revision"]')?.content || "";
   let labelsVisible = false;
+  let observer = null;
+  let host = null;
+  let scheduled = false;
+
+  function assetUrl(filename) {
+    if (!ASSET_REVISION) return filename;
+    const url = new URL(filename, document.baseURI);
+    url.searchParams.set("v", ASSET_REVISION);
+    return url.href;
+  }
 
   function ensureStyles() {
     if (document.getElementById(STYLE_ID)) return;
     const link = document.createElement("link");
     link.id = STYLE_ID;
     link.rel = "stylesheet";
-    link.href = "map_usability.css";
+    link.href = assetUrl("map_usability.css");
     document.head.append(link);
   }
 
@@ -88,11 +99,31 @@
     annotateCanvas();
   }
 
+  function attachObserver() {
+    if (observer && host) observer.observe(host, { childList: true, subtree: true });
+  }
+
+  function scheduleEnhance() {
+    if (scheduled) return;
+    scheduled = true;
+    window.requestAnimationFrame(() => {
+      scheduled = false;
+      observer?.disconnect();
+      try {
+        enhance();
+      } catch (error) {
+        console.error("BUNKERFREQUENZ Map-UI-Recovery", error);
+      } finally {
+        attachObserver();
+      }
+    });
+  }
+
   function init() {
     enhance();
-    const host = document.getElementById("map-pro-panel") || document.body;
-    const observer = new MutationObserver(enhance);
-    observer.observe(host, { childList: true, subtree: true });
+    host = document.getElementById("map-pro-panel") || document.body;
+    observer = new MutationObserver(scheduleEnhance);
+    attachObserver();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
