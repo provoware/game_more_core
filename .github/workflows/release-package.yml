@@ -18,8 +18,8 @@ jobs:
           python-version: '3.12'
       - name: Build reproducible package twice and smoke unpacked runtime
         run: PYTHONPATH=src:. python3 -m unittest tests.runtime.test_release_package -v
-      - name: Validate release-autopilot policy contract
-        run: PYTHONPATH=src:. python3 -m unittest tests.release.test_release_autopilot -v
+      - name: Validate release-autopilot policy and evidence-chain contracts
+        run: PYTHONPATH=src:. python3 -m unittest tests.release.test_release_autopilot tests.release.test_release_evidence_chain_pro -v
       - name: Restore clean evidence source workspace
         shell: bash
         run: |
@@ -87,6 +87,19 @@ jobs:
               exit 1
             fi
           fi
+      - name: Run Release Evidence Chain PRO
+        if: steps.autopilot.outputs.state == 'RELEASE_READY'
+        shell: bash
+        run: |
+          promoted="$(find autopilot-dist/release -maxdepth 1 -name '*.zip' -print -quit)"
+          test -n "$promoted"
+          python3 tools/release_evidence_chain_pro.py \
+            --failure-evidence failure-containment-dist/FAILURE_CONTAINMENT_EVIDENCE.json \
+            --browser-evidence desktop-browser-e2e-dist/DESKTOP_BROWSER_E2E_EVIDENCE.json \
+            --release-evidence autopilot-dist/evidence/RELEASE_EVIDENCE.json \
+            --promoted-zip "$promoted" \
+            --output-dir autopilot-dist/evidence-chain
+          cat autopilot-dist/evidence-chain/RELEASE_EVIDENCE_CHAIN.json.sha256
       - name: Show Evidence Root
         if: always()
         shell: bash
@@ -97,6 +110,12 @@ jobs:
           if [ -f autopilot-dist/evidence/RELEASE_EVIDENCE.json.sha256 ]; then
             cat autopilot-dist/evidence/RELEASE_EVIDENCE.json.sha256
           fi
+          if [ -f autopilot-dist/evidence-chain/RELEASE_EVIDENCE_CHAIN.json ]; then
+            cat autopilot-dist/evidence-chain/RELEASE_EVIDENCE_CHAIN.json
+          fi
+          if [ -f autopilot-dist/evidence-chain/RELEASE_EVIDENCE_CHAIN.json.sha256 ]; then
+            cat autopilot-dist/evidence-chain/RELEASE_EVIDENCE_CHAIN.json.sha256
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -104,6 +123,8 @@ jobs:
           path: |
             autopilot-dist/evidence/RELEASE_EVIDENCE.json
             autopilot-dist/evidence/RELEASE_EVIDENCE.json.sha256
+            autopilot-dist/evidence-chain/RELEASE_EVIDENCE_CHAIN.json
+            autopilot-dist/evidence-chain/RELEASE_EVIDENCE_CHAIN.json.sha256
           if-no-files-found: warn
           retention-days: 30
       - uses: actions/upload-artifact@v4
@@ -113,5 +134,7 @@ jobs:
           path: |
             autopilot-dist/release/BUNKERFREQUENZ-0.8.4-alpha.1.zip
             autopilot-dist/release/BUNKERFREQUENZ-0.8.4-alpha.1.zip.sha256
+            autopilot-dist/evidence-chain/RELEASE_EVIDENCE_CHAIN.json
+            autopilot-dist/evidence-chain/RELEASE_EVIDENCE_CHAIN.json.sha256
           if-no-files-found: error
           retention-days: 30
