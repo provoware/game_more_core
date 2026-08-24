@@ -46,6 +46,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-UX-TIMELINE-FILTER:** PR #124 · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01` · ALLE / STRASSE / KRISE / BEZIRK rein lokal, Runtime-Reihenfolge unverändert
 - **0.8.8-ECON-RECOVERY-FEEDBACK:** PR #125 · Merge `c8e8cba3dab103c90937f26e90a02a13139dd0f5` · bestätigte Vorher→Nachher-Werte + nächste Runtime-Verfügbarkeit ohne neue Mechanik
 - **0.8.8-STREET-PACK:** PR #126 · Merge `00c14d57bf642e688a65c0a9e99d39b52857eb0b` · 16 Begegnungen, bestehende deterministische Auswahl-/Replay-Architektur unverändert
+- **0.8.8-ECON-RECOVERY-VARIANTS:** PR #127 · Merge `c9732c28cc723984d59b02018fbed02c3c681913` · zweite bestätigte Recovery-Wahl +30 Energie / +20 Stress aus demselben Service und Replay-Pfad
 
 ---
 
@@ -70,8 +71,9 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-ECON-006` | `DONE` | Bestätigte Regenerationsaktionen | Energie aktiv zurückgewinnen | PR #123 sicher gemergt; +20 Energie gegen +12 Stress |
 | `POOL-ECON-007` | `DONE` | Regenerationsfeedback | Vorher→Nachher nach bestätigter Regeneration verständlich zeigen | PR #125 sicher gemergt; nur bestätigte Projection-Snapshots |
 | `POOL-STREET-002` | `DONE` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | PR #126 sicher gemergt; 16 Begegnungen, gleiche Engine |
-| `POOL-ECON-008` | `PULLED` | Weitere Regenerationsentscheidungen | unterschiedliche Erholungsstrategien | Balancevertrag zuerst; keine Echtzeitregeneration |
-| `POOL-QA-007` | `READY` | Street-Balance-Audit | Ansatzprofile und Katalogdominanz deterministisch prüfen | keine Telemetrie, keine Gameplayänderung |
+| `POOL-ECON-008` | `DONE` | Weitere Regenerationsentscheidungen | unterschiedliche Erholungsstrategien | PR #127 sicher gemergt; Balancevertrag zuerst, keine Echtzeitregeneration |
+| `POOL-QA-007` | `PULLED` | Street-Balance-Audit | Ansatzprofile und Katalogdominanz deterministisch prüfen | keine Telemetrie, keine Gameplayänderung |
+| `POOL-QA-008` | `READY` | Recovery-Balance-Audit | beide Recovery-Wege über Energie×Stress-Matrix gegen Dominanz und Gratisfolgen prüfen | Test-only, keine neue Recovery-Mechanik |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 
 ---
@@ -106,4 +108,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-ECON-008` ist für 0.8.8-ECON-RECOVERY-VARIANTS aktiv. Die zweite Recovery-Wahl nutzt denselben Service und denselben Replay-Pfad, besitzt aber einen bewusst schlechteren Energie/Stress-Wirkungsgrad für mehr Sofortenergie. Danach ist `POOL-QA-007` als deterministischer Street-Balance-Audit der nächste unabhängige Prüf-Slice; `POOL-COMPANION-003` bleibt abhängig.
+`POOL-QA-007` ist für 0.8.8-STREET-BALANCE-AUDIT aktiv. Der Audit prüft den vorhandenen 16er Katalog und alle vier Ansätze vollständig deterministisch, ohne Telemetrie oder Gameplayänderung. Danach ist `POOL-QA-008` als Recovery-Balance-Audit der nächste unabhängige Qualitätsslice; `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig.

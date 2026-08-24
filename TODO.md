@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STREET-PACK – Straßenereignis-Erweiterung` · PR #126 · Merge `00c14d57bf642e688a65c0a9e99d39b52857eb0b`
-- **STREET-PACK Remote-Abnahme:** Runtime `32676087259` · Presentation `32676087194` · Repository Health `32676087191` · Release Acceptance `32676087204` · Release Package `32676087179` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-ECON-RECOVERY-VARIANTS – zweite Regenerationsentscheidung`
-- **RECOVERY-VARIANTS-Status:** Balancevertrag zuerst; `Mate, Zucker & Vollgas` liefert +30 Energie gegen +20 Stress und ist bewusst weniger effizient als +20/+12
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-RECOVERY-VARIANTS – zweite Regenerationsentscheidung` · PR #127 · Merge `c9732c28cc723984d59b02018fbed02c3c681913`
+- **RECOVERY-VARIANTS Remote-Abnahme:** Runtime `32677148542` · Presentation `32677148505` · Repository Health `32677148521` · Release Acceptance `32677148511` · Release Package `32677148527` · 0 Review-Threads · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-STREET-BALANCE-AUDIT – deterministischer Katalogcheck`
+- **STREET-BALANCE-AUDIT-Status:** test-only; 16 Begegnungen × vier Ansätze werden auf Profilabstand, Einzelevent-Dominanz, Polaritätsmix und alle 100 Auswahl-Buckets geprüft
 - **Repository-Arbeitsmodus:** Basisdateien, Arbeitsdateien und Evidenz/Logs sind getrennt; grüne Logs werden nicht dauerhaft übertragen, rote Gates zuerst nur im konkreten Fehlerausschnitt gelesen
 - **Entwicklungsprozess:** Focused-Read bleibt verpflichtend; Codex-Code-Review bleibt vollständig außerhalb von Entwicklung, Gate-Evidenz und Mergeprozess
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -64,72 +64,95 @@
 - [x] `StreetEncounterService` und deterministische Auswahlarchitektur unverändert
 - [x] PR #126 · Head `bd2b921089ef6b10dd849e0d9fc7a89bf3efb342` · Runtime `32676087259` · Presentation `32676087194` · Repository Health `32676087191` · Release Acceptance `32676087204` · Release Package `32676087179` · 0 Review-Threads · `/safe-merge` PASS · Merge `00c14d57bf642e688a65c0a9e99d39b52857eb0b`
 
+## 0.8.8-ECON-RECOVERY-VARIANTS – zweite Regenerationsentscheidung
+- [x] Balancevertrag vor Runtime-Patch dokumentiert
+- [x] `Mate, Zucker & Vollgas`: +30 Energie / +20 Stress, bewusst ineffizienter als +20/+12
+- [x] gleicher `RECOVERY_ACTIONS`-Katalog, `RecoveryActionService` und `character.resources_changed`-Replay-Pfad
+- [x] keine Echtzeitregeneration, kein Cooldown, keine zweite Engine
+- [x] PR #127 · Head `c042e4b9de2d385384ce4d65b6586f519c0a515a` · Runtime `32677148542` · Presentation `32677148505` · Repository Health `32677148521` · Release Acceptance `32677148511` · Release Package `32677148527` · 0 Review-Threads · `/safe-merge` PASS · Merge `c9732c28cc723984d59b02018fbed02c3c681913`
+
 ---
 
-# Aktiv – 0.8.8-ECON-RECOVERY-VARIANTS
+# Aktiv – 0.8.8-STREET-BALANCE-AUDIT
+
+## Fortschritt
+
+**70 %** – mathematischer Audit und Laienhilfe implementiert; technischer Head 5/5 remote grün. Ausstehend sind nur finale Status-Abnahme, Merge-Hygiene und Safe Merge.
 
 ## Ziel
 
-Eine zweite bestätigte Regenerationsentscheidung soll eine echte situative Alternative sein: größerer Sofortschub gegen überproportional höheren Stresspreis. Keine Echtzeitregeneration, kein Cooldown und keine zweite Recovery-Engine.
+Den bestehenden 16er Street-Katalog automatisch darauf prüfen, dass die vier Ansätze mathematisch unterscheidbar bleiben, kein Einzelevent dominiert und die deterministische Gewichtsauswahl an allen Grenzen exakt dem Manifest entspricht.
+
+## Abnahme
+
+Ein test-only Audit beweist ohne Telemetrie und ohne Gameplayänderung Profilabstände, maximale Einzelgewichte, Polaritätsprofile sowie die exakte Abbildung aller 100 Buckets je Ansatz.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
 **Basisdateien**
-- `AGENTS.md` – Focused Read, Runtime-/Merge-Grenzen
+- `AGENTS.md` – Focused Read, Test-/Merge-Grenzen
 - aktive Stellen aus `TODO.md`, `PROJEKTSTATUS.json`, `FEATURE_POOL.md`
-- README wegen aktiver/folgender Iterationskonsistenz
+- `manifests/STREET_ENCOUNTER_MANIFEST.json`
 
 **Arbeitsdateien**
-- `docs/RECOVERY_VARIANTS_BALANCE_CONTRACT.md` – mathematischer Vertrag vor Runtime-Patch
-- `src/bunkerfrequenz/application/recovery_action_service.py`
-- `tests/runtime/test_recovery_action_service.py`
-- `src/bunkerfrequenz/presentation/scene_jobs_projection.py` nur zur Generikprüfung, keine Änderung erforderlich
-- `web/a4/recovery_actions_ui.js` nur zur Autoritätsprüfung, keine Änderung erforderlich
-- `tests/presentation/test_a4_recovery_actions.py` direkte Presentation-Grenze
+- `tests/runtime/test_street_pack_contract.py` – bestehender Katalogvertrag
+- `tests/runtime/test_street_encounter_service.py` – bestehende Determinismus-/Replay-Regressionsgrenze
+- `src/bunkerfrequenz/application/street_encounter_service.py` – nur `_stable_bucket` / `_select` als direkte Auswahlquelle; keine Änderung
+- `tests/runtime/test_street_balance_audit.py` – neuer Audit
+- `docs/LAIENHILFE_STREET_BALANCE_AUDIT.md` – Laienerklärung
+- `tests/runtime/test_feature_status_consistency.py` – Statusregression
 
 **Evidenz/Logs**
 - nur Run-ID/Status bei grünen Gates
 - vollständiger Log ausschließlich bei einem konkreten roten Gate
 
-### RECOVERY-VARIANTS – Balancevertrag + kleinster Runtime-Slice
+### STREET-BALANCE-AUDIT – mathematische Invarianten
 
-- [x] Balancevertrag vor Runtime-Patch separat dokumentiert
-- [x] Referenz `Koffein & kalte Luft`: +20 Energie / +12 Stress = 1,67 Energie pro Stress
-- [x] neue Variante `Mate, Zucker & Vollgas`: +30 Energie / +20 Stress = 1,50 Energie pro Stress
-- [x] 50 % mehr Sofortenergie kostet 66,7 % mehr Stress; neue Variante ist bewusst weniger effizient
-- [x] Headroom vollständig: nur bei Energie <= 70 und Stress <= 80; kein Clamp schwächt Kosten
-- [x] gleiche `RECOVERY_ACTIONS`-Quelle und derselbe `RecoveryActionService`
-- [x] gleicher `character.resources_changed`-Journal-/Replay-Pfad
-- [x] Retry derselben Command-ID bleibt schreibfrei; andere Recovery-ID auf derselben Command-ID scheitert
-- [x] Projection, Session und Browser bleiben unverändert, weil sie den Recovery-Katalog bereits generisch verarbeiten
-- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32676850542` · Presentation `32676850575` · Repository Health `32676850715` · Release Acceptance `32676850860` · Release Package `32676850512`
+- [x] exakt 16 Begegnungen und vier Ansätze `balanced / recovery / network / scout`
+- [x] paarweise Total-Variation-Distanz geprüft: 0,17 bis 0,40; Mindestabstand >= 0,15
+- [x] maximale Einzelwahrscheinlichkeit pro Ansatz <= 20 %
+- [x] Polaritätsprofile exakt geprüft: balanced 25/60/15, recovery 30/55/15, network 15/70/15, scout 15/60/25
+- [x] jeder Ansatz bleibt überwiegend positiv; Positivanteil >= 55 %, Negativanteil <= 25 %
+- [x] alle 100 möglichen Gewichtsbuckets pro Ansatz vollständig enumeriert
+- [x] beobachtete Buckethäufigkeit entspricht für jedes Event exakt dem deklarierten Gewicht
+- [x] erste/letzte Bucketposition jedes Gewichtintervalls gegen Off-by-one geprüft
+- [x] feste SHA-256-Bucket-Fixtures für `server_sequence=None`, `0`, `1` und Unicode-Eingabe
+- [x] `STREET_ENCOUNTER_MANIFEST.json` unverändert
+- [x] `StreetEncounterService` unverändert
+- [x] keine Telemetrie, kein Tracking, kein Save-/Journal-Write und keine neue Gameplaymechanik
+- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32677783993` · Presentation `32677784003` · Repository Health `32677784021` · Release Acceptance `32677783987` · Release Package `32677783990`
 - [ ] finalen Status-/Dokumentations-Head 5/5 grün bestätigen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch 0 Commits hinter `main` bestätigen
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in RECOVERY-VARIANTS
+### Bewusst nicht in STREET-BALANCE-AUDIT
 
-- keine Echtzeit- oder Rechnerzeitregeneration
-- kein Cooldown oder globale Recovery-Sperre
-- keine zweite Recovery-/Character-Ressourcenengine
-- keine XP, Traits oder Zufallsfolgen
-- keine Browserlieferung von Energie-/Stresswerten oder Schwellen
-- kein neuer Journaltyp
+- keine Änderung an Begegnungen, Gewichten oder Effekten
+- keine Telemetrie oder Live-Spielerdaten
+- keine automatische Live-Balance
+- keine neue Zufallsquelle
+- keine Systemzeit-Autorität
+- keine neue Runtime-/Presentation-Mechanik
 - kein Produktversionsbump
+
+### Risiken
+
+- Ein später bewusst geändertes Gewichtsprofil muss die Audit-Invarianten absichtlich mitändern; sonst blockiert der Test korrekt den Merge.
+- Die festen Bucket-Fixtures machen eine Änderung der deterministischen Hash-Auswahl sichtbar und verhindern damit versehentliche Replay-Drift.
 
 ### Danach
 
-- [ ] **0.8.8-STREET-BALANCE-AUDIT:** deterministisch prüfen, dass alle vier Street-Ansätze erkennbar unterschiedlich bleiben und kein einzelnes Ereignis versehentlich dominiert; keine Telemetrie oder Gameplayänderung
-- [ ] **0.8.8-ECON-RECOVERY-BALANCE-AUDIT:** Szenariomatrix für beide Recovery-Optionen gegen Dominanz-/Spam-Risiken erweitern, ohne neue Mechanik
+- [ ] **0.8.8-ECON-RECOVERY-BALANCE-AUDIT:** deterministische Energie×Stress-Matrix für beide Recovery-Wege; globale Dominanz, Clamping und Mehrfachfolgen beweisen
 - [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
+- [ ] **0.8.8-STREET-EFFECT-AUDIT:** optional später Erwartungswerte der kleinen Energie-/Stress-/Rufeffekte pro Ansatz prüfen, weiterhin test-only
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Recovery-Werte, Availability und Anwendung bleiben vollständig Runtime-Autorität.
-- Der Browser wählt nur eine katalogisierte `recovery_id` und berechnet keine Fachwerte.
+- Street-Auswahl bleibt vollständig deterministisch aus dem bestehenden bestätigten Vertrag.
+- Der Audit liest ausschließlich Manifest und reine Auswahlfunktionen; er schreibt keinen Spielzustand.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)

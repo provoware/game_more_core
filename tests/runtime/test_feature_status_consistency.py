@@ -33,7 +33,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
 
-    def test_validated_pool_items_and_active_recovery_variant_owner_are_consistent(self):
+    def test_validated_pool_items_and_active_street_audit_owner_are_consistent(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         for pool_id in (
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
@@ -42,26 +42,27 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-FINANCE-003", "POOL-FINANCE-004", "POOL-UX-004", "POOL-UX-005",
             "POOL-MAP-002", "POOL-STORY-001", "POOL-ECON-004", "POOL-ECON-005",
             "POOL-UX-006", "POOL-ECON-006", "POOL-UX-003", "POOL-ECON-007",
-            "POOL-STREET-002",
+            "POOL-STREET-002", "POOL-ECON-008",
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-ECON-008"))
-        self.assertIn("`READY`", _pool_row(pool, "POOL-QA-007"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-007"))
+        self.assertIn("`READY`", _pool_row(pool, "POOL-QA-008"))
 
-    def test_validated_street_pack_and_active_recovery_variants_match_status(self):
+    def test_validated_recovery_variants_and_active_street_audit_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         economy = status["subsystems"]["economy"]
         living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-STREET-PACK")
-        self.assertEqual(status["active_iteration"], "0.8.8-ECON-RECOVERY-VARIANTS")
-        self.assertEqual(status["next_iteration"], "0.8.8-STREET-BALANCE-AUDIT")
-        self.assertEqual(status["current_focus"], "second_confirmed_recovery_tradeoff")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-RECOVERY-VARIANTS")
+        self.assertEqual(status["active_iteration"], "0.8.8-STREET-BALANCE-AUDIT")
+        self.assertEqual(status["next_iteration"], "0.8.8-ECON-RECOVERY-BALANCE-AUDIT")
+        self.assertEqual(status["current_focus"], "deterministic_street_catalog_balance_audit")
         self.assertTrue(economy["recovery_actions_validated"])
         self.assertTrue(economy["recovery_feedback_validated"])
-        self.assertTrue(economy["recovery_variants_in_validation"])
+        self.assertFalse(economy["recovery_variants_in_validation"])
+        self.assertTrue(economy["recovery_variants_validated"])
         self.assertEqual(economy["recovery_action_count"], 2)
         self.assertEqual(
             economy["recovery_variant_ids"],
@@ -76,8 +77,13 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(living_world["street_encounters_replayable"])
         self.assertEqual(living_world["street_encounter_contract_version"], "0.8.8-street-pack")
         self.assertEqual(living_world["street_encounter_catalog_size"], 16)
-        self.assertFalse(living_world["street_pack_in_validation"])
-        self.assertTrue(living_world["street_pack_validated"])
+        self.assertTrue(living_world["street_balance_audit_in_validation"])
+        self.assertFalse(living_world["street_balance_audit_telemetry"])
+        self.assertFalse(living_world["street_balance_audit_gameplay_changes"])
+        self.assertEqual(living_world["street_balance_min_total_variation_distance"], 0.17)
+        self.assertEqual(living_world["street_balance_max_single_weight"], 20)
+        self.assertEqual(living_world["street_balance_bucket_total"], 100)
+        self.assertTrue(living_world["street_balance_all_buckets_enumerated"])
         self.assertEqual(
             living_world["street_approaches"],
             ["balanced", "recovery", "network", "scout"],
@@ -115,7 +121,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-UX-003": "`DONE`",
             "POOL-ECON-007": "`DONE`",
             "POOL-STREET-002": "`DONE`",
-            "POOL-ECON-008": "`PULLED`",
+            "POOL-ECON-008": "`DONE`",
+            "POOL-QA-007": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
