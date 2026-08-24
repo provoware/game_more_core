@@ -22,8 +22,13 @@ class A4MutationObserverGuardTests(unittest.TestCase):
             "Neuer MutationObserver benötigt einen expliziten Loop-Sicherheitsvertrag.",
         )
 
-    def test_control_deck_focus_only_mutates_signal_when_target_changes(self):
+    def test_control_deck_focus_observed_writes_are_idempotent(self):
         source = self._observer_sources()["control_deck_focus.js"]
+        self.assertIn("function setTextIfChanged(element, text)", source)
+        self.assertIn("if (element.textContent !== text) element.textContent = text;", source)
+        self.assertIn("setTextIfChanged(button, active ?", source)
+        self.assertIn("setTextIfChanged(status, `NÄCHSTER SCHRITT:", source)
+        self.assertIn("setTextIfChanged(status, \"NÄCHSTER SCHRITT: Runtime-Gate abwarten\")", source)
         self.assertIn("const currentSignal = document.querySelector(`.${SIGNAL_CLASS}`);", source)
         self.assertIn("if (currentSignal !== enabledEventAction)", source)
         self.assertIn("currentSignal?.classList.remove(SIGNAL_CLASS)", source)
