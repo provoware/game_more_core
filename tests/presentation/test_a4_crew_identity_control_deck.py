@@ -56,6 +56,19 @@ class A4CrewIdentityControlDeckTests(unittest.TestCase):
             with self.subTest(token=token):
                 self.assertIn(token, STYLES)
 
+    def test_avatar_preview_stays_visible_during_profile_editing_without_mobile_overlap(self):
+        for token in (
+            "position: sticky",
+            "top: 5.5rem",
+            'content: "DEINE CREW // VORSCHAU"',
+            "align-self: start",
+            "@media (max-width: 720px)",
+            "position: static",
+            "width: 100%",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, STYLES)
+
     def test_avatar_presentation_remains_local_and_reduced_motion_safe(self):
         self.assertIn("@media (prefers-reduced-motion: reduce)", STYLES)
         for forbidden in ("url(http", "@import", "javascript:", "/api/", "fetch("):

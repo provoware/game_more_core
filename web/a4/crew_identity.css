@@ -9,16 +9,34 @@
 
 .crew-identity-editor .crew-identity-layout {
   display: grid;
-  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
-  gap: 1.2rem;
-  align-items: center;
+  grid-template-columns: minmax(190px, 250px) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
 }
 
 .crew-identity-preview-wrap {
+  position: sticky;
+  top: 5.5rem;
+  align-self: start;
   display: grid;
   gap: .65rem;
   justify-items: center;
   min-width: 0;
+  padding: .85rem;
+  border: 1px solid color-mix(in srgb, var(--crew-accent, #ff5a1f) 42%, var(--line, #3a4149));
+  border-radius: .75rem;
+  background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(0,0,0,.11));
+  box-shadow: inset 0 1px rgba(255,255,255,.04), 0 .55rem 1.35rem rgba(0,0,0,.16);
+}
+
+.crew-identity-preview-wrap::before {
+  content: "DEINE CREW // VORSCHAU";
+  width: 100%;
+  color: var(--muted, #a8b0bd);
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-align: center;
 }
 
 .crew-identity-preview-wrap > small {
@@ -159,6 +177,13 @@
 
   .crew-identity-editor .crew-identity-layout {
     gap: 1rem;
+  }
+
+  .crew-identity-preview-wrap {
+    position: static;
+    top: auto;
+    width: 100%;
+    padding: .75rem;
   }
 
   .crew-identity-preview {

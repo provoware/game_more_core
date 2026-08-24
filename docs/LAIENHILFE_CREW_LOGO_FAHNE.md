@@ -25,6 +25,12 @@ Die Darstellung verwendet feste, gut erkennbare Formen statt einer mit dem Inhal
 
 Die zusätzliche Tiefe, Rahmen und Schatten sind nur Darstellung. Sie verändern keine gespeicherten Crew-Daten.
 
+## Warum bleibt die Crew-Vorschau beim Bearbeiten sichtbar?
+
+Auf größeren Fenstern bleibt der Block **DEINE CREW // VORSCHAU** beim Scrollen innerhalb des Profilbereichs sichtbar. So kannst du Farben, Symbol und Kurzmarke mit den danebenliegenden Einstellungen vergleichen, ohne ständig nach oben und unten zu springen.
+
+Wichtig: Das ist weiterhin ausdrücklich eine **Vorschau**. Änderst du eine Auswahl, kann sie sofort anders aussehen, obwohl sie noch nicht gespeichert ist. Erst **PROFIL SPEICHERN** bestätigt die Änderung. Auf kleinen Fenstern wird die Vorschau absichtlich wieder normal in den Seitenfluss gesetzt, damit sie keine Eingaben überdeckt.
+
 ## Warum kann ich keine beliebige Bilddatei hochladen?
 
 BUNKERFREQUENZ speichert bewusst keine großen Bilddateien oder Base64-Bilder im Spielstand. Stattdessen wird nur ein kleines „Bau-Rezept“ gespeichert. Dadurch bleibt der Spielstand kompakt, Recovery bleibt einfach und eine spätere Synchronisation muss nur wenige sichere Werte an andere Spieler übertragen.
@@ -39,4 +45,4 @@ Alte Saves ohne Crew-Identität bleiben lesbar. Beim Laden erhalten sie eine fes
 
 ## Sinnvolle spätere Verbesserung
 
-**Crew-Identität an mehr passenden Stellen read-only zeigen:** Das bereits bestätigte Logo-/Fahnenrezept könnte später zusätzlich kompakt im Profilkopf, in Ranking-/Timeline-Karten oder im Kartendetail erscheinen. Nutzen: Die eigene Crew wäre schneller wiedererkennbar. Wichtig bleibt, dass dafür ausschließlich dieselbe bestätigte Identity-Projection verwendet wird – kein zweiter Avatar-State und keine neue Bildspeicherung.
+**Bestätigte Crew-Identität außerhalb des Editors kompakt wiederverwenden:** Als nächster eigener Slice kann dieselbe bestätigte Identity-Projection read-only im HUD oder Profilkopf erscheinen. Nutzen: Die Crew bleibt auch außerhalb der Bearbeitung sofort wiedererkennbar. Wichtig: Dafür darf nur der bestehende zentrale Renderer erweitert werden – kein zweiter `/api/state`-Abruf, kein Avatar-Polling und kein zweiter Identity-State.
