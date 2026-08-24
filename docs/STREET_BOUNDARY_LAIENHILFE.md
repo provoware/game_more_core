@@ -10,7 +10,8 @@ Der Grenzwert-Audit prüft deshalb ausdrücklich die kritischen Richtungen:
 - negative Effekte dürfen Energie nicht unter 0 und Stress nicht über 100 drücken,
 - negative Rufeffekte dürfen bei neuen Street-Ergebnissen den kanonischen Ruf-Floor 0 nicht unterschreiten,
 - bereits bestätigte Ergebnisse an **allen fünf Klemmgrenzen** dürfen bei einem Replay nicht noch einmal auf den Charakter angewendet werden: Energie 0, Energie 100, Stress 0, Stress 100 und Ruf 0,
-- zusätzlich werden jetzt **alle 14 realen Street-Begegnungen mit tatsächlichem Effekt** direkt aus dem produktiven Katalog an einer passenden Energie-/Stress-Grenze ausgeführt und danach identisch wiederholt.
+- alle realen Street-Begegnungen mit tatsächlichem Effekt werden direkt aus dem produktiven Katalog an einer passenden Energie-/Stress-Grenze ausgeführt und danach identisch wiederholt,
+- zusätzlich wird die reale Katalogauswahl jetzt über **alle vier Spieleransätze `balanced`, `recovery`, `network` und `scout`** geprüft: Jede unter dem jeweiligen Ansatz tatsächlich auswählbare Begegnung wird deterministisch getroffen, mit ihrem unveränderten kanonischen Effekt angewendet und anschließend identisch replayt.
 
 ## Was bedeutet das im Spiel?
 
@@ -18,7 +19,7 @@ Wenn eine Begegnung theoretisch `+10 Energie` gibt, du aber schon 99 Energie has
 
 Wird genau dieselbe bestätigte Begegnung später wegen Recovery oder Wiederholung erneut gelesen, bleibt der bereits bestätigte Grenzzustand unverändert. Das gilt regressionsgesichert für **Energie-Minimum, Energie-Maximum, Stress-Minimum, Stress-Maximum und Ruf-Floor**. Es entsteht kein zweiter Ressourcen- oder Rufeffekt, kein zweites Journal-Ergebnis und kein zusätzlicher Zustandswechsel. Der Replay liefert nur das bereits bestätigte Ergebnis zurück.
 
-Die neue Katalogprüfung geht einen Schritt weiter: Sie verwendet nicht nur künstliche Testbegegnungen, sondern jede aktuell katalogisierte Begegnung mit realem Effekt. Damit wird gleichzeitig geprüft, dass die echten Katalogdaten weiterhin zur bestehenden Klemm- und Replaylogik passen.
+Die Ansatz-Katalog-Matrix prüft außerdem die Spielerwahl selbst: Ein Ansatz darf nur verändern, **wie wahrscheinlich** eine Begegnung ausgewählt wird. Ist eine Begegnung ausgewählt, bleiben deren Energie-, Stress- und Rufeffekte dieselben. Ein Kataloggewicht von `0` bedeutet dabei bewusst „unter diesem Ansatz nicht auswählbar“ und wird nicht künstlich umgangen.
 
 ## Was wurde bewusst nicht geändert?
 
@@ -27,11 +28,12 @@ Die neue Katalogprüfung geht einen Schritt weiter: Sie verwendet nicht nur kün
 - keine neue Street-Engine,
 - keine neue Speicherlogik,
 - keine Balanceänderung,
-- keine zusätzliche Replay-Architektur.
+- keine zusätzliche Replay-Architektur,
+- keine künstliche Auswahl von Begegnungen mit Ansatzgewicht 0.
 
-Der Audit ist reine Qualitätssicherung: vorhandenes Verhalten wird an kanonischen Klemmgrenzen und mit den realen Street-Effektwerten regressionsgesichert.
+Der Audit ist reine Qualitätssicherung: vorhandenes Verhalten wird an kanonischen Klemmgrenzen, mit den realen Street-Effektwerten und über alle vier bestehenden Spieleransätze regressionsgesichert.
 
 ## Spätere sinnvolle Erweiterungen
 
-- **Ansatz-Katalog-Matrix:** Ein späterer test-only Audit kann die reale Katalogauswahl zusätzlich über alle vier Ansätze `balanced`, `recovery`, `network` und `scout` prüfen. Nutzen: schützt nicht nur Effekt und Replay, sondern auch die Zuordnung der vorhandenen Ansatzgewichte zur kanonischen Begegnungsauswahl.
-- **Größenabhängige Matrix:** Falls der Street-Katalog deutlich wächst, kann dieselbe Prüfung kompakt als generierte Matrix nach Begegnung, Grenzrichtung und Replaystatus ausgewertet werden, ohne Runtime- oder Gameplaylogik zu verändern.
+- **Testgenerierter Boundary-Matrix-Report:** Die vorhandenen Prüfungen können später kompakt als `Ansatz × Begegnung × Grenzwert × Ergebnis × Replay` ausgegeben werden. Nutzen: Balance- und Katalogänderungen werden für Entwickler schneller sichtbar, ohne Runtime- oder Gameplaylogik zu verändern.
+- **Status-Sync nach Safe Merge:** Die kanonischen Statusdateien können nach bestätigten Safe-Merges automatisiert gegen den tatsächlich gemergten Iterationsstand geprüft werden. Nutzen: weniger Statusdrift bei schnellen, kleinen QA-Slices.
