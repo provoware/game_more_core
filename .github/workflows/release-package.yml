@@ -27,6 +27,8 @@ jobs:
           git clean -ffdx
           test -z "$(git status --porcelain --untracked-files=all)"
       - name: Run Failure Containment PRO twice
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
         run: |
           PYTHONPATH=src:. python3 tools/failure_containment_pro.py --output-dir failure-containment-dist
           cat failure-containment-dist/FAILURE_CONTAINMENT_EVIDENCE.json.sha256
