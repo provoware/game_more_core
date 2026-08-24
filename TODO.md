@@ -3,10 +3,11 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe vor aktuellem UX-Slice:** `0.8.8-STREET-SCOUT-BALANCE` · PR #156 · Merge `3f7ee5f24dd27b3cd885b7fa51970ec98e92379c`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Härtung bis PR #155 sowie den validierten Scout-Balance-Slice PR #156
-- **Recovery-Balance-Audit:** PR #129 · Merge `3f51e57e58b2cbd6244f36333fea6cce970043c1` · vollständige Energie×Stress-Matrix sicher gemergt
-- **Aktive Entwicklungsstufe:** `0.8.8-UX-RECEIPT-CLARITY – District-Receipt-Klartext aus vorhandenen Runtime-Signalen`
+- **Status-Sync-Anker:** PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-AVATAR-RANKING-PRESENCE` · PR #173 · Head `39dea64a95a1e82b9161e6d51d03acd98645e901`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #173; Required-, Release- und Safe-Merge-Nachweise sind bestätigt
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT`
+- **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
@@ -64,97 +65,89 @@
 ## 0.8.8-QA-REPLAY-PRECISION
 - [x] neu angewendet, idempotenter Replay und bewusst nicht ausgelöst sind anhand der vorhandenen Receipt-Signale eindeutig regressionsgesichert
 - [x] kein Gameplay-, District-, Seed-, Cadence-, Save- oder Journalvertrag verändert
-- [x] PR #133 · Head `a387ec62358fccac69957ceeb2fd076230daad04` · `/safe-merge` PASS · Merge `f3c7c6657b52171d024e1157ffd879ee252df2b9`
+- [x] PR #133 · Merge `f3c7c6657b52171d024e1157ffd879ee252df2b9`
 
 ## START-QUALITY v2
 - [x] realer lokaler Server, `/api/health`, `/api/state` und Headless-Browser als Release Acceptance
 - [x] ein Klickstartpfad über `START_BUNKERFREQUENZ.sh` und `BUNKERFREQUENZ.desktop`
-- [x] PR #135 · `/safe-merge` PASS · Merge `0f0c04b50e89b25bbf6e54df338f3e27ed63cd0b`
+- [x] PR #135 · Merge `0f0c04b50e89b25bbf6e54df338f3e27ed63cd0b`
 
-## 0.8.8-STREET-EFFECT-AUDIT
+## 0.8.8-STREET-EFFECT-AUDIT / STREET-SCOUT-BALANCE
 - [x] Erwartungswerte aller vier Street-Ansätze direkt aus dem Manifest berechnet
-- [x] Balancebefund dokumentiert: `balanced` dominierte `scout` auf Energie, Stress und Ruf
-- [x] keine Gameplaywerte im Audit verändert
-- [x] PR #136 · `/safe-merge` PASS · Merge `56afe056b05c56033d205fd2fea3e60fc8f7722d`
+- [x] Scout nach dem Audit als eigener Discovery-Tradeoff ausbalanciert; keine vollständige Dominanz durch Balanced mehr
+- [x] PR #136 · Merge `56afe056b05c56033d205fd2fea3e60fc8f7722d`
+- [x] PR #156 · Merge `3f7ee5f24dd27b3cd885b7fa51970ec98e92379c`
 
-## 0.8.8-STREET-SCOUT-BALANCE
-- [x] nur zwei bestehende Scout-Gewichte innerhalb derselben negativen Polarität verschoben
-- [x] Scout-Erwartungswert auf `+1,01 Energie / −0,09 Stress / +0,33 Ruf` gebracht; keine vollständige Dominanz durch Balanced mehr
-- [x] Polaritätsmix, maximal 20 Punkte je Encounter, Manifestversion, Runtime und Replay-Vertrag unverändert
-- [x] PR #156 · Head `d828d97a2ab6bec89e70724480a486d22f82dac7` · `/safe-merge` PASS · Merge `3f7ee5f24dd27b3cd885b7fa51970ec98e92379c`
+## 0.8.8-UX-RECEIPT-CLARITY
+- [x] Klartextzustände `NEU BESTÄTIGT`, `BEREITS BESTÄTIGT`, `NICHT AUSGELÖST` aus vorhandenen Runtime-Signalen
+- [x] keine neue Receipt-, Journal-, Save- oder Gameplayarchitektur
+- [x] PR #157 · Merge `138f329e4f662908329ada40d720989dd479bbc5`
+
+## 0.8.8-STREET-BOUNDARY- / REPLAY-MATRIX
+- [x] Energie 0/100, Stress 0/100 und Ruf-Floor 0 gegen den bestehenden Clamping-Vertrag geprüft
+- [x] identische Replays an allen kanonischen Grenzen bleiben State-/Journal-idempotent
+- [x] reale Encounter-Effekte sowie alle vier Ansätze gegen den echten Katalog regressionsgesichert
+- [x] PRs #158–#163 sicher gemergt
+- [x] Merge-Linie: `27711d0f0e1f5ed04c45033ffbc0c92dda89d231` → `518a4484f92ca361d47ca449d7dbcbc478ab12bc` → `387cb0af02ea8091e1291b91b51f756ea222faf3` → `d0d26b8c79a7282c955f91af870074b0ba03deaa` → `154ea922b1629d59bdb0c38f752bc24ea46cf18d` → `4fc5d7f9aab19ba3e15918d10106560f20183f19`
+
+## 0.8.8-STREET-BOUNDARY-DISTRIBUTION-REPORT
+- [x] alle 100 Runtime-Buckets je Ansatz stimmen exakt mit den deklarierten Gewichten überein; Nullgewichte besitzen 0 Buckets
+- [x] read-only Report, keine zweite Auswahlengine
+- [x] PR #168 · Merge `d00ac7675a5a6a125cd0713789d51386ccd10205`
+
+## 0.8.8-UX-MOTION / AVATAR-PRESENCE / CONFIRMED-EVENT-FX
+- [x] Motion-Depth für Control Deck mit autoritativem Reduced-Motion-Fallback; PR #164 · Merge `64579974e53f32e071bdbaca495a1c1b2028a067`
+- [x] Avatar-Geometrie und Profilpräsenz gehärtet; PR #165 · Merge `23f5769fc20897c45ab38631a16dc64f1060040d`, PR #166 · Merge `567207051f739a804367fcee8b0f0baefb849223`
+- [x] bestätigte Crew-Identität im Live-HUD; PR #167 · Merge `055c71c425db8b9cb9f28c5d8ce46de194c65633`
+- [x] bestätigte Street-/Recovery-/Krisenergebnisse erhalten kurze lokale Presentation-FX; PR #169 · Merge `6259237050454526366cdf83c4ed4b19e6818b3b`
+- [x] HUD-Refresh nach bestätigtem Profil-Save robust; PR #170 · Merge `89cb7484b8cf257bbc668729c567c8cb78776d9d`
+- [x] Avatar-Sticky-Offset bei mittleren Fensterbreiten korrigiert; PR #171 · Merge `6d42e3b6ba180a4f97a9ab89a03265e01adc0980`
+- [x] bestätigte Crew-Marke an eigenen Map-Orten; PR #172 · Merge `d2a1452b4ee6094584d0c63a94a85773c2821890`
+- [x] bestätigte Crew-Marke ausschließlich am eigenen Hall-/Ranking-Eintrag; PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1`
+
+## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
+- [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand bis PR #173 zurückgeführt
+- [x] `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` verwenden denselben maschinenprüfbaren Safe-Merge-Anker
+- [x] read-only Checker erkennt den letzten fachlich relevanten Safe Merge aus der Git-First-Parent-Historie
+- [x] reine Status-Sync-Merges werden übersprungen, damit kein Selbstdrift entsteht
+- [x] eigener `Status Sync`-Workflow prüft Drift auf PRs und nach Pushes auf `main`
+- [x] kein direkter Bot-Push auf `main`; Korrekturen bleiben normale prüfbare PRs
 
 ---
 
-# Aktiv – 0.8.8-UX-RECEIPT-CLARITY
+# Aktiv / nächste Iteration – 0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT
 
 ## Fortschritt
 
-**65 %** – der reine Presentation-Kern ist implementiert. Ein erster Presentation-Lauf hat den vorhandenen MutationObserver-Inventarvertrag korrekt ausgelöst; der neue Observer wurde daraufhin explizit als selbstlöschender, nur auf fehlende flüchtige Meldung reagierender Observer regressionsgesichert. Finale Statussynchronisation und Remote-Abnahme laufen.
+**0 %** – fachlich vorbereitet; Umsetzung beginnt erst nach bestätigtem Safe Merge des Status-Sync-Slices.
 
 ## Ziel
 
-Die bereits vorhandenen District-Receipt-Zustände im Control Deck verständlich anzeigen, ohne ein neues Receipt-Feld, eine zweite Timeline oder neuen Gameplay-/Persistenzzustand einzuführen.
+Profil, HUD, Karte und Ranking auf einheitliche Avatar-Größenverhältnisse, Kontrast, Kurzmarken-Clipping sowie High-Contrast-/Reduced-Motion-Verhalten prüfen und nur konkrete Inkonsistenzen korrigieren.
 
 ## Abnahme
 
-Nach einer bestätigten Abrechnung zeigt der bestehende Settlement-Bereich genau einen der drei Zustände:
-
-- `NEU BESTÄTIGT` – District-Event besitzt bestätigte Event-Identität und der Command ist kein idempotenter Replay.
-- `BEREITS BESTÄTIGT` – dieselbe bestätigte Event-Identität kommt mit vorhandenem `idempotent_replay=true` zurück.
-- `NICHT AUSGELÖST` – die vorhandenen `district_world_event`-Metadaten besitzen absichtlich keine Event-/Instanz-ID; die UI erfindet keinen Journal-Eintrag.
-
-### Planned-Read-Liste gemäß AGENTS.md
-
-**Basisdateien**
-- `AGENTS.md`
-- aktive Stellen aus `TODO.md`, `FEATURE_POOL.md`, `PROJEKTSTATUS.json`
-
-**Arbeitsdateien**
-- `tests/runtime/test_district_replay_receipt_semantics.py`
-- `src/bunkerfrequenz/application/game_client_session.py` ausschließlich zum Lesen der bereits vorhandenen Command-Signale
-- `web/a4/app.js`, `web/a4/index.html`, `web/a4/client_resilience.js`
-- `web/a4/receipt_clarity.js`
-- `tests/presentation/test_a4_receipt_clarity.py`
-- `tests/presentation/test_a4_mutation_observer_guard.py` nach konkretem roten Presentation-Befund
-
-**Evidenz/Logs**
-- nur Run-ID/Status bei grünen Gates
-- vollständiger Log ausschließlich beim konkreten roten Gate
-
-### UX-RECEIPT-CLARITY – Vertrag
-
-- [x] ausschließlich vorhandene `/api/command`-Signale werden gelesen
-- [x] keine neue Domain-/Receipt-Klasse
-- [x] kein neuer API-Command und kein POST aus dem Modul
-- [x] kein Save-/Journal-/Timeline-Write
-- [x] keine Systemzeit oder Zufallslogik für die Receipt-Bedeutung
-- [x] flüchtige, zugängliche Statusmeldung mit `role=status` und `aria-live=polite`
-- [x] Observer reagiert nur auf Entfernung der eigenen flüchtigen Meldung und schreibt danach selbstlöschend genau einmal nach
-- [ ] finaler Head: Runtime Core, Presentation Core, Repository Health vollständig grün
-- [ ] Release Acceptance und Release Package vollständig grün
-- [ ] 0 ungelöste Review-Threads und 0 Commits hinter `main`
-- [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
-
-### Bewusst nicht in UX-RECEIPT-CLARITY
-
-- keine neue Receipt-Persistenz
-- keine eigene Timeline für No-op/Retry
-- keine Veränderung von District-Event-Cadence oder Seed
-- keine Gameplay- oder Balanceänderung
-- keine künstliche Eventinstanz für `NICHT AUSGELÖST`
+- [ ] dieselbe bestätigte Crew-Identität bleibt in Profil, HUD, Karte und eigenem Ranking-Eintrag eindeutig wiedererkennbar
+- [ ] keine abgeschnittene Kurzmarke bei kleinen und mittleren Fenstern
+- [ ] High Contrast besitzt überall sichtbare Avatar-Grenzen
+- [ ] Reduced Motion verändert keine Information oder Identitätszuordnung
+- [ ] keine zweite Avatar-, Ranking- oder Map-Datenquelle
+- [ ] Runtime Core, Presentation Core und Repository Health auf finalem Head grün
+- [ ] relevante Release-Gates grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
+- [ ] Merge ausschließlich über `/safe-merge`
 
 ### Danach
 
-- [ ] **0.8.8-STREET-BOUNDARY-AUDIT / POOL-QA-010:** Street-Effekte an Energie-/Stress-Grenzen gegen tatsächliches Clamping prüfen, test-only
+- [ ] **0.8.8-UX-AVATAR-CONTEXT-E2E:** Browser-Nachweis Profil → HUD → Map → Ranking inklusive kleinem Fenster und bestätigter Profiländerung
 - [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
-- [ ] **0.8.8-UX-RECEIPT-REASON-COPY:** nur falls später ein bestätigter No-event-Grund bereits im A4-Command-Vertrag exponiert wird; keine neue Autorität dafür erfinden
+- [ ] **STATUS-SYNC-PR-AUTOPREP:** nur falls sich der read-only Driftcheck bewährt; bei Drift höchstens vorbereiteten PR erzeugen, niemals direkt `main` beschreiben
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Receipt-Semantik bleibt Runtime-Autorität; der Browser benennt nur vorhandene Signale.
-- Der neue Zustand ist flüchtige Presentation und überlebt einen Reload bewusst nicht als eigenes UI-Receipt.
+- Git-Historie liefert nur den bestätigten Merge-Anker; die drei vorhandenen Statusdateien bleiben die kanonischen Projektinformationen.
+- Status-Sync verändert keine Runtime-, Gameplay-, Save-, Journal- oder Presentation-Autorität.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
