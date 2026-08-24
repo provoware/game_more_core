@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "policy_id": "bunkerfrequenz.release-autopilot-pro.v1",
+  "product": "BUNKERFREQUENZ",
+  "release_states": [
+    "RELEASE_READY",
+    "QUARANTINE",
+    "RELEASE_BLOCKED",
+    "RELEASE_INVALID"
+  ],
+  "candidate_requirements": [
+    "source_tree_frozen",
+    "reproducible_build",
+    "file_manifest_verified",
+    "clean_room_start",
+    "clean_room_api_state",
+    "byte_exact_promotion"
+  ],
+  "public_promotion_required_subgates": [
+    "desktop_browser_e2e_pro",
+    "failure_containment_pro"
+  ],
+  "promotion": {
+    "rebuild_after_validation": false,
+    "copy_validated_candidate_only": true,
+    "sha256_must_match_candidate": true,
+    "quarantine_blocks_user_zip": true,
+    "blocked_blocks_user_zip": true,
+    "invalid_blocks_user_zip": true
+  },
+  "anti_flake": {
+    "retry_can_diagnose": true,
+    "retry_can_turn_failure_green": false,
+    "inconsistent_runs_state": "QUARANTINE"
+  },
+  "evidence": {
+    "root_file": "RELEASE_EVIDENCE.json",
+    "root_sha256_file": "RELEASE_EVIDENCE.json.sha256",
+    "required_fields": [
+      "policy_sha256",
+      "source_commit",
+      "source_tree",
+      "candidate_sha256",
+      "candidate_size_bytes",
+      "file_manifest_sha256",
+      "candidate_checks",
+      "subgates",
+      "release_state"
+    ]
+  },
+  "automatic_repair_boundaries": {
+    "system_package_install": false,
+    "sudo": false,
+    "user_data_delete": false,
+    "gameplay_state_mutation": false
+  }
+}
