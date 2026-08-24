@@ -11,8 +11,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -58,6 +60,13 @@ def find_browser() -> str | None:
     return None
 
 
+def _kill_browser_group(process: subprocess.Popen[str]) -> None:
+    try:
+        os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+
+
 def browser_dom(address: str, *, require_browser: bool, timeout: float = 15.0) -> str | None:
     browser = find_browser()
     if browser is None:
@@ -67,44 +76,54 @@ def browser_dom(address: str, *, require_browser: bool, timeout: float = 15.0) -
             )
         return None
 
-    with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-browser-") as profile:
-        command = [
-            browser,
-            "--headless=new",
-            "--disable-gpu",
-            "--disable-dev-shm-usage",
-            "--no-sandbox",
-            f"--user-data-dir={profile}",
-            "--virtual-time-budget=4000",
-            "--dump-dom",
-            address,
-        ]
+    profile = tempfile.mkdtemp(prefix="bunkerfrequenz-browser-")
+    command = [
+        browser,
+        "--headless=new",
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--no-sandbox",
+        "--no-first-run",
+        "--disable-background-networking",
+        f"--user-data-dir={profile}",
+        "--virtual-time-budget=4000",
+        "--dump-dom",
+        address,
+    ]
+    process = subprocess.Popen(
+        command,
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,
+    )
+    try:
         try:
-            completed = subprocess.run(
-                command,
-                cwd=ROOT,
-                capture_output=True,
-                text=True,
-                timeout=timeout,
-            )
+            stdout, stderr = process.communicate(timeout=timeout)
         except subprocess.TimeoutExpired as exc:
+            _kill_browser_group(process)
+            process.communicate(timeout=3)
             raise RuntimeError(
                 "Browser reagierte nicht rechtzeitig; möglicher JS-/MutationObserver-Freeze"
             ) from exc
+    finally:
+        _kill_browser_group(process)
+        time.sleep(0.1)
+        shutil.rmtree(profile, ignore_errors=True)
 
-    if completed.returncode != 0:
-        detail = (completed.stderr or completed.stdout).strip().splitlines()[-5:]
+    if process.returncode != 0:
+        detail = (stderr or stdout).strip().splitlines()[-5:]
         raise RuntimeError(
             "Headless-Browser scheiterte: " + " | ".join(detail)
         )
-    dom = completed.stdout
-    if "● BEREIT" not in dom:
+    if "● BEREIT" not in stdout:
         raise RuntimeError(
             "UI wurde im echten Browser nicht reaktionsfähig: Verbindungsstatus erreichte BEREIT nicht"
         )
-    if "BUNKERFREQUENZ – Control Deck" not in dom:
+    if "BUNKERFREQUENZ – Control Deck" not in stdout:
         raise RuntimeError("Control-Deck-DOM fehlt im Browserergebnis")
-    return dom
+    return stdout
 
 
 def _wait_for_address(process: subprocess.Popen[str], timeout: float = 8.0) -> str:
