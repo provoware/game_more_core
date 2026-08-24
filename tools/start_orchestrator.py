@@ -599,18 +599,20 @@ def run(args: argparse.Namespace) -> int:
                     attempts=2,
                 )
                 _probe_startup_api(address, reporter)
+                ui_verified, browser_address = _verify_browser_ui(address, reporter)
             except Exception as exc:
                 return _fail(
                     reporter,
                     92,
                     "NACHVALIDIERUNG",
-                    f"Automatische Server-Recovery scheiterte: {exc}",
+                    f"Automatische Server-/UI-Recovery scheiterte: {exc}",
                     ("START_DIAGNOSE.txt prüfen.",),
                 )
-            browser_address = _cache_busted_address(address)
             if not args.no_browser:
                 browser_started, browser_name = _launch_browser_with_fallback(browser_address, reporter)
-            reporter.resolution(f"Server-/API-Recovery erfolgreich; neue lokale Adresse: {address}")
+            reporter.resolution(
+                f"Server-/API-Recovery erfolgreich; neue Adresse wurde erneut auf UI-Reaktionsfähigkeit geprüft: {address}"
+            )
 
         reporter.step(
             95,
