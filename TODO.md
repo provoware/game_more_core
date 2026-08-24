@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe vor aktuellem QA-Slice:** `0.8.8-QA-REPLAY-PRECISION` · PR #133 · Merge `f3c7c6657b52171d024e1157ffd879ee252df2b9`
-- **Start-/Release-Qualität:** PR #135 · Merge `0f0c04b50e89b25bbf6e54df338f3e27ed63cd0b` · realer Browser-Acceptance-Gate, Klickstartpfad und Main-Provenienz sicher gemergt
+- **Zuletzt remote validierte Feature-Stufe vor aktuellem Gameplay-Slice:** `0.8.8-STREET-EFFECT-AUDIT` · PR #136 · Merge `56afe056b05c56033d205fd2fea3e60fc8f7722d`
+- **Start-/Release-Qualität:** `main` enthält zusätzlich die sicher gemergte Härtung bis PR #155 · Merge `8e9606a888f350305e1cd8ee8a8b94ef7ab2990e`
 - **Recovery-Balance-Audit:** PR #129 · Merge `3f51e57e58b2cbd6244f36333fea6cce970043c1` · vollständige Energie×Stress-Matrix sicher gemergt
-- **Aktive Entwicklungsstufe:** `0.8.8-STREET-EFFECT-AUDIT – Erwartungswerte und Dominanzbeziehungen`
+- **Aktive Entwicklungsstufe:** `0.8.8-STREET-SCOUT-BALANCE – eigener Scout-Tradeoff ohne Doppelarchitektur`
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
@@ -71,21 +71,27 @@
 - [x] ein Klickstartpfad über `START_BUNKERFREQUENZ.sh` und `BUNKERFREQUENZ.desktop`
 - [x] PR #135 · `/safe-merge` PASS · Merge `0f0c04b50e89b25bbf6e54df338f3e27ed63cd0b`
 
+## 0.8.8-STREET-EFFECT-AUDIT
+- [x] Erwartungswerte aller vier Street-Ansätze direkt aus dem Manifest berechnet
+- [x] Balancebefund dokumentiert: `balanced` dominierte `scout` auf Energie, Stress und Ruf
+- [x] keine Gameplaywerte im Audit verändert
+- [x] PR #136 · `/safe-merge` PASS · Merge `56afe056b05c56033d205fd2fea3e60fc8f7722d`
+
 ---
 
-# Aktiv – 0.8.8-STREET-EFFECT-AUDIT
+# Aktiv – 0.8.8-STREET-SCOUT-BALANCE
 
 ## Fortschritt
 
-**60 %** – Erwartungswert-Audit und Laienhilfe implementiert; erster Remote-Lauf hat einen echten Balancebefund sichtbar gemacht und die Regression wurde darauf korrigiert. Finale Remote-Gates, Merge-Hygiene und Safe Merge stehen noch aus.
+**55 %** – kleinster Manifest-Patch, direkte Effektregression und Laienhilfe implementiert; Remote-Gates, Merge-Hygiene und Safe Merge stehen noch aus.
 
 ## Ziel
 
-Die vier vorhandenen Street-Ansätze anhand ihrer katalogisierten Energie-, Stress- und Rufwirkungen deterministisch vergleichen, ohne Telemetrie oder Gameplaywerte zu verändern.
+`scout` eine klare eigene Auswahlstärke geben und die vollständige Dominanz durch `balanced` beseitigen, ohne neue Encounter-, Zufalls-, Effekt- oder Persistenzlogik einzuführen.
 
 ## Abnahme
 
-Ein gezielter Runtime-Test berechnet die gewichteten Effektvektoren direkt aus `STREET_ENCOUNTER_MANIFEST.json`, fixiert die aktuellen Erwartungswerte und macht vollständige Dominanzbeziehungen explizit.
+Scout behält den stärksten Discovery-Fokus, erreicht im Erwartungswert `+1,16 Energie / −0,29 Stress / +0,33 Ruf`, wird von keinem anderen Ansatz vollständig dominiert und verändert ausschließlich bestehende Auswahlgewichte.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
@@ -94,42 +100,42 @@ Ein gezielter Runtime-Test berechnet die gewichteten Effektvektoren direkt aus `
 - aktive Stellen aus `TODO.md`, `FEATURE_POOL.md`, `PROJEKTSTATUS.json`
 
 **Arbeitsdateien**
-- `manifests/STREET_ENCOUNTER_MANIFEST.json` – nur lesen
-- `tests/runtime/test_street_balance_audit.py` – vorhandenen mathematischen Vertrag wiederverwenden
-- `tests/runtime/test_street_effect_audit.py` – neuer Effekt-Audit
-- `docs/LAIENHILFE_STREET_EFFECT_AUDIT.md` – Laienerklärung
+- `manifests/STREET_ENCOUNTER_MANIFEST.json`
+- `tests/runtime/test_street_effect_audit.py`
+- `docs/LAIENHILFE_STREET_SCOUT_BALANCE.md`
+- `CHANGELOG.md` nur für die fachliche Änderungsnotiz
 
 **Evidenz/Logs**
 - nur Run-ID/Status bei grünen Gates
 - vollständiger Log ausschließlich beim konkreten roten Gate
 
-### STREET-EFFECT-AUDIT – Befund und Invarianten
+### STREET-SCOUT-BALANCE – Vertrag
 
-- [x] `balanced`: +1,00 Energie / −0,49 Stress / +0,35 Ruf pro gewichteter Auswahl
-- [x] `recovery`: +1,23 / −0,49 / +0,23
-- [x] `network`: +0,53 / −0,59 / +0,65
-- [x] `scout`: +0,91 / −0,14 / +0,33
-- [x] `recovery` besitzt den höchsten Energie-Erwartungswert
-- [x] `network` besitzt stärkste Stresssenkung und höchsten Ruf-Erwartungswert
-- [x] **Balancebefund:** `balanced` dominiert `scout` derzeit auf allen drei unbedingten Erwartungswerten
-- [x] keine Gewichte, Effekte, Services, Saves, Journalarten oder UI verändert
+- [x] ausschließlich Scout-Gewichte verschoben; Summe bleibt 100
+- [x] `street.shortcut` für Scout 20 → 25
+- [x] `street.sudden_rain` für Scout 5 → 0
+- [x] Discovery-Gewicht `shortcut + useful_find + cable_tip` steigt für Scout auf 45 und bleibt höher als bei allen anderen Ansätzen
+- [x] Scout-Erwartungswert: +1,16 Energie / −0,29 Stress / +0,33 Ruf
+- [x] `balanced` dominiert `scout` nicht mehr; gleichzeitig dominiert Scout keinen anderen Ansatz vollständig
+- [x] Recovery bleibt Energie-Spezialist; Network bleibt Stress-/Ruf-Spezialist
+- [x] keine Encounter-Effekte, Runtime-Services, Saves, Journalarten oder UI verändert
 - [ ] Remote-Gates auf exakt dem finalen Head vollständig grün
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch 0 Commits hinter `main` bestätigen
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in STREET-EFFECT-AUDIT
+### Bewusst nicht in STREET-SCOUT-BALANCE
 
-- keine stille Scout-Neubalancierung im QA-Slice
+- keine neue Encounter-Art
 - keine Telemetrie
-- keine neue Zufalls- oder Effektengine
+- keine zweite Zufalls- oder Effektengine
 - keine Produktversionsänderung
-- keine Änderung des Clamping-/Ressourcenvertrags
+- keine UI-Sonderregel für Scout
 
 ### Danach
 
-- [ ] **0.8.8-STREET-SCOUT-BALANCE:** gezielt prüfen, ob `scout` eine eigene mathematische Stärke bekommen soll; kleinster bestehender Manifest-Patch, Balancevertrag zuerst
 - [ ] **0.8.8-UX-RECEIPT-CLARITY:** bestätigte Receipt-Zustände in klarer UI-Sprache anzeigen, nur aus Runtime-Signalen
+- [ ] **0.8.8-STREET-BOUNDARY-AUDIT:** Street-Effekte an Character-Grenzzuständen gegen tatsächliches Clamping prüfen, test-only
 - [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
 
 ---
@@ -137,7 +143,7 @@ Ein gezielter Runtime-Test berechnet die gewichteten Effektvektoren direkt aus `
 ## Architektur- und Sicherheitsgrenzen
 
 - Street-Auswahl, Effekte und Zufall bleiben vollständig Runtime-/Manifest-Autorität.
-- Der Audit schreibt selbst keinen Spielzustand und führt keine zweite Balance-Engine ein.
+- Der Balance-Patch ändert nur katalogisierte Auswahlgewichte und führt keine zweite Engine ein.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
