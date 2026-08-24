@@ -56,6 +56,7 @@ def _is_status_sync_path(path: str) -> bool:
         TODO_PATH,
         FEATURE_POOL_PATH,
         PROJECT_STATUS_PATH,
+        "README.md",
         "tools/status_sync.py",
         "tests/quality/test_status_sync.py",
         ".github/workflows/status-sync.yml",
@@ -77,8 +78,15 @@ def _changed_paths(root: Path, merge_commit: str) -> tuple[str, ...]:
 
 
 def _is_status_only_safe_merge(root: Path, merge_commit: str) -> bool:
-    paths = _changed_paths(root, merge_commit)
-    return bool(paths) and all(_is_status_sync_path(path) for path in paths)
+    paths = set(_changed_paths(root, merge_commit))
+    # README darf wegen des bestehenden Repository-Health-Informationsvertrags
+    # Teil eines Status-Syncs sein. Ein beliebiger README-/Doku-Merge darf aber
+    # niemals als Status-Sync verschwinden: alle drei kanonischen Statusdateien
+    # müssen gemeinsam Bestandteil desselben Merges sein.
+    return (
+        set(CANONICAL_STATUS_PATHS).issubset(paths)
+        and all(_is_status_sync_path(path) for path in paths)
+    )
 
 
 def latest_relevant_safe_merge(root: Path = ROOT) -> SafeMergeAnchor:
