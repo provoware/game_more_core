@@ -76,6 +76,15 @@
     document.head.append(script);
   }
 
+  function ensureMotionDepthStylesheet() {
+    if (document.querySelector('link[data-motion-depth="true"]')) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = assetUrl("motion_depth.css");
+    link.dataset.motionDepth = "true";
+    document.head.append(link);
+  }
+
   function ensureFocusModule() {
     appendModule("control_deck_focus.js", "control-deck-focus");
   }
@@ -103,6 +112,7 @@
   function init() {
     load();
     apply();
+    ensureMotionDepthStylesheet();
     ensureFocusModule();
     ensureDistrictBiographyModule();
     ensureFinanceStatementExportModule();
