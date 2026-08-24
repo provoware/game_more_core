@@ -33,7 +33,7 @@ class A4MapProContractTests(unittest.TestCase):
 
     def test_existing_a4_render_cycle_is_the_only_map_data_bridge(self):
         self.assertIn("window.BunkerMapPro?.render(p.berlin_ops_map);", APP_JS)
-        self.assertLess(INDEX.index('src="map_pro.js"'), INDEX.index('src="app.js"'))
+        self.assertLess(INDEX.index('src="map_pro.js?v='), INDEX.index('src="app.js?v='))
         self.assertIn('id="map-pro-panel"', INDEX)
         self.assertIn('id="berlin-map-canvas"', INDEX)
         self.assertIn('id="map-detail"', INDEX)
