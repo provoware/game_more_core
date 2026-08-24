@@ -31,6 +31,12 @@ Auf größeren Fenstern bleibt der Block **DEINE CREW // VORSCHAU** beim Scrolle
 
 Wichtig: Das ist weiterhin ausdrücklich eine **Vorschau**. Änderst du eine Auswahl, kann sie sofort anders aussehen, obwohl sie noch nicht gespeichert ist. Erst **PROFIL SPEICHERN** bestätigt die Änderung. Auf kleinen Fenstern wird die Vorschau absichtlich wieder normal in den Seitenfluss gesetzt, damit sie keine Eingaben überdeckt.
 
+## Was zeigt das kleine Crew-Zeichen im Live-HUD?
+
+Im linken Bereich des Live-HUD erscheint auf größeren Fenstern zusätzlich eine kompakte Crew-Marke. Diese zeigt **nur den zuletzt bestätigten Stand**. Wenn du im Profil Farben, Symbol oder Kurzmarke ausprobierst, verändert sich die HUD-Marke deshalb noch nicht. Erst nach einem erfolgreich bestätigten **PROFIL SPEICHERN** übernimmt das HUD den neuen Stand.
+
+Das HUD startet dafür keinen zweiten Datenabruf und führt keinen eigenen Avatar-Spielstand. Es übernimmt die bestätigte Darstellung nur dann, wenn der bestehende zentrale Profil-Renderer die Crew-Identität neu aufgebaut hat. Auf schmaleren Fenstern wird die Marke ausgeblendet, damit die wichtigen Live-Werte genug Platz behalten.
+
 ## Warum kann ich keine beliebige Bilddatei hochladen?
 
 BUNKERFREQUENZ speichert bewusst keine großen Bilddateien oder Base64-Bilder im Spielstand. Stattdessen wird nur ein kleines „Bau-Rezept“ gespeichert. Dadurch bleibt der Spielstand kompakt, Recovery bleibt einfach und eine spätere Synchronisation muss nur wenige sichere Werte an andere Spieler übertragen.
@@ -45,4 +51,4 @@ Alte Saves ohne Crew-Identität bleiben lesbar. Beim Laden erhalten sie eine fes
 
 ## Sinnvolle spätere Verbesserung
 
-**Bestätigte Crew-Identität außerhalb des Editors kompakt wiederverwenden:** Als nächster eigener Slice kann dieselbe bestätigte Identity-Projection read-only im HUD oder Profilkopf erscheinen. Nutzen: Die Crew bleibt auch außerhalb der Bearbeitung sofort wiedererkennbar. Wichtig: Dafür darf nur der bestehende zentrale Renderer erweitert werden – kein zweiter `/api/state`-Abruf, kein Avatar-Polling und kein zweiter Identity-State.
+**Crew-Zeichen in der Hall of Tribute wiederverwenden:** Eine spätere Presentation-Iteration kann die bestätigte lokale Crew-Marke read-only neben dem eigenen Ranking-Eintrag zeigen. Nutzen: Ranglisten werden persönlicher und die eigene Position ist schneller erkennbar. Die Identität darf dabei weiterhin nur aus bereits bestätigten Ranking-/Character-Projections stammen; keine zweite Avatar- oder Netzwerkautorität.

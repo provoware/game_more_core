@@ -109,6 +109,61 @@
     appendModule("map_usability.js", "map-usability");
   }
 
+  function copyConfirmedCrewPreview() {
+    const source = document.getElementById("crew-identity-preview");
+    const host = document.querySelector(".hud-crew-identity");
+    if (!(source instanceof HTMLElement) || !(host instanceof HTMLElement)) return;
+    const symbol = source.querySelector(".crew-identity-symbol")?.textContent || "★";
+    const mark = source.querySelector(".crew-identity-mark")?.textContent || "";
+    const preview = host.querySelector(".hud-crew-preview");
+    const symbolNode = host.querySelector(".hud-crew-symbol");
+    const markNode = host.querySelector(".hud-crew-mark");
+    if (!(preview instanceof HTMLElement) || !(symbolNode instanceof HTMLElement) || !(markNode instanceof HTMLElement)) return;
+    preview.dataset.mode = source.dataset.mode || "flag";
+    preview.style.background = source.style.background;
+    preview.style.setProperty("--crew-accent", source.style.getPropertyValue("--crew-accent") || "#ff5a1f");
+    symbolNode.textContent = symbol;
+    markNode.textContent = mark;
+    markNode.hidden = !mark;
+    const sourceLabel = source.getAttribute("aria-label") || "Bestätigte Crew-Identität";
+    host.setAttribute("aria-label", `Bestätigt: ${sourceLabel}`);
+    host.hidden = false;
+  }
+
+  function observeConfirmedCrewIdentity() {
+    const hudBrand = document.querySelector(".hud-brand");
+    const profilePanel = document.getElementById("profile-panel");
+    if (!(hudBrand instanceof HTMLElement) || !(profilePanel instanceof HTMLElement)) return;
+
+    let host = hudBrand.querySelector(".hud-crew-identity");
+    if (!host) {
+      host = document.createElement("span");
+      host.className = "hud-crew-identity";
+      host.hidden = true;
+      host.setAttribute("role", "img");
+      host.innerHTML = '<span class="hud-crew-preview"><span class="hud-crew-symbol">★</span><span class="hud-crew-mark" hidden></span></span>';
+      hudBrand.append(host);
+    }
+
+    let editorObserver = null;
+    let observedEditor = null;
+    const attachEditor = () => {
+      const editor = document.getElementById("crew-identity-editor");
+      if (!(editor instanceof HTMLElement)) return;
+      if (editor !== observedEditor) {
+        editorObserver?.disconnect();
+        observedEditor = editor;
+        editorObserver = new MutationObserver(() => copyConfirmedCrewPreview());
+        editorObserver.observe(editor, { childList: true });
+      }
+      copyConfirmedCrewPreview();
+    };
+
+    const panelObserver = new MutationObserver(attachEditor);
+    panelObserver.observe(profilePanel, { childList: true });
+    attachEditor();
+  }
+
   function init() {
     load();
     apply();
@@ -119,6 +174,7 @@
     ensureSceneJobPayoutPreviewModule();
     ensureRecoveryActionsModule();
     ensureMapUsabilityModule();
+    observeConfirmedCrewIdentity();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
     }

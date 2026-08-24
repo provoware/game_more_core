@@ -5,6 +5,7 @@ import unittest
 ROOT = Path(__file__).parents[2]
 APP = (ROOT / "web" / "a4" / "app.js").read_text(encoding="utf-8")
 STYLES = (ROOT / "web" / "a4" / "crew_identity.css").read_text(encoding="utf-8")
+UI_PREFS = (ROOT / "web" / "a4" / "ui_prefs.js").read_text(encoding="utf-8")
 
 
 class A4CrewIdentityControlDeckTests(unittest.TestCase):
@@ -65,6 +66,33 @@ class A4CrewIdentityControlDeckTests(unittest.TestCase):
             "@media (max-width: 720px)",
             "position: static",
             "width: 100%",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, STYLES)
+
+    def test_confirmed_identity_is_copied_to_hud_only_at_renderer_boundaries(self):
+        for token in (
+            "function copyConfirmedCrewPreview()",
+            'document.getElementById("crew-identity-preview")',
+            'editorObserver.observe(editor, { childList: true })',
+            'panelObserver.observe(profilePanel, { childList: true })',
+            'host.setAttribute("aria-label", `Bestätigt:',
+            "observeConfirmedCrewIdentity();",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, UI_PREFS)
+        self.assertNotIn("/api/state", UI_PREFS)
+        self.assertNotIn("fetch(", UI_PREFS)
+        self.assertNotIn("input", UI_PREFS[UI_PREFS.index("function observeConfirmedCrewIdentity"):])
+
+    def test_confirmed_hud_avatar_is_compact_and_does_not_break_responsive_hud(self):
+        for token in (
+            ".hud-crew-identity",
+            "width: 2.75rem",
+            ".hud-crew-preview[data-mode=\"logo\"]",
+            ".hud-crew-mark",
+            "@media (max-width: 1100px)",
+            "display: none",
         ):
             with self.subTest(token=token):
                 self.assertIn(token, STYLES)
