@@ -19,6 +19,7 @@ from urllib.request import urlopen
 ROOT = Path(__file__).resolve().parents[1]
 LAUNCHER = ROOT / "tools" / "start_a4_game_client.py"
 BROWSER_NAMES = ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser")
+MIN_BROWSER_WALLCLOCK_TIMEOUT = 30.0
 
 
 def _json_get(base: str, path: str, timeout: float = 3.0) -> dict:
@@ -49,7 +50,7 @@ def find_browser() -> str | None:
     return None
 
 
-def browser_dom(address: str, *, require_browser: bool, timeout: float = 30.0) -> str | None:
+def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BROWSER_WALLCLOCK_TIMEOUT) -> str | None:
     browser = find_browser()
     if browser is None:
         if require_browser:
@@ -76,7 +77,7 @@ def browser_dom(address: str, *, require_browser: bool, timeout: float = 30.0) -
             cwd=ROOT,
             capture_output=True,
             text=True,
-            timeout=timeout,
+            timeout=max(timeout, MIN_BROWSER_WALLCLOCK_TIMEOUT),
         )
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError(
