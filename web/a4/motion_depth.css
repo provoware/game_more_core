@@ -1,0 +1,37 @@
+/* Control Deck Motion Depth – reine Presentation, keine Gameplay-Autorität. */
+button:not(.map-marker) { transition: transform .16s ease, border-color .16s ease, background-color .16s ease, box-shadow .16s ease; }
+button:not(.map-marker):hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 .45rem 1rem #0005; }
+button:not(.map-marker):active:not(:disabled) { transform: translateY(0); }
+button.primary { box-shadow: 0 0 0 1px #d7ff2f22, 0 .45rem 1.2rem #d7ff2f12; }
+
+.brand-lockup::before { box-shadow: 0 0 1.2rem #62dfff44; }
+h1 { text-shadow: 0 .12rem 1.1rem #000a; }
+.badge { box-shadow: inset 0 0 1rem #d7ff2f08; }
+.badge.secondary { box-shadow: inset 0 0 1rem #62dfff08; }
+
+.quick-nav a { transition: color .16s ease, border-color .16s ease, background-color .16s ease, transform .16s ease; }
+.quick-nav a:hover { transform: translateY(-1px); }
+
+.panel { box-shadow: inset 0 1px #ffffff06, 0 .7rem 2rem #0002; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.panel::before { transition: width .2s ease, box-shadow .2s ease; }
+.panel:hover { border-color: #465361; transform: translateY(-2px); box-shadow: inset 0 1px #ffffff08, 0 1rem 2.4rem #0005; }
+.panel:hover::before { width: 4.4rem; box-shadow: 0 0 .8rem #62dfff33; }
+.feature-panel::before { box-shadow: 0 0 1rem #62dfff22; }
+
+.equipment-row { transition: border-color .16s ease, background-color .16s ease, transform .16s ease; }
+.equipment-row:hover { border-color: #455465; background: #121922; transform: translateX(2px); }
+
+.street-approach-card::after { transition: background-color .16s ease, box-shadow .16s ease; }
+.street-approach-card.is-selected { box-shadow: inset 0 0 0 1px #d7ff2f45, 0 .55rem 1.4rem #d7ff2f10; }
+.street-approach-card.is-selected::after { box-shadow: 0 0 .8rem #d7ff2f55; }
+
+.incident-choice { transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
+.incident-choice:hover { transform: translateY(-2px); border-color: #75564e; box-shadow: 0 .7rem 1.4rem #0004; }
+
+.map-marker { transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease; }
+.map-marker:hover, .map-marker:focus-visible { z-index: 8; transform: translate(-50%, -50%) scale(1.08); box-shadow: 0 .3rem .9rem #000d, 0 0 1rem #62dfff22; }
+.map-marker.hall:hover, .map-marker.hall:focus-visible { transform: translate(-50%, -50%) rotate(45deg) scale(1.08); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
