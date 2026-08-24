@@ -52,8 +52,7 @@
     const copy = document.createElement("span");
     copy.textContent = "DEINE CREW";
     identity.append(badge, copy);
-    const title = detail.querySelector(".map-detail-title");
-    title?.after(identity);
+    detail.querySelector(".map-detail-title")?.after(identity);
   }
 
   function sync() {
@@ -72,10 +71,4 @@
   const canvas = document.getElementById("berlin-map-canvas");
   canvas?.addEventListener("click", () => queueMicrotask(syncOwnedDetail));
   canvas?.addEventListener("focusin", () => queueMicrotask(syncOwnedDetail));
-
-  const hud = document.querySelector(".hud-crew-identity");
-  if (hud instanceof HTMLElement) {
-    const observer = new MutationObserver(sync);
-    observer.observe(hud, { attributes: true, childList: true, subtree: true });
-  }
 })();
