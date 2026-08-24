@@ -2,26 +2,26 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-ECON-RECOVERY-BALANCE-AUDIT",
-  "status": "0_8_8_street_balance_audit_remote_validated_recovery_balance_audit_in_validation",
-  "current_focus": "deterministic_recovery_energy_stress_matrix_audit",
-  "last_validated_feature_iteration": "0.8.8-STREET-BALANCE-AUDIT",
+  "active_iteration": "0.8.8-QA-REPLAY-PRECISION",
+  "status": "0_8_8_map_usability_remote_validated_replay_precision_in_validation",
+  "current_focus": "district_event_receipt_semantics_regression",
+  "last_validated_feature_iteration": "0.8.8-MAP-USABILITY",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #128 / head 9f823e72f2e11a6891a96272d8faaf1ba53ee08b / merge bef5e2ad78923c4ce36c116c66f2755abe442d3d",
+  "validation_reference": "PR #130 / head 39752dcde10d0fb71c4318a396567ba714eccac6 / merge 47eb5b5288221fb0c6cd2ebfa3473b2b5ba85a07",
   "remote_validation": {
-    "status": "success_for_0.8.8_street_balance_audit",
-    "pull_request": 128,
-    "validated_head": "9f823e72f2e11a6891a96272d8faaf1ba53ee08b",
-    "runtime_core_workflow_run": 32677951158,
-    "presentation_core_workflow_run": 32677951294,
-    "repository_health_workflow_run": 32677951209,
-    "release_acceptance_workflow_run": 32677951288,
-    "release_package_workflow_run": 32677951160,
+    "status": "success_for_0.8.8_map_usability",
+    "pull_request": 130,
+    "validated_head": "39752dcde10d0fb71c4318a396567ba714eccac6",
+    "runtime_core_workflow_run": 32678934073,
+    "presentation_core_workflow_run": 32678934128,
+    "repository_health_workflow_run": 32678934101,
+    "release_acceptance_workflow_run": 32678934134,
+    "release_package_workflow_run": 32678934086,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "bef5e2ad78923c4ce36c116c66f2755abe442d3d"
+    "merged_commit": "47eb5b5288221fb0c6cd2ebfa3473b2b5ba85a07"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -34,7 +34,7 @@
   },
   "validated_feature_history": [
     {"iteration": "0.8.5-A", "pull_request": 75, "merged_commit": "b41d8f416679515307f2a580fb66b0569057836a", "feature": "competitive_displacement_ranking"},
-    {"iteration": "0.8.5-B", "pull_request": 76, "merged_commit": "5a9eed536d48f30cdd1f4569e9e1b1724e5ced80", "feature": "a4_profile_personalization"},
+    {"iteration": "0.8.5-B", "pull_request": 76, "merged_commit": "5c597479afafe64f63aa4ce015cea5365b2320bf", "feature": "a4_profile_personalization"},
     {"iteration": "0.8.5-C", "pull_request": 77, "merged_commit": "38de9f42c2908d63945db7bf25277b2f940ede6e", "feature": "street_encounters"},
     {"iteration": "0.8.5-D", "pull_request": 79, "merged_commit": "98c8b84715cc308dd1bc9fd92b7c7e56a35cc861", "feature": "living_districts"},
     {"iteration": "0.8.5-E", "pull_request": 80, "merged_commit": "d383a3f364c6ee8cd954041f1d324e0ace0cb357", "feature": "hall_of_tribute"},
@@ -72,13 +72,15 @@
     {"iteration": "0.8.8-ECON-RECOVERY-FEEDBACK", "pull_request": 125, "merged_commit": "c8e8cba3dab103c90937f26e90a02a13139dd0f5", "feature": "confirmed_recovery_before_after_feedback"},
     {"iteration": "0.8.8-STREET-PACK", "pull_request": 126, "merged_commit": "00c14d57bf642e688a65c0a9e99d39b52857eb0b", "feature": "expanded_deterministic_street_encounter_catalog"},
     {"iteration": "0.8.8-ECON-RECOVERY-VARIANTS", "pull_request": 127, "merged_commit": "c9732c28cc723984d59b02018fbed02c3c681913", "feature": "second_confirmed_recovery_tradeoff"},
-    {"iteration": "0.8.8-STREET-BALANCE-AUDIT", "pull_request": 128, "merged_commit": "bef5e2ad78923c4ce36c116c66f2755abe442d3d", "feature": "deterministic_street_balance_audit"}
+    {"iteration": "0.8.8-STREET-BALANCE-AUDIT", "pull_request": 128, "merged_commit": "bef5e2ad78923c4ce36c116c66f2755abe442d3d", "feature": "deterministic_street_balance_audit"},
+    {"iteration": "0.8.8-ECON-RECOVERY-BALANCE-AUDIT", "pull_request": 129, "merged_commit": "3f51e57e58b2cbd6244f36333fea6cce970043c1", "feature": "deterministic_recovery_balance_audit"},
+    {"iteration": "0.8.8-MAP-USABILITY", "pull_request": 130, "merged_commit": "47eb5b5288221fb0c6cd2ebfa3473b2b5ba85a07", "feature": "berlin_ops_map_usability"}
   ],
   "subsystems": {
     "character_forge": {"status": "validated", "skills": 16, "trait_names": 165, "level_cap_before_resonance": 50, "profile_personalization": true, "crew_identity_logo_flag": true},
     "event_runtime": {"status": "validated_through_0_8_8_b", "canonical_event_actions": 8, "crisis_engine": true, "settlement_engine": true, "a4_writing_client": true, "always_available_job_actions": true},
     "economy": {
-      "status": "recovery_balance_audit_in_validation",
+      "status": "recovery_balance_audit_remote_validated",
       "equipment_market": true,
       "property_purchase_ledger_kind": "property_purchase",
       "property_upgrade_ledger_kind": "property_upgrade",
@@ -148,7 +150,8 @@
       "recovery_variant_balance_contract": "docs/RECOVERY_VARIANTS_BALANCE_CONTRACT.md",
       "recovery_variant_requires_system_time": false,
       "recovery_variant_second_engine": false,
-      "recovery_balance_audit_in_validation": true,
+      "recovery_balance_audit_in_validation": false,
+      "recovery_balance_audit_validated": true,
       "recovery_balance_audit_state_matrix_size": 10201,
       "recovery_balance_audit_all_sequences": true,
       "recovery_balance_audit_clamping_allowed": false,
@@ -156,7 +159,7 @@
       "recovery_balance_audit_gameplay_changes": false
     },
     "living_world": {
-      "status": "street_balance_audit_remote_validated",
+      "status": "district_replay_precision_in_validation",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -189,12 +192,16 @@
       "district_biography_afterglow_validated": true,
       "district_biography_source": "event_timeline_district_entries",
       "district_biography_progression_engine": false,
-      "district_biography_new_journal_event": false
+      "district_biography_new_journal_event": false,
+      "district_replay_receipt_precision_in_validation": true,
+      "district_replay_receipt_semantics": ["applied", "idempotent_replay", "not_triggered"],
+      "district_replay_receipt_second_architecture": false,
+      "district_replay_receipt_gameplay_changes": false
     },
     "properties": {"status": "remote_validated_and_safe_merged", "purchase_iteration": "0.8.6-A", "upgrade_iteration": "0.8.6-B", "purchasable_locations": 7, "upgrade_types": 10, "max_upgrade_level": 3, "client_price_authority": false, "client_level_authority": false, "combined_recovery": true, "resale_supported": false, "rent_supported": false, "yield_supported": false},
     "ranking": {"status": "remote_validated_and_safe_merged", "seasonal_hall_iteration": "0.8.7-A", "seasonal_hall_pull_request": 87, "seasonal_hall_merge": "841258a37915e05d7f87eed7841c8e4b8d79bf46", "weekly_monthly_cycles": true, "system_time_sole_authority": false, "fake_local_champion_titles": false},
     "presentation": {
-      "status": "recovery_variants_remote_validated",
+      "status": "map_usability_remote_validated_and_focus_freeze_hotfixed",
       "a4_localhost_client": true,
       "high_quality_berlin_ops_renderer": true,
       "map_read_only": true,
@@ -204,6 +211,9 @@
       "map_view_pan_local_bounded": true,
       "map_view_focus_selected": true,
       "map_view_state_persisted": false,
+      "map_usability_legend": true,
+      "map_usability_optional_labels": true,
+      "map_usability_gameplay_authority": false,
       "control_deck_2": true,
       "sticky_hud": true,
       "quick_navigation": true,
@@ -262,6 +272,7 @@
       "focus_state_persisted": false,
       "next_action_attention_signal": true,
       "next_action_source": "enabled_runtime_event_action_dom",
+      "control_deck_focus_mutation_loop_hotfixed": true,
       "browser_gameplay_authority": false
     },
     "assistant": {"status": "c5b_remote_validated", "secret_best_friend_story_role": true, "contract_policy_defined": true, "task_source": "scene_jobs", "max_active_tasks": 1, "confirmed_round_required": true, "system_time_authority": false, "client_round_authority": false, "control_state_implemented": true, "control_state_recoverable": true, "automatic_round_execution": true, "round_processed_marker": true, "round_retry_idempotent": true, "off_round_consumed_without_retroactive_execution": true, "repeat_until_disabled": true, "single_active_task_runtime": true, "jobs_ui_integration": true, "browser_control_fields": ["job_id"], "browser_can_supply_round": false, "browser_can_supply_payout_or_effects": false, "friendship_afterglow_projection_implemented": true, "friendship_afterglow_requires_round_and_job_pair": true, "friendship_afterglow_progression_engine": false, "friendship_afterglow_visible": true, "friendship_afterglow_deterministic_variants": true, "friendship_afterglow_persistent_state": false},
@@ -277,11 +288,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.8-QA-REPLAY-PRECISION",
-  "next_goal": "District-No-op-/Retry-Receipts semantisch präzisieren und gezielt regressionssichern, ohne Gameplayänderung.",
+  "next_iteration": "0.8.8-STREET-EFFECT-AUDIT",
+  "next_goal": "Street-Ansätze anhand ihrer erwarteten Energie-/Stress-/Rufeffekte deterministisch vergleichen, test-only und ohne Telemetrie.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-24T02:59:00+02:00"
+  "updated_at": "2026-08-24T03:56:00+02:00"
 }
