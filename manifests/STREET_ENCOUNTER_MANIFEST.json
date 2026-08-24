@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.7-b1",
+  "version": "0.8.8-street-pack",
   "selection": {
     "method": "sha256_stable_weighted",
     "weight_total": 100,
@@ -21,7 +21,7 @@
     "approach_changes_only_selection_weights": true,
     "effects_remain_encounter_authority": true,
     "system_time_as_authority": false,
-    "compatible_replay_versions": ["0.8.5-c1"]
+    "compatible_replay_versions": ["0.8.5-c1", "0.8.7-b1"]
   },
   "approaches": [
     {
@@ -29,16 +29,22 @@
       "label_key": "street.approach.balanced.label",
       "description_key": "street.approach.balanced.description",
       "weights": {
-        "street.none": 25,
+        "street.none": 15,
+        "street.poster_wall": 10,
         "street.spaeti_water": 10,
-        "street.friendly_face": 10,
+        "street.friendly_face": 5,
+        "street.open_door": 5,
         "street.shortcut": 10,
         "street.crew_greeting": 10,
-        "street.coffee_house": 10,
-        "street.useful_find": 10,
-        "street.puddle": 5,
-        "street.bike_splash": 5,
-        "street.sudden_rain": 5
+        "street.coffee_house": 5,
+        "street.night_bus_seat": 5,
+        "street.useful_find": 5,
+        "street.cable_tip": 5,
+        "street.puddle": 3,
+        "street.lost_glove": 2,
+        "street.bike_splash": 3,
+        "street.sudden_rain": 3,
+        "street.construction_detour": 4
       }
     },
     {
@@ -46,16 +52,22 @@
       "label_key": "street.approach.recovery.label",
       "description_key": "street.approach.recovery.description",
       "weights": {
-        "street.none": 30,
+        "street.none": 20,
+        "street.poster_wall": 10,
         "street.spaeti_water": 15,
-        "street.friendly_face": 5,
+        "street.friendly_face": 3,
+        "street.open_door": 2,
         "street.shortcut": 5,
         "street.crew_greeting": 10,
-        "street.coffee_house": 15,
-        "street.useful_find": 5,
-        "street.puddle": 5,
+        "street.coffee_house": 8,
+        "street.night_bus_seat": 7,
+        "street.useful_find": 3,
+        "street.cable_tip": 2,
+        "street.puddle": 3,
+        "street.lost_glove": 2,
         "street.bike_splash": 5,
-        "street.sudden_rain": 5
+        "street.sudden_rain": 3,
+        "street.construction_detour": 2
       }
     },
     {
@@ -63,16 +75,22 @@
       "label_key": "street.approach.network.label",
       "description_key": "street.approach.network.description",
       "weights": {
-        "street.none": 15,
+        "street.none": 10,
+        "street.poster_wall": 5,
         "street.spaeti_water": 5,
-        "street.friendly_face": 20,
+        "street.friendly_face": 10,
+        "street.open_door": 10,
         "street.shortcut": 5,
         "street.crew_greeting": 20,
-        "street.coffee_house": 5,
-        "street.useful_find": 15,
-        "street.puddle": 5,
+        "street.coffee_house": 3,
+        "street.night_bus_seat": 2,
+        "street.useful_find": 8,
+        "street.cable_tip": 7,
+        "street.puddle": 3,
+        "street.lost_glove": 2,
         "street.bike_splash": 5,
-        "street.sudden_rain": 5
+        "street.sudden_rain": 3,
+        "street.construction_detour": 2
       }
     },
     {
@@ -80,16 +98,22 @@
       "label_key": "street.approach.scout.label",
       "description_key": "street.approach.scout.description",
       "weights": {
-        "street.none": 15,
+        "street.none": 10,
+        "street.poster_wall": 5,
         "street.spaeti_water": 5,
-        "street.friendly_face": 5,
+        "street.friendly_face": 3,
+        "street.open_door": 2,
         "street.shortcut": 20,
         "street.crew_greeting": 5,
-        "street.coffee_house": 5,
-        "street.useful_find": 20,
-        "street.puddle": 10,
+        "street.coffee_house": 3,
+        "street.night_bus_seat": 2,
+        "street.useful_find": 10,
+        "street.cable_tip": 10,
+        "street.puddle": 5,
+        "street.lost_glove": 5,
         "street.bike_splash": 5,
-        "street.sudden_rain": 10
+        "street.sudden_rain": 5,
+        "street.construction_detour": 5
       }
     }
   ],
@@ -97,9 +121,17 @@
     {
       "encounter_id": "street.none",
       "polarity": "neutral",
-      "weight": 25,
+      "weight": 15,
       "title_key": "street.none.title",
       "body_key": "street.none.body",
+      "effects": {"energy_delta": 0, "stress_delta": 0, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.poster_wall",
+      "polarity": "neutral",
+      "weight": 10,
+      "title_key": "street.poster_wall.title",
+      "body_key": "street.poster_wall.body",
       "effects": {"energy_delta": 0, "stress_delta": 0, "reputation_delta": 0}
     },
     {
@@ -113,10 +145,18 @@
     {
       "encounter_id": "street.friendly_face",
       "polarity": "positive",
-      "weight": 10,
+      "weight": 5,
       "title_key": "street.friendly_face.title",
       "body_key": "street.friendly_face.body",
       "effects": {"energy_delta": 0, "stress_delta": -1, "reputation_delta": 2}
+    },
+    {
+      "encounter_id": "street.open_door",
+      "polarity": "positive",
+      "weight": 5,
+      "title_key": "street.open_door.title",
+      "body_key": "street.open_door.body",
+      "effects": {"energy_delta": 0, "stress_delta": -1, "reputation_delta": 1}
     },
     {
       "encounter_id": "street.shortcut",
@@ -137,31 +177,55 @@
     {
       "encounter_id": "street.coffee_house",
       "polarity": "positive",
-      "weight": 10,
+      "weight": 5,
       "title_key": "street.coffee_house.title",
       "body_key": "street.coffee_house.body",
       "effects": {"energy_delta": 5, "stress_delta": 0, "reputation_delta": 0}
     },
     {
+      "encounter_id": "street.night_bus_seat",
+      "polarity": "positive",
+      "weight": 5,
+      "title_key": "street.night_bus_seat.title",
+      "body_key": "street.night_bus_seat.body",
+      "effects": {"energy_delta": 3, "stress_delta": -2, "reputation_delta": 0}
+    },
+    {
       "encounter_id": "street.useful_find",
       "polarity": "positive",
-      "weight": 10,
+      "weight": 5,
       "title_key": "street.useful_find.title",
       "body_key": "street.useful_find.body",
       "effects": {"energy_delta": 1, "stress_delta": -1, "reputation_delta": 1}
     },
     {
+      "encounter_id": "street.cable_tip",
+      "polarity": "positive",
+      "weight": 5,
+      "title_key": "street.cable_tip.title",
+      "body_key": "street.cable_tip.body",
+      "effects": {"energy_delta": 1, "stress_delta": 0, "reputation_delta": 1}
+    },
+    {
       "encounter_id": "street.puddle",
       "polarity": "negative",
-      "weight": 5,
+      "weight": 3,
       "title_key": "street.puddle.title",
       "body_key": "street.puddle.body",
       "effects": {"energy_delta": -1, "stress_delta": 2, "reputation_delta": 0}
     },
     {
+      "encounter_id": "street.lost_glove",
+      "polarity": "negative",
+      "weight": 2,
+      "title_key": "street.lost_glove.title",
+      "body_key": "street.lost_glove.body",
+      "effects": {"energy_delta": 0, "stress_delta": 2, "reputation_delta": 0}
+    },
+    {
       "encounter_id": "street.bike_splash",
       "polarity": "negative",
-      "weight": 5,
+      "weight": 3,
       "title_key": "street.bike_splash.title",
       "body_key": "street.bike_splash.body",
       "effects": {"energy_delta": -1, "stress_delta": 2, "reputation_delta": 0}
@@ -169,10 +233,18 @@
     {
       "encounter_id": "street.sudden_rain",
       "polarity": "negative",
-      "weight": 5,
+      "weight": 3,
       "title_key": "street.sudden_rain.title",
       "body_key": "street.sudden_rain.body",
       "effects": {"energy_delta": -2, "stress_delta": 2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.construction_detour",
+      "polarity": "negative",
+      "weight": 4,
+      "title_key": "street.construction_detour.title",
+      "body_key": "street.construction_detour.body",
+      "effects": {"energy_delta": -2, "stress_delta": 1, "reputation_delta": 0}
     }
   ]
 }
