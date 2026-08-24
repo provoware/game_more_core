@@ -3,7 +3,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from bunkerfrequenz.application.street_encounter_service import StreetEncounterService
+from bunkerfrequenz.application.street_encounter_service import StreetEncounterService, _stable_bucket
 from bunkerfrequenz.domain.character import CharacterState
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceKernel
 
@@ -12,6 +12,7 @@ ROOT = Path(__file__).parents[2]
 JOURNAL = json.loads((ROOT / "manifests" / "JOURNAL_MANIFEST.json").read_text(encoding="utf-8"))
 STREET = json.loads((ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json").read_text(encoding="utf-8"))
 ALLOWED = set(JOURNAL["event_types"])
+WORLD_SEED = "street-boundary-fixed-seed"
 
 
 def context(command_id: str) -> JournalContext:
@@ -29,6 +30,36 @@ def context(command_id: str) -> JournalContext:
 
 
 def forced_manifest(*, encounter_id: str, polarity: str, energy_delta: int, stress_delta: int) -> dict:
+    target = {
+        "encounter_id": encounter_id,
+        "polarity": polarity,
+        "weight": 100 if polarity == "positive" else 49,
+        "title_key": f"{encounter_id}.title",
+        "body_key": f"{encounter_id}.body",
+        "effects": {
+            "energy_delta": energy_delta,
+            "stress_delta": stress_delta,
+            "reputation_delta": 0,
+        },
+    }
+    encounters = [target]
+    weights = {encounter_id: target["weight"]}
+    positive_weight = 100
+    negative_weight = 0
+    if polarity == "negative":
+        filler_id = "street.audit_positive_filler"
+        encounters.append({
+            "encounter_id": filler_id,
+            "polarity": "positive",
+            "weight": 51,
+            "title_key": f"{filler_id}.title",
+            "body_key": f"{filler_id}.body",
+            "effects": {"energy_delta": 1, "stress_delta": -1, "reputation_delta": 0},
+        })
+        weights[filler_id] = 51
+        positive_weight = 51
+        negative_weight = 49
+
     return {
         "schema_version": 2,
         "version": "street-boundary-audit-v1",
@@ -39,9 +70,9 @@ def forced_manifest(*, encounter_id: str, polarity: str, energy_delta: int, stre
         },
         "policy": {
             "neutral_weight": 0,
-            "positive_weight": 100 if polarity == "positive" else 0,
-            "negative_weight": 100 if polarity == "negative" else 0,
-            "positive_share_of_actual_encounters": 1.0 if polarity == "positive" else 0.0,
+            "positive_weight": positive_weight,
+            "negative_weight": negative_weight,
+            "positive_share_of_actual_encounters": positive_weight / 100,
             "effects_are_small": True,
             "inventory_changes": False,
             "economy_changes": False,
@@ -58,25 +89,29 @@ def forced_manifest(*, encounter_id: str, polarity: str, energy_delta: int, stre
             "approach_id": "balanced",
             "label_key": "street.approach.balanced.label",
             "description_key": "street.approach.balanced.description",
-            "weights": {encounter_id: 100},
+            "weights": weights,
         }],
-        "encounters": [{
-            "encounter_id": encounter_id,
-            "polarity": polarity,
-            "weight": 100,
-            "title_key": f"{encounter_id}.title",
-            "body_key": f"{encounter_id}.body",
-            "effects": {
-                "energy_delta": energy_delta,
-                "stress_delta": stress_delta,
-                "reputation_delta": 0,
-            },
-        }],
+        "encounters": encounters,
     }
 
 
+def sequence_for_bucket_below(command_id: str, upper_bound: int) -> int:
+    for server_sequence in range(1000):
+        if _stable_bucket(WORLD_SEED, command_id, server_sequence, 100) < upper_bound:
+            return server_sequence
+    raise AssertionError("Kein deterministischer Street-Bucket im Testbereich gefunden")
+
+
 class StreetBoundaryAuditTests(unittest.TestCase):
-    def _run_forced(self, *, energy: int, stress: int, manifest: dict, command_id: str):
+    def _run_forced(
+        self,
+        *,
+        energy: int,
+        stress: int,
+        manifest: dict,
+        command_id: str,
+        server_sequence: int | None = None,
+    ):
         character = CharacterState("player-local", "Boundary Tester")
         character.energy = energy
         character.stress = stress
@@ -87,8 +122,9 @@ class StreetBoundaryAuditTests(unittest.TestCase):
         result = StreetEncounterService(kernel, manifest).walk(
             character,
             walk_instance_id=command_id,
-            world_seed="street-boundary-fixed-seed",
+            world_seed=WORLD_SEED,
             journal_context=context(command_id),
+            server_sequence=server_sequence,
         )
         persisted = CharacterState.from_dict(kernel.load_state()["character"])
         return result, persisted
@@ -110,6 +146,7 @@ class StreetBoundaryAuditTests(unittest.TestCase):
         self.assertEqual((persisted.energy, persisted.stress), (100, 0))
 
     def test_negative_effects_saturate_at_energy_min_and_stress_max(self):
+        command_id = "street-boundary-negative"
         result, persisted = self._run_forced(
             energy=1,
             stress=99,
@@ -119,9 +156,11 @@ class StreetBoundaryAuditTests(unittest.TestCase):
                 energy_delta=-10,
                 stress_delta=10,
             ),
-            command_id="street-boundary-negative",
+            command_id=command_id,
+            server_sequence=sequence_for_bucket_below(command_id, 49),
         )
 
+        self.assertEqual(result.encounter_id, "street.audit_negative")
         self.assertEqual(result.effects, {"energy_delta": -1, "stress_delta": 1, "reputation_delta": 0})
         self.assertEqual((persisted.energy, persisted.stress), (0, 100))
 
