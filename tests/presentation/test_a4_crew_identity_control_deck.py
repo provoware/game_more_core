@@ -6,6 +6,7 @@ ROOT = Path(__file__).parents[2]
 APP = (ROOT / "web" / "a4" / "app.js").read_text(encoding="utf-8")
 STYLES = (ROOT / "web" / "a4" / "crew_identity.css").read_text(encoding="utf-8")
 UI_PREFS = (ROOT / "web" / "a4" / "ui_prefs.js").read_text(encoding="utf-8")
+HUD_SYNC = (ROOT / "web" / "a4" / "crew_identity_hud_sync.js").read_text(encoding="utf-8")
 
 
 class A4CrewIdentityControlDeckTests(unittest.TestCase):
@@ -84,6 +85,24 @@ class A4CrewIdentityControlDeckTests(unittest.TestCase):
         self.assertNotIn("/api/state", UI_PREFS)
         self.assertNotIn("fetch(", UI_PREFS)
         self.assertNotIn("input", UI_PREFS[UI_PREFS.index("function observeConfirmedCrewIdentity"):])
+
+    def test_confirmed_hud_refresh_precedes_editor_focus_guard(self):
+        self.assertIn('appendModule("crew_identity_hud_sync.js", "crew-identity-hud-sync")', UI_PREFS)
+        self.assertIn("const baseRenderCrewIdentity = renderCrewIdentity;", HUD_SYNC)
+        wrapper = HUD_SYNC[HUD_SYNC.index("renderCrewIdentity = function renderCrewIdentityWithConfirmedHud"):]
+        self.assertLess(wrapper.index("renderConfirmedHudCrew(crew);"), wrapper.index("baseRenderCrewIdentity(crew)"))
+        for token in (
+            "crew?.identity",
+            "crew?.render",
+            "render.symbol_glyph",
+            "render.accent",
+            "identity.mark",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, HUD_SYNC)
+        for forbidden in ("fetch(", "/api/", "sendCommand", "localStorage", "readCrewIdentity("):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, HUD_SYNC)
 
     def test_confirmed_hud_avatar_is_compact_and_does_not_break_responsive_hud(self):
         for token in (
