@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe vor aktuellem Gameplay-Slice:** `0.8.8-STREET-EFFECT-AUDIT` · PR #136 · Merge `56afe056b05c56033d205fd2fea3e60fc8f7722d`
-- **Start-/Release-Qualität:** `main` enthält zusätzlich die sicher gemergte Härtung bis PR #155 · Merge `8e9606a888f350305e1cd8ee8a8b94ef7ab2990e`
+- **Zuletzt remote validierte Feature-Stufe vor aktuellem UX-Slice:** `0.8.8-STREET-SCOUT-BALANCE` · PR #156 · Merge `3f7ee5f24dd27b3cd885b7fa51970ec98e92379c`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Härtung bis PR #155 sowie den validierten Scout-Balance-Slice PR #156
 - **Recovery-Balance-Audit:** PR #129 · Merge `3f51e57e58b2cbd6244f36333fea6cce970043c1` · vollständige Energie×Stress-Matrix sicher gemergt
-- **Aktive Entwicklungsstufe:** `0.8.8-STREET-SCOUT-BALANCE – eigener Scout-Tradeoff ohne Doppelarchitektur`
+- **Aktive Entwicklungsstufe:** `0.8.8-UX-RECEIPT-CLARITY – District-Receipt-Klartext aus vorhandenen Runtime-Signalen`
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
@@ -77,21 +77,31 @@
 - [x] keine Gameplaywerte im Audit verändert
 - [x] PR #136 · `/safe-merge` PASS · Merge `56afe056b05c56033d205fd2fea3e60fc8f7722d`
 
+## 0.8.8-STREET-SCOUT-BALANCE
+- [x] nur zwei bestehende Scout-Gewichte innerhalb derselben negativen Polarität verschoben
+- [x] Scout-Erwartungswert auf `+1,01 Energie / −0,09 Stress / +0,33 Ruf` gebracht; keine vollständige Dominanz durch Balanced mehr
+- [x] Polaritätsmix, maximal 20 Punkte je Encounter, Manifestversion, Runtime und Replay-Vertrag unverändert
+- [x] PR #156 · Head `d828d97a2ab6bec89e70724480a486d22f82dac7` · `/safe-merge` PASS · Merge `3f7ee5f24dd27b3cd885b7fa51970ec98e92379c`
+
 ---
 
-# Aktiv – 0.8.8-STREET-SCOUT-BALANCE
+# Aktiv – 0.8.8-UX-RECEIPT-CLARITY
 
 ## Fortschritt
 
-**70 %** – der erste Remote-Lauf deckte zwei bestehende Balance-Invarianten auf; der Patch wurde daraufhin enger gemacht. Manifest, direkte Effektregression, bestehender Balance-Audit, Statusregression und Laienhilfe sind jetzt auf denselben Vertrag ausgerichtet. Finale Remote-Gates, Merge-Hygiene und Safe Merge stehen noch aus.
+**65 %** – der reine Presentation-Kern ist implementiert. Ein erster Presentation-Lauf hat den vorhandenen MutationObserver-Inventarvertrag korrekt ausgelöst; der neue Observer wurde daraufhin explizit als selbstlöschender, nur auf fehlende flüchtige Meldung reagierender Observer regressionsgesichert. Finale Statussynchronisation und Remote-Abnahme laufen.
 
 ## Ziel
 
-`scout` eine kleine eigene mathematische Stärke geben und die vollständige Dominanz durch `balanced` beseitigen, ohne neue Encounter-, Zufalls-, Effekt- oder Persistenzlogik einzuführen und ohne den bestehenden Makro-Balancevertrag aufzuweichen.
+Die bereits vorhandenen District-Receipt-Zustände im Control Deck verständlich anzeigen, ohne ein neues Receipt-Feld, eine zweite Timeline oder neuen Gameplay-/Persistenzzustand einzuführen.
 
 ## Abnahme
 
-Scout behält den stärksten Discovery-Fokus bei 40/100, den bestehenden Polaritätsmix `15 neutral / 60 positiv / 25 negativ` und maximal 20 Punkte pro Einzelbegegnung. Der Erwartungswert wird `+1,01 Energie / −0,09 Stress / +0,33 Ruf`; damit ist Scout knapp energieeffizienter als Balanced, aber klar schwächer bei Stressabbau und Ruf.
+Nach einer bestätigten Abrechnung zeigt der bestehende Settlement-Bereich genau einen der drei Zustände:
+
+- `NEU BESTÄTIGT` – District-Event besitzt bestätigte Event-Identität und der Command ist kein idempotenter Replay.
+- `BEREITS BESTÄTIGT` – dieselbe bestätigte Event-Identität kommt mit vorhandenem `idempotent_replay=true` zurück.
+- `NICHT AUSGELÖST` – die vorhandenen `district_world_event`-Metadaten besitzen absichtlich keine Event-/Instanz-ID; die UI erfindet keinen Journal-Eintrag.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
@@ -100,56 +110,51 @@ Scout behält den stärksten Discovery-Fokus bei 40/100, den bestehenden Polarit
 - aktive Stellen aus `TODO.md`, `FEATURE_POOL.md`, `PROJEKTSTATUS.json`
 
 **Arbeitsdateien**
-- `manifests/STREET_ENCOUNTER_MANIFEST.json`
-- `tests/runtime/test_street_effect_audit.py`
-- `tests/runtime/test_street_balance_audit.py` – nach konkretem roten Runtime-Befund
-- `tests/runtime/test_feature_status_consistency.py` – nach konkretem roten Runtime-Befund
-- `docs/LAIENHILFE_STREET_SCOUT_BALANCE.md`
-- `CHANGELOG.md` nur für die fachliche Änderungsnotiz
+- `tests/runtime/test_district_replay_receipt_semantics.py`
+- `src/bunkerfrequenz/application/game_client_session.py` ausschließlich zum Lesen der bereits vorhandenen Command-Signale
+- `web/a4/app.js`, `web/a4/index.html`, `web/a4/client_resilience.js`
+- `web/a4/receipt_clarity.js`
+- `tests/presentation/test_a4_receipt_clarity.py`
+- `tests/presentation/test_a4_mutation_observer_guard.py` nach konkretem roten Presentation-Befund
 
 **Evidenz/Logs**
 - nur Run-ID/Status bei grünen Gates
 - vollständiger Log ausschließlich beim konkreten roten Gate
 
-### STREET-SCOUT-BALANCE – Vertrag
+### UX-RECEIPT-CLARITY – Vertrag
 
-- [x] ausschließlich zwei Scout-Gewichte innerhalb der negativen Polarität verschoben; Summe bleibt 100
-- [x] `street.construction_detour` für Scout 5 → 0
-- [x] `street.lost_glove` für Scout 5 → 10
-- [x] Discovery-Gewicht `shortcut + useful_find + cable_tip` bleibt unverändert 40 und höher als bei allen anderen Ansätzen
-- [x] Scout-Polaritätsmix bleibt 15 / 60 / 25
-- [x] maximales Einzelgewicht bleibt 20
-- [x] Manifestversion bleibt `0.8.8-street-pack`; bestehende Replay-/Pack-Verträge werden nicht künstlich versioniert
-- [x] Scout-Erwartungswert: +1,01 Energie / −0,09 Stress / +0,33 Ruf
-- [x] `balanced` dominiert `scout` nicht mehr; gleichzeitig dominiert Scout keinen anderen Ansatz vollständig
-- [x] Recovery bleibt Energie-Spezialist; Network bleibt Stress-/Ruf-Spezialist
-- [x] keine Encounter-Effekte, Runtime-Services, Saves, Journalarten oder UI verändert
-- [ ] Remote-Gates auf exakt dem finalen Head vollständig grün
-- [ ] 0 ungelöste Review-Threads bestätigen
-- [ ] Branch 0 Commits hinter `main` bestätigen
+- [x] ausschließlich vorhandene `/api/command`-Signale werden gelesen
+- [x] keine neue Domain-/Receipt-Klasse
+- [x] kein neuer API-Command und kein POST aus dem Modul
+- [x] kein Save-/Journal-/Timeline-Write
+- [x] keine Systemzeit oder Zufallslogik für die Receipt-Bedeutung
+- [x] flüchtige, zugängliche Statusmeldung mit `role=status` und `aria-live=polite`
+- [x] Observer reagiert nur auf Entfernung der eigenen flüchtigen Meldung und schreibt danach selbstlöschend genau einmal nach
+- [ ] finaler Head: Runtime Core, Presentation Core, Repository Health vollständig grün
+- [ ] Release Acceptance und Release Package vollständig grün
+- [ ] 0 ungelöste Review-Threads und 0 Commits hinter `main`
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in STREET-SCOUT-BALANCE
+### Bewusst nicht in UX-RECEIPT-CLARITY
 
-- keine neue Encounter-Art
-- keine Telemetrie
-- keine zweite Zufalls- oder Effektengine
-- keine Produktversionsänderung
-- keine UI-Sonderregel für Scout
-- keine Aufweichung der vorhandenen Street-Balance-Invarianten
+- keine neue Receipt-Persistenz
+- keine eigene Timeline für No-op/Retry
+- keine Veränderung von District-Event-Cadence oder Seed
+- keine Gameplay- oder Balanceänderung
+- keine künstliche Eventinstanz für `NICHT AUSGELÖST`
 
 ### Danach
 
-- [ ] **0.8.8-UX-RECEIPT-CLARITY:** bestätigte Receipt-Zustände in klarer UI-Sprache anzeigen, nur aus Runtime-Signalen
-- [ ] **0.8.8-STREET-BOUNDARY-AUDIT:** Street-Effekte an Character-Grenzzuständen gegen tatsächliches Clamping prüfen, test-only
-- [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
+- [ ] **0.8.8-STREET-BOUNDARY-AUDIT / POOL-QA-010:** Street-Effekte an Energie-/Stress-Grenzen gegen tatsächliches Clamping prüfen, test-only
+- [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
+- [ ] **0.8.8-UX-RECEIPT-REASON-COPY:** nur falls später ein bestätigter No-event-Grund bereits im A4-Command-Vertrag exponiert wird; keine neue Autorität dafür erfinden
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Street-Auswahl, Effekte und Zufall bleiben vollständig Runtime-/Manifest-Autorität.
-- Der Balance-Patch ändert nur katalogisierte Auswahlgewichte und führt keine zweite Engine ein.
+- Receipt-Semantik bleibt Runtime-Autorität; der Browser benennt nur vorhandene Signale.
+- Der neue Zustand ist flüchtige Presentation und überlebt einen Reload bewusst nicht als eigenes UI-Receipt.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
