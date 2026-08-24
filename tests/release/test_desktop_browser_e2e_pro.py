@@ -25,6 +25,19 @@ class DesktopBrowserE2EContractTests(unittest.TestCase):
         failed = {name: {"status": "FAIL"} for name in desktop.REQUIRED_SCENARIOS}
         self.assertEqual(desktop.evaluate_runs(failed, failed), "FAIL")
 
+    def test_multi_browser_contract_requires_native_firefox_scenario(self):
+        self.assertIn("chromium_dom_ready", desktop.REQUIRED_SCENARIOS)
+        self.assertIn("firefox_dom_ready", desktop.REQUIRED_SCENARIOS)
+        first = {name: {"status": "PASS"} for name in desktop.REQUIRED_SCENARIOS}
+        second = {name: {"status": "PASS"} for name in desktop.REQUIRED_SCENARIOS}
+        second["firefox_dom_ready"] = {"status": "FAIL"}
+        self.assertEqual(desktop.evaluate_runs(first, second), "FLAKY")
+
+    def test_firefox_scenario_fails_closed_without_native_binaries(self):
+        with patch.object(desktop.shutil, "which", return_value=None):
+            with self.assertRaisesRegex(RuntimeError, "Firefox und Geckodriver"):
+                desktop._scenario_firefox_dom(Path("/unused"), Path("/unused"))
+
     def test_source_identity_rejects_tracked_drift_but_not_untracked_evidence(self):
         with patch.object(desktop, "_git") as git:
             git.side_effect = [" M tools/start_a4_acceptance.py"]

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Source-bound desktop/browser E2E evidence for BUNKERFREQUENZ releases."""
+"""Source-bound multi-browser E2E evidence for BUNKERFREQUENZ releases."""
 
 from __future__ import annotations
 
@@ -8,12 +8,14 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
+import socket
 import subprocess
 import sys
 import tempfile
 import time
-from urllib.error import URLError
-from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 import zipfile
 
 from build_release import build
@@ -25,6 +27,7 @@ REQUIRED_SCENARIOS = (
     "desktop_launcher_contract",
     "clickstart_orchestrator",
     "chromium_dom_ready",
+    "firefox_dom_ready",
 )
 EXPECTED_DESKTOP_EXEC = "Exec=bash -lc 'desktop=\"$1\"; desktop=\"${desktop#file://}\"; cd \"$(dirname \"$desktop\")\" && exec ./START_BUNKERFREQUENZ.sh' _ %k"
 EXPECTED_LAUNCHER_EXEC = 'exec "$PYTHON_BIN" tools/start_orchestrator.py "$@"'
@@ -205,7 +208,175 @@ def _scenario_chromium_dom(product_root: Path) -> dict[str, object]:
         raise RuntimeError("Browser-Acceptance scheiterte: " + " | ".join(output.splitlines()[-12:]))
     if "BROWSER OK" not in output or "UI reaktionsfähig" not in output:
         raise RuntimeError("Browser-Acceptance lieferte keinen bestätigten DOM/BEREIT-Nachweis")
-    return {"real_browser_required": True, "dom_ready": True, "ui_responsive": True}
+    return {"browser": "chromium", "real_browser_required": True, "dom_ready": True, "ui_responsive": True}
+
+
+def _free_loopback_port() -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind(("127.0.0.1", 0))
+        return int(sock.getsockname()[1])
+
+
+def _webdriver_json(method: str, url: str, payload: object | None = None, timeout: float = 5.0) -> dict:
+    body = None if payload is None else json.dumps(payload).encode("utf-8")
+    request = Request(url, data=body, method=method, headers={"Content-Type": "application/json"})
+    with urlopen(request, timeout=timeout) as response:
+        data = json.loads(response.read().decode("utf-8"))
+    if not isinstance(data, dict):
+        raise RuntimeError("WebDriver lieferte kein JSON-Objekt")
+    return data
+
+
+def _wait_http_ready(url: str, process: subprocess.Popen[str], timeout: float = 12.0) -> None:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if process.poll() is not None:
+            raise RuntimeError("Geckodriver wurde vor Bereitschaft beendet")
+        try:
+            _webdriver_json("GET", url, timeout=0.5)
+            return
+        except (OSError, URLError, HTTPError, json.JSONDecodeError):
+            time.sleep(0.1)
+    raise RuntimeError("Geckodriver wurde nicht rechtzeitig bereit")
+
+
+def _start_packaged_server(product_root: Path, root: Path) -> tuple[subprocess.Popen[str], str]:
+    save_dir = root / "save"
+    process = subprocess.Popen(
+        [
+            sys.executable,
+            "-u",
+            str(product_root / "tools" / "start_a4_game_client.py"),
+            "--port",
+            "0",
+            "--no-browser",
+            "--save-dir",
+            str(save_dir),
+        ],
+        cwd=product_root,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+        env={**os.environ, "PYTHONPATH": "", "PYTHONDONTWRITEBYTECODE": "1"},
+    )
+    assert process.stdout is not None
+    deadline = time.monotonic() + 12.0
+    lines: list[str] = []
+    while time.monotonic() < deadline:
+        line = process.stdout.readline()
+        if line:
+            clean = line.rstrip()
+            lines.append(clean)
+            if clean.startswith("ADRESSE: "):
+                return process, clean.split("ADRESSE: ", 1)[1].strip()
+        elif process.poll() is not None:
+            break
+        else:
+            time.sleep(0.05)
+    process.terminate()
+    process.wait(timeout=3)
+    raise RuntimeError("Paketserver lieferte keine Adresse: " + " | ".join(lines[-8:]))
+
+
+def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
+    firefox = shutil.which("firefox")
+    geckodriver = shutil.which("geckodriver")
+    if not firefox or not geckodriver:
+        raise RuntimeError("Nativer Firefox und Geckodriver müssen für MULTI-BROWSER-E2E vorhanden sein")
+
+    server, address = _start_packaged_server(product_root, root / "server")
+    port = _free_loopback_port()
+    driver = subprocess.Popen(
+        [geckodriver, "--host", "127.0.0.1", "--port", str(port)],
+        cwd=product_root,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    session_id: str | None = None
+    base = f"http://127.0.0.1:{port}"
+    try:
+        _wait_http_ready(base + "/status", driver)
+        created = _webdriver_json(
+            "POST",
+            base + "/session",
+            {
+                "capabilities": {
+                    "alwaysMatch": {
+                        "browserName": "firefox",
+                        "moz:firefoxOptions": {"binary": firefox, "args": ["-headless"]},
+                    }
+                }
+            },
+            timeout=20.0,
+        )
+        value = created.get("value")
+        if not isinstance(value, dict) or not isinstance(value.get("sessionId"), str):
+            raise RuntimeError(f"Firefox-WebDriver lieferte keine Session: {created}")
+        session_id = value["sessionId"]
+        _webdriver_json("POST", f"{base}/session/{session_id}/url", {"url": address}, timeout=10.0)
+
+        deadline = time.monotonic() + 30.0
+        body_text = ""
+        while time.monotonic() < deadline:
+            result = _webdriver_json(
+                "POST",
+                f"{base}/session/{session_id}/execute/sync",
+                {"script": "return document.body ? document.body.innerText : '';", "args": []},
+                timeout=5.0,
+            )
+            body_value = result.get("value")
+            body_text = body_value if isinstance(body_value, str) else ""
+            if "● BEREIT" in body_text and "BUNKERFREQUENZ" in body_text:
+                break
+            time.sleep(0.25)
+        else:
+            raise RuntimeError("Firefox-DOM erreichte den bestätigten BEREIT-Zustand nicht")
+
+        health = _webdriver_json(
+            "POST",
+            f"{base}/session/{session_id}/execute/sync",
+            {
+                "script": "return fetch('/api/health').then(r => r.json()).then(x => x.status);",
+                "args": [],
+            },
+            timeout=8.0,
+        )
+        if health.get("value") != "ready":
+            raise RuntimeError("Firefox konnte /api/health nicht als ready bestätigen")
+        return {
+            "browser": "firefox",
+            "real_browser_required": True,
+            "webdriver": "geckodriver",
+            "dom_ready": True,
+            "ui_responsive": True,
+            "health_ready": True,
+        }
+    finally:
+        if session_id is not None:
+            try:
+                _webdriver_json("DELETE", f"{base}/session/{session_id}", timeout=5.0)
+            except Exception:
+                pass
+        if driver.poll() is None:
+            driver.terminate()
+            try:
+                driver.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                driver.kill()
+                driver.wait(timeout=3)
+        if server.poll() is None:
+            server.terminate()
+            try:
+                server.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                server.kill()
+                server.wait(timeout=3)
+        if driver.stdout is not None:
+            driver.stdout.close()
+        if server.stdout is not None:
+            server.stdout.close()
 
 
 def _single_run(candidate: Path, root: Path) -> dict[str, dict[str, object]]:
@@ -214,6 +385,7 @@ def _single_run(candidate: Path, root: Path) -> dict[str, dict[str, object]]:
         ("desktop_launcher_contract", lambda: _scenario_desktop_launcher_contract(product_root)),
         ("clickstart_orchestrator", lambda: _scenario_clickstart(product_root, root / "clickstart")),
         ("chromium_dom_ready", lambda: _scenario_chromium_dom(product_root)),
+        ("firefox_dom_ready", lambda: _scenario_firefox_dom(product_root, root / "firefox")),
     )
     scenarios: dict[str, dict[str, object]] = {}
     for name, call in calls:
@@ -258,7 +430,15 @@ def run(output_dir: Path, prior_subgate: Path) -> dict[str, object]:
         "anti_flake_runs": 2,
         "anti_flake_consistent": _statuses(first) == _statuses(second),
         "status": status,
-        "coverage": ["packaged_desktop_contract", "real_clickstart_orchestrator", "real_chromium_dom_ready", "post_start_shutdown", "anti_flake_quarantine"],
+        "coverage": [
+            "packaged_desktop_contract",
+            "real_clickstart_orchestrator",
+            "real_chromium_dom_ready",
+            "real_firefox_dom_ready",
+            "same_candidate_sha_across_browsers",
+            "post_start_shutdown",
+            "anti_flake_quarantine",
+        ],
         "runs": [first, second],
     }
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -281,7 +461,7 @@ def run(output_dir: Path, prior_subgate: Path) -> dict[str, object]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="BUNKERFREQUENZ Desktop Browser E2E PRO")
+    parser = argparse.ArgumentParser(description="BUNKERFREQUENZ Multi Browser E2E PRO")
     parser.add_argument("--prior-subgate", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, default=ROOT / "desktop-browser-e2e-dist")
     args = parser.parse_args(argv)
