@@ -54,6 +54,16 @@ fi
 
 printf '%s\n' "SERVER: läuft. Dieses Fenster während des Spielens offen lassen."
 
+launch_checked() {
+  "$@" >/dev/null 2>&1 &
+  local browser_pid=$!
+  sleep 0.6
+  if kill -0 "$browser_pid" 2>/dev/null; then
+    return 0
+  fi
+  wait "$browser_pid"
+}
+
 open_url() {
   local url="$1"
   if command -v xdg-open >/dev/null 2>&1; then
@@ -62,20 +72,24 @@ open_url() {
     fi
   fi
   if command -v firefox >/dev/null 2>&1; then
-    firefox --new-tab "$url" >/dev/null 2>&1 &
-    return 0
+    if launch_checked firefox --new-tab "$url"; then
+      return 0
+    fi
   fi
   if command -v google-chrome >/dev/null 2>&1; then
-    google-chrome "$url" >/dev/null 2>&1 &
-    return 0
+    if launch_checked google-chrome "$url"; then
+      return 0
+    fi
   fi
   if command -v chromium >/dev/null 2>&1; then
-    chromium "$url" >/dev/null 2>&1 &
-    return 0
+    if launch_checked chromium "$url"; then
+      return 0
+    fi
   fi
   if command -v chromium-browser >/dev/null 2>&1; then
-    chromium-browser "$url" >/dev/null 2>&1 &
-    return 0
+    if launch_checked chromium-browser "$url"; then
+      return 0
+    fi
   fi
   return 1
 }
