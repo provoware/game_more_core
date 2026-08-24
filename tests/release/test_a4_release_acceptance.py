@@ -10,6 +10,8 @@ import time
 import unittest
 from urllib.request import urlopen
 
+from tools.start_a4_acceptance import _wait_for_address as acceptance_wait_for_address
+
 ROOT = Path(__file__).resolve().parents[2]
 LAUNCHER = ROOT / "tools" / "start_a4_game_client.py"
 
@@ -60,7 +62,28 @@ class A4ReleaseAcceptanceTests(unittest.TestCase):
             finally:
                 process.terminate()
                 process.wait(timeout=5)
+                if process.stdout is not None:
+                    process.stdout.close()
             self.assertIsNotNone(process.returncode)
+
+    def test_acceptance_address_wait_times_out_for_silent_live_process(self):
+        process = subprocess.Popen(
+            [sys.executable, "-u", "-c", "import time; time.sleep(2)"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+        started = time.monotonic()
+        try:
+            with self.assertRaisesRegex(RuntimeError, "Launcher lieferte keine Adresse"):
+                acceptance_wait_for_address(process, timeout=0.2)
+            self.assertLess(time.monotonic() - started, 1.0)
+        finally:
+            if process.poll() is None:
+                process.terminate()
+            process.wait(timeout=3)
+            if process.stdout is not None:
+                process.stdout.close()
 
     def test_occupied_port_has_beginner_friendly_error(self):
         with socket.socket() as blocker, tempfile.TemporaryDirectory() as save_dir:
