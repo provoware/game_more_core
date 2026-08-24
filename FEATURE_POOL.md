@@ -38,9 +38,9 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
-- **0.8.8-ECON-RECOVERY-BALANCE-AUDIT:** PR #129 · Merge `3f51e57e58b2cbd6244f36333fea6cce970043c1` · beide Recovery-Wege vollständig über Energie×Stress und Mehrfachfolgen geprüft, test-only
-- **0.8.8-MAP-USABILITY:** PR #130 · Merge `47eb5b5288221fb0c6cd2ebfa3473b2b5ba85a07` · kontrastreichere Berlin-Ops-Karte mit lokaler Legende/Beschriftung, keine Kartenautorität
-- **Control-Deck-Freeze-Hotfix:** PR #132 · Merge `f78e4bd6b212dbd7e9477b9d681c2dbf6e0af060` · selbsttriggernde Focus-Mutation beseitigt
+- **0.8.8-QA-REPLAY-PRECISION:** PR #133 · Merge `f3c7c6657b52171d024e1157ffd879ee252df2b9` · District-Receipt-Semantik für angewendet / Replay / nicht ausgelöst regressionsgesichert
+- **START-QUALITY v2:** PR #135 · Merge `0f0c04b50e89b25bbf6e54df338f3e27ed63cd0b` · realer Browser-Acceptance-Gate, Klickstart und Main-Provenienz
+- **0.8.8-MAP-USABILITY:** PR #130 · Merge `47eb5b5288221fb0c6cd2ebfa3473b2b5ba85a07` · kontrastreichere Berlin-Ops-Karte mit lokaler Legende/Beschriftung
 
 ---
 
@@ -68,9 +68,10 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-ECON-008` | `DONE` | Weitere Regenerationsentscheidungen | unterschiedliche Erholungsstrategien | PR #127 sicher gemergt; Balancevertrag zuerst, keine Echtzeitregeneration |
 | `POOL-QA-007` | `DONE` | Street-Balance-Audit | Ansatzprofile und Katalogdominanz deterministisch prüfen | PR #128 sicher gemergt; keine Telemetrie, keine Gameplayänderung |
 | `POOL-QA-008` | `DONE` | Recovery-Balance-Audit | beide Recovery-Wege über Energie×Stress-Matrix gegen Dominanz und Gratisfolgen prüfen | PR #129 sicher gemergt; test-only |
-| `POOL-QA-002` | `PULLED` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft und Regression | keine Gameplayänderung, keine zweite Receipt-Architektur |
-| `POOL-QA-009` | `READY` | Street-Effekt-Erwartungswert-Audit | Energie-/Stress-/Rufwirkung der vier Ansätze mathematisch vergleichen | test-only, keine Telemetrie |
-| `POOL-UX-007` | `IDEA` | Receipt-Klartext im Control Deck | neu / Replay / nicht ausgelöst verständlich anzeigen | nur bestätigte Runtime-Signale rendern |
+| `POOL-QA-002` | `DONE` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft und Regression | PR #133 sicher gemergt; keine zweite Receipt-Architektur |
+| `POOL-QA-009` | `PULLED` | Street-Effekt-Erwartungswert-Audit | Energie-/Stress-/Rufwirkung der vier Ansätze mathematisch vergleichen | aktiv; test-only, keine Telemetrie |
+| `POOL-UX-007` | `READY` | Receipt-Klartext im Control Deck | neu / Replay / nicht ausgelöst verständlich anzeigen | nur bestätigte Runtime-Signale rendern |
+| `POOL-STREET-005` | `READY` | Scout-Balance nach Effekt-Audit | Erkundung eine eigene mathematische Stärke geben, falls fachlich gewollt | zuerst Balancevertrag; bestehendes Manifest/Engine wiederverwenden |
 
 ---
 
@@ -90,6 +91,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
 | `POOL-QA-006` | `READY` | Status-Sync nach Safe Merge automatisieren | bestätigten Safe-Merge-Commit read-only erkennen |
 | `POOL-MAP-003` | `IDEA` | Map-Viewport-Miniübersicht | validierte Map 2 |
+| `POOL-QA-010` | `IDEA` | Street-Effekt-Grenzzustandsaudit | tatsächlichen Character-Clamping-/Ressourcenvertrag zuerst gezielt prüfen |
 
 ---
 
@@ -104,4 +106,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-QA-002` ist für `0.8.8-QA-REPLAY-PRECISION` aktiv. Der Slice fixiert die vorhandenen District-Event-Receipt-Signale regressionssicher, ohne neue Receipt- oder Gameplayarchitektur. Danach ist `POOL-QA-009` der nächste unabhängige test-only Balance-Slice; `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig.
+`POOL-QA-009` ist für `0.8.8-STREET-EFFECT-AUDIT` aktiv. Der Audit hat als konkreten Balancebefund gezeigt, dass `balanced` den `scout` derzeit auf Energie-, Stress- und Ruf-Erwartungswert gleichzeitig dominiert. Der QA-Slice dokumentiert diesen Zustand, ändert aber keine Werte. Danach ist `POOL-STREET-005` der naheliegende Gameplay-Kandidat; `POOL-UX-007` bleibt ein unabhängiger UX-Slice und `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig.
