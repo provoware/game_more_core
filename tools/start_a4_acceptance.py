@@ -49,7 +49,7 @@ def find_browser() -> str | None:
     return None
 
 
-def browser_dom(address: str, *, require_browser: bool, timeout: float = 15.0) -> str | None:
+def browser_dom(address: str, *, require_browser: bool, timeout: float = 30.0) -> str | None:
     browser = find_browser()
     if browser is None:
         if require_browser:
