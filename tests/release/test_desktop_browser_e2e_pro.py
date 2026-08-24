@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from urllib.error import URLError
 
 ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -60,20 +61,45 @@ class DesktopBrowserE2EContractTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "Release-Bytes"):
                 desktop._load_prior_subgate(path, "commit", "tree", candidate)
 
-    def test_desktop_contract_requires_single_canonical_start_path(self):
+    def _write_launcher_fixture(self, product: Path, *, desktop_exec: str, launcher_exec: str) -> None:
+        tools = product / "tools"
+        tools.mkdir()
+        launcher = product / "START_BUNKERFREQUENZ.sh"
+        launcher.write_text(f"#!/usr/bin/env bash\nset -euo pipefail\n{launcher_exec}\n", encoding="utf-8")
+        launcher.chmod(0o755)
+        desktop_file = product / "BUNKERFREQUENZ.desktop"
+        desktop_file.write_text(f"[Desktop Entry]\n{desktop_exec}\n", encoding="utf-8")
+        desktop_file.chmod(0o755)
+        (tools / "start_orchestrator.py").write_text("# canonical\n", encoding="utf-8")
+
+    def test_desktop_contract_requires_exact_canonical_start_path(self):
         with tempfile.TemporaryDirectory() as root:
             product = Path(root)
-            tools = product / "tools"
-            tools.mkdir()
-            launcher = product / "START_BUNKERFREQUENZ.sh"
-            launcher.write_text("#!/bin/sh\nexec python3 tools/start_orchestrator.py \"$@\"\n", encoding="utf-8")
-            launcher.chmod(0o755)
-            desktop_file = product / "BUNKERFREQUENZ.desktop"
-            desktop_file.write_text("[Desktop Entry]\nExec=./START_BUNKERFREQUENZ.sh\n", encoding="utf-8")
-            desktop_file.chmod(0o755)
-            (tools / "start_orchestrator.py").write_text("# canonical\n", encoding="utf-8")
+            self._write_launcher_fixture(
+                product,
+                desktop_exec=desktop.EXPECTED_DESKTOP_EXEC,
+                launcher_exec=desktop.EXPECTED_LAUNCHER_EXEC,
+            )
             detail = desktop._scenario_desktop_launcher_contract(product)
             self.assertTrue(detail["single_orchestrator_path"])
+            self.assertTrue(detail["exact_desktop_exec"])
+            self.assertTrue(detail["exact_launcher_exec"])
+
+    def test_launcher_substring_or_comment_cannot_fake_canonical_path(self):
+        with tempfile.TemporaryDirectory() as root:
+            product = Path(root)
+            self._write_launcher_fixture(
+                product,
+                desktop_exec="Exec=./alternate.sh START_BUNKERFREQUENZ.sh",
+                launcher_exec='exec python3 tools/alternate.py "$@" # tools/start_orchestrator.py',
+            )
+            with self.assertRaisesRegex(RuntimeError, "kanonischen Klickstartbefehl"):
+                desktop._scenario_desktop_launcher_contract(product)
+
+    def test_shutdown_claim_requires_health_endpoint_to_be_unreachable(self):
+        with patch.object(desktop, "urlopen", side_effect=URLError("connection refused")) as probe:
+            desktop._assert_server_stopped("http://127.0.0.1:8123/")
+        probe.assert_called_once()
 
     def test_browser_acceptance_enforces_bounded_cold_start_floor(self):
         completed = unittest.mock.Mock(returncode=0, stdout="● BEREIT\nBUNKERFREQUENZ – Control Deck", stderr="")
