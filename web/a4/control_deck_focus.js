@@ -86,13 +86,17 @@
   }
 
   function syncNextAction() {
-    for (const button of document.querySelectorAll(`.${SIGNAL_CLASS}`)) button.classList.remove(SIGNAL_CLASS);
     const status = ensureNextActionStatus();
     if (!status) return;
 
     const enabledEventAction = document.querySelector("#event-actions button:not(:disabled)");
+    const currentSignal = document.querySelector(`.${SIGNAL_CLASS}`);
+    if (currentSignal !== enabledEventAction) {
+      currentSignal?.classList.remove(SIGNAL_CLASS);
+      if (enabledEventAction instanceof HTMLButtonElement) enabledEventAction.classList.add(SIGNAL_CLASS);
+    }
+
     if (enabledEventAction instanceof HTMLButtonElement) {
-      enabledEventAction.classList.add(SIGNAL_CLASS);
       status.dataset.state = "ready";
       status.textContent = `NÄCHSTER SCHRITT: ${enabledEventAction.textContent || "EVENT-AKTION"}`;
       return;
