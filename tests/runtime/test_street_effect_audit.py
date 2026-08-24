@@ -69,8 +69,8 @@ class StreetEffectAuditTests(unittest.TestCase):
                     "reputation_delta": 65,
                 },
                 "scout": {
-                    "energy_delta": 91,
-                    "stress_delta": -14,
+                    "energy_delta": 116,
+                    "stress_delta": -29,
                     "reputation_delta": 33,
                 },
             },
@@ -82,7 +82,7 @@ class StreetEffectAuditTests(unittest.TestCase):
             self.assertLess(profile["stress_delta"], 0, approach_id)
             self.assertGreater(profile["reputation_delta"], 0, approach_id)
 
-    def test_strengths_and_current_dominance_are_explicit(self):
+    def test_strengths_and_tradeoffs_are_explicit(self):
         profiles = _effect_profiles()
         self.assertEqual(max(profiles, key=lambda key: profiles[key]["energy_delta"]), "recovery")
         self.assertEqual(min(profiles, key=lambda key: profiles[key]["stress_delta"]), "network")
@@ -93,7 +93,21 @@ class StreetEffectAuditTests(unittest.TestCase):
             for left_id, right_id in permutations(profiles, 2)
             if _strictly_dominates(profiles[left_id], profiles[right_id])
         }
-        self.assertEqual(dominance, {("balanced", "scout")})
+        self.assertEqual(dominance, set())
+
+    def test_scout_keeps_the_strongest_discovery_bias(self):
+        discovery_ids = {"street.shortcut", "street.useful_find", "street.cable_tip"}
+        discovery_weights = {
+            approach["approach_id"]: sum(
+                approach["weights"][encounter_id] for encounter_id in discovery_ids
+            )
+            for approach in STREET["approaches"]
+        }
+        self.assertEqual(discovery_weights["scout"], 45)
+        self.assertGreater(
+            discovery_weights["scout"],
+            max(weight for approach_id, weight in discovery_weights.items() if approach_id != "scout"),
+        )
 
 
 if __name__ == "__main__":
