@@ -21,9 +21,14 @@ ROOT_FILES = {
     "PROJEKTMANIFEST.json",
     "PROJEKTSTATUS.json",
     "START_BUNKERFREQUENZ.sh",
+    "BUNKERFREQUENZ.desktop",
 }
 PREFIXES = ("content/", "docs/", "manifests/", "schemas/", "src/", "web/a4/")
-TOOL_FILES = {"tools/start_a4_game_client.py", "tools/build_release.py"}
+TOOL_FILES = {
+    "tools/start_a4_game_client.py",
+    "tools/start_a4_acceptance.py",
+    "tools/build_release.py",
+}
 
 
 def _run_git(*args: str) -> str:
@@ -70,9 +75,17 @@ def _release_files() -> list[tuple[str, int]]:
         modes = _tracked_modes()
     except (OSError, subprocess.SubprocessError, UnicodeDecodeError, ValueError) as exc:
         raise SystemExit("RELEASE BUILD FEHLGESCHLAGEN – Git-Dateiliste ist nicht lesbar") from exc
-    files = [(path, modes[path]) for path in sorted(modes) if _included(path)]
-    if "START_BUNKERFREQUENZ.sh" not in {path for path, _ in files}:
+    files: list[tuple[str, int]] = []
+    for path in sorted(modes):
+        if not _included(path):
+            continue
+        mode = 0o755 if path == "BUNKERFREQUENZ.desktop" else modes[path]
+        files.append((path, mode))
+    included = {path for path, _ in files}
+    if "START_BUNKERFREQUENZ.sh" not in included:
         raise SystemExit("RELEASE BUILD FEHLGESCHLAGEN – START_BUNKERFREQUENZ.sh fehlt")
+    if "BUNKERFREQUENZ.desktop" not in included:
+        raise SystemExit("RELEASE BUILD FEHLGESCHLAGEN – BUNKERFREQUENZ.desktop fehlt")
     return files
 
 
