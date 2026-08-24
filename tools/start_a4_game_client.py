@@ -45,6 +45,7 @@ REQUIRED = (
     "web/a4/styles.css",
     "web/a4/client_resilience.js",
     "web/a4/app.js",
+    "web/a4/receipt_clarity.js",
     "web/a4/assistant_jobs_ui.js",
     "web/a4/map_pro.js",
     "web/a4/ui_prefs.js",

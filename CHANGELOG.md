@@ -4,6 +4,13 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### UX – 0.8.8-UX-RECEIPT-CLARITY
+
+- die bereits vorhandenen District-Receipt-Signale nach bestätigtem Settlement im bestehenden Control Deck als `NEU BESTÄTIGT`, `BEREITS BESTÄTIGT` oder `NICHT AUSGELÖST` verständlich sichtbar gemacht.
+- die Klartextanzeige liest ausschließlich vorhandene Command-Metadaten und `idempotent_replay`; sie erzeugt keine neue Receipt-Klasse, keinen Journal-/Save-Eintrag, keine zweite Timeline und keine Gameplayautorität im Browser.
+- die Meldung bleibt bewusst flüchtige Presentation im bestehenden Settlement-Bereich und ist mit `role=status`/`aria-live=polite` zugänglich.
+- das neue UI-Asset in beide bestehenden Start-Preflights aufgenommen, damit unvollständige oder gemischte Installationen vor dem Start fail-closed erkannt werden.
+
 ### Gameplay – 0.8.8-STREET-SCOUT-BALANCE
 
 - Scout innerhalb des bestehenden Street-Vertrags neu ausbalanciert: `street.construction_detour` 5 → 0 und `street.lost_glove` 5 → 10; Gesamtgewicht, Manifestversion, Encounter-Effekte und Polaritätsmix bleiben unverändert.

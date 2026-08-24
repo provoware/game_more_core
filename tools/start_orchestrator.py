@@ -36,6 +36,7 @@ REQUIRED_FILES = (
     ROOT / "web" / "a4" / "ui_prefs.js",
     ROOT / "web" / "a4" / "event_timeline.js",
     ROOT / "web" / "a4" / "app.js",
+    ROOT / "web" / "a4" / "receipt_clarity.js",
     ROOT / "web" / "a4" / "assistant_jobs_ui.js",
     ROOT / "web" / "a4" / "control_deck_focus.js",
     ROOT / "web" / "a4" / "district_biography.js",
