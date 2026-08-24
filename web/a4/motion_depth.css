@@ -32,6 +32,18 @@ h1 { text-shadow: 0 .12rem 1.1rem #000a; }
 .map-marker:hover, .map-marker:focus-visible { z-index: 8; transform: translate(-50%, -50%) scale(1.08); box-shadow: 0 .3rem .9rem #000d, 0 0 1rem #62dfff22; }
 .map-marker.hall:hover, .map-marker.hall:focus-visible { transform: translate(-50%, -50%) rotate(45deg) scale(1.08); }
 
+.confirmed-fx { --confirmed-fx-color: var(--accent-2); animation: confirmed-fx-pulse .78s ease-out; border-radius: .35rem; }
+.confirmed-fx-positive { --confirmed-fx-color: var(--accent); }
+.confirmed-fx-negative { --confirmed-fx-color: var(--danger); }
+.confirmed-fx-neutral { --confirmed-fx-color: var(--accent-2); }
+
+@keyframes confirmed-fx-pulse {
+  0% { outline: 0 solid transparent; outline-offset: 0; box-shadow: 0 0 0 0 transparent; }
+  32% { outline: .16rem solid var(--confirmed-fx-color); outline-offset: .16rem; box-shadow: 0 0 1.1rem .12rem var(--confirmed-fx-color); }
+  100% { outline: 0 solid transparent; outline-offset: .35rem; box-shadow: 0 0 0 0 transparent; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
+  .confirmed-fx { outline: 2px solid var(--confirmed-fx-color); outline-offset: 2px; }
 }

@@ -109,6 +109,10 @@
     appendModule("map_usability.js", "map-usability");
   }
 
+  function ensureConfirmedEventFxModule() {
+    appendModule("confirmed_event_fx.js", "confirmed-event-fx");
+  }
+
   function copyConfirmedCrewPreview() {
     const source = document.getElementById("crew-identity-preview");
     const host = document.querySelector(".hud-crew-identity");
@@ -174,6 +178,7 @@
     ensureSceneJobPayoutPreviewModule();
     ensureRecoveryActionsModule();
     ensureMapUsabilityModule();
+    ensureConfirmedEventFxModule();
     observeConfirmedCrewIdentity();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
