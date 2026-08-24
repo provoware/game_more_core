@@ -8,10 +8,11 @@ import sys
 import tempfile
 import unittest
 
-from tools.start_orchestrator import _ensure_save_dir, _port_available
-
 
 ROOT = Path(__file__).parents[2]
+sys.path.insert(0, str(ROOT / "tools"))
+from start_orchestrator import _ensure_save_dir, _port_available  # noqa: E402
+
 ORCHESTRATOR = ROOT / "tools" / "start_orchestrator.py"
 START = ROOT / "START_BUNKERFREQUENZ.sh"
 
