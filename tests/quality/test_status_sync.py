@@ -51,6 +51,7 @@ class StatusSyncTests(unittest.TestCase):
         git(self.root, "config", "user.email", "status-sync@example.invalid")
         git(self.root, "config", "user.name", "Status Sync Test")
         write_status(self.root, SafeMergeAnchor(1, "0" * 40))
+        (self.root / "README.md").write_text("# Project\n", encoding="utf-8")
         git(self.root, "add", ".")
         git(self.root, "commit", "-m", "baseline")
 
@@ -85,10 +86,11 @@ class StatusSyncTests(unittest.TestCase):
         self.assertEqual(checked, expected)
         self.assertEqual(errors, [])
 
-    def test_status_only_safe_merge_does_not_create_self_drift_loop(self):
+    def test_status_only_safe_merge_with_readme_does_not_create_self_drift_loop(self):
         expected = self.merge_feature()
         git(self.root, "checkout", "-b", "status-sync")
         write_status(self.root, expected)
+        (self.root / "README.md").write_text("# Project\n\nActive status synchronized.\n", encoding="utf-8")
         tool = self.root / "tools" / "status_sync.py"
         tool.parent.mkdir(parents=True, exist_ok=True)
         tool.write_text("# status sync helper\n", encoding="utf-8")
@@ -104,6 +106,18 @@ class StatusSyncTests(unittest.TestCase):
         checked, errors = check_status_sync(self.root)
         self.assertEqual(checked, expected)
         self.assertEqual(errors, [])
+
+    def test_readme_only_safe_merge_is_still_a_relevant_merge(self):
+        previous = self.merge_feature()
+        git(self.root, "checkout", "-b", "readme-only")
+        (self.root / "README.md").write_text("# Project\n\nDocumentation changed.\n", encoding="utf-8")
+        git(self.root, "add", "README.md")
+        git(self.root, "commit", "-m", "docs: update readme")
+        git(self.root, "checkout", "main")
+        git(self.root, "merge", "--no-ff", "readme-only", "-m", "Safe merge PR #175")
+        latest = latest_relevant_safe_merge(self.root)
+        self.assertEqual(latest.pull_request, 175)
+        self.assertNotEqual(latest, previous)
 
 
 if __name__ == "__main__":
