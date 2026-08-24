@@ -1,0 +1,100 @@
+"use strict";
+
+(() => {
+  const STYLE_ID = "map-usability-styles";
+  const LEGEND_ID = "map-usability-legend";
+  const LABEL_ACTION = "labels";
+  let labelsVisible = false;
+
+  function ensureStyles() {
+    if (document.getElementById(STYLE_ID)) return;
+    const link = document.createElement("link");
+    link.id = STYLE_ID;
+    link.rel = "stylesheet";
+    link.href = "map_usability.css";
+    document.head.append(link);
+  }
+
+  function node(tag, className, text) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = String(text);
+    return element;
+  }
+
+  function legendItem(className, label) {
+    const item = node("span", "map-legend-item");
+    item.append(node("span", `map-legend-dot ${className}`), node("span", "", label));
+    return item;
+  }
+
+  function ensureLegend() {
+    const canvas = document.getElementById("berlin-map-canvas");
+    if (!canvas || document.getElementById(LEGEND_ID)) return;
+    const legend = node("div", "map-usability-legend");
+    legend.id = LEGEND_ID;
+    legend.setAttribute("aria-label", "Kartenlegende");
+    legend.append(
+      node("strong", "", "LEGENDE"),
+      legendItem("", "Standard"),
+      legendItem("strong", "Strong"),
+      legendItem("prime", "Prime"),
+      legendItem("legendary", "Legendary"),
+      legendItem("owned", "Eigentum"),
+      legendItem("hall", "Hall")
+    );
+    canvas.before(legend);
+  }
+
+  function updateLabelButton(button) {
+    const canvas = document.getElementById("berlin-map-canvas");
+    if (!canvas) return;
+    canvas.classList.toggle("map-labels-all", labelsVisible);
+    button.setAttribute("aria-pressed", labelsVisible ? "true" : "false");
+    button.textContent = labelsVisible ? "BESCHRIFTUNG AN" : "BESCHRIFTUNG";
+    button.setAttribute(
+      "aria-label",
+      labelsVisible ? "Alle Ortsbeschriftungen ausblenden" : "Alle Ortsbeschriftungen einblenden"
+    );
+  }
+
+  function ensureLabelControl() {
+    const controls = document.getElementById("map-view-controls");
+    if (!controls || controls.querySelector(`[data-map-view-action="${LABEL_ACTION}"]`)) return;
+    const button = node("button", "utility-button", "BESCHRIFTUNG");
+    button.type = "button";
+    button.dataset.mapViewAction = LABEL_ACTION;
+    button.addEventListener("click", () => {
+      labelsVisible = !labelsVisible;
+      updateLabelButton(button);
+    });
+    updateLabelButton(button);
+    controls.append(button);
+  }
+
+  function annotateCanvas() {
+    const canvas = document.getElementById("berlin-map-canvas");
+    if (!canvas) return;
+    canvas.setAttribute(
+      "aria-description",
+      "Orte sind als kontrastreiche Marker dargestellt. Namen erscheinen bei Fokus, Auswahl oder über die Beschriftungssteuerung."
+    );
+  }
+
+  function enhance() {
+    ensureStyles();
+    ensureLegend();
+    ensureLabelControl();
+    annotateCanvas();
+  }
+
+  function init() {
+    enhance();
+    const host = document.getElementById("map-pro-panel") || document.body;
+    const observer = new MutationObserver(enhance);
+    observer.observe(host, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
+  else init();
+})();
