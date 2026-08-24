@@ -63,10 +63,7 @@
     canvas.classList.toggle("map-labels-all", labelsVisible);
     button.setAttribute("aria-pressed", labelsVisible ? "true" : "false");
     button.textContent = labelsVisible ? "BESCHRIFTUNG AN" : "BESCHRIFTUNG";
-    button.setAttribute(
-      "aria-label",
-      labelsVisible ? "Alle Ortsbeschriftungen ausblenden" : "Alle Ortsbeschriftungen einblenden"
-    );
+    button.setAttribute("aria-label", labelsVisible ? "Alle Ortsbeschriftungen ausblenden" : "Alle Ortsbeschriftungen einblenden");
   }
 
   function ensureLabelControl() {
@@ -86,10 +83,42 @@
   function annotateCanvas() {
     const canvas = document.getElementById("berlin-map-canvas");
     if (!canvas) return;
-    canvas.setAttribute(
-      "aria-description",
-      "Orte sind als kontrastreiche Marker dargestellt. Namen erscheinen bei Fokus, Auswahl oder über die Beschriftungssteuerung."
-    );
+    canvas.setAttribute("aria-description", "Orte sind als kontrastreiche Marker dargestellt. Namen erscheinen bei Fokus, Auswahl oder über die Beschriftungssteuerung.");
+  }
+
+  function confirmedCrewPreview() {
+    const source = document.querySelector(".hud-crew-preview");
+    const identity = document.querySelector(".hud-crew-identity");
+    if (!(source instanceof HTMLElement) || !(identity instanceof HTMLElement) || identity.hidden) return null;
+    return source;
+  }
+
+  function crewBadge(className) {
+    const source = confirmedCrewPreview();
+    if (!source) return null;
+    const badge = source.cloneNode(true);
+    badge.className = className;
+    badge.setAttribute("aria-hidden", "true");
+    return badge;
+  }
+
+  function ensureOwnedCrewMarkers() {
+    for (const marker of document.querySelectorAll("#berlin-map-canvas .map-marker.owned")) {
+      if (marker.querySelector(".map-crew-badge")) continue;
+      const badge = crewBadge("map-crew-badge");
+      if (badge) marker.append(badge);
+    }
+  }
+
+  function ensureOwnedCrewDetail() {
+    const detail = document.getElementById("map-detail");
+    if (!(detail instanceof HTMLElement) || !detail.querySelector(".map-chip.owned") || detail.querySelector(".map-detail-crew")) return;
+    const badge = crewBadge("map-detail-crew-preview");
+    if (!badge) return;
+    const identity = node("div", "map-detail-crew");
+    identity.setAttribute("aria-label", "Bestätigte Crew-Marke für diesen eigenen Ort");
+    identity.append(badge, node("span", "", "DEINE CREW"));
+    detail.querySelector(".map-detail-title")?.after(identity);
   }
 
   function enhance() {
@@ -97,6 +126,8 @@
     ensureLegend();
     ensureLabelControl();
     annotateCanvas();
+    ensureOwnedCrewMarkers();
+    ensureOwnedCrewDetail();
   }
 
   function attachObserver() {
