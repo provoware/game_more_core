@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -14,6 +15,7 @@ from release_autopilot import (  # noqa: E402
     QUARANTINE,
     READY,
     ReleaseInvalidError,
+    ensure_frozen_source,
     evaluate_release_state,
     load_policy,
     load_subgate_evidence,
@@ -30,6 +32,7 @@ class ReleaseAutopilotContractTests(unittest.TestCase):
             ["desktop_browser_e2e_pro", "failure_containment_pro"],
         )
         self.assertTrue(policy["build_isolation"]["clean_worktree_required"])
+        self.assertTrue(policy["build_isolation"]["tracked_source_only"])
         self.assertEqual(policy["build_isolation"]["independent_build_directories"], 2)
         self.assertFalse(policy["promotion"]["rebuild_after_validation"])
         self.assertTrue(policy["promotion"]["copy_validated_candidate_only"])
@@ -37,6 +40,16 @@ class ReleaseAutopilotContractTests(unittest.TestCase):
         self.assertTrue(binding["source_commit_required"])
         self.assertTrue(binding["source_tree_required"])
         self.assertTrue(binding["pass_requires_evidence_sha256"])
+
+    def test_source_freeze_checks_tracked_files_only_and_rejects_tracked_drift(self):
+        with patch("release_autopilot._git") as git:
+            git.side_effect = ["", "a" * 40, "b" * 40]
+            self.assertEqual(ensure_frozen_source(), ("a" * 40, "b" * 40))
+            git.assert_any_call("status", "--porcelain=v1", "--untracked-files=no")
+
+        with patch("release_autopilot._git", return_value=" M tools/build_release.py"):
+            with self.assertRaises(ReleaseInvalidError):
+                ensure_frozen_source()
 
     def test_release_state_is_fail_closed_for_missing_flaky_or_failed_subgates(self):
         def gates(first: str, second: str):
