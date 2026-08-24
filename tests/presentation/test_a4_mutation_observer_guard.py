@@ -18,7 +18,7 @@ class A4MutationObserverGuardTests(unittest.TestCase):
         sources = self._observer_sources()
         self.assertEqual(
             set(sources),
-            {"control_deck_focus.js", "map_usability.js"},
+            {"control_deck_focus.js", "map_usability.js", "receipt_clarity.js"},
             "Neuer MutationObserver benötigt einen expliziten Loop-Sicherheitsvertrag.",
         )
 
@@ -52,6 +52,14 @@ class A4MutationObserverGuardTests(unittest.TestCase):
         self.assertIn("window.requestAnimationFrame(() =>", source)
         self.assertIn("observer?.disconnect();", source)
         self.assertIn("observer.observe(host, { childList: true, subtree: true });", source)
+
+    def test_receipt_clarity_observer_only_restores_missing_ephemeral_notice(self):
+        source = self._observer_sources()["receipt_clarity.js"]
+        self.assertIn('if (lastReceipt && !document.getElementById("district-receipt-clarity"))', source)
+        self.assertIn("queueMicrotask(() => renderReceipt());", source)
+        self.assertIn(".observe(settlement, { childList: true });", source)
+        self.assertNotIn("subtree: true", source)
+        self.assertNotIn("attributes: true", source)
 
 
 if __name__ == "__main__":
