@@ -27,6 +27,7 @@ PREFIXES = ("content/", "docs/", "manifests/", "schemas/", "src/", "web/a4/")
 TOOL_FILES = {
     "tools/start_a4_game_client.py",
     "tools/start_a4_acceptance.py",
+    "tools/start_orchestrator.py",
     "tools/build_release.py",
 }
 
