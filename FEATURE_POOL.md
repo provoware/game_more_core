@@ -2,6 +2,8 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
+- **Status-Sync-Anker:** PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1`
+
 ## Statuswerte
 
 - `PULLED` – aktiv/in nächste Iteration übernommen
@@ -38,9 +40,11 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
-- **0.8.8-STREET-SCOUT-BALANCE:** PR #156 · Merge `3f7ee5f24dd27b3cd885b7fa51970ec98e92379c` · Scout ist nicht mehr vollständig von Balanced dominiert; bestehende Street-Invarianten bleiben erhalten
-- **0.8.8-STREET-EFFECT-AUDIT:** PR #136 · Merge `56afe056b05c56033d205fd2fea3e60fc8f7722d` · Erwartungswerte fixiert; vollständige Dominanz `balanced > scout` als Gameplay-Befund belegt
-- **0.8.8-QA-REPLAY-PRECISION:** PR #133 · Merge `f3c7c6657b52171d024e1157ffd879ee252df2b9` · District-Receipt-Semantik für angewendet / Replay / nicht ausgelöst regressionsgesichert
+- **0.8.8-UX-AVATAR-RANKING-PRESENCE:** PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1` · bestätigte Crew-Marke ausschließlich am eigenen `local_character_id`-Ranking-Eintrag
+- **0.8.8-UX-AVATAR-MAP-PRESENCE:** PR #172 · Merge `d2a1452b4ee6094584d0c63a94a85773c2821890` · bestätigte Crew-Marke read-only an eigenen Orten und im Map-Detail
+- **0.8.8-UX-AVATAR-STICKY-OFFSET-FIX:** PR #171 · Merge `6d42e3b6ba180a4f97a9ab89a03265e01adc0980` · mittlere Fensterbreiten bleiben unter HUD + Quick-Navigation überlagerungsfrei
+- **0.8.8-CONFIRMED-EVENT-FX:** PR #169 · Merge `6259237050454526366cdf83c4ed4b19e6818b3b` · bestätigte Street-/Recovery-/Krisenergebnisse erhalten lokale visuelle Rückmeldung
+- **0.8.8-STREET-BOUNDARY-DISTRIBUTION-REPORT:** PR #168 · Merge `d00ac7675a5a6a125cd0713789d51386ccd10205` · alle 100 Auswahl-Buckets entsprechen exakt den deklarierten Gewichten
 
 ---
 
@@ -69,9 +73,13 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-007` | `DONE` | Street-Balance-Audit | Ansatzprofile und Katalogdominanz deterministisch prüfen | PR #128 sicher gemergt; keine Telemetrie, keine Gameplayänderung |
 | `POOL-QA-008` | `DONE` | Recovery-Balance-Audit | beide Recovery-Wege über Energie×Stress-Matrix gegen Dominanz und Gratisfolgen prüfen | PR #129 sicher gemergt; test-only |
 | `POOL-QA-002` | `DONE` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft und Regression | PR #133 sicher gemergt; keine zweite Receipt-Architektur |
-| `POOL-QA-009` | `DONE` | Street-Effekt-Erwartungswert-Audit | Energie-/Stress-/Rufwirkung der vier Ansätze mathematisch vergleichen | PR #136 sicher gemergt; Balancebefund `balanced` dominiert `scout` |
-| `POOL-UX-007` | `PULLED` | Receipt-Klartext im Control Deck | neu / Replay / nicht ausgelöst verständlich anzeigen | aktiv; nur vorhandene Runtime-Signale rendern |
+| `POOL-QA-009` | `DONE` | Street-Effekt-Erwartungswert-Audit | Energie-/Stress-/Rufwirkung der vier Ansätze mathematisch vergleichen | PR #136 sicher gemergt; Balancebefund führte zum Scout-Fix |
+| `POOL-UX-007` | `DONE` | Receipt-Klartext im Control Deck | neu / Replay / nicht ausgelöst verständlich anzeigen | PR #157 sicher gemergt; nur vorhandene Runtime-Signale |
 | `POOL-STREET-005` | `DONE` | Scout-Balance nach Effekt-Audit | Scout als Discovery-Tradeoff statt dominierte Scheinwahl | PR #156 sicher gemergt; bestehende Engine/Invarianten erhalten |
+| `POOL-QA-010` | `DONE` | Street-Effekt-Grenzzustandsaudit | Clamping und Replay an realen Grenzwerten beweisen | PRs #158–#163 plus Bucket-Nachweis #168; test-only |
+| `POOL-QA-006` | `DONE` | Status-Sync nach Safe Merge automatisieren | Drift der drei kanonischen Statusdateien automatisch erkennen | read-only Git-Anker; kein direkter Bot-Push auf `main` |
+| `POOL-UX-008` | `READY` | Avatar Visual Consistency Audit | Profil, HUD, Karte und Ranking visuell vereinheitlichen | nur konkrete Presentation-Inkonsistenzen; keine neue Avatarquelle |
+| `POOL-QA-011` | `READY` | Avatar Context Browser E2E | bestätigte Identität durch Profil → HUD → Map → Ranking beweisen | Browser-Nachweis, keine neue Fachlogik |
 
 ---
 
@@ -89,9 +97,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-STREET-003` | `IDEA` | seltene Mini-Kettenereignisse | Ketten-/Replayvertrag |
 | `POOL-QA-001` | `READY` | Native GitHub Branch Protection / Ruleset | geeigneter Admin-Schreibweg |
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
-| `POOL-QA-006` | `READY` | Status-Sync nach Safe Merge automatisieren | bestätigten Safe-Merge-Commit read-only erkennen |
 | `POOL-MAP-003` | `IDEA` | Map-Viewport-Miniübersicht | validierte Map 2 |
-| `POOL-QA-010` | `IDEA` | Street-Effekt-Grenzzustandsaudit | tatsächlichen Character-Clamping-/Ressourcenvertrag zuerst gezielt prüfen |
+| `POOL-QA-012` | `IDEA` | Status-Sync-PR-Autoprep | read-only Driftcheck muss sich zuerst im Alltag bewähren; niemals Direktwrite nach `main` |
 
 ---
 
@@ -103,7 +110,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 4. Presentation darf erklären, filtern, zoomen, maximieren, exportieren und hervorheben, aber keine Fachwerte erfinden.
 5. Zufall, Zinsen, Cadence und wiederholte Assistentenaktionen verwenden bestätigte Spielautorität; Systemzeit nie allein.
 6. Nach remote validiertem Safe Merge wird `PULLED` auf `DONE` gesetzt.
+7. Status-Sync verwendet ausschließlich den letzten fachlich relevanten Safe-Merge-Anker; reine Statuskorrektur-Merges werden zur Vermeidung von Selbstdrift übersprungen.
 
 ## Nächste Entnahme
 
-`POOL-UX-007` ist für `0.8.8-UX-RECEIPT-CLARITY` aktiv. Der Slice übersetzt ausschließlich vorhandene District-Receipt-Signale in die drei Klartextzustände `NEU BESTÄTIGT`, `BEREITS BESTÄTIGT` und `NICHT AUSGELÖST`; keine Receipt-, Journal- oder Gameplayarchitektur entsteht. Danach ist `POOL-QA-010` der kleine unabhängige test-only Folgeaudit; `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig.
+`POOL-UX-008` ist als nächste kleine Iteration vorbereitet: Profil, HUD, Karte und Ranking gemeinsam auf Größenverhältnisse, Kontrast, Kurzmarken-Clipping, High Contrast und Reduced Motion prüfen. Danach folgt `POOL-QA-011` als echter Browser-Nachweis derselben bestätigten Crew-Identität. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig.
