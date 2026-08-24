@@ -29,7 +29,14 @@ def context(command_id: str) -> JournalContext:
     )
 
 
-def forced_manifest(*, encounter_id: str, polarity: str, energy_delta: int, stress_delta: int) -> dict:
+def forced_manifest(
+    *,
+    encounter_id: str,
+    polarity: str,
+    energy_delta: int,
+    stress_delta: int,
+    reputation_delta: int = 0,
+) -> dict:
     target = {
         "encounter_id": encounter_id,
         "polarity": polarity,
@@ -39,7 +46,7 @@ def forced_manifest(*, encounter_id: str, polarity: str, energy_delta: int, stre
         "effects": {
             "energy_delta": energy_delta,
             "stress_delta": stress_delta,
-            "reputation_delta": 0,
+            "reputation_delta": reputation_delta,
         },
     }
     encounters = [target]
@@ -110,11 +117,13 @@ class StreetBoundaryAuditTests(unittest.TestCase):
         stress: int,
         manifest: dict,
         command_id: str,
+        reputation: int = 0,
         server_sequence: int | None = None,
     ):
         character = CharacterState("player-local", "Boundary Tester")
         character.energy = energy
         character.stress = stress
+        character.reputation = reputation
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         kernel = PersistenceKernel(tmp.name, ALLOWED)
@@ -163,6 +172,27 @@ class StreetBoundaryAuditTests(unittest.TestCase):
         self.assertEqual(result.encounter_id, "street.audit_negative")
         self.assertEqual(result.effects, {"energy_delta": -1, "stress_delta": 1, "reputation_delta": 0})
         self.assertEqual((persisted.energy, persisted.stress), (0, 100))
+
+    def test_negative_reputation_effect_stops_at_canonical_zero_floor(self):
+        command_id = "street-boundary-reputation-floor"
+        result, persisted = self._run_forced(
+            energy=50,
+            stress=50,
+            reputation=2,
+            manifest=forced_manifest(
+                encounter_id="street.audit_reputation_floor",
+                polarity="negative",
+                energy_delta=0,
+                stress_delta=1,
+                reputation_delta=-10,
+            ),
+            command_id=command_id,
+            server_sequence=sequence_for_bucket_below(command_id, 49),
+        )
+
+        self.assertEqual(result.encounter_id, "street.audit_reputation_floor")
+        self.assertEqual(result.effects["reputation_delta"], -2)
+        self.assertEqual(persisted.reputation, 0)
 
     def test_real_catalog_resource_effects_fit_the_same_bounded_contract(self):
         self.assertGreater(len(STREET["encounters"]), 0)
