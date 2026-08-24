@@ -94,7 +94,7 @@ class FailureContainmentContractTests(unittest.TestCase):
             self.assertEqual(_RaceServer.stopped, 2)
             status = (state_dir / "START_STATUS.txt").read_text(encoding="utf-8")
             self.assertIn("Address already in use", status)
-            self.assertIn("einmaliger Recovery-Neustart mit freiem Port", status)
+            self.assertIn("Recovery-Neustart mit automatisch freiem Port", status)
 
     def test_enospc_save_failure_is_fail_closed_and_classified_as_filesystem(self):
         with tempfile.TemporaryDirectory() as root:
