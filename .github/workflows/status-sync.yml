@@ -35,4 +35,12 @@ jobs:
         run: PYTHONPATH=. python3 -m unittest tests.quality.test_status_sync -v
 
       - name: Detect canonical status drift
-        run: python3 tools/status_sync.py check
+        shell: bash
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            git fetch --no-tags origin main
+            HISTORY_REF="origin/main"
+          else
+            HISTORY_REF="HEAD"
+          fi
+          python3 tools/status_sync.py check --history-ref "${HISTORY_REF}"
