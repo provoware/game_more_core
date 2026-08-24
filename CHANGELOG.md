@@ -4,6 +4,15 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Release-Qualität – FAILURE-CONTAINMENT-PRO
+
+- das zweite verpflichtende Release-Autopilot-PRO-Subgate als deterministische, zweimal ausgeführte Failure-Containment-Matrix ergänzt; abweichende Laufresultate werden als `FLAKY` quarantänisiert und niemals durch Retry zu PASS umgedeutet.
+- das entpackte Release unter Leerzeichen/Umlauten, langen Pfaden, `C.UTF-8`/`C`, UTC/Europe-Berlin, begrenzten File Descriptors und begrenztem virtuellen Speicher direkt über den paketierten A4-Server mit bestätigtem `/api/health` und `/api/state` geprüft.
+- Process Ownership abgesichert: fremde Sentinel-Prozesse bleiben unangetastet und der eigene Testserver darf nach kontrolliertem Ende nicht zurückbleiben.
+- reale Portkollision und deterministischen Bind-Race-Recovery-Vertrag, ENOSPC-/Dateisystem-Fail-Closed, bestehende Crash-/Journal-/Snapshot-Recovery sowie Legacy-State-Lesekompatibilität in die Evidence-Matrix aufgenommen.
+- Browser-Liveness bewusst aus diesem Subgate herausgehalten; Firefox/Chromium, Desktop-Klickstart und DOM-Watchdogs bleiben alleinige Zuständigkeit von `desktop_browser_e2e_pro`.
+- `FAILURE_CONTAINMENT_EVIDENCE.json`, eigener SHA-256 und source-gebundene `SUBGATE_EVIDENCE.json` werden vor dem Release Autopilot erzeugt; solange `desktop_browser_e2e_pro` fehlt, bleibt der Gesamtzustand korrekt `QUARANTINE` und es wird kein Benutzer-ZIP promoted.
+
 ### Start-Qualität – AUTOSTART-ORCHESTRATOR
 
 - den öffentlichen Linux-Startpfad auf genau einen dünnen Einstieg `START_BUNKERFREQUENZ.sh → tools/start_orchestrator.py → tools/start_a4_game_client.py` konsolidiert; es entsteht keine zweite Server-, Save- oder Gameplay-Architektur.
