@@ -59,6 +59,7 @@ def _is_status_sync_path(path: str) -> bool:
         "README.md",
         "tools/status_sync.py",
         "tests/quality/test_status_sync.py",
+        "tests/runtime/test_feature_status_consistency.py",
         ".github/workflows/status-sync.yml",
         "docs/STATUS_SYNC_LAIENHILFE.md",
     }:
@@ -79,18 +80,18 @@ def _changed_paths(root: Path, merge_commit: str) -> tuple[str, ...]:
 
 def _is_status_only_safe_merge(root: Path, merge_commit: str) -> bool:
     paths = set(_changed_paths(root, merge_commit))
-    # README darf wegen des bestehenden Repository-Health-Informationsvertrags
-    # Teil eines Status-Syncs sein. Ein beliebiger README-/Doku-Merge darf aber
-    # niemals als Status-Sync verschwinden: alle drei kanonischen Statusdateien
-    # müssen gemeinsam Bestandteil desselben Merges sein.
+    # README und der bestehende Runtime-Statusvertrag dürfen wegen der
+    # Repository-Health-/Konsistenzverträge Teil eines Status-Syncs sein. Ein
+    # beliebiger Doku-/Test-Merge darf aber niemals als Status-Sync verschwinden:
+    # alle drei kanonischen Statusdateien müssen gemeinsam enthalten sein.
     return (
         set(CANONICAL_STATUS_PATHS).issubset(paths)
         and all(_is_status_sync_path(path) for path in paths)
     )
 
 
-def latest_relevant_safe_merge(root: Path = ROOT) -> SafeMergeAnchor:
-    output = _run_git(root, "log", "--first-parent", "--format=%H%x09%s", "HEAD")
+def latest_relevant_safe_merge(root: Path = ROOT, history_ref: str = "HEAD") -> SafeMergeAnchor:
+    output = _run_git(root, "log", "--first-parent", "--format=%H%x09%s", history_ref)
     for line in output.splitlines():
         if "\t" not in line:
             continue
@@ -101,7 +102,9 @@ def latest_relevant_safe_merge(root: Path = ROOT) -> SafeMergeAnchor:
         if _is_status_only_safe_merge(root, commit):
             continue
         return SafeMergeAnchor(int(match.group(1)), commit)
-    raise RuntimeError("Kein fachlich relevanter 'Safe merge PR #…'-Commit in der First-Parent-Historie gefunden")
+    raise RuntimeError(
+        f"Kein fachlich relevanter 'Safe merge PR #…'-Commit in der First-Parent-Historie von {history_ref} gefunden"
+    )
 
 
 def _markdown_anchor(path: Path) -> SafeMergeAnchor | None:
@@ -127,8 +130,11 @@ def _project_status_anchor(path: Path) -> tuple[SafeMergeAnchor | None, dict]:
     return SafeMergeAnchor(pull_request, merge_commit), data
 
 
-def check_status_sync(root: Path = ROOT) -> tuple[SafeMergeAnchor, list[str]]:
-    expected = latest_relevant_safe_merge(root)
+def check_status_sync(
+    root: Path = ROOT,
+    history_ref: str = "HEAD",
+) -> tuple[SafeMergeAnchor, list[str]]:
+    expected = latest_relevant_safe_merge(root, history_ref)
     errors: list[str] = []
 
     markdown_anchors = {
@@ -197,14 +203,19 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="BUNKERFREQUENZ Status-Sync nach Safe Merge")
     parser.add_argument("command", choices=("check", "anchor"), nargs="?", default="check")
     parser.add_argument("--root", type=Path, default=ROOT, help="Repository-Root für Tests/Diagnose")
+    parser.add_argument(
+        "--history-ref",
+        default="HEAD",
+        help="Git-Ref, dessen First-Parent-Historie den erwarteten Safe-Merge-Anker liefert",
+    )
     args = parser.parse_args()
 
     try:
-        expected = latest_relevant_safe_merge(args.root)
+        expected = latest_relevant_safe_merge(args.root, args.history_ref)
         if args.command == "anchor":
             print(json.dumps({"pull_request": expected.pull_request, "merge_commit": expected.merge_commit}))
             return 0
-        checked, errors = check_status_sync(args.root)
+        checked, errors = check_status_sync(args.root, args.history_ref)
         return _print_result(checked, errors)
     except (OSError, UnicodeDecodeError, json.JSONDecodeError, RuntimeError) as exc:
         print(f"STATUS SYNC FAIL: {exc}", file=sys.stderr)
