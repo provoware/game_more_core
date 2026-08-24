@@ -72,7 +72,6 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-009` | `DONE` | Street-Effekt-Erwartungswert-Audit | Energie-/Stress-/Rufwirkung der vier Ansätze mathematisch vergleichen | PR #136 sicher gemergt; Balancebefund `balanced` dominiert `scout` |
 | `POOL-UX-007` | `READY` | Receipt-Klartext im Control Deck | neu / Replay / nicht ausgelöst verständlich anzeigen | nur bestätigte Runtime-Signale rendern |
 | `POOL-STREET-005` | `PULLED` | Scout-Balance nach Effekt-Audit | Scout als Discovery-Tradeoff statt dominierte Scheinwahl | aktiv; nur bestehende Manifestgewichte, keine neue Engine |
-| `POOL-QA-011` | `IDEA` | Street-Grenzzustandsaudit | Clamping nahe Energie/Stress 0/100 gegen tatsächliche Character-Regeln prüfen | test-only; vorhandenen Ressourcenvertrag wiederverwenden |
 
 ---
 
@@ -107,4 +106,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-STREET-005` ist für `0.8.8-STREET-SCOUT-BALANCE` aktiv. Der Slice verschiebt ausschließlich vorhandene Scout-Gewichte: Discovery-Begegnungen bleiben sein stärkster Fokus, während die vollständige Erwartungswert-Dominanz durch `balanced` entfällt. Danach ist `POOL-UX-007` der stärkste unabhängige UX-Kandidat; `POOL-QA-011` ist ein kleiner test-only Folgeaudit und `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig.
+`POOL-STREET-005` ist für `0.8.8-STREET-SCOUT-BALANCE` aktiv. Der Slice verschiebt ausschließlich vorhandene Scout-Gewichte: Discovery-Begegnungen bleiben sein stärkster Fokus, während die vollständige Erwartungswert-Dominanz durch `balanced` entfällt. Danach ist `POOL-UX-007` der stärkste unabhängige UX-Kandidat; `POOL-QA-010` ist der bestehende kleine test-only Folgeaudit und `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig.
