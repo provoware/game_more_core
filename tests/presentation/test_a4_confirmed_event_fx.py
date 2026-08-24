@@ -15,27 +15,39 @@ class A4ConfirmedEventFxTests(unittest.TestCase):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, PREFS)
 
-    def test_fx_runs_only_after_existing_confirmed_command_path(self):
+    def test_fx_observes_existing_command_receipt_without_second_api_path(self):
         for token in (
             'new Set(["street.walk", "recovery.run", "incident.resolve"])',
+            "const baseRequest = request;",
+            "const payload = await baseRequest(path, options);",
+            'if (path === "/api/command") lastCommandReceipt = payload;',
             "const baseSendCommand = sendCommand;",
             "await baseSendCommand(command);",
-            "window.setTimeout(() => render(command.type, before), 0);",
+            "window.setTimeout(() => render(command.type, before, receipt), 0);",
         ):
             with self.subTest(token=token):
                 self.assertIn(token, FX)
-        self.assertNotIn('fetch("/api/command"', FX)
+        self.assertNotIn("fetch(", FX)
         self.assertNotIn("command_id:", FX)
 
-    def test_replay_or_rejection_cannot_invent_a_visible_effect_without_change(self):
+    def test_replay_and_rejection_cannot_invent_confirmed_feedback(self):
         for token in (
-            "before.streetText !== after.streetText",
-            "before.recoveryText !== after.recoveryText",
-            "before.incidentText !== after.incidentText",
-            "before === after",
+            "if (!receipt || receipt.idempotent_replay === true) return;",
+            "lastCommandReceipt = null;",
+            "if (!SUPPORTED_COMMANDS.has(command?.type) || !receipt) return;",
         ):
             with self.subTest(token=token):
                 self.assertIn(token, FX)
+
+    def test_identical_new_street_round_still_uses_confirmed_receipt(self):
+        self.assertIn('commandType === "street.walk" && receipt.metadata?.street_encounter', FX)
+        self.assertIn("receipt.metadata.street_encounter.polarity", FX)
+        self.assertNotIn("streetText", FX)
+
+    def test_crisis_feedback_uses_hud_surface_that_survives_phase_transition(self):
+        self.assertIn('commandType === "incident.resolve"', FX)
+        self.assertIn('pulse(document.getElementById("hud-phase"), "neutral")', FX)
+        self.assertNotIn('pulse(document.getElementById("incident-panel"), "neutral")', FX)
 
     def test_resource_feedback_uses_confirmed_before_after_values(self):
         for token in (
