@@ -6,11 +6,12 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-import selectors
+import queue
 import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from urllib.error import URLError
 from urllib.request import urlopen
@@ -99,31 +100,28 @@ def _wait_for_address(process: subprocess.Popen[str], timeout: float = 8.0) -> s
     assert process.stdout is not None
     deadline = time.monotonic() + timeout
     lines: list[str] = []
-    selector = selectors.DefaultSelector()
-    selector.register(process.stdout, selectors.EVENT_READ)
-    try:
-        while True:
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                break
-            if process.poll() is not None:
-                trailing = process.stdout.read()
-                if trailing:
-                    lines.extend(trailing.splitlines())
-                break
-            events = selector.select(timeout=remaining)
-            if not events:
-                break
-            line = process.stdout.readline()
-            if not line:
-                if process.poll() is not None:
-                    break
-                continue
-            lines.append(line.rstrip())
-            if line.startswith("ADRESSE: "):
-                return line.split("ADRESSE: ", 1)[1].strip()
-    finally:
-        selector.close()
+    output: queue.Queue[str | None] = queue.Queue()
+
+    def read_lines() -> None:
+        assert process.stdout is not None
+        for line in process.stdout:
+            output.put(line)
+        output.put(None)
+
+    threading.Thread(target=read_lines, daemon=True).start()
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        try:
+            line = output.get(timeout=remaining)
+        except queue.Empty:
+            break
+        if line is None:
+            break
+        lines.append(line.rstrip())
+        if line.startswith("ADRESSE: "):
+            return line.split("ADRESSE: ", 1)[1].strip()
     raise RuntimeError("Launcher lieferte keine Adresse: " + " | ".join(lines))
 
 
