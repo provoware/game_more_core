@@ -41,8 +41,9 @@ class ControlDeckFocusContractTests(unittest.TestCase):
         self.assertIn("next-action-signal", FOCUS)
 
     def test_existing_ui_prefs_loads_focus_module_without_new_dashboard(self):
-        self.assertIn('script.src = "control_deck_focus.js"', UI_PREFS)
-        self.assertIn('data-control-deck-focus', UI_PREFS.replace("dataset.controlDeckFocus", "data-control-deck-focus"))
+        self.assertIn('appendModule("control_deck_focus.js", "control-deck-focus")', UI_PREFS)
+        self.assertIn('script.dataset[datasetKey.replace(', UI_PREFS)
+        self.assertIn('url.searchParams.set("v", ASSET_REVISION)', UI_PREFS)
         self.assertNotIn("dashboard", FOCUS.lower())
 
     def test_codex_review_is_explicitly_removed_from_development_process(self):
