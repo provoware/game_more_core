@@ -2,26 +2,26 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-STREET-EFFECT-AUDIT",
-  "status": "0_8_8_qa_replay_precision_remote_validated_street_effect_audit_in_validation",
-  "current_focus": "street_effect_expected_value_audit",
-  "last_validated_feature_iteration": "0.8.8-QA-REPLAY-PRECISION",
+  "active_iteration": "0.8.8-STREET-SCOUT-BALANCE",
+  "status": "0_8_8_street_effect_audit_remote_validated_scout_balance_in_validation",
+  "current_focus": "street_scout_manifest_balance_tradeoff",
+  "last_validated_feature_iteration": "0.8.8-STREET-EFFECT-AUDIT",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #133 / head a387ec62358fccac69957ceeb2fd076230daad04 / merge f3c7c6657b52171d024e1157ffd879ee252df2b9",
+  "validation_reference": "PR #136 / head 27218ff76b8c407bf1ba195b1023bd60493e0ee8 / merge 56afe056b05c56033d205fd2fea3e60fc8f7722d",
   "remote_validation": {
-    "status": "success_for_0.8.8_qa_replay_precision",
-    "pull_request": 133,
-    "validated_head": "a387ec62358fccac69957ceeb2fd076230daad04",
-    "runtime_core_workflow_run": 32681735728,
-    "presentation_core_workflow_run": 32681735672,
-    "repository_health_workflow_run": 32681735701,
-    "release_acceptance_workflow_run": 32681735679,
-    "release_package_workflow_run": 32681735712,
+    "status": "success_for_0.8.8_street_effect_audit",
+    "pull_request": 136,
+    "validated_head": "27218ff76b8c407bf1ba195b1023bd60493e0ee8",
+    "runtime_core_workflow_run": 32685385026,
+    "presentation_core_workflow_run": 32685385053,
+    "repository_health_workflow_run": 32685385047,
+    "release_acceptance_workflow_run": 32685385035,
+    "release_package_workflow_run": 32685385036,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "f3c7c6657b52171d024e1157ffd879ee252df2b9"
+    "merged_commit": "56afe056b05c56033d205fd2fea3e60fc8f7722d"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -75,7 +75,8 @@
     {"iteration": "0.8.8-STREET-BALANCE-AUDIT", "pull_request": 128, "merged_commit": "bef5e2ad78923c4ce36c116c66f2755abe442d3d", "feature": "deterministic_street_balance_audit"},
     {"iteration": "0.8.8-ECON-RECOVERY-BALANCE-AUDIT", "pull_request": 129, "merged_commit": "3f51e57e58b2cbd6244f36333fea6cce970043c1", "feature": "deterministic_recovery_balance_audit"},
     {"iteration": "0.8.8-MAP-USABILITY", "pull_request": 130, "merged_commit": "47eb5b5288221fb0c6cd2ebfa3473b2b5ba85a07", "feature": "berlin_ops_map_usability"},
-    {"iteration": "0.8.8-QA-REPLAY-PRECISION", "pull_request": 133, "merged_commit": "f3c7c6657b52171d024e1157ffd879ee252df2b9", "feature": "district_replay_receipt_semantics_regression"}
+    {"iteration": "0.8.8-QA-REPLAY-PRECISION", "pull_request": 133, "merged_commit": "f3c7c6657b52171d024e1157ffd879ee252df2b9", "feature": "district_replay_receipt_semantics_regression"},
+    {"iteration": "0.8.8-STREET-EFFECT-AUDIT", "pull_request": 136, "merged_commit": "56afe056b05c56033d205fd2fea3e60fc8f7722d", "feature": "deterministic_street_effect_expected_value_audit"}
   ],
   "subsystems": {
     "character_forge": {"status": "validated", "skills": 16, "trait_names": 165, "level_cap_before_resonance": 50, "profile_personalization": true, "crew_identity_logo_flag": true},
@@ -160,7 +161,7 @@
       "recovery_balance_audit_gameplay_changes": false
     },
     "living_world": {
-      "status": "street_effect_audit_in_validation",
+      "status": "street_scout_balance_in_validation",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -177,17 +178,21 @@
       "street_balance_max_single_weight": 20,
       "street_balance_bucket_total": 100,
       "street_balance_all_buckets_enumerated": true,
-      "street_effect_audit_in_validation": true,
-      "street_effect_audit_validated": false,
+      "street_effect_audit_in_validation": false,
+      "street_effect_audit_validated": true,
       "street_effect_audit_telemetry": false,
       "street_effect_audit_gameplay_changes": false,
+      "street_scout_balance_in_validation": true,
+      "street_scout_balance_validated": false,
+      "street_scout_balance_second_engine": false,
+      "street_scout_discovery_weight": 40,
       "street_effect_expected_hundredths": {
         "balanced": {"energy": 100, "stress": -49, "reputation": 35},
         "recovery": {"energy": 123, "stress": -49, "reputation": 23},
         "network": {"energy": 53, "stress": -59, "reputation": 65},
-        "scout": {"energy": 91, "stress": -14, "reputation": 33}
+        "scout": {"energy": 101, "stress": -9, "reputation": 33}
       },
-      "street_effect_current_strict_dominance": [["balanced", "scout"]],
+      "street_effect_current_strict_dominance": [],
       "hall_of_tribute_visible": true,
       "district_event_contract_version": "0.8.7-c1",
       "district_event_catalog_size": 4,
@@ -301,11 +306,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.8-STREET-SCOUT-BALANCE",
-  "next_goal": "Den gefundenen balanced→scout-Dominanzbefund fachlich bewerten und nur bei gewollter Gameplayänderung einen kleinen Manifest-Balancevertrag ableiten.",
+  "next_iteration": "0.8.8-UX-RECEIPT-CLARITY",
+  "next_goal": "Nach Scout-Balance die bereits regressionsgesicherten Receipt-Zustände ausschließlich aus vorhandenen Runtime-Signalen verständlicher im Control Deck darstellen.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-24T05:02:00+02:00"
+  "updated_at": "2026-08-24T16:01:00+02:00"
 }

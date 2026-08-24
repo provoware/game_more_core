@@ -4,6 +4,13 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Gameplay – 0.8.8-STREET-SCOUT-BALANCE
+
+- Scout innerhalb des bestehenden Street-Vertrags neu ausbalanciert: `street.construction_detour` 5 → 0 und `street.lost_glove` 5 → 10; Gesamtgewicht, Manifestversion, Encounter-Effekte und Polaritätsmix bleiben unverändert.
+- Scout-Erwartungswert von `+0,91 Energie / −0,14 Stress / +0,33 Ruf` auf `+1,01 / −0,09 / +0,33` verschoben; damit entfällt die vollständige Dominanz durch `balanced`, ohne dass Scout einen anderen Ansatz vollständig dominiert.
+- vorhandene Balance-Invarianten bleiben erhalten: maximal 20 Punkte pro Einzelbegegnung, Scout-Polaritätsmix `15 neutral / 60 positiv / 25 negativ` und unverändert stärkster Discovery-Fokus mit 40/100 Punkten.
+- direkte Effekt-, Balance- und Statusregressionen sowie Laienhilfe auf denselben Vertrag synchronisiert; keine neue Zufalls-, Encounter-, Save-, Journal- oder UI-Architektur.
+
 ### Start-Qualität – START-SELF-HEALING-PRO
 
 - statische A4-Assets mit gemeinsamer Revision und `no-store` gegen veraltete Desktop-Browserstände gehärtet; sichtbare Starts verwenden zusätzlich cache-sichere Startadressen.

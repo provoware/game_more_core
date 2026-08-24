@@ -43,10 +43,10 @@ class StreetBalanceAuditTests(unittest.TestCase):
             {
                 ("balanced", "recovery"): 0.17,
                 ("balanced", "network"): 0.27,
-                ("balanced", "scout"): 0.30,
+                ("balanced", "scout"): 0.34,
                 ("recovery", "network"): 0.35,
-                ("recovery", "scout"): 0.40,
-                ("network", "scout"): 0.30,
+                ("recovery", "scout"): 0.42,
+                ("network", "scout"): 0.32,
             },
         )
         self.assertGreaterEqual(min(distances.values()), 0.15)

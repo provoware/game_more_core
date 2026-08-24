@@ -110,10 +110,10 @@
         "street.useful_find": 10,
         "street.cable_tip": 10,
         "street.puddle": 5,
-        "street.lost_glove": 5,
+        "street.lost_glove": 10,
         "street.bike_splash": 5,
         "street.sudden_rain": 5,
-        "street.construction_detour": 5
+        "street.construction_detour": 0
       }
     }
   ],
