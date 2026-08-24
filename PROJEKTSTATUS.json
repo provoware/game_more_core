@@ -2,26 +2,26 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-STREET-BALANCE-AUDIT",
-  "status": "0_8_8_recovery_variants_remote_validated_street_balance_audit_in_validation",
-  "current_focus": "deterministic_street_catalog_balance_audit",
-  "last_validated_feature_iteration": "0.8.8-ECON-RECOVERY-VARIANTS",
+  "active_iteration": "0.8.8-ECON-RECOVERY-BALANCE-AUDIT",
+  "status": "0_8_8_street_balance_audit_remote_validated_recovery_balance_audit_in_validation",
+  "current_focus": "deterministic_recovery_energy_stress_matrix_audit",
+  "last_validated_feature_iteration": "0.8.8-STREET-BALANCE-AUDIT",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #127 / head c042e4b9de2d385384ce4d65b6586f519c0a515a / merge c9732c28cc723984d59b02018fbed02c3c681913",
+  "validation_reference": "PR #128 / head 9f823e72f2e11a6891a96272d8faaf1ba53ee08b / merge bef5e2ad78923c4ce36c116c66f2755abe442d3d",
   "remote_validation": {
-    "status": "success_for_0.8.8_econ_recovery_variants",
-    "pull_request": 127,
-    "validated_head": "c042e4b9de2d385384ce4d65b6586f519c0a515a",
-    "runtime_core_workflow_run": 32677148542,
-    "presentation_core_workflow_run": 32677148505,
-    "repository_health_workflow_run": 32677148521,
-    "release_acceptance_workflow_run": 32677148511,
-    "release_package_workflow_run": 32677148527,
+    "status": "success_for_0.8.8_street_balance_audit",
+    "pull_request": 128,
+    "validated_head": "9f823e72f2e11a6891a96272d8faaf1ba53ee08b",
+    "runtime_core_workflow_run": 32677951158,
+    "presentation_core_workflow_run": 32677951294,
+    "repository_health_workflow_run": 32677951209,
+    "release_acceptance_workflow_run": 32677951288,
+    "release_package_workflow_run": 32677951160,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "c9732c28cc723984d59b02018fbed02c3c681913"
+    "merged_commit": "bef5e2ad78923c4ce36c116c66f2755abe442d3d"
   },
   "release": {
     "version": "0.8.4-alpha.1",
@@ -71,13 +71,14 @@
     {"iteration": "0.8.8-UX-TIMELINE-FILTER", "pull_request": 124, "merged_commit": "465dc5040c5a1283fee5e7af52590455feaa9a01", "feature": "local_read_only_event_timeline_filters"},
     {"iteration": "0.8.8-ECON-RECOVERY-FEEDBACK", "pull_request": 125, "merged_commit": "c8e8cba3dab103c90937f26e90a02a13139dd0f5", "feature": "confirmed_recovery_before_after_feedback"},
     {"iteration": "0.8.8-STREET-PACK", "pull_request": 126, "merged_commit": "00c14d57bf642e688a65c0a9e99d39b52857eb0b", "feature": "expanded_deterministic_street_encounter_catalog"},
-    {"iteration": "0.8.8-ECON-RECOVERY-VARIANTS", "pull_request": 127, "merged_commit": "c9732c28cc723984d59b02018fbed02c3c681913", "feature": "second_confirmed_recovery_tradeoff"}
+    {"iteration": "0.8.8-ECON-RECOVERY-VARIANTS", "pull_request": 127, "merged_commit": "c9732c28cc723984d59b02018fbed02c3c681913", "feature": "second_confirmed_recovery_tradeoff"},
+    {"iteration": "0.8.8-STREET-BALANCE-AUDIT", "pull_request": 128, "merged_commit": "bef5e2ad78923c4ce36c116c66f2755abe442d3d", "feature": "deterministic_street_balance_audit"}
   ],
   "subsystems": {
     "character_forge": {"status": "validated", "skills": 16, "trait_names": 165, "level_cap_before_resonance": 50, "profile_personalization": true, "crew_identity_logo_flag": true},
     "event_runtime": {"status": "validated_through_0_8_8_b", "canonical_event_actions": 8, "crisis_engine": true, "settlement_engine": true, "a4_writing_client": true, "always_available_job_actions": true},
     "economy": {
-      "status": "recovery_variants_remote_validated",
+      "status": "recovery_balance_audit_in_validation",
       "equipment_market": true,
       "property_purchase_ledger_kind": "property_purchase",
       "property_upgrade_ledger_kind": "property_upgrade",
@@ -146,10 +147,16 @@
       "recovery_burst_max_stress_before": 80,
       "recovery_variant_balance_contract": "docs/RECOVERY_VARIANTS_BALANCE_CONTRACT.md",
       "recovery_variant_requires_system_time": false,
-      "recovery_variant_second_engine": false
+      "recovery_variant_second_engine": false,
+      "recovery_balance_audit_in_validation": true,
+      "recovery_balance_audit_state_matrix_size": 10201,
+      "recovery_balance_audit_all_sequences": true,
+      "recovery_balance_audit_clamping_allowed": false,
+      "recovery_balance_audit_telemetry": false,
+      "recovery_balance_audit_gameplay_changes": false
     },
     "living_world": {
-      "status": "street_balance_audit_in_validation",
+      "status": "street_balance_audit_remote_validated",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -158,7 +165,8 @@
       "street_pack_in_validation": false,
       "street_pack_validated": true,
       "street_approaches": ["balanced", "recovery", "network", "scout"],
-      "street_balance_audit_in_validation": true,
+      "street_balance_audit_in_validation": false,
+      "street_balance_audit_validated": true,
       "street_balance_audit_telemetry": false,
       "street_balance_audit_gameplay_changes": false,
       "street_balance_min_total_variation_distance": 0.17,
@@ -269,11 +277,11 @@
     "safe_merge_command": "/safe-merge",
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.8-ECON-RECOVERY-BALANCE-AUDIT",
-  "next_goal": "Beide Recovery-Wege über eine deterministische Energie×Stress-Matrix auf globale Dominanz, Clamping und unerwartete Gratisfolgen prüfen; keine neue Mechanik.",
+  "next_iteration": "0.8.8-QA-REPLAY-PRECISION",
+  "next_goal": "District-No-op-/Retry-Receipts semantisch präzisieren und gezielt regressionssichern, ohne Gameplayänderung.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-24T02:45:00+02:00"
+  "updated_at": "2026-08-24T02:59:00+02:00"
 }
