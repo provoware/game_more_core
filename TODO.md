@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-RECOVERY-FEEDBACK – verständliches Regenerationsfeedback` · PR #125 · Merge `c8e8cba3dab103c90937f26e90a02a13139dd0f5`
-- **RECOVERY-FEEDBACK Remote-Abnahme:** Runtime `32675067361` · Presentation `32675067353` · Repository Health `32675067359` · Release Acceptance `32675067362` · Release Package `32675067352` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-STREET-PACK – Straßenereignis-Erweiterung`
-- **STREET-PACK-Status:** sechs zusätzliche Begegnungen teilen ausschließlich vorhandene Gewichtstöpfe auf; Makroverteilung, Auswahlalgorithmus, Ansätze und Replay-Pfad bleiben erhalten
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STREET-PACK – Straßenereignis-Erweiterung` · PR #126 · Merge `00c14d57bf642e688a65c0a9e99d39b52857eb0b`
+- **STREET-PACK Remote-Abnahme:** Runtime `32676087259` · Presentation `32676087194` · Repository Health `32676087191` · Release Acceptance `32676087204` · Release Package `32676087179` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-ECON-RECOVERY-VARIANTS – zweite Regenerationsentscheidung`
+- **RECOVERY-VARIANTS-Status:** Balancevertrag zuerst; `Mate, Zucker & Vollgas` liefert +30 Energie gegen +20 Stress und ist bewusst weniger effizient als +20/+12
 - **Repository-Arbeitsmodus:** Basisdateien, Arbeitsdateien und Evidenz/Logs sind getrennt; grüne Logs werden nicht dauerhaft übertragen, rote Gates zuerst nur im konkreten Fehlerausschnitt gelesen
 - **Entwicklungsprozess:** Focused-Read bleibt verpflichtend; Codex-Code-Review bleibt vollständig außerhalb von Entwicklung, Gate-Evidenz und Mergeprozess
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -58,70 +58,78 @@
 - [x] keine neue Mechanik, Delta-/Schwellenberechnung oder Persistenz
 - [x] PR #125 · Head `129f1de8b76e569fab4bde51cb722c5aec64b637` · Runtime `32675067361` · Presentation `32675067353` · Repository Health `32675067359` · Release Acceptance `32675067362` · Release Package `32675067352` · 0 Review-Threads · `/safe-merge` PASS · Merge `c8e8cba3dab103c90937f26e90a02a13139dd0f5`
 
+## 0.8.8-STREET-PACK – Straßenereignis-Erweiterung
+- [x] Katalog 10 → 16 Begegnungen über denselben Encounter-Vertrag
+- [x] globale Verteilung bleibt exakt 25 neutral / 60 positiv / 15 negativ
+- [x] `StreetEncounterService` und deterministische Auswahlarchitektur unverändert
+- [x] PR #126 · Head `bd2b921089ef6b10dd849e0d9fc7a89bf3efb342` · Runtime `32676087259` · Presentation `32676087194` · Repository Health `32676087191` · Release Acceptance `32676087204` · Release Package `32676087179` · 0 Review-Threads · `/safe-merge` PASS · Merge `00c14d57bf642e688a65c0a9e99d39b52857eb0b`
+
 ---
 
-# Aktiv – 0.8.8-STREET-PACK
+# Aktiv – 0.8.8-ECON-RECOVERY-VARIANTS
 
 ## Ziel
 
-Mehr Abwechslung auf der Straße ausschließlich durch zusätzliche katalogisierte Begegnungen. Auswahl, Replay, Ansätze und Effekt-Autorität bleiben vollständig beim bestehenden `StreetEncounterService` und `STREET_ENCOUNTER_MANIFEST`.
+Eine zweite bestätigte Regenerationsentscheidung soll eine echte situative Alternative sein: größerer Sofortschub gegen überproportional höheren Stresspreis. Keine Echtzeitregeneration, kein Cooldown und keine zweite Recovery-Engine.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
 **Basisdateien**
-- `AGENTS.md` – Focused Read, Katalog-/Merge-Grenzen
+- `AGENTS.md` – Focused Read, Runtime-/Merge-Grenzen
 - aktive Stellen aus `TODO.md`, `PROJEKTSTATUS.json`, `FEATURE_POOL.md`
 - README wegen aktiver/folgender Iterationskonsistenz
 
 **Arbeitsdateien**
-- `manifests/STREET_ENCOUNTER_MANIFEST.json`
-- `content/de/ui/street_encounters.json`
-- `tests/runtime/test_street_pack_contract.py`
-- bestehender `StreetEncounterService` nur zur Vertragsprüfung, ohne geplante Änderung
-- `docs/LAIENHILFE_STREET_PACK.md`
+- `docs/RECOVERY_VARIANTS_BALANCE_CONTRACT.md` – mathematischer Vertrag vor Runtime-Patch
+- `src/bunkerfrequenz/application/recovery_action_service.py`
+- `tests/runtime/test_recovery_action_service.py`
+- `src/bunkerfrequenz/presentation/scene_jobs_projection.py` nur zur Generikprüfung, keine Änderung erforderlich
+- `web/a4/recovery_actions_ui.js` nur zur Autoritätsprüfung, keine Änderung erforderlich
+- `tests/presentation/test_a4_recovery_actions.py` direkte Presentation-Grenze
 
 **Evidenz/Logs**
 - nur Run-ID/Status bei grünen Gates
 - vollständiger Log ausschließlich bei einem konkreten roten Gate
 
-### STREET-PACK – kataloggetriebener Erweiterungsslice
+### RECOVERY-VARIANTS – Balancevertrag + kleinster Runtime-Slice
 
-- [x] Katalog von 10 auf 16 Begegnungen erweitert
-- [x] sechs neue Varianten: 1 neutral, 3 positiv, 2 negativ
-- [x] globale Verteilung bleibt exakt `25 neutral / 60 positiv / 15 negativ`
-- [x] `balanced` bleibt exakt der Basisgewichtskatalog
-- [x] alle vier Ansätze enthalten exakt denselben vollständigen Katalog und summieren auf 100
-- [x] Auswahl bleibt `sha256_stable_weighted`; Systemzeit bleibt ausgeschlossen
-- [x] bisherige Vertragsversion `0.8.7-b1` bleibt als Replay-Version kompatibel
-- [x] keine Economy-/Inventory-Effekte und keine neue Eventart
-- [x] `StreetEncounterService` bleibt unverändert
-- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32675648994` · Presentation `32675648960` · Repository Health `32675648979` · Release Acceptance `32675648956` · Release Package `32675648962`
+- [x] Balancevertrag vor Runtime-Patch separat dokumentiert
+- [x] Referenz `Koffein & kalte Luft`: +20 Energie / +12 Stress = 1,67 Energie pro Stress
+- [x] neue Variante `Mate, Zucker & Vollgas`: +30 Energie / +20 Stress = 1,50 Energie pro Stress
+- [x] 50 % mehr Sofortenergie kostet 66,7 % mehr Stress; neue Variante ist bewusst weniger effizient
+- [x] Headroom vollständig: nur bei Energie <= 70 und Stress <= 80; kein Clamp schwächt Kosten
+- [x] gleiche `RECOVERY_ACTIONS`-Quelle und derselbe `RecoveryActionService`
+- [x] gleicher `character.resources_changed`-Journal-/Replay-Pfad
+- [x] Retry derselben Command-ID bleibt schreibfrei; andere Recovery-ID auf derselben Command-ID scheitert
+- [x] Projection, Session und Browser bleiben unverändert, weil sie den Recovery-Katalog bereits generisch verarbeiten
+- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32676850542` · Presentation `32676850575` · Repository Health `32676850715` · Release Acceptance `32676850860` · Release Package `32676850512`
 - [ ] finalen Status-/Dokumentations-Head 5/5 grün bestätigen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch 0 Commits hinter `main` bestätigen
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in STREET-PACK
+### Bewusst nicht in RECOVERY-VARIANTS
 
-- keine zweite Encounter-Engine
-- keine neue Zufallsquelle oder Systemzeit-Autorität
-- keine neue Street-Ressource, Economy- oder Inventory-Logik
-- keine Mini-Kettenereignisse
-- keine Änderung an vorhandenen Approach-IDs
+- keine Echtzeit- oder Rechnerzeitregeneration
+- kein Cooldown oder globale Recovery-Sperre
+- keine zweite Recovery-/Character-Ressourcenengine
+- keine XP, Traits oder Zufallsfolgen
+- keine Browserlieferung von Energie-/Stresswerten oder Schwellen
+- kein neuer Journaltyp
 - kein Produktversionsbump
 
 ### Danach
 
-- [ ] **0.8.8-ECON-RECOVERY-VARIANTS:** erst nach Balancingprüfung eine zweite deutlich anders gewichtete Regenerationsentscheidung prüfen; keine Echtzeitregeneration
+- [ ] **0.8.8-STREET-BALANCE-AUDIT:** deterministisch prüfen, dass alle vier Street-Ansätze erkennbar unterschiedlich bleiben und kein einzelnes Ereignis versehentlich dominiert; keine Telemetrie oder Gameplayänderung
+- [ ] **0.8.8-ECON-RECOVERY-BALANCE-AUDIT:** Szenariomatrix für beide Recovery-Optionen gegen Dominanz-/Spam-Risiken erweitern, ohne neue Mechanik
 - [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
-- [ ] **0.8.8-STREET-PACK-2:** nur bei nachgewiesenem Bedarf weitere Katalogvielfalt ergänzen; keine zweite Architektur
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Street-Auswahl bleibt deterministisch und replaybar aus der bestehenden bestätigten Autorität.
-- Neue Begegnungen dürfen nur katalogisierte kleine Energie-/Stress-/Rufeffekte besitzen.
+- Recovery-Werte, Availability und Anwendung bleiben vollständig Runtime-Autorität.
+- Der Browser wählt nur eine katalogisierte `recovery_id` und berechnet keine Fachwerte.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)

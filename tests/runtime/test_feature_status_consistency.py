@@ -33,7 +33,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
 
-    def test_validated_pool_items_and_active_street_pack_owner_are_consistent(self):
+    def test_validated_pool_items_and_active_recovery_variant_owner_are_consistent(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         for pool_id in (
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
@@ -42,37 +42,48 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-FINANCE-003", "POOL-FINANCE-004", "POOL-UX-004", "POOL-UX-005",
             "POOL-MAP-002", "POOL-STORY-001", "POOL-ECON-004", "POOL-ECON-005",
             "POOL-UX-006", "POOL-ECON-006", "POOL-UX-003", "POOL-ECON-007",
+            "POOL-STREET-002",
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-STREET-002"))
-        self.assertIn("`READY`", _pool_row(pool, "POOL-ECON-008"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-ECON-008"))
+        self.assertIn("`READY`", _pool_row(pool, "POOL-QA-007"))
 
-    def test_validated_recovery_feedback_and_active_street_pack_match_status(self):
+    def test_validated_street_pack_and_active_recovery_variants_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         economy = status["subsystems"]["economy"]
         living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-RECOVERY-FEEDBACK")
-        self.assertEqual(status["active_iteration"], "0.8.8-STREET-PACK")
-        self.assertEqual(status["next_iteration"], "0.8.8-ECON-RECOVERY-VARIANTS")
-        self.assertEqual(status["current_focus"], "expanded_deterministic_street_encounter_catalog")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-STREET-PACK")
+        self.assertEqual(status["active_iteration"], "0.8.8-ECON-RECOVERY-VARIANTS")
+        self.assertEqual(status["next_iteration"], "0.8.8-STREET-BALANCE-AUDIT")
+        self.assertEqual(status["current_focus"], "second_confirmed_recovery_tradeoff")
         self.assertTrue(economy["recovery_actions_validated"])
-        self.assertFalse(economy["recovery_feedback_in_validation"])
         self.assertTrue(economy["recovery_feedback_validated"])
-        self.assertEqual(economy["recovery_feedback_source"], "confirmed_projection_before_after")
-        self.assertFalse(economy["recovery_feedback_recalculates_resource_deltas"])
+        self.assertTrue(economy["recovery_variants_in_validation"])
+        self.assertEqual(economy["recovery_action_count"], 2)
+        self.assertEqual(
+            economy["recovery_variant_ids"],
+            ["recovery.koffein_kalte_luft", "recovery.mate_zucker_vollgas"],
+        )
+        self.assertEqual(economy["recovery_burst_energy_delta"], 30)
+        self.assertEqual(economy["recovery_burst_stress_delta"], 20)
+        self.assertEqual(economy["recovery_burst_max_energy_before"], 70)
+        self.assertEqual(economy["recovery_burst_max_stress_before"], 80)
+        self.assertFalse(economy["recovery_variant_requires_system_time"])
+        self.assertFalse(economy["recovery_variant_second_engine"])
         self.assertTrue(living_world["street_encounters_replayable"])
         self.assertEqual(living_world["street_encounter_contract_version"], "0.8.8-street-pack")
         self.assertEqual(living_world["street_encounter_catalog_size"], 16)
-        self.assertTrue(living_world["street_pack_in_validation"])
+        self.assertFalse(living_world["street_pack_in_validation"])
+        self.assertTrue(living_world["street_pack_validated"])
         self.assertEqual(
             living_world["street_approaches"],
             ["balanced", "recovery", "network", "scout"],
         )
-        self.assertTrue(presentation["timeline_local_filter"])
-        self.assertTrue(presentation["recovery_feedback_visible"])
+        self.assertTrue(presentation["recovery_actions_generic_catalog_rendering"])
+        self.assertEqual(presentation["recovery_action_catalog_count"], 2)
         self.assertFalse(presentation["browser_gameplay_authority"])
         self.assertTrue(process["focused_read_policy"])
         self.assertTrue(process["planned_read_list_required"])
@@ -103,7 +114,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-ECON-006": "`DONE`",
             "POOL-UX-003": "`DONE`",
             "POOL-ECON-007": "`DONE`",
-            "POOL-STREET-002": "`PULLED`",
+            "POOL-STREET-002": "`DONE`",
+            "POOL-ECON-008": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
