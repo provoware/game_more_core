@@ -8,6 +8,7 @@
     "confirmed-fx-negative",
     "confirmed-fx-neutral"
   ];
+  let lastCommandReceipt = null;
 
   function snapshot() {
     const projection = state.projection || {};
@@ -18,9 +19,7 @@
       stress: character.stress,
       reputation: character.reputation,
       budget: event.budget_cents,
-      streetText: document.getElementById("street-result")?.textContent || "",
-      recoveryText: document.getElementById("jobs-recovery-feedback")?.textContent || "",
-      incidentText: document.getElementById("incident-content")?.textContent || ""
+      recoveryText: document.getElementById("jobs-recovery-feedback")?.textContent || ""
     };
   }
 
@@ -38,7 +37,8 @@
     return after > before ? "positive" : "negative";
   }
 
-  function render(commandType, before) {
+  function render(commandType, before, receipt) {
+    if (!receipt || receipt.idempotent_replay === true) return;
     const after = snapshot();
 
     for (const [key, elementId] of [
@@ -51,9 +51,9 @@
       if (tone) pulse(document.getElementById(elementId), tone);
     }
 
-    if (commandType === "street.walk" && before.streetText !== after.streetText) {
+    if (commandType === "street.walk" && receipt.metadata?.street_encounter) {
       const street = document.getElementById("street-result");
-      const polarity = street?.dataset.polarity;
+      const polarity = receipt.metadata.street_encounter.polarity || street?.dataset.polarity;
       const tone = polarity === "positive" || polarity === "negative" ? polarity : "neutral";
       pulse(street, tone);
     }
@@ -62,18 +62,33 @@
       pulse(document.getElementById("jobs-recovery-feedback"), "neutral");
     }
 
-    if (commandType === "incident.resolve" && before.incidentText !== after.incidentText) {
-      pulse(document.getElementById("incident-panel"), "neutral");
+    if (commandType === "incident.resolve") {
+      pulse(document.getElementById("hud-phase"), "neutral");
     }
   }
 
-  if (window.__bunkerConfirmedEventFxInstalled || typeof sendCommand !== "function") return;
+  if (
+    window.__bunkerConfirmedEventFxInstalled ||
+    typeof sendCommand !== "function" ||
+    typeof request !== "function"
+  ) return;
+
+  const baseRequest = request;
+  request = async function requestWithConfirmedReceipt(path, options = {}) {
+    const payload = await baseRequest(path, options);
+    if (path === "/api/command") lastCommandReceipt = payload;
+    return payload;
+  };
+
   const baseSendCommand = sendCommand;
   sendCommand = async function sendCommandWithConfirmedEventFx(command) {
     const before = snapshot();
+    lastCommandReceipt = null;
     await baseSendCommand(command);
-    if (!SUPPORTED_COMMANDS.has(command?.type)) return;
-    window.setTimeout(() => render(command.type, before), 0);
+    const receipt = lastCommandReceipt;
+    lastCommandReceipt = null;
+    if (!SUPPORTED_COMMANDS.has(command?.type) || !receipt) return;
+    window.setTimeout(() => render(command.type, before, receipt), 0);
   };
   window.__bunkerConfirmedEventFxInstalled = true;
 })();
