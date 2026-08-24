@@ -41,14 +41,18 @@ class A4ClientResilienceTests(unittest.TestCase):
         ):
             self.assertIn(f'appendModule("{asset}"', source)
 
-    def test_transport_retry_is_bounded_and_writes_require_idempotency_key(self):
+    def test_transport_retry_is_bounded_and_writes_require_replay_safe_command_route(self):
         source = (A4 / "client_resilience.js").read_text(encoding="utf-8")
         self.assertIn("const API_TIMEOUT_MS = 8000", source)
         self.assertIn("const SAFE_GET_RETRY_DELAYS_MS = [250, 900]", source)
         self.assertIn("const IDEMPOTENT_WRITE_RETRY_DELAYS_MS = [400]", source)
+        self.assertIn('const REPLAY_SAFE_POST_PATHS = new Set(["/api/command"])', source)
         self.assertIn("function hasCommandId(body)", source)
-        self.assertIn('method === "POST" && hasCommandId(init.body)', source)
+        self.assertIn("REPLAY_SAFE_POST_PATHS.has(url.pathname)", source)
+        self.assertIn('method === "POST"', source)
         self.assertIn('url.pathname.startsWith("/api/")', source)
+        self.assertNotIn('/api/new-game"]);', source)
+        self.assertNotIn('/api/checkpoint"]);', source)
         self.assertNotIn("while (true)", source)
 
     def test_transport_timeout_covers_headers_and_complete_response_body(self):
