@@ -94,6 +94,9 @@ class StatusSyncTests(unittest.TestCase):
         tool = self.root / "tools" / "status_sync.py"
         tool.parent.mkdir(parents=True, exist_ok=True)
         tool.write_text("# status sync helper\n", encoding="utf-8")
+        runtime_test = self.root / "tests" / "runtime" / "test_feature_status_consistency.py"
+        runtime_test.parent.mkdir(parents=True, exist_ok=True)
+        runtime_test.write_text("# status consistency\n", encoding="utf-8")
         changelog = self.root / "CHANGELOG.d" / "0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE.md"
         changelog.parent.mkdir(parents=True, exist_ok=True)
         changelog.write_text("status sync\n", encoding="utf-8")
@@ -118,6 +121,32 @@ class StatusSyncTests(unittest.TestCase):
         latest = latest_relevant_safe_merge(self.root)
         self.assertEqual(latest.pull_request, 175)
         self.assertNotEqual(latest, previous)
+
+    def test_current_base_history_wins_when_main_is_merged_into_stale_pr_branch(self):
+        first = self.merge_feature(173)
+        write_status(self.root, first)
+        git(self.root, "add", ".")
+        git(self.root, "commit", "-m", "status after 173")
+
+        git(self.root, "checkout", "-b", "stale-pr")
+        (self.root / "branch.txt").write_text("feature branch\n", encoding="utf-8")
+        git(self.root, "add", "branch.txt")
+        git(self.root, "commit", "-m", "branch work")
+
+        git(self.root, "checkout", "main")
+        second = self.merge_feature(174)
+        write_status(self.root, second)
+        git(self.root, "add", ".")
+        git(self.root, "commit", "-m", "status after 174")
+
+        git(self.root, "checkout", "stale-pr")
+        git(self.root, "merge", "--no-ff", "main", "-m", "Merge main into stale PR")
+
+        self.assertEqual(latest_relevant_safe_merge(self.root, "main"), second)
+        checked, errors = check_status_sync(self.root, "main")
+        self.assertEqual(checked, second)
+        self.assertEqual(errors, [])
+        self.assertNotEqual(latest_relevant_safe_merge(self.root, "HEAD"), second)
 
 
 if __name__ == "__main__":
