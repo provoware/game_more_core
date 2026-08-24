@@ -109,6 +109,28 @@ def sequence_for_bucket_below(command_id: str, upper_bound: int) -> int:
     raise AssertionError("Kein deterministischer Street-Bucket im Testbereich gefunden")
 
 
+def sequence_for_real_encounter(command_id: str, encounter_id: str) -> int:
+    balanced = next(
+        approach for approach in STREET["approaches"] if approach["approach_id"] == "balanced"
+    )
+    lower_bound = 0
+    upper_bound = 0
+    for encounter in STREET["encounters"]:
+        weight = balanced["weights"][encounter["encounter_id"]]
+        upper_bound = lower_bound + weight
+        if encounter["encounter_id"] == encounter_id:
+            break
+        lower_bound = upper_bound
+    else:
+        raise AssertionError(f"Unbekannte reale Street-Begegnung: {encounter_id}")
+
+    for server_sequence in range(10000):
+        bucket = _stable_bucket(WORLD_SEED, command_id, server_sequence, STREET["selection"]["weight_total"])
+        if lower_bound <= bucket < upper_bound:
+            return server_sequence
+    raise AssertionError(f"Kein deterministischer Bucket für {encounter_id} gefunden")
+
+
 class StreetBoundaryAuditTests(unittest.TestCase):
     def _run_forced(
         self,
@@ -300,6 +322,66 @@ class StreetBoundaryAuditTests(unittest.TestCase):
                 self.assertEqual(first.effects, case["expected"])
                 self.assertTrue(replay.idempotent_replay)
                 self.assertEqual(replay.effects, case["expected"])
+                self.assertEqual(replay.committed_event_ids, ())
+                self.assertEqual(kernel.load_state(), state_after_first)
+                self.assertEqual(list(kernel.read_records()), records_after_first)
+
+    def test_real_catalog_effect_encounters_clamp_and_replay_idempotently(self):
+        effect_encounters = [
+            encounter
+            for encounter in STREET["encounters"]
+            if any(encounter["effects"].values())
+        ]
+        self.assertGreater(len(effect_encounters), 0)
+
+        for encounter in effect_encounters:
+            with self.subTest(encounter_id=encounter["encounter_id"]):
+                requested = encounter["effects"]
+                energy = 99 if requested["energy_delta"] > 0 else 1 if requested["energy_delta"] < 0 else 50
+                stress = 99 if requested["stress_delta"] > 0 else 1 if requested["stress_delta"] < 0 else 50
+                reputation = 0
+                command_id = f"street-real-catalog-replay-{encounter['encounter_id'].split('.')[-1]}"
+                server_sequence = sequence_for_real_encounter(command_id, encounter["encounter_id"])
+
+                character = CharacterState("player-local", "Real Catalog Boundary Tester")
+                character.energy = energy
+                character.stress = stress
+                character.reputation = reputation
+                tmp = tempfile.TemporaryDirectory()
+                self.addCleanup(tmp.cleanup)
+                kernel = PersistenceKernel(tmp.name, ALLOWED)
+                kernel.initialize_state({"character": character.to_dict()})
+                service = StreetEncounterService(kernel, STREET)
+
+                first = service.walk(
+                    character,
+                    walk_instance_id=command_id,
+                    world_seed=WORLD_SEED,
+                    journal_context=context(command_id),
+                    server_sequence=server_sequence,
+                )
+                expected = {
+                    "energy_delta": min(100, max(0, energy + requested["energy_delta"])) - energy,
+                    "stress_delta": min(100, max(0, stress + requested["stress_delta"])) - stress,
+                    "reputation_delta": max(0, reputation + requested["reputation_delta"]) - reputation,
+                }
+                state_after_first = kernel.load_state()
+                records_after_first = list(kernel.read_records())
+
+                replay = service.walk(
+                    character,
+                    walk_instance_id=command_id,
+                    world_seed=WORLD_SEED,
+                    journal_context=context(command_id),
+                    server_sequence=server_sequence,
+                )
+
+                self.assertEqual(first.encounter_id, encounter["encounter_id"])
+                self.assertEqual(first.effects, expected)
+                self.assertFalse(first.idempotent_replay)
+                self.assertTrue(replay.idempotent_replay)
+                self.assertEqual(replay.encounter_id, encounter["encounter_id"])
+                self.assertEqual(replay.effects, expected)
                 self.assertEqual(replay.committed_event_ids, ())
                 self.assertEqual(kernel.load_state(), state_after_first)
                 self.assertEqual(list(kernel.read_records()), records_after_first)
