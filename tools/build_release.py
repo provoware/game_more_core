@@ -85,7 +85,7 @@ def _release_files() -> list[tuple[str, int]]:
     if "START_BUNKERFREQUENZ.sh" not in included:
         raise SystemExit("RELEASE BUILD FEHLGESCHLAGEN – START_BUNKERFREQUENZ.sh fehlt")
     if "BUNKERFREQUENZ.desktop" not in included:
-        raise SystemExit("RELEASE BUILD FEHLGESCHLGEN – BUNKERFREQUENZ.desktop fehlt")
+        raise SystemExit("RELEASE BUILD FEHLGESCHLAGEN – BUNKERFREQUENZ.desktop fehlt")
     return files
 
 
