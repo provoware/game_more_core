@@ -45,12 +45,12 @@
 - [x] `Koffein & kalte Luft`: +20 Energie, +12 Stress
 - [x] keine Rechnerzeit, XP, Traits, zweite Ressource oder Browser-Deltas
 - [x] bestehendes `character.resources_changed` bleibt Replay-/Recovery-Wahrheit
-- [x] PR #123 · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900`
+- [x] PR #123 · Head `31a3c2966549f54260c3d90b148e2d4cec4b6cad` · Runtime `32673385832` · Presentation `32673385764` · Repository Health `32673385757` · Release Acceptance `32673385796` · Release Package `32673385792` · 0 Review-Threads · `/safe-merge` PASS · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900`
 
 ## 0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter
 - [x] Filter `ALLE / STRASSE / KRISE / BEZIRK`
 - [x] ausschließlich lokaler Modul-State; keine Sortierung, Persistenz oder Journal-Autorität
-- [x] PR #124 · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01`
+- [x] PR #124 · Head `59bcc0909bc508f085b2a40a187074461799a908` · Runtime `32674157706` · Presentation `32674157688` · Repository Health `32674157773` · Release Acceptance `32674157695` · Release Package `32674157723` · 0 Review-Threads · `/safe-merge` PASS · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01`
 
 ## 0.8.8-ECON-RECOVERY-FEEDBACK – Regenerationsfeedback
 - [x] bestätigte Vorher→Nachher-Werte für Energie und Stress direkt sichtbar
