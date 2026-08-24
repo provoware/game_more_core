@@ -104,6 +104,15 @@
     document.head.append(script);
   }
 
+  function ensureMapUsabilityModule() {
+    if (document.querySelector('script[data-map-usability="true"]')) return;
+    const script = document.createElement("script");
+    script.src = "map_usability.js";
+    script.defer = true;
+    script.dataset.mapUsability = "true";
+    document.head.append(script);
+  }
+
   function init() {
     load();
     apply();
@@ -112,6 +121,7 @@
     ensureFinanceStatementExportModule();
     ensureSceneJobPayoutPreviewModule();
     ensureRecoveryActionsModule();
+    ensureMapUsabilityModule();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
     }
