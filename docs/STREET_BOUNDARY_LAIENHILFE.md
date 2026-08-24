@@ -24,6 +24,7 @@ Wenn eine Begegnung theoretisch `+10 Energie` gibt, du aber schon 99 Energie has
 
 Der Audit ist reine Qualitätssicherung: vorhandenes Verhalten wird an den Grenzwerten regressionsgesichert.
 
-## Spätere sinnvolle Erweiterung
+## Spätere sinnvolle Erweiterungen
 
-Ein späterer Audit kann zusätzlich alle realen Begegnungen automatisiert über mehrere Startzustände laufen lassen und daraus eine kompakte Grenzwert-Matrix erzeugen. Das wäre besonders hilfreich, falls der Street-Katalog deutlich größer wird.
+- **Katalog-Matrix:** Ein späterer Audit kann alle realen Begegnungen automatisiert über mehrere Startzustände laufen lassen und daraus eine kompakte Grenzwert-Matrix erzeugen. Das wird besonders nützlich, falls der Street-Katalog deutlich größer wird.
+- **Replay am Ruf-Floor:** Eine eigene Regression kann ein bereits bestätigtes Street-Ergebnis mit geklemmtem Ruf-Delta erneut einspielen und prüfen, dass Replay den Ruf nicht ein zweites Mal verändert. Nutzen: schützt Recovery und Idempotenz genau an der neuen Grenzkante. Grund: Der aktuelle Slice prüft bewusst nur neu erzeugte Street-Ergebnisse und erweitert damit den Replay-Scope noch nicht.
