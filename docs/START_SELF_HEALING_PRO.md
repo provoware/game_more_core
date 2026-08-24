@@ -30,8 +30,8 @@ Die neue Startstufe schließt diese Lücke auf mehreren Ebenen:
 | Fokus-/Map-Observer reagiert auf eigene DOM-Änderung | Observer während eigener Änderung trennen, Mutation-Bursts zusammenfassen | Fokus-Hilfe deaktiviert sich nach 3 internen Fehlern statt die Seite zu blockieren |
 | `/api/state`-Polling langsam/unterbrochen | nur ein Request gleichzeitig, Timeout im gemeinsamen Transport, exponentieller Backoff | maximal 30 s Backoff, kein Request-Sturm |
 | GET-Transportfehler | begrenzte Wiederholung | 2 Retries |
-| schreibender POST mit bestätigter `command_id` | genau eine Transport-Wiederholung mit derselben ID | Domain-/422-Fehler werden nie wiederholt |
-| Checkpoint ohne Idempotenzschlüssel | keine automatische Schreibwiederholung | schützt vor doppeltem Snapshot |
+| `/api/command`-POST mit bestätigter `command_id` | genau eine Transport-Wiederholung mit derselben ID | nur dieser bestätigte Replay-Pfad; Domain-/422-Fehler werden nie wiederholt |
+| `/api/new-game` oder Checkpoint | keine automatische Schreibwiederholung | schützt vor falschem Bootstrap-Replay bzw. doppeltem Snapshot |
 | Server/API fällt direkt nach Browserübergabe aus | kontrollierter Server-Neustart + erneute API-Prüfung | begrenzte Start-Recovery |
 | Server/API fällt im laufenden Spiel aus | Health-Wächter startet denselben kanonischen Server neu; bei neuer Adresse Browserübergabe erneut | maximal 3 Recoveries in 5 Minuten |
 | wiederkehrender Fehler über Recovery-Grenze | fail-closed + Diagnose | keine Neustartspirale |
@@ -43,9 +43,10 @@ Die neue Startstufe schließt diese Lücke auf mehreren Ebenen:
 `web/a4/client_resilience.js` ist eine dünne Transporthärtung vor der bestehenden UI. Es enthält keine Domainlogik.
 
 - GET/HEAD dürfen bei Transport-/Serverfehlern begrenzt wiederholt werden.
-- POST wird nur dann automatisch einmal wiederholt, wenn der Request einen nichtleeren `command_id` besitzt. Dadurch bleibt dieselbe vorhandene Idempotenzautorität erhalten.
-- Ein manueller Checkpoint besitzt keinen solchen Schlüssel und wird deshalb absichtlich nicht automatisch erneut geschrieben.
-- Alle API-Aufrufe erhalten ein hartes Zeitlimit, damit ein hängender Request die Oberfläche nicht dauerhaft im Zustand „busy“ festhält.
+- Ein schreibender POST wird nur auf dem ausdrücklich replay-sicheren Pfad `/api/command` automatisch einmal wiederholt und auch dort nur mit nichtleerer `command_id`.
+- `/api/new-game` wird trotz `command_id` nicht automatisch wiederholt, weil ein bereits erfolgreicher Bootstrap bei verlorener Antwort derzeit nicht als identischer Replay bestätigt werden kann.
+- Ein manueller Checkpoint wird ebenfalls nicht automatisch erneut geschrieben.
+- Alle API-Aufrufe erhalten ein hartes Zeitlimit über Header und vollständigen Response-Body, damit ein hängender Request die Oberfläche nicht dauerhaft im Zustand „busy“ festhält.
 
 ## Laufzeit-Wächter
 
@@ -67,7 +68,7 @@ Bei einem Browserdialog wie „Seite reagiert nicht“ sollte der nächste Start
 - keine Beendigung fremder Prozesse
 - keine zweite Server-, Persistence- oder Recovery-Architektur
 - keine unendlichen Retries
-- keine Wiederholung nicht-idempotenter Schreiboperationen
+- keine Wiederholung nicht-idempotenter oder nicht ausdrücklich replay-sicherer Schreiboperationen
 
 ## Spätere Erweiterungsidee
 
