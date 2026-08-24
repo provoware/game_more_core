@@ -165,7 +165,7 @@
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
-      "street_encounter_contract_version": "0.8.8-scout-balance",
+      "street_encounter_contract_version": "0.8.8-street-pack",
       "street_encounter_catalog_size": 16,
       "street_pack_in_validation": false,
       "street_pack_validated": true,
@@ -175,7 +175,7 @@
       "street_balance_audit_telemetry": false,
       "street_balance_audit_gameplay_changes": false,
       "street_balance_min_total_variation_distance": 0.17,
-      "street_balance_max_single_weight": 25,
+      "street_balance_max_single_weight": 20,
       "street_balance_bucket_total": 100,
       "street_balance_all_buckets_enumerated": true,
       "street_effect_audit_in_validation": false,
@@ -185,12 +185,12 @@
       "street_scout_balance_in_validation": true,
       "street_scout_balance_validated": false,
       "street_scout_balance_second_engine": false,
-      "street_scout_discovery_weight": 45,
+      "street_scout_discovery_weight": 40,
       "street_effect_expected_hundredths": {
         "balanced": {"energy": 100, "stress": -49, "reputation": 35},
         "recovery": {"energy": 123, "stress": -49, "reputation": 23},
         "network": {"energy": 53, "stress": -59, "reputation": 65},
-        "scout": {"energy": 116, "stress": -29, "reputation": 33}
+        "scout": {"energy": 101, "stress": -9, "reputation": 33}
       },
       "street_effect_current_strict_dominance": [],
       "hall_of_tribute_visible": true,
