@@ -20,12 +20,30 @@ jobs:
         run: PYTHONPATH=src:. python3 -m unittest tests.runtime.test_release_package -v
       - name: Validate release-autopilot policy contract
         run: PYTHONPATH=src:. python3 -m unittest tests.release.test_release_autopilot -v
+      - name: Run Failure Containment PRO twice
+        run: |
+          rm -rf failure-containment-dist
+          PYTHONPATH=src:. python3 tools/failure_containment_pro.py --output-dir failure-containment-dist
+          cat failure-containment-dist/FAILURE_CONTAINMENT_EVIDENCE.json.sha256
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: BUNKERFREQUENZ-failure-containment-evidence
+          path: |
+            failure-containment-dist/FAILURE_CONTAINMENT_EVIDENCE.json
+            failure-containment-dist/FAILURE_CONTAINMENT_EVIDENCE.json.sha256
+            failure-containment-dist/SUBGATE_EVIDENCE.json
+          if-no-files-found: warn
+          retention-days: 30
       - name: Run Release Autopilot PRO
         id: autopilot
         shell: bash
         run: |
           rm -rf autopilot-dist
-          python3 tools/release_autopilot.py --output-dir autopilot-dist --allow-quarantine
+          python3 tools/release_autopilot.py \
+            --output-dir autopilot-dist \
+            --subgate-evidence failure-containment-dist/SUBGATE_EVIDENCE.json \
+            --allow-quarantine
           state="$(python3 - <<'PY'
           import json
           from pathlib import Path
