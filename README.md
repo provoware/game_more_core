@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.8 QA Replay Precision validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--QA--REPLAY--PRECISION_validiert-7dff00">
-  <img alt="Street Effect Audit in Abnahme" src="https://img.shields.io/badge/Qualit%C3%A4t-STREET--EFFECT--AUDIT_in_Abnahme-00c2ff">
+  <img alt="Feature Stand 0.8.8 Street Scout Balance validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--STREET--SCOUT--BALANCE_validiert-7dff00">
+  <img alt="Receipt Clarity in Abnahme" src="https://img.shields.io/badge/UX-RECEIPT--CLARITY_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -27,12 +27,12 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.8-QA-REPLAY-PRECISION – District-Receipt-Semantik regressionsgesichert` |
-| **Aktive Iteration** | 🟡 `0.8.8-STREET-EFFECT-AUDIT – Energie-/Stress-/Ruf-Erwartungswerte` |
-| **Nächste Iteration** | `0.8.8-STREET-SCOUT-BALANCE – gefundenen balanced→scout-Dominanzbefund fachlich bewerten` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-STREET-SCOUT-BALANCE – Scout als nicht dominierter Tradeoff validiert` |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-RECEIPT-CLARITY – District-Receipt-Klartext im Control Deck` |
+| **Nächste Iteration** | `0.8.8-STREET-BOUNDARY-AUDIT – Street-Effekte an echten Character-Grenzen prüfen` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Crew Identity** | ✅ Logo/Fahne als syncbereites Datenrezept, kein Bildblob |
-| **Living World** | ✅ replaybare Street Encounters, 16 Begegnungen, vier Ansatzprofile; 🟡 Effekt-Audit dokumentiert aktuell `balanced → scout` als strikte Erwartungswert-Dominanz |
+| **Living World** | ✅ replaybare Street Encounters, 16 Begegnungen, vier Ansatzprofile; Scout ist nach PR #156 nicht mehr vollständig von Balanced dominiert |
 | **Timeline** | ✅ bestätigte Street-/Krisen-/District-Ereignisse + lokale Filter `ALLE / STRASSE / KRISE / BEZIRK`; Runtime-Reihenfolge bleibt unverändert |
 | **Ranking** | ✅ Competitive Top 10 + bestätigte Wochen-/Monatszyklen |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
@@ -44,10 +44,11 @@
 | **FIN-EXPORT** | ✅ TXT/CSV + Vorschau/Kopieren/Prüfsumme aus derselben Serialisierung; kein Import oder Finanz-Write |
 | **Berlin-Erinnerungen** | ✅ bis zu fünf bestätigte District-Ereignisse als read-only Nachhall im Profil; keine Progressionsengine |
 | **Control Deck E** | ✅ lokaler Bereichsfokus + Runtime-abgeleitetes Nächste-Aktion-Signal |
+| **Receipt Clarity** | 🟡 `NEU BESTÄTIGT / BEREITS BESTÄTIGT / NICHT AUSGELÖST` ausschließlich aus vorhandenen Command-Signalen; keine neue Receipt-Architektur |
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.8-QA-REPLAY-PRECISION` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. Der aktive `0.8.8-STREET-EFFECT-AUDIT` verändert keine Street-Gewichte oder Gameplaywerte: Er berechnet ausschließlich deterministisch die vorhandenen Energie-/Stress-/Ruf-Erwartungswerte. Dabei wurde sichtbar, dass `balanced` den `scout` derzeit in allen drei unbedingten Erwartungswerten dominiert. Eine mögliche Neubalancierung bleibt bewusst ein eigener späterer Gameplay-Slice.
+> `0.8.8-STREET-SCOUT-BALANCE` ist als PR #156 remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. Der aktive `0.8.8-UX-RECEIPT-CLARITY`-Slice verändert keine District-, Journal-, Save- oder Gameplaylogik: Er benennt ausschließlich die bereits regressionsgesicherten Zustände erstmals bestätigt, idempotent wiederverwendet und nicht ausgelöst verständlich im bestehenden Settlement-Bereich.
 
 ---
 
@@ -113,6 +114,8 @@ PROPERTY / HALL OF TRIBUTE
 - STREET-BALANCE-AUDIT: vier Ansatzprofile, maximale Einzelwahrscheinlichkeit, Polaritätsmix und alle 100 Gewichtsbuckets deterministisch geprüft; keine Telemetrie oder Gameplayänderung
 - RECOVERY-BALANCE-AUDIT: beide Recovery-Wege über alle Energie×Stress-Zustände und erreichbaren Mehrfachfolgen deterministisch geprüft
 - QA-REPLAY-PRECISION: angewendet, idempotent wiederverwendet und nicht ausgelöst als getrennte District-Receipt-Semantik regressionsgesichert
+- STREET-EFFECT-AUDIT: Erwartungswerte aller vier Street-Ansätze mathematisch geprüft
+- STREET-SCOUT-BALANCE: Scout ist mit `+1,01 Energie / −0,09 Stress / +0,33 Ruf` nicht mehr vollständig von Balanced dominiert; bestehende Street-Invarianten bleiben erhalten
 
 ---
 
@@ -270,8 +273,10 @@ Der Ausbau bleibt in getrennte, prüfbare Slices zerlegt:
 | **0.8.8-STREET-BALANCE-AUDIT** | Street-Katalogcheck | ✅ deterministisch geprüft, keine Telemetrie und keine Gameplayänderung |
 | **0.8.8-ECON-RECOVERY-BALANCE-AUDIT** | Recovery-Zustandsmatrix | ✅ test-only: Headroom, Nichtdominanz, Clamping und Mehrfachfolgen |
 | **0.8.8-QA-REPLAY-PRECISION** | District-No-op-/Retry-Receipts | ✅ angewendet / Replay / nicht ausgelöst regressionsgesichert |
-| **0.8.8-STREET-EFFECT-AUDIT** | Street-Effekt-Erwartungswerte | 🟡 test-only: vier Effektvektoren und tatsächliche Dominanzbeziehungen |
-| **0.8.8-STREET-SCOUT-BALANCE** | Scout-Profil fachlich prüfen | danach; nur mit eigenem Balancevertrag und bestehendem Manifest |
+| **0.8.8-STREET-EFFECT-AUDIT** | Street-Effekt-Erwartungswerte | ✅ vier Effektvektoren und tatsächliche Dominanzbeziehungen geprüft |
+| **0.8.8-STREET-SCOUT-BALANCE** | Scout-Profil | ✅ nicht dominierter Tradeoff bei unveränderten Street-Invarianten; PR #156 |
+| **0.8.8-UX-RECEIPT-CLARITY** | Receipt-Klartext im Control Deck | 🟡 vorhandene Runtime-Signale read-only als drei verständliche Zustände anzeigen |
+| **0.8.8-STREET-BOUNDARY-AUDIT** | Street-Grenzzustände | danach test-only gegen tatsächlichen Character-Clamping-Vertrag |
 
 Anlagen/Dividenden bleiben ein eigenständiger Folge-Slice, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
 
@@ -399,6 +404,7 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung, Aktionshervorhebung oder
 | **0.8.8-ECON-RECOVERY-VARIANTS** | **zweite Recovery-Wahl +30/+20** | `c9732c28cc72...` |
 | **0.8.8-STREET-BALANCE-AUDIT** | **deterministischer Street-Katalogcheck** | `bef5e2ad7892...` |
 | **0.8.8-QA-REPLAY-PRECISION** | **District-Receipt-Semantik regressionsgesichert** | `f3c7c6657b52...` |
+| **0.8.8-STREET-SCOUT-BALANCE** | **Scout als nicht dominierter Tradeoff** | `3f7ee5f24dd2...` |
 | **START-QUALITY v2** | **realer Browser-Gate + Klickstart + Safe-Merge-Provenienz** | `0f0c04b50e89...` |
 
 ---
@@ -465,6 +471,7 @@ SAFE MERGE PASS
 | Street Pack | [`docs/LAIENHILFE_STREET_PACK.md`](docs/LAIENHILFE_STREET_PACK.md) |
 | Street-Balance-Audit | [`docs/LAIENHILFE_STREET_BALANCE_AUDIT.md`](docs/LAIENHILFE_STREET_BALANCE_AUDIT.md) |
 | Street-Effekt-Audit | [`docs/LAIENHILFE_STREET_EFFECT_AUDIT.md`](docs/LAIENHILFE_STREET_EFFECT_AUDIT.md) |
+| Receipt-Klartext | [`docs/LAIENHILFE_RECEIPT_KLARTEXT.md`](docs/LAIENHILFE_RECEIPT_KLARTEXT.md) |
 | Timeline-Filter | [`docs/LAIENHILFE_TIMELINE_FILTER.md`](docs/LAIENHILFE_TIMELINE_FILTER.md) |
 | Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Kontoauszug-Export | [`docs/LAIENHILFE_FIN_EXPORT.md`](docs/LAIENHILFE_FIN_EXPORT.md) |
