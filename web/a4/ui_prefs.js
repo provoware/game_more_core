@@ -113,6 +113,10 @@
     appendModule("confirmed_event_fx.js", "confirmed-event-fx");
   }
 
+  function ensureCrewIdentityHudSyncModule() {
+    appendModule("crew_identity_hud_sync.js", "crew-identity-hud-sync");
+  }
+
   function copyConfirmedCrewPreview() {
     const source = document.getElementById("crew-identity-preview");
     const host = document.querySelector(".hud-crew-identity");
@@ -179,6 +183,7 @@
     ensureRecoveryActionsModule();
     ensureMapUsabilityModule();
     ensureConfirmedEventFxModule();
+    ensureCrewIdentityHudSyncModule();
     observeConfirmedCrewIdentity();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
