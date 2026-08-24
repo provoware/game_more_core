@@ -51,6 +51,15 @@ class A4ClientResilienceTests(unittest.TestCase):
         self.assertIn('url.pathname.startsWith("/api/")', source)
         self.assertNotIn("while (true)", source)
 
+    def test_transport_timeout_covers_headers_and_complete_response_body(self):
+        source = (A4 / "client_resilience.js").read_text(encoding="utf-8")
+        fetch_pos = source.index("await nativeFetch")
+        body_pos = source.index("await response.arrayBuffer()")
+        clear_pos = source.index("window.clearTimeout(timer)")
+        self.assertLess(fetch_pos, body_pos)
+        self.assertLess(body_pos, clear_pos)
+        self.assertIn("return new Response(payload.byteLength ? payload : null", source)
+
     def test_timeline_polling_is_single_flight_with_bounded_backoff(self):
         source = (A4 / "event_timeline.js").read_text(encoding="utf-8")
         self.assertIn("let refreshPromise = null", source)
