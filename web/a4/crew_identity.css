@@ -241,6 +241,12 @@
   }
 }
 
+@media (min-width: 721px) and (max-width: 860px) {
+  .crew-identity-preview-wrap {
+    top: calc(var(--hud-height, 3.7rem) + var(--hud-height, 3.7rem) + 3rem);
+  }
+}
+
 @media (max-width: 720px) {
   .crew-identity-editor .crew-identity-layout,
   .crew-identity-controls {
