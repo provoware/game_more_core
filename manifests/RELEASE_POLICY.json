@@ -29,6 +29,7 @@
   "subgate_evidence_binding": {
     "source_commit_required": true,
     "source_tree_required": true,
+    "candidate_sha256_required": true,
     "pass_requires_evidence_sha256": true
   },
   "promotion": {
