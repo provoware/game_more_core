@@ -4,6 +4,15 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Release-Qualität – FAILURE-CONTAINMENT-PRO
+
+- das zweite verpflichtende Release-Autopilot-PRO-Subgate als deterministische, zweimal ausgeführte Failure-Containment-Matrix ergänzt; abweichende Laufresultate werden als `FLAKY` quarantänisiert und niemals durch Retry zu PASS umgedeutet.
+- das entpackte Release unter Leerzeichen/Umlauten, langen Pfaden, `C.UTF-8`/`C`, UTC/Europe-Berlin, begrenzten File Descriptors und begrenztem virtuellen Speicher direkt über den paketierten A4-Server mit bestätigtem `/api/health` und `/api/state` geprüft.
+- Process Ownership abgesichert: fremde Sentinel-Prozesse bleiben unangetastet und der eigene Testserver darf nach kontrolliertem Ende nicht zurückbleiben.
+- reale Portkollision und deterministischen Bind-Race-Recovery-Vertrag, ENOSPC-/Dateisystem-Fail-Closed, bestehende Crash-/Journal-/Snapshot-Recovery sowie Legacy-State-Lesekompatibilität in die Evidence-Matrix aufgenommen.
+- Browser-Liveness bewusst aus diesem Subgate herausgehalten; Firefox/Chromium, Desktop-Klickstart und DOM-Watchdogs bleiben alleinige Zuständigkeit von `desktop_browser_e2e_pro`.
+- `FAILURE_CONTAINMENT_EVIDENCE.json`, eigener SHA-256 und source-gebundene `SUBGATE_EVIDENCE.json` werden vor dem Release Autopilot erzeugt; solange `desktop_browser_e2e_pro` fehlt, bleibt der Gesamtzustand korrekt `QUARANTINE` und es wird kein Benutzer-ZIP promoted.
+
 ### Start-Qualität – AUTOSTART-ORCHESTRATOR
 
 - den öffentlichen Linux-Startpfad auf genau einen dünnen Einstieg `START_BUNKERFREQUENZ.sh → tools/start_orchestrator.py → tools/start_a4_game_client.py` konsolidiert; es entsteht keine zweite Server-, Save- oder Gameplay-Architektur.
@@ -131,7 +140,7 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - A4 Ops Deck zeigt reale Ressourcenwerte; A4 und A3 projizieren denselben bestätigten Status-, Biografie- und Feedbackzustand.
 - vollständiger Integrationstest für `Action → Ressourcen → Progression → Feedback → Biografie → Autosave → Undo → Reload → A4/A3` ergänzt.
 - erste Remote-Abnahme auf PR #41 deckte zwei veraltete synthetische Action-Fixtures ohne neuen Pflicht-Ressourcenvertrag auf; ausschließlich diese Test-Fixtures wurden neutral angepasst, die Produktlogik blieb unverändert.
-- validierter PR-Head `5f7ded400a5fca1ee25307797628ab2584de9812`: Runtime Core `32533954380`, Presentation Core `32533954387`, Repository Health `32533954406` erfolgreich.
+- validierter PR-Head `5f7ded400a5fca1ee25307797628ab2584de9812`: Runtime Core `32533954380`, Presentation Core `32533954387` und Repository Health `32533954406` erfolgreich.
 - PR #41 wurde nach grüner Abnahme als Merge `a7544abd923787d20e174c9eced54f548753c801` übernommen, jedoch außerhalb des vorgeschriebenen `/safe-merge`-Kommandos. Folgende normale PRs verwenden wieder ausschließlich `/safe-merge`.
 - README visuell neu strukturiert; eigene laienfreundliche `docs/SPIELERANLEITUNG.md` für den Character-Forge-Ablauf ergänzt.
 - TODO, Projektstatus, Projektmanifest, Testmanifest und Repository-Index auf den abgeschlossenen 0.7.2-Stand und den nächsten Schritt 0.8 abgeglichen.
@@ -294,109 +303,6 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 - README, TODO, Projektstatus und Projektmanifest auf den ersten Runtime-Stand aktualisiert.
 - UI/UX Blueprint und UI-Manifest mit der kanonischen visuellen Referenz verknüpft.
 - Agentenregeln um Journal-Katalogtreue für Runtime-Events präzisiert.
-
-### Validierung
-- `compileall` für `src/` bestanden.
-- 14/14 gezielte Runtime-/Integrationstests bestanden.
-- 200 aufeinanderfolgende Action/Commit/Reload-Schritte ohne Journal- oder Zustandsfehler.
-- korrupter Journal-Tail wird zuverlässig erkannt.
-- gleiche Event-ID mit gleichem Inhalt ist idempotent; abweichender Inhalt wird abgelehnt.
-
-### Bewusst offen
-- automatische Recovery/Quarantäne nach erkanntem Fehler, Snapshot-Replay und Fault-Injection folgen in 0.5.1.
-- noch keine grafische Game-Runtime, Telegram- oder Wirtschaftsimplementierung.
-
-## [0.4.4-alpha.1] – 2026-08-21
-
-### Hinzugefügt
-- `ACTION_MANIFEST.json` mit 20 datengetriebenen Startaktionen.
-- exakte Skill-XP- und Trait-Evidenz-Gewichte je Aktion.
-- deterministische Action-Resolver-Pipeline, Ergebnisstufen und Anti-Grind-Bezüge.
-- Action-Schema, Validator, Testhülle und `reports/CONTRACT_VALIDATION_0.4.4.json`.
-- Schutzregel für reale Locations: nur legal/autorisiert oder klar fiktionalisiert.
-
-### Geändert
-- README/TODO/Version/Projektstatus auf `0.4.4-alpha.1`.
-- `TEST_MANIFEST.json` um Persistence-, UI- und Action-Vertragsgates erweitert.
-
-### Validierung
-- exakt 20 eindeutige Action-IDs.
-- Skill- und Trait-Gewichte je Action = 1.0.
-- Biografie-Relevanz 0–100.
-- Systemzeit nicht als Zufallsseed.
-- Vertragsbericht = PASS.
-
-## [0.4.3-alpha.1] – 2026-08-21
-
-### Hinzugefügt
-- UI/UX Blueprint mit A1 Control Room, A2 Compact Grid, A3 Cinematic Forge und A4 Ops Deck.
-- UI- und Animation-Manifeste, UI-Schema und ausgelagerte deutsche Character-Forge-Texte.
-
-### Validierung
-- exakt vier Layoutvarianten innerhalb derselben Designfamilie.
-- Farbe nie als alleinige Information; Tastatur, High-Contrast und Reduced-Motion vorgesehen.
-- Animationen blockieren keinen Game-State und besitzen statische Fallbacks.
-
-## [0.4.2-alpha.1] – 2026-08-21
-
-### Hinzugefügt
-- exakter Persistence Contract mit 39 Journal-Eventtypen, Transaktionszuständen und Commit-Invariante.
-- Save-/Journal-Schema v2, Snapshot-/Undo-/Crash-/Recovery-Regeln und Migration v1 → v2.
-- robuste Zeitanker- und Offline-Catch-up-Regeln.
-
-### Geändert
-- Autosave auf exakt 60 Sekunden, dirty-only und kritische Flush-Punkte konkretisiert.
-
-### Validierung
-- Eventtypen eindeutig; Snapshot-Schwellen numerisch fest.
-- Migration nicht destruktiv und mit Snapshot/Backup/Validierung/Rollback.
-
-## [0.4.1-alpha.1] – 2026-08-21
-
-### Hinzugefügt
-- `TRAIT_ENGINE_MANIFEST.json` mit fünf Freischaltstufen, 15 numerischen Effektvorlagen, Trait-Evidenzquellen, Stack-Caps und zwei begründeten Soft-Konflikten.
-- `PROGRESSION_MANIFEST.json` mit Skillkurve 10–100, Trainings-Abwertung und sechs datengetriebenen Spezialisierungen.
-- deterministischer Progression-Simulator unter `tools/simulate_characters/`.
-- gezielte Simulationstests für Manifest-Invarianten, Determinismus und Balance-Gate.
-- versionierter Referenzbericht `reports/PROGRESSION_SIMULATION_0.4.1.json`.
-- JSON-Schemas für Trait Engine und Progression.
-- `docs/PROGRESSION_CONTRACT.md`.
-
-### Geändert
-- Projektversion auf `0.4.1-alpha.1`.
-- `README.md`, `TODO.md`, `PROJEKTSTATUS.json` und `PROJEKTMANIFEST.json` auf den validierten 0.4.1-Stand aktualisiert.
-- `SKILL_MANIFEST.json` auf die verbindliche Skill-XP-Formel und Progression-Referenz präzisiert.
-- `LEVEL_MANIFEST.json` mit Referenz auf den Progression-Vertrag ergänzt.
-- `TEST_MANIFEST.json` um ausschließlich für 0.4.1 relevante Prüfungen erweitert.
-- `docs/CHARACTER_FORGE.md` um konkrete Trait-/Spezialisierungsregeln erweitert, ohne bestehende Foundation-Inhalte zu entfernen.
-
-### Bewusst unverändert
-- `TRAIT_MANIFEST.json` mit seinen 165 individuellen Namen und Zuordnungen bleibt byte-identisch; numerische Regeln werden über die referenzierten Effektvorlagen in `TRAIT_ENGINE_MANIFEST.json` ergänzt.
-- kein Spiel-Laufzeitcode, keine UI, kein Telegram, keine Persistenzimplementierung.
-
-### Validierung
-- alle neuen/geänderten JSON-Dateien syntaktisch gültig.
-- exakt 15 eindeutige numerische Trait-Effektvorlagen.
-- fünf monoton steigende Trait-Stufen.
-- Referenzsimulation: 1.000 Charaktere × 720 Spieltage, Seed `90409`.
-- Ergebnis: alle sechs Balance-Gates bestanden.
-- Unit-Tests: Manifest-Invarianten, deterministische Wiederholbarkeit und Balance-Gate bestanden.
-
-## [0.4.0-alpha.1] – 2026-08-21
-
-### Hinzugefügt
-- Architekturvertrag für modulare Trennung von Domain, Application, Infrastructure, Presentation und Content.
-- Character-Definition/Instanz/Fortschritt als getrennte Datenmodelle.
-- 11 Hauptfiguren mit identischen Startwerten und narrativ getrennten Grundstorys.
-- 15 gemeinsame Trait-Effektvorlagen und 165 individuelle Trait-Namen.
-- XP-/Level-Grundformel und Resonanzmodell nach Level 50.
-- Regeln für dynamische Biografie.
-- Grundverträge für Save, Autosave, Undo, Journal, Snapshot, Recovery, Hybridzeit und Synchronisation.
-- Maschinenlesbare Manifeste und JSON-Schemas.
-- Entwicklerregeln in `AGENTS.md`.
-
-### Geändert
-- `README.md` von Platzhalter auf kanonische Projektübersicht und aktuellen TODO-Stand erweitert.
 
 ### Validierung
 - JSON-Strukturen müssen syntaktisch gültig sein.
