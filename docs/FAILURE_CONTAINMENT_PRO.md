@@ -37,7 +37,11 @@ Der Runner erzeugt:
 - `FAILURE_CONTAINMENT_EVIDENCE.json.sha256`
 - `SUBGATE_EVIDENCE.json`
 
-Die Evidence bindet den Nachweis an Source Commit, Source Tree und zusätzlich den SHA-256 des deterministisch gebauten Kandidaten. Der Release Autopilot akzeptiert den Subgate-PASS nur im bestehenden source-gebundenen Evidence-Vertrag.
+Die Evidence bindet den Nachweis an Source Commit, Source Tree und zusätzlich den SHA-256 des deterministisch gebauten Kandidaten. Vor der Source-Erfassung muss der komplette Git-Working-Tree sauber sein; dadurch kann kein Paket aus abweichenden lokalen Bytes einen PASS für den aufgezeichneten Commit erben.
+
+OS-vergebene Laufzeitwerte wie Prozess-IDs oder dynamische Portnummern gehören nicht in den gehashten Evidence-Vertrag. Die Evidence enthält dafür stabile semantische Diagnosen, damit gleichartige Läufe derselben Quelle reproduzierbar vergleichbar bleiben.
+
+Der Release Autopilot akzeptiert den Subgate-PASS nur im bestehenden source-gebundenen Evidence-Vertrag.
 
 ## Sicherheitsgrenzen
 
