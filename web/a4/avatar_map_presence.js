@@ -4,6 +4,16 @@
   const baseMap = window.BunkerMapPro;
   if (!baseMap?.render) return;
 
+  function ensureStyles() {
+    if (document.querySelector('link[data-avatar-map-presence="true"]')) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    const current = document.currentScript?.src || document.baseURI;
+    link.href = new URL("avatar_map_presence.css", current).href;
+    link.dataset.avatarMapPresence = "true";
+    document.head.append(link);
+  }
+
   function confirmedPreview() {
     const source = document.querySelector(".hud-crew-preview");
     const host = document.querySelector(".hud-crew-identity");
@@ -51,6 +61,7 @@
     syncOwnedDetail();
   }
 
+  ensureStyles();
   window.BunkerMapPro = Object.freeze({
     render(model) {
       baseMap.render(model);
