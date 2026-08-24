@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.8-street-pack",
+  "version": "0.8.8-scout-balance",
   "selection": {
     "method": "sha256_stable_weighted",
     "weight_total": 100,
@@ -103,7 +103,7 @@
         "street.spaeti_water": 5,
         "street.friendly_face": 3,
         "street.open_door": 2,
-        "street.shortcut": 20,
+        "street.shortcut": 25,
         "street.crew_greeting": 5,
         "street.coffee_house": 3,
         "street.night_bus_seat": 2,
@@ -112,7 +112,7 @@
         "street.puddle": 5,
         "street.lost_glove": 5,
         "street.bike_splash": 5,
-        "street.sudden_rain": 5,
+        "street.sudden_rain": 0,
         "street.construction_detour": 5
       }
     }
