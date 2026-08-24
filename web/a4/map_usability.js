@@ -93,30 +93,54 @@
     return source;
   }
 
-  function crewBadge(className) {
+  function crewBadge(className, size) {
     const source = confirmedCrewPreview();
     if (!source) return null;
     const badge = source.cloneNode(true);
-    badge.className = className;
+    badge.className = `hud-crew-preview ${className}`;
     badge.setAttribute("aria-hidden", "true");
+    badge.style.width = size;
+    badge.style.height = size;
+    badge.style.flex = `0 0 ${size}`;
     return badge;
   }
 
   function ensureOwnedCrewMarkers() {
     for (const marker of document.querySelectorAll("#berlin-map-canvas .map-marker.owned")) {
       if (marker.querySelector(".map-crew-badge")) continue;
-      const badge = crewBadge("map-crew-badge");
-      if (badge) marker.append(badge);
+      const badge = crewBadge("map-crew-badge", "1.35rem");
+      if (!badge) continue;
+      badge.style.position = "absolute";
+      badge.style.right = "-.72rem";
+      badge.style.bottom = "-.72rem";
+      badge.style.zIndex = "6";
+      badge.style.pointerEvents = "none";
+      marker.append(badge);
     }
   }
 
   function ensureOwnedCrewDetail() {
     const detail = document.getElementById("map-detail");
     if (!(detail instanceof HTMLElement) || !detail.querySelector(".map-chip.owned") || detail.querySelector(".map-detail-crew")) return;
-    const badge = crewBadge("map-detail-crew-preview");
+    const badge = crewBadge("map-detail-crew-preview", "2rem");
     if (!badge) return;
     const identity = node("div", "map-detail-crew");
     identity.setAttribute("aria-label", "Bestätigte Crew-Marke für diesen eigenen Ort");
+    Object.assign(identity.style, {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: ".55rem",
+      width: "fit-content",
+      margin: "-.2rem 0 .55rem",
+      padding: ".35rem .5rem",
+      border: "1px solid #3e5261",
+      borderRadius: ".48rem",
+      background: "#090e14",
+      color: "var(--accent-2, #62dfff)",
+      fontSize: ".62rem",
+      fontWeight: "900",
+      letterSpacing: ".08em"
+    });
     identity.append(badge, node("span", "", "DEINE CREW"));
     detail.querySelector(".map-detail-title")?.after(identity);
   }
