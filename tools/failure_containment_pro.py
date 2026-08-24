@@ -55,6 +55,11 @@ def _git(*args: str) -> str:
 
 
 def source_identity() -> tuple[str, str]:
+    dirty = _git("status", "--porcelain", "--untracked-files=all")
+    if dirty:
+        raise RuntimeError(
+            "Failure-Containment-Evidence darf nur aus einem sauberen Git-Working-Tree erzeugt werden"
+        )
     return _git("rev-parse", "HEAD"), _git("rev-parse", "HEAD^{tree}")
 
 
@@ -210,7 +215,7 @@ def _scenario_process_ownership(product_root: Path, root: Path) -> dict[str, obj
     sentinel = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
     try:
         runtime_root = root / "owned-runtime"
-        result = _start_packaged_server(product_root, runtime_root)
+        _start_packaged_server(product_root, runtime_root)
         if sentinel.poll() is not None:
             raise RuntimeError("Fremder Sentinel-Prozess wurde vom Paketserver beendet")
         marker = str(runtime_root / "save")
@@ -219,7 +224,7 @@ def _scenario_process_ownership(product_root: Path, root: Path) -> dict[str, obj
         lingering = [line.strip() for line in ps.splitlines() if marker in line and str(os.getpid()) not in line]
         if lingering:
             raise RuntimeError("Eigener Serverprozess blieb nach Exit übrig: " + " | ".join(lingering[:3]))
-        return {"foreign_process_survived": True, "owned_processes_remaining": 0, "server_pid": result["pid"]}
+        return {"foreign_process_survived": True, "owned_processes_remaining": 0}
     finally:
         if sentinel.poll() is None:
             sentinel.terminate()
@@ -260,7 +265,7 @@ def _scenario_port_collision(product_root: Path, root: Path) -> dict[str, object
     expected = f"Port {occupied_port} ist belegt"
     if expected not in output:
         raise RuntimeError("EADDRINUSE wurde nicht kontrolliert erklärt: " + " | ".join(output.splitlines()[-8:]))
-    return {"occupied_port": occupied_port, "fail_closed": True, "diagnostic": expected}
+    return {"fail_closed": True, "diagnostic": "occupied_loopback_port_rejected"}
 
 
 def _run_unittest(targets: list[str], timeout: float = 90.0) -> dict[str, object]:

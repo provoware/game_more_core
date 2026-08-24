@@ -20,9 +20,16 @@ jobs:
         run: PYTHONPATH=src:. python3 -m unittest tests.runtime.test_release_package -v
       - name: Validate release-autopilot policy contract
         run: PYTHONPATH=src:. python3 -m unittest tests.release.test_release_autopilot -v
-      - name: Run Failure Containment PRO twice
+      - name: Restore clean evidence source workspace
+        shell: bash
         run: |
-          rm -rf failure-containment-dist
+          git reset --hard HEAD
+          git clean -ffdx
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Run Failure Containment PRO twice
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
           PYTHONPATH=src:. python3 tools/failure_containment_pro.py --output-dir failure-containment-dist
           cat failure-containment-dist/FAILURE_CONTAINMENT_EVIDENCE.json.sha256
       - uses: actions/upload-artifact@v4

@@ -112,6 +112,26 @@ class FailureContainmentContractTests(unittest.TestCase):
             self.assertIn("No space left on device", diagnosis)
             self.assertIn("JETZT BEHEBEN:", diagnosis)
 
+    def test_dirty_worktree_is_rejected_before_source_identity_is_recorded(self):
+        with patch.object(containment, "_git") as git:
+            git.side_effect = [" M tools/failure_containment_pro.py"]
+            with self.assertRaisesRegex(RuntimeError, "sauberen Git-Working-Tree"):
+                containment.source_identity()
+        git.assert_called_once_with("status", "--porcelain", "--untracked-files=all")
+
+    def test_clean_worktree_source_identity_uses_exact_head_and_tree(self):
+        with patch.object(containment, "_git") as git:
+            git.side_effect = ["", "abc123", "tree456"]
+            self.assertEqual(containment.source_identity(), ("abc123", "tree456"))
+        self.assertEqual(
+            git.call_args_list,
+            [
+                unittest.mock.call("status", "--porcelain", "--untracked-files=all"),
+                unittest.mock.call("rev-parse", "HEAD"),
+                unittest.mock.call("rev-parse", "HEAD^{tree}"),
+            ],
+        )
+
     def test_anti_flake_mismatch_can_never_be_pass(self):
         first = {name: {"status": "PASS"} for name in containment.REQUIRED_SCENARIOS}
         second = {name: {"status": "PASS"} for name in containment.REQUIRED_SCENARIOS}
@@ -127,6 +147,16 @@ class FailureContainmentContractTests(unittest.TestCase):
         second = containment._canonical_json_bytes(json.loads(first.decode("utf-8")))
         self.assertEqual(first, second)
         self.assertEqual(containment._sha256_bytes(first), containment._sha256_bytes(second))
+
+    def test_evidence_detail_contract_avoids_volatile_pid_and_port_fields(self):
+        process_detail = {"foreign_process_survived": True, "owned_processes_remaining": 0}
+        port_detail = {"fail_closed": True, "diagnostic": "occupied_loopback_port_rejected"}
+        payload = containment._canonical_json_bytes(
+            {"process_ownership": process_detail, "port_collision": port_detail}
+        ).decode("utf-8")
+        self.assertNotIn("server_pid", payload)
+        self.assertNotIn("occupied_port", payload)
+        self.assertNotRegex(payload, r"Port \\d+")
 
 
 class LegacyUpgradeRecoveryTests(unittest.TestCase):
