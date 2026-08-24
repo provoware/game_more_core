@@ -38,6 +38,39 @@
     host.hidden = false;
   }
 
+  function confirmedHudPreviewClone() {
+    const source = document.querySelector(".hud-crew-preview");
+    const identity = document.querySelector(".hud-crew-identity");
+    if (!(source instanceof HTMLElement) || !(identity instanceof HTMLElement) || identity.hidden) return null;
+    const badge = source.cloneNode(true);
+    badge.className = "hall-local-crew-preview";
+    badge.setAttribute("aria-hidden", "true");
+    return badge;
+  }
+
+  function renderConfirmedHallCrew(hall) {
+    if (!hall || typeof state !== "object") return;
+    const board = hall.boards?.[state.hallMode] || hall.boards?.[hall.default_mode];
+    const host = document.getElementById("hall-ranking");
+    if (!board || !(host instanceof HTMLElement)) return;
+
+    const rows = Array.from(host.children);
+    for (const row of rows) row.querySelector(".hall-local-crew")?.remove();
+    const localIndex = (board.entries || []).findIndex((entry) => entry.character_id === hall.local_character_id);
+    if (localIndex < 0 || localIndex >= rows.length) return;
+
+    const row = rows[localIndex];
+    if (!(row instanceof HTMLElement)) return;
+    const badge = confirmedHudPreviewClone();
+    if (!badge) return;
+    const marker = document.createElement("span");
+    marker.className = "hall-local-crew";
+    marker.setAttribute("role", "img");
+    marker.setAttribute("aria-label", "Deine bestätigte Crew-Marke");
+    marker.append(badge);
+    row.prepend(marker);
+  }
+
   const baseRenderCrewIdentity = renderCrewIdentity;
   renderCrewIdentity = function renderCrewIdentityWithConfirmedHud(crew) {
     // Wichtig: bestätigte Projection zuerst ins HUD spiegeln. Der bestehende
@@ -46,6 +79,15 @@
     return baseRenderCrewIdentity(crew);
   };
 
-  window.BunkerCrewIdentityHudSync = Object.freeze({ renderConfirmedHudCrew });
+  if (typeof renderHall === "function") {
+    const baseRenderHall = renderHall;
+    renderHall = function renderHallWithConfirmedCrew(hall) {
+      const result = baseRenderHall(hall);
+      renderConfirmedHallCrew(hall);
+      return result;
+    };
+  }
+
+  window.BunkerCrewIdentityHudSync = Object.freeze({ renderConfirmedHudCrew, renderConfirmedHallCrew });
   window.__bunkerCrewIdentityHudSyncInstalled = true;
 })();
