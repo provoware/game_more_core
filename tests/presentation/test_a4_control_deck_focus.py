@@ -25,6 +25,17 @@ class ControlDeckFocusContractTests(unittest.TestCase):
         self.assertIn('Runtime-Gate abwarten', FOCUS)
         self.assertNotIn("ACTION_LABELS", FOCUS)
 
+    def test_next_action_signal_does_not_self_trigger_mutation_observer_forever(self):
+        self.assertIn('const currentSignal = document.querySelector(`.${SIGNAL_CLASS}`);', FOCUS)
+        self.assertIn('if (currentSignal !== enabledEventAction)', FOCUS)
+        self.assertIn('currentSignal?.classList.remove(SIGNAL_CLASS);', FOCUS)
+        self.assertIn('enabledEventAction.classList.add(SIGNAL_CLASS)', FOCUS)
+        self.assertNotIn(
+            'for (const button of document.querySelectorAll(`.${SIGNAL_CLASS}`)) button.classList.remove(SIGNAL_CLASS);',
+            FOCUS,
+        )
+        self.assertIn('attributeFilter: ["class", "disabled"]', FOCUS)
+
     def test_reduced_motion_keeps_signal_without_required_animation(self):
         self.assertIn("prefers-reduced-motion: no-preference", FOCUS)
         self.assertIn("next-action-signal", FOCUS)
