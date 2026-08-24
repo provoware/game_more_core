@@ -11,6 +11,7 @@ ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
 
 import desktop_browser_e2e_pro as desktop  # noqa: E402
+import start_a4_acceptance as acceptance  # noqa: E402
 
 
 class DesktopBrowserE2EContractTests(unittest.TestCase):
@@ -73,6 +74,16 @@ class DesktopBrowserE2EContractTests(unittest.TestCase):
             (tools / "start_orchestrator.py").write_text("# canonical\n", encoding="utf-8")
             detail = desktop._scenario_desktop_launcher_contract(product)
             self.assertTrue(detail["single_orchestrator_path"])
+
+    def test_browser_acceptance_enforces_bounded_cold_start_floor(self):
+        completed = unittest.mock.Mock(returncode=0, stdout="● BEREIT\nBUNKERFREQUENZ – Control Deck", stderr="")
+        with (
+            patch.object(acceptance, "find_browser", return_value="/usr/bin/chromium"),
+            patch.object(acceptance.subprocess, "run", return_value=completed) as run,
+        ):
+            acceptance.browser_dom("http://127.0.0.1:8044/", require_browser=True, timeout=15.0)
+        self.assertEqual(run.call_args.kwargs["timeout"], acceptance.MIN_BROWSER_WALLCLOCK_TIMEOUT)
+        self.assertEqual(acceptance.MIN_BROWSER_WALLCLOCK_TIMEOUT, 30.0)
 
     def test_evidence_serialization_is_canonical(self):
         payload = {"status": "PASS", "runs": [{"a": 1}], "schema_version": 1}
