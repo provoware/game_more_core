@@ -18,6 +18,15 @@ RECOVERY_ACTIONS: tuple[dict[str, Any], ...] = (
         "max_energy_before": 80,
         "max_stress_before": 88,
     },
+    {
+        "recovery_id": "recovery.mate_zucker_vollgas",
+        "label": "Mate, Zucker & Vollgas",
+        "description": "Mehr Reserve auf einen Schlag, aber deutlich teurer für den Kopf: der größere Energieschub kostet überproportional Stress.",
+        "energy_delta": 30,
+        "stress_delta": 20,
+        "max_energy_before": 70,
+        "max_stress_before": 80,
+    },
 )
 
 
