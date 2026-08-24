@@ -6,6 +6,10 @@
   const SIGNAL_CLASS = "next-action-signal";
   let focusedPanelId = null;
 
+  function setTextIfChanged(element, text) {
+    if (element.textContent !== text) element.textContent = text;
+  }
+
   function ensureStyles() {
     if (document.getElementById("control-deck-focus-style")) return;
     const style = document.createElement("style");
@@ -65,7 +69,7 @@
       const button = panel.querySelector(":scope > .panel-head .deck-focus-button");
       if (!button) continue;
       const active = focusedPanelId === panel.id;
-      button.textContent = active ? "GESAMTANSICHT" : "FOKUS";
+      setTextIfChanged(button, active ? "GESAMTANSICHT" : "FOKUS");
       button.setAttribute("aria-pressed", String(active));
       button.setAttribute("aria-label", active ? "Gesamtansicht wiederherstellen" : `${panel.querySelector("h2")?.textContent || "Bereich"} fokussieren`);
     }
@@ -98,12 +102,12 @@
 
     if (enabledEventAction instanceof HTMLButtonElement) {
       status.dataset.state = "ready";
-      status.textContent = `NÄCHSTER SCHRITT: ${enabledEventAction.textContent || "EVENT-AKTION"}`;
+      setTextIfChanged(status, `NÄCHSTER SCHRITT: ${enabledEventAction.textContent || "EVENT-AKTION"}`);
       return;
     }
 
     status.dataset.state = "idle";
-    status.textContent = "NÄCHSTER SCHRITT: Runtime-Gate abwarten";
+    setTextIfChanged(status, "NÄCHSTER SCHRITT: Runtime-Gate abwarten");
   }
 
   function reconcile() {
