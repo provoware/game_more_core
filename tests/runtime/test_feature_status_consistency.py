@@ -24,7 +24,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         merge_sha = validation["merged_commit"]
         pr_number = validation["pull_request"]
 
-        self.assertIn(f"Zuletzt remote validierte Feature-Stufe:** `{iteration}", todo)
+        self.assertIn(f"Zuletzt remote validierte Feature-Stufe vor aktuellem QA-Slice:** `{iteration}", todo)
         self.assertIn(f"PR #{pr_number}", todo)
         self.assertIn(merge_sha, todo)
         self.assertIn(f"**{iteration}:** PR #{pr_number}", pool)
@@ -33,7 +33,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
 
-    def test_validated_pool_items_and_active_recovery_audit_owner_are_consistent(self):
+    def test_validated_pool_items_and_active_replay_precision_owner_are_consistent(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         for pool_id in (
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
@@ -42,55 +42,41 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-FINANCE-003", "POOL-FINANCE-004", "POOL-UX-004", "POOL-UX-005",
             "POOL-MAP-002", "POOL-STORY-001", "POOL-ECON-004", "POOL-ECON-005",
             "POOL-UX-006", "POOL-ECON-006", "POOL-UX-003", "POOL-ECON-007",
-            "POOL-STREET-002", "POOL-ECON-008", "POOL-QA-007",
+            "POOL-STREET-002", "POOL-ECON-008", "POOL-QA-007", "POOL-QA-008",
         ):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-008"))
-        self.assertIn("`READY`", _pool_row(pool, "POOL-QA-002"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-002"))
+        self.assertIn("`READY`", _pool_row(pool, "POOL-QA-009"))
 
-    def test_validated_street_audit_and_active_recovery_audit_match_status(self):
+    def test_validated_map_usability_and_active_replay_precision_match_status(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         economy = status["subsystems"]["economy"]
         living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-STREET-BALANCE-AUDIT")
-        self.assertEqual(status["active_iteration"], "0.8.8-ECON-RECOVERY-BALANCE-AUDIT")
-        self.assertEqual(status["next_iteration"], "0.8.8-QA-REPLAY-PRECISION")
-        self.assertEqual(status["current_focus"], "deterministic_recovery_energy_stress_matrix_audit")
-        self.assertTrue(economy["recovery_actions_validated"])
-        self.assertTrue(economy["recovery_feedback_validated"])
-        self.assertFalse(economy["recovery_variants_in_validation"])
-        self.assertTrue(economy["recovery_variants_validated"])
-        self.assertEqual(economy["recovery_action_count"], 2)
-        self.assertEqual(
-            economy["recovery_variant_ids"],
-            ["recovery.koffein_kalte_luft", "recovery.mate_zucker_vollgas"],
-        )
-        self.assertTrue(economy["recovery_balance_audit_in_validation"])
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-MAP-USABILITY")
+        self.assertEqual(status["active_iteration"], "0.8.8-QA-REPLAY-PRECISION")
+        self.assertEqual(status["next_iteration"], "0.8.8-STREET-EFFECT-AUDIT")
+        self.assertEqual(status["current_focus"], "district_event_receipt_semantics_regression")
+        self.assertFalse(economy["recovery_balance_audit_in_validation"])
+        self.assertTrue(economy["recovery_balance_audit_validated"])
         self.assertEqual(economy["recovery_balance_audit_state_matrix_size"], 10201)
         self.assertTrue(economy["recovery_balance_audit_all_sequences"])
         self.assertFalse(economy["recovery_balance_audit_clamping_allowed"])
         self.assertFalse(economy["recovery_balance_audit_telemetry"])
         self.assertFalse(economy["recovery_balance_audit_gameplay_changes"])
-        self.assertTrue(living_world["street_encounters_replayable"])
-        self.assertEqual(living_world["street_encounter_contract_version"], "0.8.8-street-pack")
-        self.assertEqual(living_world["street_encounter_catalog_size"], 16)
-        self.assertFalse(living_world["street_balance_audit_in_validation"])
-        self.assertTrue(living_world["street_balance_audit_validated"])
-        self.assertFalse(living_world["street_balance_audit_telemetry"])
-        self.assertFalse(living_world["street_balance_audit_gameplay_changes"])
-        self.assertEqual(living_world["street_balance_min_total_variation_distance"], 0.17)
-        self.assertEqual(living_world["street_balance_max_single_weight"], 20)
-        self.assertEqual(living_world["street_balance_bucket_total"], 100)
-        self.assertTrue(living_world["street_balance_all_buckets_enumerated"])
+        self.assertTrue(living_world["district_replay_receipt_precision_in_validation"])
         self.assertEqual(
-            living_world["street_approaches"],
-            ["balanced", "recovery", "network", "scout"],
+            living_world["district_replay_receipt_semantics"],
+            ["applied", "idempotent_replay", "not_triggered"],
         )
-        self.assertTrue(presentation["recovery_actions_generic_catalog_rendering"])
-        self.assertEqual(presentation["recovery_action_catalog_count"], 2)
+        self.assertFalse(living_world["district_replay_receipt_second_architecture"])
+        self.assertFalse(living_world["district_replay_receipt_gameplay_changes"])
+        self.assertTrue(presentation["map_usability_legend"])
+        self.assertTrue(presentation["map_usability_optional_labels"])
+        self.assertFalse(presentation["map_usability_gameplay_authority"])
+        self.assertTrue(presentation["control_deck_focus_mutation_loop_hotfixed"])
         self.assertFalse(presentation["browser_gameplay_authority"])
         self.assertTrue(process["focused_read_policy"])
         self.assertTrue(process["planned_read_list_required"])
@@ -124,7 +110,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-STREET-002": "`DONE`",
             "POOL-ECON-008": "`DONE`",
             "POOL-QA-007": "`DONE`",
-            "POOL-QA-008": "`PULLED`",
+            "POOL-QA-008": "`DONE`",
+            "POOL-QA-002": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)

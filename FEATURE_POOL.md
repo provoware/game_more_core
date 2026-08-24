@@ -38,16 +38,9 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
-- **0.8.8-FIN-EXPORT:** PR #119 · Merge `11c023f927ad9a74673587fefd1709fe2322553f`
-- **0.8.8-ECON-ANTI-GRIND:** PR #120 · Merge `49d6947b9f1b3a35d0785a958a7688e3b22a6bc1`
-- **0.8.8-ECON-JOB-PREVIEW:** PR #121 · Merge `040be951665a34dd8d81694ab695128e0b846bd5` · aktuelle Auszahlung vor Jobstart aus derselben kanonischen Anti-Grind-Berechnung sichtbar
-- **0.8.8-UX-EXPORT-PROOF:** PR #122 · Merge `0909f3c38642f97d4474cd200af11c960e1ada66` · Vorschau/Kopieren/Prüfsumme aus exakt derselben TXT-/CSV-Serialisierung
-- **0.8.8-ECON-RECOVERY-ACTIONS:** PR #123 · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900` · bestätigte +20 Energie gegen +12 Stress, ohne Systemzeit oder zweite Ressourcenengine
-- **0.8.8-UX-TIMELINE-FILTER:** PR #124 · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01` · ALLE / STRASSE / KRISE / BEZIRK rein lokal, Runtime-Reihenfolge unverändert
-- **0.8.8-ECON-RECOVERY-FEEDBACK:** PR #125 · Merge `c8e8cba3dab103c90937f26e90a02a13139dd0f5` · bestätigte Vorher→Nachher-Werte + nächste Runtime-Verfügbarkeit ohne neue Mechanik
-- **0.8.8-STREET-PACK:** PR #126 · Merge `00c14d57bf642e688a65c0a9e99d39b52857eb0b` · 16 Begegnungen, bestehende deterministische Auswahl-/Replay-Architektur unverändert
-- **0.8.8-ECON-RECOVERY-VARIANTS:** PR #127 · Merge `c9732c28cc723984d59b02018fbed02c3c681913` · zweite bestätigte Recovery-Wahl +30 Energie / +20 Stress aus demselben Service und Replay-Pfad
-- **0.8.8-STREET-BALANCE-AUDIT:** PR #128 · Merge `bef5e2ad78923c4ce36c116c66f2755abe442d3d` · alle vier Ansatzprofile, Einzelwahrscheinlichkeiten, Polaritätsmix und 100 Gewichtsbuckets deterministisch geprüft; keine Gameplayänderung
+- **0.8.8-ECON-RECOVERY-BALANCE-AUDIT:** PR #129 · Merge `3f51e57e58b2cbd6244f36333fea6cce970043c1` · beide Recovery-Wege vollständig über Energie×Stress und Mehrfachfolgen geprüft, test-only
+- **0.8.8-MAP-USABILITY:** PR #130 · Merge `47eb5b5288221fb0c6cd2ebfa3473b2b5ba85a07` · kontrastreichere Berlin-Ops-Karte mit lokaler Legende/Beschriftung, keine Kartenautorität
+- **Control-Deck-Freeze-Hotfix:** PR #132 · Merge `f78e4bd6b212dbd7e9477b9d681c2dbf6e0af060` · selbsttriggernde Focus-Mutation beseitigt
 
 ---
 
@@ -74,8 +67,10 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-STREET-002` | `DONE` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | PR #126 sicher gemergt; 16 Begegnungen, gleiche Engine |
 | `POOL-ECON-008` | `DONE` | Weitere Regenerationsentscheidungen | unterschiedliche Erholungsstrategien | PR #127 sicher gemergt; Balancevertrag zuerst, keine Echtzeitregeneration |
 | `POOL-QA-007` | `DONE` | Street-Balance-Audit | Ansatzprofile und Katalogdominanz deterministisch prüfen | PR #128 sicher gemergt; keine Telemetrie, keine Gameplayänderung |
-| `POOL-QA-008` | `PULLED` | Recovery-Balance-Audit | beide Recovery-Wege über Energie×Stress-Matrix gegen Dominanz und Gratisfolgen prüfen | Test-only, keine neue Recovery-Mechanik |
-| `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
+| `POOL-QA-008` | `DONE` | Recovery-Balance-Audit | beide Recovery-Wege über Energie×Stress-Matrix gegen Dominanz und Gratisfolgen prüfen | PR #129 sicher gemergt; test-only |
+| `POOL-QA-002` | `PULLED` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft und Regression | keine Gameplayänderung, keine zweite Receipt-Architektur |
+| `POOL-QA-009` | `READY` | Street-Effekt-Erwartungswert-Audit | Energie-/Stress-/Rufwirkung der vier Ansätze mathematisch vergleichen | test-only, keine Telemetrie |
+| `POOL-UX-007` | `IDEA` | Receipt-Klartext im Control Deck | neu / Replay / nicht ausgelöst verständlich anzeigen | nur bestätigte Runtime-Signale rendern |
 
 ---
 
@@ -109,4 +104,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-QA-008` ist für 0.8.8-ECON-RECOVERY-BALANCE-AUDIT aktiv. Der Audit prüft beide vorhandenen Recovery-Wege vollständig deterministisch über Energie×Stress und Mehrfachfolgen, ohne Telemetrie oder Gameplayänderung. Danach ist `POOL-QA-002` der nächste bereits vorbereitete unabhängige Robustheits-Slice; `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig.
+`POOL-QA-002` ist für `0.8.8-QA-REPLAY-PRECISION` aktiv. Der Slice fixiert die vorhandenen District-Event-Receipt-Signale regressionssicher, ohne neue Receipt- oder Gameplayarchitektur. Danach ist `POOL-QA-009` der nächste unabhängige test-only Balance-Slice; `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig.
