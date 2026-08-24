@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter` · PR #124 · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01`
-- **TIMELINE-FILTER Remote-Abnahme:** Runtime `32674157706` · Presentation `32674157688` · Repository Health `32674157773` · Release Acceptance `32674157695` · Release Package `32674157723` · `SAFE MERGE PASS`
-- **Aktive Entwicklungsstufe:** `0.8.8-ECON-RECOVERY-FEEDBACK – verständliches Regenerationsfeedback`
-- **RECOVERY-FEEDBACK-Status:** nach bestätigter Regeneration werden Vorher→Nachher-Werte aus bestätigten Projection-Snapshots gezeigt; nächste Verfügbarkeit kommt ausschließlich aus der danach gerenderten Runtime-Projection
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-RECOVERY-FEEDBACK – verständliches Regenerationsfeedback` · PR #125 · Merge `c8e8cba3dab103c90937f26e90a02a13139dd0f5`
+- **RECOVERY-FEEDBACK Remote-Abnahme:** Runtime `32675067361` · Presentation `32675067353` · Repository Health `32675067359` · Release Acceptance `32675067362` · Release Package `32675067352` · `SAFE MERGE PASS`
+- **Aktive Entwicklungsstufe:** `0.8.8-STREET-PACK – Straßenereignis-Erweiterung`
+- **STREET-PACK-Status:** sechs zusätzliche Begegnungen teilen ausschließlich vorhandene Gewichtstöpfe auf; Makroverteilung, Auswahlalgorithmus, Ansätze und Replay-Pfad bleiben erhalten
 - **Repository-Arbeitsmodus:** Basisdateien, Arbeitsdateien und Evidenz/Logs sind getrennt; grüne Logs werden nicht dauerhaft übertragen, rote Gates zuerst nur im konkreten Fehlerausschnitt gelesen
 - **Entwicklungsprozess:** Focused-Read bleibt verpflichtend; Codex-Code-Review bleibt vollständig außerhalb von Entwicklung, Gate-Evidenz und Mergeprozess
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -45,73 +45,83 @@
 - [x] `Koffein & kalte Luft`: +20 Energie, +12 Stress
 - [x] keine Rechnerzeit, XP, Traits, zweite Ressource oder Browser-Deltas
 - [x] bestehendes `character.resources_changed` bleibt Replay-/Recovery-Wahrheit
-- [x] PR #123 · Head `31a3c2966549f54260c3d90b148e2d4cec4b6cad` · Runtime `32673385832` · Presentation `32673385764` · Repository Health `32673385757` · Release Acceptance `32673385796` · Release Package `32673385792` · 0 Review-Threads · `/safe-merge` PASS · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900`
+- [x] PR #123 · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900`
 
 ## 0.8.8-UX-TIMELINE-FILTER – lokale Timeline-Filter
 - [x] Filter `ALLE / STRASSE / KRISE / BEZIRK`
 - [x] ausschließlich lokaler Modul-State; keine Sortierung, Persistenz oder Journal-Autorität
-- [x] PR #124 · Head `59bcc0909bc508f085b2a40a187074461799a908` · Runtime `32674157706` · Presentation `32674157688` · Repository Health `32674157773` · Release Acceptance `32674157695` · Release Package `32674157723` · 0 Review-Threads · `/safe-merge` PASS · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01`
+- [x] PR #124 · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01`
+
+## 0.8.8-ECON-RECOVERY-FEEDBACK – Regenerationsfeedback
+- [x] bestätigte Vorher→Nachher-Werte für Energie und Stress direkt sichtbar
+- [x] nächste Verfügbarkeit ausschließlich aus der danach bestätigten Runtime-Projection
+- [x] keine neue Mechanik, Delta-/Schwellenberechnung oder Persistenz
+- [x] PR #125 · Head `129f1de8b76e569fab4bde51cb722c5aec64b637` · Runtime `32675067361` · Presentation `32675067353` · Repository Health `32675067359` · Release Acceptance `32675067362` · Release Package `32675067352` · 0 Review-Threads · `/safe-merge` PASS · Merge `c8e8cba3dab103c90937f26e90a02a13139dd0f5`
 
 ---
 
-# Aktiv – 0.8.8-ECON-RECOVERY-FEEDBACK
+# Aktiv – 0.8.8-STREET-PACK
 
 ## Ziel
 
-Nach bestätigter Regeneration sollen die tatsächlichen Vorher-/Nachher-Werte und die nächste Runtime-Verfügbarkeit unmittelbar verständlich sichtbar sein, ohne neue Mechanik oder Browser-Regelberechnung.
+Mehr Abwechslung auf der Straße ausschließlich durch zusätzliche katalogisierte Begegnungen. Auswahl, Replay, Ansätze und Effekt-Autorität bleiben vollständig beim bestehenden `StreetEncounterService` und `STREET_ENCOUNTER_MANIFEST`.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
 **Basisdateien**
-- `AGENTS.md` – Focused Read, Presentation-/Merge-Grenzen
+- `AGENTS.md` – Focused Read, Katalog-/Merge-Grenzen
 - aktive Stellen aus `TODO.md`, `PROJEKTSTATUS.json`, `FEATURE_POOL.md`
 - README wegen aktiver/folgender Iterationskonsistenz
 
 **Arbeitsdateien**
-- `web/a4/recovery_actions_ui.js`
-- `tests/presentation/test_a4_recovery_actions.py`
-- `tests/runtime/test_feature_status_consistency.py`
-- `docs/LAIENHILFE_REGENERATION_FEEDBACK.md`
+- `manifests/STREET_ENCOUNTER_MANIFEST.json`
+- `content/de/ui/street_encounters.json`
+- `tests/runtime/test_street_pack_contract.py`
+- bestehender `StreetEncounterService` nur zur Vertragsprüfung, ohne geplante Änderung
+- `docs/LAIENHILFE_STREET_PACK.md`
 
 **Evidenz/Logs**
 - nur Run-ID/Status bei grünen Gates
 - vollständiger Log ausschließlich bei einem konkreten roten Gate
 
-### RECOVERY-FEEDBACK – kleinster erklärender UX-Slice
+### STREET-PACK – kataloggetriebener Erweiterungsslice
 
-- [x] Vorherwerte direkt aus bestätigter `state.projection.character` vor dem Command übernehmen
-- [x] Nachherwerte erst nach Rückkehr des vorhandenen bestätigten `sendCommand(...)`-Pfads aus der neuen Projection übernehmen
-- [x] keine Delta-, Schwellen- oder Verfügbarkeitsberechnung im Browser
-- [x] nächsten `can_run`-/Blocker-Status ausschließlich aus `state.projection.scene_jobs.recovery_actions` erklären
-- [x] bei unverändertem State kein falsches Erfolgssignal erzeugen
-- [x] technische Implementierung nur in bestehendem Recovery-UI-Modul; Runtime-Service und Session bleiben unverändert
-- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32674791670` · Presentation `32674791661` · Repository Health `32674791642` · Release Acceptance `32674791660` · Release Package `32674791644`
+- [x] Katalog von 10 auf 16 Begegnungen erweitert
+- [x] sechs neue Varianten: 1 neutral, 3 positiv, 2 negativ
+- [x] globale Verteilung bleibt exakt `25 neutral / 60 positiv / 15 negativ`
+- [x] `balanced` bleibt exakt der Basisgewichtskatalog
+- [x] alle vier Ansätze enthalten exakt denselben vollständigen Katalog und summieren auf 100
+- [x] Auswahl bleibt `sha256_stable_weighted`; Systemzeit bleibt ausgeschlossen
+- [x] bisherige Vertragsversion `0.8.7-b1` bleibt als Replay-Version kompatibel
+- [x] keine Economy-/Inventory-Effekte und keine neue Eventart
+- [x] `StreetEncounterService` bleibt unverändert
+- [x] technischer Remote-Prüfstand 5/5 grün: Runtime `32675648994` · Presentation `32675648960` · Repository Health `32675648979` · Release Acceptance `32675648956` · Release Package `32675648962`
 - [ ] finalen Status-/Dokumentations-Head 5/5 grün bestätigen
 - [ ] 0 ungelöste Review-Threads bestätigen
 - [ ] Branch 0 Commits hinter `main` bestätigen
 - [ ] ausschließlich über `/safe-merge` mergen und SAFE MERGE PASS abwarten
 
-### Bewusst nicht in RECOVERY-FEEDBACK
+### Bewusst nicht in STREET-PACK
 
-- keine neue Recovery-Aktion oder Balanceänderung
-- keine neue Runtime-/Service-/Session-Logik
-- keine Browserberechnung von Deltas oder Schwellen
-- keine neue Persistenz oder Journalart
-- keine Systemzeit
+- keine zweite Encounter-Engine
+- keine neue Zufallsquelle oder Systemzeit-Autorität
+- keine neue Street-Ressource, Economy- oder Inventory-Logik
+- keine Mini-Kettenereignisse
+- keine Änderung an vorhandenen Approach-IDs
 - kein Produktversionsbump
 
 ### Danach
 
-- [ ] **0.8.8-STREET-PACK:** zusätzliche Straßenereignisse über den vorhandenen Encounter-Vertrag ergänzen; keine neue Encounter-Engine
+- [ ] **0.8.8-ECON-RECOVERY-VARIANTS:** erst nach Balancingprüfung eine zweite deutlich anders gewichtete Regenerationsentscheidung prüfen; keine Echtzeitregeneration
 - [ ] **0.8.8-C6 – Round-Authority Integration Harness:** erst bei echtem kanonischem Rundenproduzenten end-to-end prüfen
-- [ ] **0.8.8-ECON-RECOVERY-VARIANTS:** erst nach Balancingbeobachtung weitere Regenerationsoptionen erwägen
+- [ ] **0.8.8-STREET-PACK-2:** nur bei nachgewiesenem Bedarf weitere Katalogvielfalt ergänzen; keine zweite Architektur
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Recovery-Mechanik und Availability bleiben vollständig Runtime-Autorität.
-- Feedback darf bestätigte Werte erklären, aber keine neue Ressourcenauswirkung ableiten oder autorisieren.
+- Street-Auswahl bleibt deterministisch und replaybar aus der bestehenden bestätigten Autorität.
+- Neue Begegnungen dürfen nur katalogisierte kleine Energie-/Stress-/Rufeffekte besitzen.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
