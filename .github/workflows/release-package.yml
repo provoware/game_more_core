@@ -42,6 +42,25 @@ jobs:
             failure-containment-dist/SUBGATE_EVIDENCE.json
           if-no-files-found: warn
           retention-days: 30
+      - name: Run Desktop Browser E2E PRO twice
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: |
+          rm -rf desktop-browser-e2e-dist
+          PYTHONPATH=src:. python3 tools/desktop_browser_e2e_pro.py \
+            --prior-subgate failure-containment-dist/SUBGATE_EVIDENCE.json \
+            --output-dir desktop-browser-e2e-dist
+          cat desktop-browser-e2e-dist/DESKTOP_BROWSER_E2E_EVIDENCE.json.sha256
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: BUNKERFREQUENZ-desktop-browser-e2e-evidence
+          path: |
+            desktop-browser-e2e-dist/DESKTOP_BROWSER_E2E_EVIDENCE.json
+            desktop-browser-e2e-dist/DESKTOP_BROWSER_E2E_EVIDENCE.json.sha256
+            desktop-browser-e2e-dist/SUBGATE_EVIDENCE.json
+          if-no-files-found: warn
+          retention-days: 30
       - name: Run Release Autopilot PRO
         id: autopilot
         shell: bash
@@ -49,7 +68,7 @@ jobs:
           rm -rf autopilot-dist
           python3 tools/release_autopilot.py \
             --output-dir autopilot-dist \
-            --subgate-evidence failure-containment-dist/SUBGATE_EVIDENCE.json \
+            --subgate-evidence desktop-browser-e2e-dist/SUBGATE_EVIDENCE.json \
             --allow-quarantine
           state="$(python3 - <<'PY'
           import json
