@@ -71,6 +71,17 @@ class A4CrewIdentityControlDeckTests(unittest.TestCase):
             with self.subTest(token=token):
                 self.assertIn(token, STYLES)
 
+    def test_avatar_preview_clears_two_row_hud_and_quick_nav_at_medium_width(self):
+        media = '@media (min-width: 721px) and (max-width: 860px)'
+        self.assertIn(media, STYLES)
+        block = STYLES[STYLES.index(media):STYLES.index("@media (max-width: 720px)")]
+        self.assertIn(".crew-identity-preview-wrap", block)
+        self.assertIn(
+            "top: calc(var(--hud-height, 3.7rem) + var(--hud-height, 3.7rem) + 3rem)",
+            block,
+        )
+        self.assertNotIn("position: static", block)
+
     def test_confirmed_identity_is_copied_to_hud_only_at_renderer_boundaries(self):
         for token in (
             "function copyConfirmedCrewPreview()",
