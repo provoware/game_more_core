@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand 0.8.8 Street Pack validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--STREET--PACK_validiert-7dff00">
-  <img alt="Recovery Variants in Abnahme" src="https://img.shields.io/badge/Gameplay-RECOVERY--VARIANTS_in_Abnahme-00c2ff">
+  <img alt="Feature Stand 0.8.8 Street Balance Audit validiert" src="https://img.shields.io/badge/Feature_Stand-0.8.8--STREET--BALANCE--AUDIT_validiert-7dff00">
+  <img alt="Recovery Balance Audit in Abnahme" src="https://img.shields.io/badge/Qualit%C3%A4t-RECOVERY--BALANCE--AUDIT_in_Abnahme-00c2ff">
   <img alt="District Cadence validiert" src="https://img.shields.io/badge/District_Cadence-C5_validiert-ff7ad9">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -27,17 +27,17 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Validierter Feature-Stand** | ✅ `0.8.8-STREET-PACK – 16 deterministische Straßenbegegnungen` |
-| **Aktive Iteration** | 🟡 `0.8.8-ECON-RECOVERY-VARIANTS – zweite Regenerationsentscheidung` |
-| **Nächste Iteration** | `0.8.8-STREET-BALANCE-AUDIT – deterministischer Katalogcheck` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-STREET-BALANCE-AUDIT – deterministischer Katalogcheck` |
+| **Aktive Iteration** | 🟡 `0.8.8-ECON-RECOVERY-BALANCE-AUDIT – Energie×Stress-Matrix und Mehrfachfolgen` |
+| **Nächste Iteration** | `0.8.8-QA-REPLAY-PRECISION – District-No-op-/Retry-Receipts präzisieren` |
 | **Lokaler Game Client** | ✅ schreibender A4-Client, localhost-only |
 | **Crew Identity** | ✅ Logo/Fahne als syncbereites Datenrezept, kein Bildblob |
-| **Living World** | ✅ replaybare Street Encounters, 16 Begegnungen bei unveränderter 25/60/15-Makroverteilung, persistente Districts, District World Events + 24h-Cadence |
+| **Living World** | ✅ replaybare Street Encounters, 16 Begegnungen bei unveränderter 25/60/15-Makroverteilung, vier mathematisch auditierte Ansatzprofile, persistente Districts, District World Events + 24h-Cadence |
 | **Timeline** | ✅ bestätigte Street-/Krisen-/District-Ereignisse + lokale Filter `ALLE / STRASSE / KRISE / BEZIRK`; Runtime-Reihenfolge bleibt unverändert |
 | **Ranking** | ✅ Competitive Top 10 + bestätigte Wochen-/Monatszyklen |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
 | **Berlin Ops Map 2** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan + Auswahlfokus |
-| **Scene Jobs** | ✅ Anti-Grind + bestätigte Lohnvorschau + Regeneration `+20 Energie / +12 Stress`; 🟡 zweite Wahl `+30 Energie / +20 Stress` auf demselben Recovery-Pfad in Abnahme |
+| **Scene Jobs** | ✅ Anti-Grind + bestätigte Lohnvorschau + zwei validierte Recovery-Wahlen `+20/+12` und `+30/+20`; 🟡 mathematischer Recovery-Balance-Audit in Abnahme |
 | **Assistent C1–C5B** | ✅ Autorität, Steuerung, Rundenausführung, JOBS-UI und bestätigter Freundschafts-Nachhall |
 | **Bankkonto D/D2** | ✅ Wallet↔Bank + 1 % bestätigter Sparzins/Zinseszins ohne Rechnerzeit-/Browserautorität |
 | **Kontoauszüge** | ✅ bestätigtes Finance-Ledger read-only als Joblohn, Bankbewegung und Sparzins; keine zweite Buchhaltung |
@@ -47,7 +47,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> `0.8.8-STREET-PACK` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. RECOVERY-VARIANTS führt keine zweite Regenerationsarchitektur ein: `Mate, Zucker & Vollgas` wird als zweite katalogisierte Wahl im vorhandenen `RecoveryActionService` verarbeitet; der Browser liefert weiterhin nur `recovery_id`, Systemzeit bleibt ausgeschlossen.
+> `0.8.8-STREET-BALANCE-AUDIT` ist remote validiert und ausschließlich über `/safe-merge` nach `main` gelangt. Der aktive RECOVERY-BALANCE-AUDIT verändert weder Recovery-Werte noch Gameplay: Er liest die beiden bestehenden Aktionen aus `RECOVERY_ACTIONS` und prüft ausschließlich deterministisch Headroom, Nichtdominanz und Mehrfachfolgen. Telemetrie, Systemzeit und neue Recovery-Mechanik bleiben ausgeschlossen.
 
 ---
 
@@ -108,7 +108,9 @@ PROPERTY / HALL OF TRIBUTE
 - ECON-RECOVERY-ACTIONS: bestätigte `+20 Energie / +12 Stress` über bestehenden Character-Replay-Pfad, ohne Rechnerzeit oder zweite Ressource
 - UX-TIMELINE-FILTER: `ALLE / STRASSE / KRISE / BEZIRK` filtern ausschließlich lokal und erhalten die bestätigte Runtime-Reihenfolge
 - ECON-RECOVERY-FEEDBACK: bestätigte Vorher→Nachher-Werte und nächste Runtime-Verfügbarkeit ohne neue Mechanik
+- ECON-RECOVERY-VARIANTS: zweite bestätigte Wahl `+30 Energie / +20 Stress` aus demselben Recovery-Service und Replay-Pfad
 - STREET-PACK: 16 katalogisierte Begegnungen, dieselbe `sha256_stable_weighted`-Auswahl, dieselben vier Ansätze und derselbe Replay-Pfad
+- STREET-BALANCE-AUDIT: vier Ansatzprofile, maximale Einzelwahrscheinlichkeit, Polaritätsmix und alle 100 Gewichtsbuckets deterministisch geprüft; keine Telemetrie oder Gameplayänderung
 
 ---
 
@@ -262,8 +264,10 @@ Der Ausbau bleibt in getrennte, prüfbare Slices zerlegt:
 | **0.8.8-UX-TIMELINE-FILTER** | lokale Timeline-Filter | ✅ ALLE / STRASSE / KRISE / BEZIRK, rein lokaler Presentation-State |
 | **0.8.8-ECON-RECOVERY-FEEDBACK** | verständliches Regenerationsfeedback | ✅ bestätigte Vorher→Nachher-Snapshots + nächster Runtime-Blocker, keine neue Mechanik |
 | **0.8.8-STREET-PACK** | zusätzliche Straßenereignisse | ✅ 16 Begegnungen im vorhandenen Encounter-Vertrag; keine zweite Engine |
-| **0.8.8-ECON-RECOVERY-VARIANTS** | zweite Regenerationsentscheidung | 🟡 +30 Energie / +20 Stress nach explizitem Balancevertrag; gleicher Recovery-Pfad |
-| **0.8.8-STREET-BALANCE-AUDIT** | Street-Katalogcheck | danach; deterministisch, keine Telemetrie und keine Gameplayänderung |
+| **0.8.8-ECON-RECOVERY-VARIANTS** | zweite Regenerationsentscheidung | ✅ +30 Energie / +20 Stress nach explizitem Balancevertrag; gleicher Recovery-Pfad |
+| **0.8.8-STREET-BALANCE-AUDIT** | Street-Katalogcheck | ✅ deterministisch geprüft, keine Telemetrie und keine Gameplayänderung |
+| **0.8.8-ECON-RECOVERY-BALANCE-AUDIT** | Recovery-Zustandsmatrix | 🟡 test-only: Headroom, Nichtdominanz, Clamping und Mehrfachfolgen |
+| **0.8.8-QA-REPLAY-PRECISION** | District-No-op-/Retry-Receipts | danach; semantische Präzision ohne Gameplayänderung |
 
 Anlagen/Dividenden bleiben ein eigenständiger Folge-Slice, damit Economy, UI und Sync nicht in einer Mega-Änderung vermischt werden.
 
@@ -387,7 +391,9 @@ Neue UI-Funktionen wie Zoom, Filter, Fokus-Maximierung, Aktionshervorhebung oder
 | 0.8.8-ECON-RECOVERY-ACTIONS | bestätigte Regeneration | `7ed085b111a0...` |
 | 0.8.8-UX-TIMELINE-FILTER | lokale Timeline-Filter | `465dc5040c5a...` |
 | 0.8.8-ECON-RECOVERY-FEEDBACK | Regenerationsfeedback | `c8e8cba3dab1...` |
-| **0.8.8-STREET-PACK** | **16 deterministische Straßenbegegnungen** | `00c14d57bf64...` |
+| 0.8.8-STREET-PACK | 16 deterministische Straßenbegegnungen | `00c14d57bf64...` |
+| **0.8.8-ECON-RECOVERY-VARIANTS** | **zweite Recovery-Wahl +30/+20** | `c9732c28cc72...` |
+| **0.8.8-STREET-BALANCE-AUDIT** | **deterministischer Street-Katalogcheck** | `bef5e2ad7892...` |
 
 ---
 
@@ -449,7 +455,9 @@ SAFE MERGE PASS
 | Regenerationsfeedback | [`docs/LAIENHILFE_REGENERATION_FEEDBACK.md`](docs/LAIENHILFE_REGENERATION_FEEDBACK.md) |
 | Regenerationsvarianten | [`docs/LAIENHILFE_REGENERATION_VARIANTEN.md`](docs/LAIENHILFE_REGENERATION_VARIANTEN.md) |
 | Recovery-Balancevertrag | [`docs/RECOVERY_VARIANTS_BALANCE_CONTRACT.md`](docs/RECOVERY_VARIANTS_BALANCE_CONTRACT.md) |
+| Recovery-Balance-Audit | [`docs/LAIENHILFE_RECOVERY_BALANCE_AUDIT.md`](docs/LAIENHILFE_RECOVERY_BALANCE_AUDIT.md) |
 | Street Pack | [`docs/LAIENHILFE_STREET_PACK.md`](docs/LAIENHILFE_STREET_PACK.md) |
+| Street-Balance-Audit | [`docs/LAIENHILFE_STREET_BALANCE_AUDIT.md`](docs/LAIENHILFE_STREET_BALANCE_AUDIT.md) |
 | Timeline-Filter | [`docs/LAIENHILFE_TIMELINE_FILTER.md`](docs/LAIENHILFE_TIMELINE_FILTER.md) |
 | Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Kontoauszug-Export | [`docs/LAIENHILFE_FIN_EXPORT.md`](docs/LAIENHILFE_FIN_EXPORT.md) |
