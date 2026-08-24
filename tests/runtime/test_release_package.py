@@ -48,6 +48,8 @@ class ReleasePackageTests(unittest.TestCase):
             self.assertFalse(any("/.github/" in name for name in names))
             self.assertFalse(any("/tests/" in name for name in names))
             self.assertIn(package_root + "/START_BUNKERFREQUENZ.sh", names)
+            self.assertIn(package_root + "/BUNKERFREQUENZ.desktop", names)
+            self.assertIn(package_root + "/tools/start_a4_acceptance.py", names)
             self.assertIn(package_root + "/RELEASE_INFO.json", names)
             info = json.loads(archive.read(package_root + "/RELEASE_INFO.json"))
             self.assertEqual(info["version"], version)
@@ -57,6 +59,8 @@ class ReleasePackageTests(unittest.TestCase):
             self.assertEqual(info["source_commit"], expected_head)
             launcher_info = archive.getinfo(package_root + "/START_BUNKERFREQUENZ.sh")
             self.assertTrue((launcher_info.external_attr >> 16) & 0o100)
+            desktop_info = archive.getinfo(package_root + "/BUNKERFREQUENZ.desktop")
+            self.assertTrue((desktop_info.external_attr >> 16) & 0o100)
             archive.extractall(self.tmp_path / "unpacked")
 
         extracted = self.tmp_path / "unpacked" / package_root
@@ -74,7 +78,7 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertIsNotNone(process.stdout)
         address = None
         output = []
-        for _ in range(10):
+        for _ in range(20):
             line = process.stdout.readline()
             if not line:
                 break
@@ -86,6 +90,9 @@ class ReleasePackageTests(unittest.TestCase):
         with urlopen(address + "/api/health", timeout=3) as response:
             health = json.loads(response.read().decode("utf-8"))
         self.assertEqual(health["status"], "ready")
+        with urlopen(address + "/api/state", timeout=3) as response:
+            state = json.loads(response.read().decode("utf-8"))
+        self.assertEqual(state["status"], "confirmed")
 
         first = _post(address, "/api/new-game", {
             "command_id": "package:first-run",

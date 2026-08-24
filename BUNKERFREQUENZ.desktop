@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=BUNKERFREQUENZ
+Comment=Lokales BUNKERFREQUENZ Control Deck starten
+Exec=bash -lc 'desktop="$1"; desktop="${desktop#file://}"; cd "$(dirname "$desktop")" && exec ./START_BUNKERFREQUENZ.sh' _ %k
+Terminal=true
+Icon=applications-games
+Categories=Game;
+StartupNotify=true
