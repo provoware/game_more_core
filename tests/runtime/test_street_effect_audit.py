@@ -69,8 +69,8 @@ class StreetEffectAuditTests(unittest.TestCase):
                     "reputation_delta": 65,
                 },
                 "scout": {
-                    "energy_delta": 116,
-                    "stress_delta": -29,
+                    "energy_delta": 101,
+                    "stress_delta": -9,
                     "reputation_delta": 33,
                 },
             },
@@ -103,11 +103,17 @@ class StreetEffectAuditTests(unittest.TestCase):
             )
             for approach in STREET["approaches"]
         }
-        self.assertEqual(discovery_weights["scout"], 45)
+        self.assertEqual(discovery_weights["scout"], 40)
         self.assertGreater(
             discovery_weights["scout"],
             max(weight for approach_id, weight in discovery_weights.items() if approach_id != "scout"),
         )
+
+    def test_scout_tradeoff_preserves_macro_balance_contract(self):
+        scout = next(item for item in STREET["approaches"] if item["approach_id"] == "scout")
+        self.assertEqual(scout["weights"]["street.construction_detour"], 0)
+        self.assertEqual(scout["weights"]["street.lost_glove"], 10)
+        self.assertLessEqual(max(scout["weights"].values()), 20)
 
 
 if __name__ == "__main__":
