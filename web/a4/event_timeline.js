@@ -2,6 +2,7 @@
 
 (() => {
   const POLL_MS = 4000;
+  const MAX_BACKOFF_MS = 30000;
   const KIND_LABELS = Object.freeze({
     street: "STRASSE",
     district: "BEZIRK",
@@ -16,6 +17,9 @@
 
   let activeFilter = "all";
   let confirmedEntries = [];
+  let refreshPromise = null;
+  let pollTimer = null;
+  let consecutiveFailures = 0;
 
   function host() {
     return document.getElementById("event-timeline-list");
@@ -117,21 +121,62 @@
     panel.insertBefore(controls, live);
   }
 
-  async function refresh() {
-    if (document.hidden) return;
-    try {
-      const response = await fetch("/api/state", { cache: "no-store" });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const payload = await response.json();
-      render(payload?.state?.event_timeline);
-    } catch (error) {
-      const live = status();
-      if (live) live.textContent = `Timeline vorübergehend nicht verfügbar: ${error.message}`;
-    }
+  function nextDelay() {
+    if (consecutiveFailures === 0) return POLL_MS;
+    return Math.min(MAX_BACKOFF_MS, POLL_MS * (2 ** Math.min(consecutiveFailures, 3)));
   }
 
-  window.BunkerEventTimeline = Object.freeze({ render, refresh, setFilter });
+  function scheduleRefresh(delay = nextDelay()) {
+    if (pollTimer !== null) window.clearTimeout(pollTimer);
+    pollTimer = window.setTimeout(() => {
+      pollTimer = null;
+      void refresh();
+    }, delay);
+  }
+
+  function refresh() {
+    if (document.hidden) return Promise.resolve();
+    if (refreshPromise) return refreshPromise;
+
+    refreshPromise = (async () => {
+      try {
+        const response = await fetch("/api/state", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        render(payload?.state?.event_timeline);
+        consecutiveFailures = 0;
+      } catch (error) {
+        consecutiveFailures += 1;
+        const live = status();
+        if (live) {
+          const waitSeconds = Math.round(nextDelay() / 1000);
+          live.textContent = `Timeline-Verbindung wird automatisch repariert · Versuch ${consecutiveFailures} · nächste Prüfung in ${waitSeconds}s · ${error.message}`;
+        }
+      } finally {
+        refreshPromise = null;
+        scheduleRefresh();
+      }
+    })();
+    return refreshPromise;
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      if (pollTimer !== null) window.clearTimeout(pollTimer);
+      pollTimer = null;
+      return;
+    }
+    consecutiveFailures = 0;
+    void refresh();
+  });
+
+  window.addEventListener("bunker:transport-retry", (event) => {
+    if (event.detail?.path !== "/api/state") return;
+    const live = status();
+    if (live) live.textContent = "Timeline-Verbindung wird automatisch neu aufgebaut …";
+  });
+
+  window.BunkerEventTimeline = Object.freeze({ render, refresh, setFilter, scheduleRefresh });
   ensureFilters();
-  refresh();
-  window.setInterval(refresh, POLL_MS);
+  void refresh();
 })();
