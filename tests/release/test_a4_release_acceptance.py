@@ -40,7 +40,7 @@ def _wait_for_address(process: subprocess.Popen[str], timeout: float = 8.0) -> s
 
 
 class A4ReleaseAcceptanceTests(unittest.TestCase):
-    def test_fresh_checkout_launcher_port_zero_health_and_clean_stop(self):
+    def test_fresh_checkout_launcher_port_zero_health_state_and_clean_stop(self):
         with tempfile.TemporaryDirectory() as save_dir:
             process = _start("--port", "0", "--no-browser", "--save-dir", save_dir)
             try:
@@ -50,6 +50,13 @@ class A4ReleaseAcceptanceTests(unittest.TestCase):
                 self.assertEqual(payload["status"], "ready")
                 self.assertEqual(Path(payload["save_dir"]).resolve(), Path(save_dir).resolve())
                 self.assertIsNone(payload["startup_recovery"])
+
+                with urlopen(address + "api/state", timeout=3) as response:
+                    state_payload = json.load(response)
+                self.assertEqual(state_payload["status"], "confirmed")
+                self.assertIsInstance(state_payload["state"], dict)
+                self.assertIn("scene_jobs", state_payload["state"])
+                self.assertIn("event_timeline", state_payload["state"])
             finally:
                 process.terminate()
                 process.wait(timeout=5)
