@@ -4,6 +4,16 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Start-Qualität – AUTOSTART-ORCHESTRATOR
+
+- den öffentlichen Linux-Startpfad auf genau einen dünnen Einstieg `START_BUNKERFREQUENZ.sh → tools/start_orchestrator.py → tools/start_a4_game_client.py` konsolidiert; es entsteht keine zweite Server-, Save- oder Gameplay-Architektur.
+- vollautomatische Startfolge mit Vorprüfung, sicherer Abhängigkeitsauflösung, Serverstart, `/api/health`-/`/api/state`-Prüfung, optionalem echten Browser-DOM-Check, Browserübergabe und abschließender Nachvalidierung ergänzt.
+- transparente Fortschritts- und Ampelanzeige (`🔵` laufend, `🟢` bestanden, `🟡` optional/manuell, `🔴` fail-closed) sowie `START_STATUS.txt` als nachvollziehbares Startprotokoll ergänzt.
+- ausschließlich risikoarme lokale Bedingungen automatisch aufgelöst: Save-Ordner anlegen, belegten Wunschport auf freie Portwahl umstellen, mitgelieferte Startrechte nach Möglichkeit setzen, einen kontrollierten Server-Recovery-Neustart durchführen und eine noch nicht sofort antwortende API kurz nachprüfen.
+- privilegierte Systemänderungen bleiben ausgeschlossen: kein stilles `sudo`, keine automatische Paketinstallation und keine Änderung systemweiter Browser-/Desktop-Einstellungen; nicht automatisch lösbare Voraussetzungen werden mit konkreter Handlungsempfehlung gemeldet.
+- Fehlerdiagnose auf `START_DIAGNOSE.txt` begrenzt und den `--exit-after-ready`-Modus für reproduzierbare Vor-/Nachvalidierung mit sauberem Server-Stopp ergänzt.
+- Release-Builder und Release-Regressionen so erweitert, dass der Orchestrator im vollständigen ZIP enthalten und der entpackte Ein-Pfad-Start weiterhin real ausführbar ist.
+
 ### 0.8.4 – Schreibender A4-Game-Client + First-Run/Recovery
 
 - kleinsten schreibenden A4-Game-Client als lokale, frameworkfreie Oberfläche ergänzt; der Browser schreibt ausschließlich über einen dünnen `GameClientSession`-Adapter in bereits bestehende Application-Services und enthält keine zweite Event-, Economy-, Incident- oder Settlement-Logik.
