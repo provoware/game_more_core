@@ -50,6 +50,7 @@ class ReleasePackageTests(unittest.TestCase):
             self.assertIn(package_root + "/START_BUNKERFREQUENZ.sh", names)
             self.assertIn(package_root + "/BUNKERFREQUENZ.desktop", names)
             self.assertIn(package_root + "/tools/start_a4_acceptance.py", names)
+            self.assertIn(package_root + "/tools/start_orchestrator.py", names)
             self.assertIn(package_root + "/RELEASE_INFO.json", names)
             info = json.loads(archive.read(package_root + "/RELEASE_INFO.json"))
             self.assertEqual(info["version"], version)
@@ -78,7 +79,7 @@ class ReleasePackageTests(unittest.TestCase):
         self.assertIsNotNone(process.stdout)
         address = None
         output = []
-        for _ in range(20):
+        for _ in range(40):
             line = process.stdout.readline()
             if not line:
                 break
