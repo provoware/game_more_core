@@ -30,6 +30,7 @@ TOOL_FILES = {
     "tools/start_orchestrator.py",
     "tools/start_diagnosis.py",
     "tools/build_release.py",
+    "tools/release_autopilot.py",
 }
 
 
