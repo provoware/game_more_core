@@ -15,6 +15,14 @@ class StartLauncherTests(unittest.TestCase):
         self.assertIn('command -v chromium', START)
         self.assertIn('BITTE IM BROWSER ÖFFNEN: $URL', START)
 
+    def test_direct_browser_process_is_verified_before_success_is_reported(self):
+        self.assertIn('launch_checked() {', START)
+        self.assertIn('sleep 0.6', START)
+        self.assertIn('kill -0 "$browser_pid"', START)
+        self.assertIn('wait "$browser_pid"', START)
+        self.assertIn('if launch_checked firefox --new-tab "$url"; then', START)
+        self.assertIn('if launch_checked chromium "$url"; then', START)
+
     def test_launcher_waits_for_real_server_address_and_explains_long_running_server(self):
         self.assertIn("^ADRESSE: ", START)
         self.assertIn("SERVER: läuft. Dieses Fenster während des Spielens offen lassen.", START)
