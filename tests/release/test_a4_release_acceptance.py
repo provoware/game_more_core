@@ -49,6 +49,7 @@ class A4ReleaseAcceptanceTests(unittest.TestCase):
                 address = _wait_for_address(process)
                 with urlopen(address + "api/health", timeout=3) as response:
                     payload = json.load(response)
+                    self.assertIn("no-store", response.headers.get("Cache-Control", ""))
                 self.assertEqual(payload["status"], "ready")
                 self.assertEqual(Path(payload["save_dir"]).resolve(), Path(save_dir).resolve())
                 self.assertIsNone(payload["startup_recovery"])
@@ -65,6 +66,28 @@ class A4ReleaseAcceptanceTests(unittest.TestCase):
                 if process.stdout is not None:
                     process.stdout.close()
             self.assertIsNotNone(process.returncode)
+
+    def test_static_ui_is_no_store_and_declares_versioned_resilience_bootstrap(self):
+        with tempfile.TemporaryDirectory() as save_dir:
+            process = _start("--port", "0", "--no-browser", "--save-dir", save_dir)
+            try:
+                address = _wait_for_address(process)
+                with urlopen(address + "?startup=cache-proof", timeout=3) as response:
+                    html = response.read().decode("utf-8")
+                    cache_control = response.headers.get("Cache-Control", "")
+                self.assertIn("no-store", cache_control)
+                self.assertIn('name="bunker-asset-revision"', html)
+                self.assertIn("client_resilience.js?v=", html)
+                self.assertIn("control_deck_focus", (ROOT / "web" / "a4" / "ui_prefs.js").read_text(encoding="utf-8"))
+
+                with urlopen(address + "control_deck_focus.js?v=cache-proof", timeout=3) as response:
+                    response.read(1)
+                    self.assertIn("no-store", response.headers.get("Cache-Control", ""))
+            finally:
+                process.terminate()
+                process.wait(timeout=5)
+                if process.stdout is not None:
+                    process.stdout.close()
 
     def test_acceptance_address_wait_times_out_for_silent_live_process(self):
         process = subprocess.Popen(
@@ -130,6 +153,7 @@ class A4ReleaseAcceptanceTests(unittest.TestCase):
         message = str(raised.exception)
         self.assertIn("START FEHLGESCHLAGEN", message)
         self.assertIn("web/a4/index.html", message)
+        self.assertIn("web/a4/client_resilience.js", message)
         self.assertIn("manifests/JOURNAL_MANIFEST.json", message)
 
 

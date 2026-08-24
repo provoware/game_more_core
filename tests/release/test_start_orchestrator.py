@@ -11,7 +11,13 @@ import unittest
 
 ROOT = Path(__file__).parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
-from start_orchestrator import _ensure_save_dir, _port_available  # noqa: E402
+from start_orchestrator import (  # noqa: E402
+    MAX_RUNTIME_RECOVERIES,
+    RUNTIME_RECOVERY_WINDOW_SECONDS,
+    _cache_busted_address,
+    _ensure_save_dir,
+    _port_available,
+)
 
 ORCHESTRATOR = ROOT / "tools" / "start_orchestrator.py"
 START = ROOT / "START_BUNKERFREQUENZ.sh"
@@ -32,6 +38,18 @@ class StartOrchestratorTests(unittest.TestCase):
             blocker.listen(1)
             port = blocker.getsockname()[1]
             self.assertFalse(_port_available(port))
+
+    def test_browser_handoff_is_cache_busted_without_changing_api_base(self):
+        address = "http://127.0.0.1:8044/"
+        self.assertEqual(
+            _cache_busted_address(address, "test-token"),
+            "http://127.0.0.1:8044/?startup=test-token",
+        )
+        self.assertNotIn("startup=", address)
+
+    def test_runtime_recovery_policy_is_bounded(self):
+        self.assertEqual(MAX_RUNTIME_RECOVERIES, 3)
+        self.assertEqual(RUNTIME_RECOVERY_WINDOW_SECONDS, 300.0)
 
     def test_help_is_informational_and_does_not_write_diagnosis(self):
         with tempfile.TemporaryDirectory() as state_dir:
@@ -73,7 +91,7 @@ class StartOrchestratorTests(unittest.TestCase):
                 env=env,
                 capture_output=True,
                 text=True,
-                timeout=35,
+                timeout=55,
             )
             output = completed.stdout + completed.stderr
             self.assertEqual(completed.returncode, 0, output)

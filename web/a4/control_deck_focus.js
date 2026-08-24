@@ -4,7 +4,18 @@
   const FOCUS_CLASS = "deck-focus-active";
   const PANEL_CLASS = "is-deck-focused";
   const SIGNAL_CLASS = "next-action-signal";
+  const MAX_RECONCILE_FAILURES = 3;
+  const OBSERVER_OPTIONS = Object.freeze({
+    subtree: true,
+    childList: true,
+    attributes: true,
+    attributeFilter: ["class", "disabled"]
+  });
   let focusedPanelId = null;
+  let observer = null;
+  let workspace = null;
+  let reconcileScheduled = false;
+  let consecutiveFailures = 0;
 
   function setTextIfChanged(element, text) {
     if (element.textContent !== text) element.textContent = text;
@@ -119,16 +130,54 @@
     syncNextAction();
   }
 
+  function attachObserver() {
+    if (!observer || !workspace || consecutiveFailures >= MAX_RECONCILE_FAILURES) return;
+    observer.observe(workspace, OBSERVER_OPTIONS);
+  }
+
+  function scheduleReconcile() {
+    if (reconcileScheduled || consecutiveFailures >= MAX_RECONCILE_FAILURES) return;
+    reconcileScheduled = true;
+    window.requestAnimationFrame(() => {
+      reconcileScheduled = false;
+      observer?.disconnect();
+      try {
+        reconcile();
+        consecutiveFailures = 0;
+      } catch (error) {
+        consecutiveFailures += 1;
+        console.error("BUNKERFREQUENZ Fokus-Recovery", error);
+        const status = ensureNextActionStatus();
+        if (status) {
+          status.dataset.state = "idle";
+          setTextIfChanged(
+            status,
+            consecutiveFailures >= MAX_RECONCILE_FAILURES
+              ? "UI-HILFE DEAKTIVIERT · SPIEL BLEIBT BEDIENBAR"
+              : `UI-HILFE WIRD REPARIERT · ${consecutiveFailures}/${MAX_RECONCILE_FAILURES}`
+          );
+        }
+      } finally {
+        attachObserver();
+      }
+    });
+  }
+
   function init() {
     ensureStyles();
     reconcile();
-    const workspace = document.getElementById("workspace");
+    workspace = document.getElementById("workspace");
     if (!workspace) return;
-    const observer = new MutationObserver(reconcile);
-    observer.observe(workspace, { subtree: true, childList: true, attributes: true, attributeFilter: ["class", "disabled"] });
+    observer = new MutationObserver(scheduleReconcile);
+    attachObserver();
   }
 
-  window.BunkerControlDeckFocus = Object.freeze({ init, restoreAll });
+  window.BunkerControlDeckFocus = Object.freeze({
+    init,
+    restoreAll,
+    scheduleReconcile,
+    maxReconcileFailures: MAX_RECONCILE_FAILURES
+  });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
   else init();
 })();

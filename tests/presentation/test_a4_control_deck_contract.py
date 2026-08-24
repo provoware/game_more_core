@@ -62,7 +62,7 @@ class A4ControlDeckContractTests(unittest.TestCase):
         self.assertEqual(response["effects"]["reputation_delta"], 2)
 
     def test_ui_preferences_are_local_only_and_script_order_is_safe(self):
-        self.assertLess(INDEX.index('src="ui_prefs.js"'), INDEX.index('src="app.js"'))
+        self.assertLess(INDEX.index('src="ui_prefs.js?v='), INDEX.index('src="app.js?v='))
         self.assertIn('data-ui-pref="compact"', INDEX)
         self.assertIn('data-ui-pref="highContrast"', INDEX)
         self.assertIn('data-ui-pref="largeText"', INDEX)

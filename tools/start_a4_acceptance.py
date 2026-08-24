@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LAUNCHER = ROOT / "tools" / "start_a4_game_client.py"
 BROWSER_NAMES = ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser")
 MIN_BROWSER_WALLCLOCK_TIMEOUT = 30.0
+BROWSER_VIRTUAL_TIME_BUDGET_MS = 12000
 
 
 def _json_get(base: str, path: str, timeout: float = 3.0) -> dict:
@@ -66,8 +67,10 @@ def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BRO
         "--no-first-run",
         "--disable-background-networking",
         "--disable-extensions",
+        "--disable-application-cache",
+        "--disk-cache-size=1",
         "--incognito",
-        "--virtual-time-budget=4000",
+        f"--virtual-time-budget={BROWSER_VIRTUAL_TIME_BUDGET_MS}",
         "--dump-dom",
         address,
     ]
@@ -94,6 +97,10 @@ def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BRO
         )
     if "BUNKERFREQUENZ – Control Deck" not in dom:
         raise RuntimeError("Control-Deck-DOM fehlt im Browserergebnis")
+    if "Timeline wird geladen" in dom:
+        raise RuntimeError(
+            "UI erreichte zwar BEREIT, aber die Timeline blieb im Initialzustand; möglicher nachgelagerter JS-Freeze"
+        )
     return dom
 
 
@@ -143,7 +150,7 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
         if browser_check:
             dom = browser_dom(address, require_browser=require_browser)
             if dom is not None:
-                print("SELBSTTEST: BROWSER OK · UI ist reaktionsfähig")
+                print("SELBSTTEST: BROWSER OK · UI ist reaktionsfähig und vollständig initialisiert")
         return
 
     with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-acceptance-save-") as save_dir:
@@ -155,7 +162,7 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
             if browser_check:
                 dom = browser_dom(actual, require_browser=require_browser)
                 if dom is not None:
-                    print("ACCEPTANCE: BROWSER OK · /api/state gerendert · UI reaktionsfähig")
+                    print("ACCEPTANCE: BROWSER OK · /api/state gerendert · Timeline initialisiert · UI reaktionsfähig")
         finally:
             if process.poll() is None:
                 process.terminate()

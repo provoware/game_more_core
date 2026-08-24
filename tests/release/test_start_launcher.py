@@ -33,7 +33,8 @@ class StartLauncherTests(unittest.TestCase):
         ):
             self.assertIn(marker, ORCHESTRATOR)
         self.assertIn("probe_http(address)", ORCHESTRATOR)
-        self.assertIn("browser_dom(address", ORCHESTRATOR)
+        self.assertIn("launch_address = _cache_busted_address(address)", ORCHESTRATOR)
+        self.assertIn("browser_dom(launch_address", ORCHESTRATOR)
         self.assertIn("START_STATUS.txt", ORCHESTRATOR)
         self.assertIn("START_DIAGNOSE.txt", ORCHESTRATOR)
         self.assertIn("AUTO-AUFLÖSUNG", ORCHESTRATOR)
@@ -46,6 +47,7 @@ class StartLauncherTests(unittest.TestCase):
         self.assertIn("/api/health", ACCEPTANCE)
         self.assertIn("/api/state", ACCEPTANCE)
         self.assertIn("● BEREIT", ACCEPTANCE)
+        self.assertIn("Timeline wird geladen", ACCEPTANCE)
 
     def test_desktop_launcher_still_uses_the_same_shell_start_path(self):
         self.assertIn("[Desktop Entry]", DESKTOP)

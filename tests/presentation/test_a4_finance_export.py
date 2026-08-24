@@ -65,8 +65,8 @@ class A4FinanceExportTests(unittest.TestCase):
         self.assertIn("Vorschau, Prüfsumme, Kopieren und Download bleiben lokal", EXPORT)
 
     def test_export_module_is_loaded_by_existing_small_ui_loader(self):
-        self.assertIn('script.src = "finance_statement_export.js"', PREFS)
-        self.assertIn('script.dataset.financeStatementExport = "true"', PREFS)
+        self.assertIn('appendModule("finance_statement_export.js", "finance-statement-export")', PREFS)
+        self.assertIn('url.searchParams.set("v", ASSET_REVISION)', PREFS)
         self.assertIn("ensureFinanceStatementExportModule();", PREFS)
 
 

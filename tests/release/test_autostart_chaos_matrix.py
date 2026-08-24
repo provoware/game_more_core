@@ -146,9 +146,9 @@ class AutostartChaosMatrixTests(unittest.TestCase):
             self.assertEqual(result, 0)
             self.assertEqual(_FakeServer.created_ports, [8044, 0])
             status = (state_dir / "START_STATUS.txt").read_text(encoding="utf-8")
-            self.assertIn("einmaliger Recovery-Neustart mit freiem Port", status)
+            self.assertIn("Recovery-Neustart mit automatisch freiem Port", status)
 
-    def test_delayed_api_is_retried_once_and_then_post_validated(self):
+    def test_delayed_api_is_retried_and_then_post_validated(self):
         with self._state() as (state_dir, save_dir):
             _FakeServer.configure("http://127.0.0.1:19004/")
             args = self._args(save_dir)
@@ -182,6 +182,39 @@ class AutostartChaosMatrixTests(unittest.TestCase):
             status = (state_dir / "START_STATUS.txt").read_text(encoding="utf-8")
             self.assertIn("injected abort", status)
             self.assertIn("Versuch 2/2", status)
+
+    def test_post_handoff_api_failure_triggers_controlled_server_recovery(self):
+        with self._state() as (state_dir, save_dir):
+            _FakeServer.configure(
+                "http://127.0.0.1:19006/",
+                "http://127.0.0.1:19007/",
+            )
+            args = self._args(save_dir)
+            calls = iter((None, RuntimeError("post-handoff API lost"), None))
+
+            def probe(address: str):
+                outcome = next(calls)
+                if isinstance(outcome, BaseException):
+                    raise outcome
+                return outcome
+
+            with patch.object(orchestrator, "_port_available", return_value=True):
+                result = self._run_ready(args, probe=probe)
+            self.assertEqual(result, 0)
+            self.assertEqual(_FakeServer.created_ports, [8044, 0])
+            status = (state_dir / "START_STATUS.txt").read_text(encoding="utf-8")
+            self.assertIn("Nachvalidierung erkannte einen Server-/API-Ausfall", status)
+            self.assertIn("erneut auf UI-Reaktionsfähigkeit geprüft", status)
+
+    def test_post_handoff_recovery_contract_rechecks_new_server_ui(self):
+        source = (ROOT / "tools" / "start_orchestrator.py").read_text(encoding="utf-8")
+        recovery = source[source.index("if post_error is not None:"):source.index("reporter.step(\n            95")]
+        self.assertIn("_probe_startup_api(address, reporter)", recovery)
+        self.assertIn("ui_verified, browser_address = _verify_browser_ui(address, reporter)", recovery)
+        self.assertLess(
+            recovery.index("_probe_startup_api(address, reporter)"),
+            recovery.index("ui_verified, browser_address = _verify_browser_ui(address, reporter)"),
+        )
 
 
 if __name__ == "__main__":

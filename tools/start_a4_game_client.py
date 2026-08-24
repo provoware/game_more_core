@@ -43,11 +43,19 @@ DISTRICT_WORLD_SEED = "bunkerfrequenz-a4-local-district-v1"
 REQUIRED = (
     "web/a4/index.html",
     "web/a4/styles.css",
+    "web/a4/client_resilience.js",
     "web/a4/app.js",
     "web/a4/assistant_jobs_ui.js",
     "web/a4/map_pro.js",
     "web/a4/ui_prefs.js",
     "web/a4/event_timeline.js",
+    "web/a4/control_deck_focus.js",
+    "web/a4/district_biography.js",
+    "web/a4/finance_statement_export.js",
+    "web/a4/scene_job_payout_preview.js",
+    "web/a4/recovery_actions_ui.js",
+    "web/a4/map_usability.js",
+    "web/a4/map_usability.css",
     "web/a4/starter.json",
     "manifests/JOURNAL_MANIFEST.json",
     "manifests/INCIDENT_MANIFEST.json",
@@ -409,13 +417,18 @@ class A4RequestHandler(http.server.SimpleHTTPRequestHandler):
     def runtime(self) -> A4ClientRuntime:
         return self.server.runtime  # type: ignore[attr-defined]
 
+    def end_headers(self) -> None:
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        super().end_headers()
+
     def _json(self, status: int, payload: dict) -> None:
         encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(encoded)))
-        self.send_header("Cache-Control", "no-store")
-        self.send_header("X-Content-Type-Options", "nosniff")
         self.end_headers()
         self.wfile.write(encoded)
 
@@ -513,7 +526,8 @@ def main() -> None:
         print(f"RECOVERY: {runtime.startup_recovery.status.upper()}")
     print("STOPP: Strg+C", flush=True)
     if not args.no_browser:
-        threading.Timer(0.25, webbrowser.open, args=(url,)).start()
+        launch_url = f"{url}?startup={uuid.uuid4().hex}"
+        threading.Timer(0.25, webbrowser.open, args=(launch_url,)).start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:

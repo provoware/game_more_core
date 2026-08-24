@@ -21,7 +21,7 @@ class A4EventTimelineControlDeckTests(unittest.TestCase):
         self.assertIn('id="event-timeline-list"', INDEX)
         self.assertIn('id="event-timeline-status"', INDEX)
         self.assertIn('aria-live="polite"', INDEX)
-        self.assertIn('src="event_timeline.js"', INDEX)
+        self.assertIn('src="event_timeline.js?v=', INDEX)
         self.assertIn('href="#event-timeline-panel"', INDEX)
 
     def test_local_filters_cover_all_street_crisis_and_district_without_persistence(self):

@@ -74,8 +74,8 @@ class A4AssistantJobsUiTests(unittest.TestCase):
             build_scene_jobs_projection(state, JOBS["jobs"])
 
     def test_ui_reuses_jobs_panel_and_sends_only_control_job_id(self):
-        self.assertIn('src="assistant_jobs_ui.js"', INDEX)
-        self.assertLess(INDEX.index('src="app.js"'), INDEX.index('src="assistant_jobs_ui.js"'))
+        self.assertIn('src="assistant_jobs_ui.js?v=', INDEX)
+        self.assertLess(INDEX.index('src="app.js?v='), INDEX.index('src="assistant_jobs_ui.js?v='))
         self.assertIn('document.getElementById("jobs-list")', ASSISTANT_UI)
         self.assertIn('control.id = "jobs-assistant-control"', ASSISTANT_UI)
         self.assertNotIn('assistant-panel', ASSISTANT_UI)
@@ -105,7 +105,7 @@ class A4AssistantJobsUiTests(unittest.TestCase):
         self.assertNotIn("interest", fragment.lower())
 
     def test_payout_preview_only_renders_projection_values_without_gameplay_formula(self):
-        self.assertIn('script.src = "scene_job_payout_preview.js"', UI_PREFS)
+        self.assertIn('appendModule("scene_job_payout_preview.js", "scene-job-payout-preview")', UI_PREFS)
         self.assertIn("job.effective_payout_cents", PAYOUT_PREVIEW)
         self.assertIn("job.payout_reduced_by_energy", PAYOUT_PREVIEW)
         self.assertIn("Lohn bis zu", PAYOUT_PREVIEW)

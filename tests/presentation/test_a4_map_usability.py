@@ -11,8 +11,8 @@ MAP_JS = (ROOT / "web" / "a4" / "map_pro.js").read_text(encoding="utf-8")
 
 class A4MapUsabilityTests(unittest.TestCase):
     def test_module_is_loaded_without_replacing_existing_map_renderer(self):
-        self.assertIn('script.src = "map_usability.js"', UI_PREFS)
-        self.assertIn('script.dataset.mapUsability = "true"', UI_PREFS)
+        self.assertIn('appendModule("map_usability.js", "map-usability")', UI_PREFS)
+        self.assertIn('url.searchParams.set("v", ASSET_REVISION)', UI_PREFS)
         self.assertIn("window.BunkerMapPro = Object.freeze({ render });", MAP_JS)
         self.assertNotIn("BunkerMapPro", MODULE)
 
@@ -29,7 +29,7 @@ class A4MapUsabilityTests(unittest.TestCase):
         for token in forbidden:
             with self.subTest(token=token):
                 self.assertNotIn(token, MODULE)
-        self.assertIn('link.href = "map_usability.css"', MODULE)
+        self.assertIn('link.href = assetUrl("map_usability.css")', MODULE)
         self.assertIn("MutationObserver", MODULE)
 
     def test_labels_are_optional_and_selected_objects_remain_visible(self):

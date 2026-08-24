@@ -44,8 +44,8 @@ class A4RecoveryActionsTests(unittest.TestCase):
         self.assertNotIn('"energy_delta"})', SESSION)
 
     def test_recovery_module_is_loaded_by_existing_ui_loader(self):
-        self.assertIn('script.src = "recovery_actions_ui.js"', PREFS)
-        self.assertIn('script.dataset.recoveryActions = "true"', PREFS)
+        self.assertIn('appendModule("recovery_actions_ui.js", "recovery-actions")', PREFS)
+        self.assertIn('url.searchParams.set("v", ASSET_REVISION)', PREFS)
         self.assertIn("ensureRecoveryActionsModule();", PREFS)
 
     def test_feedback_uses_confirmed_before_after_projections_and_next_runtime_availability(self):
