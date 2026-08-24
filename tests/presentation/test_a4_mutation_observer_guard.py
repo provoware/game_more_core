@@ -18,7 +18,7 @@ class A4MutationObserverGuardTests(unittest.TestCase):
         sources = self._observer_sources()
         self.assertEqual(
             set(sources),
-            {"control_deck_focus.js", "map_usability.js", "receipt_clarity.js"},
+            {"control_deck_focus.js", "map_usability.js", "receipt_clarity.js", "ui_prefs.js"},
             "Neuer MutationObserver benötigt einen expliziten Loop-Sicherheitsvertrag.",
         )
 
@@ -60,6 +60,15 @@ class A4MutationObserverGuardTests(unittest.TestCase):
         self.assertIn(".observe(settlement, { childList: true });", source)
         self.assertNotIn("subtree: true", source)
         self.assertNotIn("attributes: true", source)
+
+    def test_confirmed_avatar_hud_observers_write_outside_their_observed_trees(self):
+        source = self._observer_sources()["ui_prefs.js"]
+        self.assertIn('panelObserver.observe(profilePanel, { childList: true });', source)
+        self.assertIn('editorObserver.observe(editor, { childList: true });', source)
+        self.assertNotIn('panelObserver.observe(profilePanel, { childList: true, subtree: true })', source)
+        self.assertNotIn('editorObserver.observe(editor, { childList: true, subtree: true })', source)
+        self.assertIn('const host = document.querySelector(".hud-crew-identity")', source)
+        self.assertIn('editorObserver?.disconnect();', source)
 
 
 if __name__ == "__main__":
