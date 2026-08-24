@@ -2,83 +2,179 @@
   margin: 1rem 0;
   padding: 1rem;
   border: 1px solid var(--line, #3a4149);
+  border-radius: .8rem;
   background: color-mix(in srgb, var(--panel, #15181c) 90%, transparent);
+  box-shadow: inset 0 1px rgba(255,255,255,.04);
 }
 
 .crew-identity-editor .crew-identity-layout {
   display: grid;
-  grid-template-columns: minmax(150px, 220px) 1fr;
-  gap: 1rem;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap: 1.2rem;
   align-items: center;
 }
 
 .crew-identity-preview-wrap {
   display: grid;
-  gap: .5rem;
+  gap: .65rem;
   justify-items: center;
+  min-width: 0;
+}
+
+.crew-identity-preview-wrap > small {
+  max-width: 22rem;
+  color: var(--muted, #a8b0bd);
+  font-size: .72rem;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .crew-identity-preview {
-  width: 180px;
-  min-height: 112px;
+  position: relative;
+  isolation: isolate;
   display: grid;
   place-items: center;
-  position: relative;
+  width: min(100%, 210px);
+  aspect-ratio: 8 / 5;
+  min-height: 0;
   overflow: hidden;
   border: 3px solid var(--crew-accent, #ff5a1f);
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08) inset;
+  border-radius: .7rem;
+  background: #101114;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.1) inset,
+    0 0 0 .32rem rgba(0,0,0,.2),
+    0 .9rem 2rem rgba(0,0,0,.35);
   color: var(--crew-accent, #ff5a1f);
   font-weight: 900;
   letter-spacing: .08em;
 }
 
+.crew-identity-preview::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: .45rem;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: .4rem;
+  pointer-events: none;
+}
+
+.crew-identity-preview::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(145deg, rgba(255,255,255,.12), transparent 34%, rgba(0,0,0,.2) 72%);
+  pointer-events: none;
+}
+
 .crew-identity-preview[data-mode="logo"] {
-  width: 132px;
-  min-height: 132px;
-  border-radius: 22%;
+  width: min(100%, 164px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.crew-identity-preview[data-mode="logo"]::before {
+  inset: .5rem;
+  border-radius: 50%;
 }
 
 .crew-identity-symbol {
-  font-size: 3rem;
+  display: grid;
+  place-items: center;
+  width: clamp(4.5rem, 42%, 6rem);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 50%;
+  background: rgba(0,0,0,.24);
+  box-shadow: 0 .35rem 1rem rgba(0,0,0,.24), inset 0 0 1rem rgba(255,255,255,.04);
+  font-size: clamp(2.5rem, 11vw, 3.6rem);
   line-height: 1;
-  text-shadow: 0 2px 0 rgba(0,0,0,.35);
+  text-shadow: 0 2px 0 rgba(0,0,0,.45), 0 0 .7rem rgba(0,0,0,.35);
 }
 
 .crew-identity-mark {
   position: absolute;
-  right: .45rem;
-  bottom: .3rem;
-  padding: .12rem .3rem;
-  background: rgba(0,0,0,.62);
+  right: .55rem;
+  bottom: .5rem;
+  max-width: calc(100% - 1.1rem);
+  overflow: hidden;
+  padding: .18rem .4rem;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: .3rem;
+  background: rgba(0,0,0,.72);
   color: #fff;
-  font-size: .72rem;
+  font-size: .68rem;
+  line-height: 1.1;
+  letter-spacing: .12em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: 0 .2rem .6rem rgba(0,0,0,.3);
 }
 
 .crew-identity-controls {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: .7rem;
+  min-width: 0;
 }
 
 .crew-identity-controls label {
   display: grid;
   gap: .3rem;
+  min-width: 0;
 }
 
 .crew-identity-controls select,
 .crew-identity-controls input {
   width: 100%;
+  min-height: 46px;
+  border: 1px solid #4a5260;
+  border-radius: .4rem;
+  background: #090b0f;
+  color: #fff;
+  padding: .5rem .55rem;
+}
+
+.crew-identity-controls select:focus-visible,
+.crew-identity-controls input:focus-visible {
+  border-color: var(--accent-2, #62dfff);
+  outline: 3px solid rgba(98,223,255,.32);
+  outline-offset: 2px;
 }
 
 .crew-identity-sync-note {
-  margin: .7rem 0 0;
-  font-size: .86rem;
-  opacity: .8;
+  margin: .8rem 0 0;
+  color: var(--muted, #a8b0bd);
+  font-size: .82rem;
+  line-height: 1.45;
 }
 
 @media (max-width: 720px) {
   .crew-identity-editor .crew-identity-layout,
   .crew-identity-controls {
     grid-template-columns: 1fr;
+  }
+
+  .crew-identity-editor .crew-identity-layout {
+    gap: 1rem;
+  }
+
+  .crew-identity-preview {
+    width: min(100%, 240px);
+  }
+
+  .crew-identity-preview[data-mode="logo"] {
+    width: min(78vw, 176px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crew-identity-preview,
+  .crew-identity-symbol,
+  .crew-identity-mark {
+    transition: none !important;
+    animation: none !important;
   }
 }
