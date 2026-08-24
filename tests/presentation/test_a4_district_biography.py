@@ -39,8 +39,8 @@ class A4DistrictBiographyTests(unittest.TestCase):
             self.assertNotIn(marker, BIO, marker)
 
     def test_loader_reuses_existing_small_ui_bootstrap(self):
-        self.assertIn('script.src = "district_biography.js"', PREFS)
-        self.assertIn('script.dataset.districtBiography = "true"', PREFS)
+        self.assertIn('appendModule("district_biography.js", "district-biography")', PREFS)
+        self.assertIn('url.searchParams.set("v", ASSET_REVISION)', PREFS)
         self.assertIn("ensureDistrictBiographyModule();", PREFS)
 
     def test_visible_copy_does_not_claim_unconfirmed_timestamp(self):
