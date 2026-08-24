@@ -31,6 +31,11 @@ REQUIRED_SCENARIOS = (
 )
 EXPECTED_DESKTOP_EXEC = "Exec=bash -lc 'desktop=\"$1\"; desktop=\"${desktop#file://}\"; cd \"$(dirname \"$desktop\")\" && exec ./START_BUNKERFREQUENZ.sh' _ %k"
 EXPECTED_LAUNCHER_EXEC = 'exec "$PYTHON_BIN" tools/start_orchestrator.py "$@"'
+FIREFOX_DRIVER_READY_TIMEOUT_SECONDS = 20.0
+FIREFOX_SESSION_TIMEOUT_SECONDS = 35.0
+FIREFOX_NAVIGATION_TIMEOUT_SECONDS = 20.0
+FIREFOX_DOM_READY_TIMEOUT_SECONDS = 40.0
+FIREFOX_WEBDRIVER_CALL_TIMEOUT_SECONDS = 8.0
 
 
 def _canonical_json_bytes(data: object) -> bytes:
@@ -227,15 +232,15 @@ def _webdriver_json(method: str, url: str, payload: object | None = None, timeou
     return data
 
 
-def _wait_http_ready(url: str, process: subprocess.Popen[str], timeout: float = 12.0) -> None:
+def _wait_http_ready(url: str, process: subprocess.Popen[bytes], timeout: float = FIREFOX_DRIVER_READY_TIMEOUT_SECONDS) -> None:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         if process.poll() is not None:
             raise RuntimeError("Geckodriver wurde vor Bereitschaft beendet")
         try:
-            _webdriver_json("GET", url, timeout=0.5)
+            _webdriver_json("GET", url, timeout=0.75)
             return
-        except (OSError, URLError, HTTPError, json.JSONDecodeError):
+        except (TimeoutError, OSError, URLError, HTTPError, json.JSONDecodeError):
             time.sleep(0.1)
     raise RuntimeError("Geckodriver wurde nicht rechtzeitig bereit")
 
@@ -288,11 +293,10 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
     server, address = _start_packaged_server(product_root, root / "server")
     port = _free_loopback_port()
     driver = subprocess.Popen(
-        [geckodriver, "--host", "127.0.0.1", "--port", str(port)],
+        [geckodriver, "--host", "127.0.0.1", "--port", str(port), "--log", "fatal"],
         cwd=product_root,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
     )
     session_id: str | None = None
     base = f"http://127.0.0.1:{port}"
@@ -305,34 +309,50 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
                 "capabilities": {
                     "alwaysMatch": {
                         "browserName": "firefox",
+                        "pageLoadStrategy": "eager",
                         "moz:firefoxOptions": {"binary": firefox, "args": ["-headless"]},
                     }
                 }
             },
-            timeout=20.0,
+            timeout=FIREFOX_SESSION_TIMEOUT_SECONDS,
         )
         value = created.get("value")
         if not isinstance(value, dict) or not isinstance(value.get("sessionId"), str):
             raise RuntimeError(f"Firefox-WebDriver lieferte keine Session: {created}")
         session_id = value["sessionId"]
-        _webdriver_json("POST", f"{base}/session/{session_id}/url", {"url": address}, timeout=10.0)
+        _webdriver_json(
+            "POST",
+            f"{base}/session/{session_id}/url",
+            {"url": address},
+            timeout=FIREFOX_NAVIGATION_TIMEOUT_SECONDS,
+        )
 
-        deadline = time.monotonic() + 30.0
+        deadline = time.monotonic() + FIREFOX_DOM_READY_TIMEOUT_SECONDS
         body_text = ""
         while time.monotonic() < deadline:
-            result = _webdriver_json(
-                "POST",
-                f"{base}/session/{session_id}/execute/sync",
-                {"script": "return document.body ? document.body.innerText : '';", "args": []},
-                timeout=5.0,
-            )
+            if driver.poll() is not None:
+                raise RuntimeError("Geckodriver wurde während der Firefox-DOM-Prüfung beendet")
+            try:
+                result = _webdriver_json(
+                    "POST",
+                    f"{base}/session/{session_id}/execute/sync",
+                    {"script": "return document.body ? document.body.innerText : '';", "args": []},
+                    timeout=FIREFOX_WEBDRIVER_CALL_TIMEOUT_SECONDS,
+                )
+            except (TimeoutError, OSError, URLError, HTTPError, json.JSONDecodeError):
+                time.sleep(0.25)
+                continue
             body_value = result.get("value")
             body_text = body_value if isinstance(body_value, str) else ""
-            if "● BEREIT" in body_text and "BUNKERFREQUENZ" in body_text:
+            if (
+                "● BEREIT" in body_text
+                and "BUNKERFREQUENZ" in body_text
+                and "Timeline wird geladen" not in body_text
+            ):
                 break
             time.sleep(0.25)
         else:
-            raise RuntimeError("Firefox-DOM erreichte den bestätigten BEREIT-Zustand nicht")
+            raise RuntimeError("Firefox-DOM erreichte den bestätigten BEREIT-Zustand nicht innerhalb der Cold-Start-Grenze")
 
         health = _webdriver_json(
             "POST",
@@ -341,7 +361,7 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
                 "script": "return fetch('/api/health').then(r => r.json()).then(x => x.status);",
                 "args": [],
             },
-            timeout=8.0,
+            timeout=FIREFOX_WEBDRIVER_CALL_TIMEOUT_SECONDS,
         )
         if health.get("value") != "ready":
             raise RuntimeError("Firefox konnte /api/health nicht als ready bestätigen")
@@ -373,8 +393,6 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
             except subprocess.TimeoutExpired:
                 server.kill()
                 server.wait(timeout=3)
-        if driver.stdout is not None:
-            driver.stdout.close()
         if server.stdout is not None:
             server.stdout.close()
 
