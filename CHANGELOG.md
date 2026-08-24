@@ -4,6 +4,16 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Start-Qualität – START-SELF-HEALING-PRO
+
+- statische A4-Assets mit gemeinsamer Revision und `no-store` gegen veraltete Desktop-Browserstände gehärtet; sichtbare Starts verwenden zusätzlich cache-sichere Startadressen.
+- Focus-/Map-MutationObserver auf self-quenching und zusammengefasste DOM-Reconciliation umgestellt; bei wiederholten internen Fehlern fällt nur die Komfortfunktion aus, statt die gesamte Seite zu blockieren.
+- gemeinsamen Browsertransport mit 8-Sekunden-Grenze über Header **und vollständigen API-Response-Body**, begrenzten GET-Retries und genau einer POST-Wiederholung ausschließlich bei vorhandener `command_id` ergänzt; nicht-idempotente Checkpoints werden nicht automatisch wiederholt.
+- Timeline-Polling auf Single-Flight und begrenzten exponentiellen Backoff umgestellt; Browser-Acceptance ist nur erfolgreich, wenn `● BEREIT` erreicht wird und `Timeline wird geladen …` verschwunden ist.
+- Start-Orchestrator um Browserfallback, kontrollierte Post-Handoff-Recovery mit erneuter UI-Abnahme und Laufzeit-Health-Watch erweitert; maximal drei eigene Server-Recoveries in fünf Minuten, danach fail-closed mit Diagnose.
+- Firefox-E2E-Cold-Start gegen blockierende Geckodriver-Logpipes und einzelne transiente WebDriver-Aufrufe gehärtet, ohne den zweimaligen Anti-Flake-Vertrag abzuschwächen.
+- Save-Recovery bleibt ausschließlich beim bestehenden `GameRecoveryService`; keine Gameplay-, Balance-, Journal-/Save-Schema- oder Parallelserver-Änderung.
+
 ### Release-Qualität – FAILURE-CONTAINMENT-PRO
 
 - das zweite verpflichtende Release-Autopilot-PRO-Subgate als deterministische, zweimal ausgeführte Failure-Containment-Matrix ergänzt; abweichende Laufresultate werden als `FLAKY` quarantänisiert und niemals durch Retry zu PASS umgedeutet.
