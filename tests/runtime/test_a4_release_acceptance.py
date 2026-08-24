@@ -211,7 +211,7 @@ class A4ReleaseAcceptanceTests(unittest.TestCase):
 
         address = None
         output = []
-        for _ in range(8):
+        for _ in range(32):
             line = process.stdout.readline()
             if not line:
                 break
