@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import selectors
 import shutil
 import subprocess
 import sys
@@ -98,14 +99,31 @@ def _wait_for_address(process: subprocess.Popen[str], timeout: float = 8.0) -> s
     assert process.stdout is not None
     deadline = time.monotonic() + timeout
     lines: list[str] = []
-    while time.monotonic() < deadline:
-        line = process.stdout.readline()
-        if line:
+    selector = selectors.DefaultSelector()
+    selector.register(process.stdout, selectors.EVENT_READ)
+    try:
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            if process.poll() is not None:
+                trailing = process.stdout.read()
+                if trailing:
+                    lines.extend(trailing.splitlines())
+                break
+            events = selector.select(timeout=remaining)
+            if not events:
+                break
+            line = process.stdout.readline()
+            if not line:
+                if process.poll() is not None:
+                    break
+                continue
             lines.append(line.rstrip())
             if line.startswith("ADRESSE: "):
                 return line.split("ADRESSE: ", 1)[1].strip()
-        elif process.poll() is not None:
-            break
+    finally:
+        selector.close()
     raise RuntimeError("Launcher lieferte keine Adresse: " + " | ".join(lines))
 
 
