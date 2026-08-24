@@ -1,0 +1,212 @@
+/* Berlin Ops Map – lokale Lesbarkeits- und Bedienverbesserung. Keine Gameplay-Autorität. */
+#map-pro-panel {
+  --map-glow: #62dfff;
+  --map-accent: #d7ff2f;
+  --map-surface: #090d12;
+  --map-label-bg: #06090ded;
+}
+
+#map-view-controls {
+  align-items: center;
+  padding: .55rem;
+  border: 1px solid #384655;
+  border-radius: .7rem;
+  background: linear-gradient(135deg, #111922, #090d12);
+  box-shadow: inset 0 1px #ffffff08;
+}
+
+#map-view-controls .utility-button {
+  min-width: 2.55rem;
+  border-color: #4b5968;
+  background: #151e28;
+}
+
+#map-view-controls .utility-button[data-map-view-action="focus-selected"] {
+  border-color: #62dfff88;
+  color: var(--map-glow);
+}
+
+#map-view-controls .utility-button[data-map-view-action="labels"] {
+  margin-left: auto;
+}
+
+#map-view-controls .utility-button[aria-pressed="true"] {
+  border-color: var(--map-accent);
+  color: #101208;
+  background: var(--map-accent);
+}
+
+#map-view-status {
+  margin: .45rem 0 .7rem;
+  padding: .45rem .65rem;
+  border-left: 3px solid var(--map-glow);
+  background: #0a1017;
+}
+
+#berlin-map-canvas {
+  isolation: isolate;
+  border-color: #455464;
+  background:
+    linear-gradient(#62dfff08 1px, transparent 1px),
+    linear-gradient(90deg, #62dfff08 1px, transparent 1px),
+    radial-gradient(circle at 50% 45%, #17212c 0, #090d12 72%);
+  background-size: 5% 5%, 5% 5%, auto;
+  box-shadow: inset 0 0 0 1px #ffffff05, inset 0 0 3rem #0008;
+}
+
+#berlin-map-canvas::after {
+  content: "BERLIN // OPS";
+  position: absolute;
+  right: .75rem;
+  bottom: .6rem;
+  z-index: 0;
+  color: #8fdfff26;
+  font-size: clamp(.62rem, 1.4vw, .82rem);
+  font-weight: 900;
+  letter-spacing: .18em;
+  pointer-events: none;
+}
+
+.map-district {
+  z-index: 1;
+  border-width: 1.5px;
+  border-color: #6f7d8b7d;
+  background: linear-gradient(145deg, #17212ab8, #101820b8);
+  color: #d9e6ef;
+  text-shadow: 0 1px 3px #000;
+  box-shadow: inset 0 0 1.1rem #0005;
+  transition: border-color .14s ease, background .14s ease, box-shadow .14s ease;
+}
+
+.map-district:hover,
+.map-district:focus-visible,
+.map-district.is-selected {
+  z-index: 3;
+  border-color: var(--map-glow);
+  background: linear-gradient(145deg, #17303ad9, #101a24df);
+  box-shadow: inset 0 0 1.4rem #62dfff13, 0 0 0 2px #62dfff30;
+  color: #fff;
+}
+
+.map-marker {
+  z-index: 6;
+  min-width: 2.55rem;
+  min-height: 2.55rem;
+  border-width: 2px;
+  box-shadow: 0 .3rem .9rem #000c, 0 0 0 3px #080b0ebd;
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+
+.map-marker:hover,
+.map-marker:focus-visible,
+.map-marker.is-selected {
+  z-index: 20;
+  transform: translate(-50%, -50%) scale(1.14);
+  box-shadow: 0 .5rem 1.25rem #000d, 0 0 0 4px #62dfff70, 0 0 1.1rem #62dfff70;
+  filter: brightness(1.12);
+}
+
+.map-marker.is-selected {
+  box-shadow: 0 .5rem 1.25rem #000d, 0 0 0 4px var(--map-accent), 0 0 1.2rem #d7ff2f75;
+}
+
+.map-marker-glyph {
+  display: grid;
+  place-items: center;
+  min-width: 1.45rem;
+  min-height: 1.45rem;
+  font-size: .72rem;
+  font-weight: 950;
+}
+
+.map-marker-label {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + .42rem);
+  max-width: 11rem;
+  padding: .28rem .42rem;
+  border: 1px solid #526173;
+  border-radius: .35rem;
+  background: var(--map-label-bg);
+  box-shadow: 0 .35rem 1rem #000b;
+  color: #f7fbff;
+  font-size: .62rem;
+  line-height: 1.15;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.map-marker:hover .map-marker-label,
+.map-marker:focus-visible .map-marker-label,
+.map-marker.is-selected .map-marker-label,
+#berlin-map-canvas.map-labels-all .map-marker-label {
+  opacity: 1;
+  visibility: visible;
+}
+
+.map-marker.tier-standard { border-color: #9da8b5; }
+.map-marker.tier-strong { border-color: #62dfff; }
+.map-marker.tier-prime { border-color: #d7ff2f; }
+.map-marker.tier-legendary { border-color: #ffcf70; box-shadow: 0 .3rem .9rem #000c, 0 0 0 3px #080b0ebd, 0 0 .8rem #ffcf7055; }
+.map-marker.owned::after {
+  content: "✓";
+  position: absolute;
+  right: -.35rem;
+  top: -.45rem;
+  display: grid;
+  place-items: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 2px solid #0a0d11;
+  border-radius: 50%;
+  background: var(--map-accent);
+  color: #101208;
+  font-size: .62rem;
+  font-weight: 950;
+}
+.map-marker.hall { border-style: double; border-width: 3px; }
+
+.map-usability-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .38rem .7rem;
+  align-items: center;
+  margin: 0 0 .65rem;
+  padding: .5rem .65rem;
+  border: 1px solid #303d4a;
+  border-radius: .6rem;
+  background: #0b1016;
+  color: #aeb9c5;
+  font-size: .65rem;
+}
+
+.map-usability-legend strong { color: #fff; margin-right: .2rem; }
+.map-legend-item { display: inline-flex; gap: .3rem; align-items: center; }
+.map-legend-dot { width: .72rem; height: .72rem; border: 2px solid #9da8b5; border-radius: 50%; background: #141c24; }
+.map-legend-dot.strong { border-color: #62dfff; }
+.map-legend-dot.prime { border-color: #d7ff2f; }
+.map-legend-dot.legendary { border-color: #ffcf70; }
+.map-legend-dot.owned { border-color: #d7ff2f; background: #d7ff2f; }
+.map-legend-dot.hall { border: 3px double #fff; }
+
+@media (max-width: 760px) {
+  #map-view-controls { gap: .35rem; }
+  #map-view-controls .utility-button { min-width: 2.35rem; padding-inline: .55rem; }
+  #map-view-controls .utility-button[data-map-view-action="focus-selected"] { width: 100%; order: 2; }
+  #map-view-controls .utility-button[data-map-view-action="labels"] { margin-left: 0; flex: 1 1 auto; }
+  .map-marker { min-width: 2.8rem; min-height: 2.8rem; }
+  .map-marker-label { font-size: .7rem; }
+}
+
+body.ui-high-contrast #berlin-map-canvas { border-color: #fff; background-color: #000; }
+body.ui-high-contrast .map-district { border-color: #fff; color: #fff; }
+body.ui-high-contrast .map-marker-label { border-color: #fff; background: #000; color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .map-district,
+  .map-marker { transition: none; }
+}
