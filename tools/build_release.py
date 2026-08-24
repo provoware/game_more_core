@@ -99,30 +99,56 @@ def _write_entry(archive: zipfile.ZipFile, name: str, payload: bytes, mode: int)
     archive.writestr(info, payload, compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
 
 
+def _file_manifest(files: list[tuple[str, int]]) -> tuple[dict, bytes, str]:
+    entries = []
+    for path, mode in files:
+        payload = (ROOT / path).read_bytes()
+        entries.append(
+            {
+                "path": path,
+                "sha256": hashlib.sha256(payload).hexdigest(),
+                "size_bytes": len(payload),
+                "mode": format(mode, "04o"),
+            }
+        )
+    manifest = {"schema_version": 1, "files": entries}
+    payload = (json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode("utf-8")
+    return manifest, payload, hashlib.sha256(payload).hexdigest()
+
+
 def build(output_dir: Path) -> tuple[Path, Path, dict]:
     version = _version()
     source_commit = _run_git("rev-parse", "HEAD")
     source_tree = _run_git("rev-parse", "HEAD^{tree}")
     package_root = f"BUNKERFREQUENZ-{version}"
     files = _release_files()
+    _, file_manifest_bytes, file_manifest_sha256 = _file_manifest(files)
     output_dir.mkdir(parents=True, exist_ok=True)
     zip_path = output_dir / f"{package_root}.zip"
     sha_path = output_dir / f"{package_root}.zip.sha256"
 
     release_info = {
-        "schema_version": 1,
+        "schema_version": 2,
         "product": "BUNKERFREQUENZ",
         "version": version,
         "source_commit": source_commit,
         "source_tree": source_tree,
         "builder": "tools/build_release.py",
-        "file_count": len(files) + 1,
+        "file_manifest": "RELEASE_FILE_MANIFEST.json",
+        "file_manifest_sha256": file_manifest_sha256,
+        "file_count": len(files) + 2,
     }
     release_info_bytes = (json.dumps(release_info, ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode("utf-8")
 
     with zipfile.ZipFile(zip_path, "w") as archive:
         for path, mode in files:
             _write_entry(archive, f"{package_root}/{path}", (ROOT / path).read_bytes(), mode)
+        _write_entry(
+            archive,
+            f"{package_root}/RELEASE_FILE_MANIFEST.json",
+            file_manifest_bytes,
+            0o644,
+        )
         _write_entry(archive, f"{package_root}/RELEASE_INFO.json", release_info_bytes, 0o644)
 
     digest = hashlib.sha256(zip_path.read_bytes()).hexdigest()
