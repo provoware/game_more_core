@@ -18,6 +18,7 @@ import time
 from typing import Iterable
 
 from start_a4_acceptance import browser_dom, probe_http
+from start_diagnosis import render_diagnosis_report, resolution_summary
 
 ROOT = Path(__file__).resolve().parents[1]
 SERVER = ROOT / "tools" / "start_a4_game_client.py"
@@ -76,21 +77,17 @@ class Reporter:
         print(f"      {INFO} AUTO-AUFLÖSUNG – {detail}", flush=True)
         self._flush()
 
-    def diagnose(self, reason: str, actions: Iterable[str]) -> None:
-        lines = [
-            "BUNKERFREQUENZ STARTDIAGNOSE",
-            f"GRUND: {reason}",
-            f"PROJEKTORDNER: {ROOT}",
-            f"PYTHON: {sys.version.splitlines()[0]}",
-            f"STATUSDATEI: {self.status_path}",
-            "",
-            "EMPFOHLENE SCHRITTE:",
-        ]
-        lines.extend(f"- {action}" for action in actions)
-        if self.resolutions:
-            lines.extend(("", "BEREITS AUTOMATISCH AUFGELÖST:"))
-            lines.extend(f"- {item}" for item in self.resolutions)
-        self.diagnosis_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    def diagnose(self, label: str, reason: str, actions: Iterable[str]) -> None:
+        report = render_diagnosis_report(
+            label=label,
+            reason=reason,
+            actions=actions,
+            resolutions=self.resolutions,
+            project_root=ROOT,
+            python_version=sys.version.splitlines()[0],
+            status_path=self.status_path,
+        )
+        self.diagnosis_path.write_text(report, encoding="utf-8")
         print(f"DIAGNOSE: {self.diagnosis_path}", file=sys.stderr, flush=True)
 
     def _flush(self) -> None:
@@ -99,6 +96,7 @@ class Reporter:
             f"[{item.progress:>3}%] {item.status} {item.label} – {item.detail}"
             for item in self.results
         )
+        lines.extend(("", "AUTO-AUFLÖSUNGSBILANZ:", resolution_summary(self.resolutions)))
         if self.resolutions:
             lines.extend(("", "AUTO-AUFLÖSUNGEN:"))
             lines.extend(f"- {item}" for item in self.resolutions)
@@ -289,7 +287,7 @@ def _fail(
     actions: Iterable[str],
 ) -> int:
     reporter.step(progress, RED, label, reason)
-    reporter.diagnose(reason, actions)
+    reporter.diagnose(label, reason, actions)
     return 1
 
 
