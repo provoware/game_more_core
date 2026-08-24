@@ -63,7 +63,10 @@
     canvas.classList.toggle("map-labels-all", labelsVisible);
     button.setAttribute("aria-pressed", labelsVisible ? "true" : "false");
     button.textContent = labelsVisible ? "BESCHRIFTUNG AN" : "BESCHRIFTUNG";
-    button.setAttribute("aria-label", labelsVisible ? "Alle Ortsbeschriftungen ausblenden" : "Alle Ortsbeschriftungen einblenden");
+    button.setAttribute(
+      "aria-label",
+      labelsVisible ? "Alle Ortsbeschriftungen ausblenden" : "Alle Ortsbeschriftungen einblenden"
+    );
   }
 
   function ensureLabelControl() {
@@ -83,7 +86,10 @@
   function annotateCanvas() {
     const canvas = document.getElementById("berlin-map-canvas");
     if (!canvas) return;
-    canvas.setAttribute("aria-description", "Orte sind als kontrastreiche Marker dargestellt. Namen erscheinen bei Fokus, Auswahl oder über die Beschriftungssteuerung.");
+    canvas.setAttribute(
+      "aria-description",
+      "Orte sind als kontrastreiche Marker dargestellt. Namen erscheinen bei Fokus, Auswahl oder über die Beschriftungssteuerung."
+    );
   }
 
   function confirmedCrewPreview() {
