@@ -44,6 +44,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-UX-EXPORT-PROOF:** PR #122 · Merge `0909f3c38642f97d4474cd200af11c960e1ada66` · Vorschau/Kopieren/Prüfsumme aus exakt derselben TXT-/CSV-Serialisierung
 - **0.8.8-ECON-RECOVERY-ACTIONS:** PR #123 · Merge `7ed085b111a03173f0359bd76129d8d3b5f71900` · bestätigte +20 Energie gegen +12 Stress, ohne Systemzeit oder zweite Ressourcenengine
 - **0.8.8-UX-TIMELINE-FILTER:** PR #124 · Merge `465dc5040c5a1283fee5e7af52590455feaa9a01` · ALLE / STRASSE / KRISE / BEZIRK rein lokal, Runtime-Reihenfolge unverändert
+- **0.8.8-ECON-RECOVERY-FEEDBACK:** PR #125 · Merge `c8e8cba3dab103c90937f26e90a02a13139dd0f5` · bestätigte Vorher→Nachher-Werte + nächste Runtime-Verfügbarkeit ohne neue Mechanik
 
 ---
 
@@ -66,8 +67,9 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-ECON-005` | `DONE` | Scene-Job-Lohnvorschau | tatsächlichen Erschöpfungslohn vor Jobstart sehen | PR #121 sicher gemergt; Browser rendert nur |
 | `POOL-UX-006` | `DONE` | Exportvorschau / Prüfsumme | TXT/CSV vor Download prüfen und kopieren | PR #122 sicher gemergt; gleiche Serialisierung, kein Finanz-Write |
 | `POOL-ECON-006` | `DONE` | Bestätigte Regenerationsaktionen | Energie aktiv zurückgewinnen | PR #123 sicher gemergt; +20 Energie gegen +12 Stress |
-| `POOL-ECON-007` | `PULLED` | Regenerationsfeedback | Vorher→Nachher nach bestätigter Regeneration verständlich zeigen | nur bestätigte Projection-Snapshots, keine neue Mechanik |
-| `POOL-STREET-002` | `READY` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | vorhandener Encounter-Vertrag |
+| `POOL-ECON-007` | `DONE` | Regenerationsfeedback | Vorher→Nachher nach bestätigter Regeneration verständlich zeigen | PR #125 sicher gemergt; nur bestätigte Projection-Snapshots |
+| `POOL-STREET-002` | `PULLED` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | 0.8.8-STREET-PACK aktiv; vorhandener Encounter-Vertrag |
+| `POOL-ECON-008` | `READY` | Weitere Regenerationsentscheidungen | unterschiedliche Erholungsstrategien | erst Balancingprüfung; keine Echtzeitregeneration |
 | `POOL-QA-002` | `READY` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft | kein Datenintegritätsfehler |
 
 ---
@@ -102,4 +104,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-ECON-007` ist für 0.8.8-ECON-RECOVERY-FEEDBACK aktiv. Das UI zeigt nur bestätigte Vorher-/Nachher-Snapshots und den danach projizierten Runtime-Blocker. Danach ist `POOL-STREET-002` der nächste unabhängige Gameplay-Slice; `POOL-COMPANION-003` bleibt abhängig.
+`POOL-STREET-002` ist für 0.8.8-STREET-PACK aktiv. Neue Begegnungen teilen ausschließlich vorhandene Gewichtstöpfe und nutzen dieselbe deterministische Auswahl-/Replay-Architektur. Danach ist `POOL-ECON-008` der nächste unabhängige Gameplay-Slice; `POOL-COMPANION-003` bleibt abhängig.
