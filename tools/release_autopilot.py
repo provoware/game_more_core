@@ -68,11 +68,15 @@ def source_identity() -> tuple[str, str]:
 
 
 def ensure_frozen_source() -> tuple[str, str]:
-    dirty = _git("status", "--porcelain=v1", "--untracked-files=all")
+    # Der Builder paketiert ausschließlich getrackte Dateien aus `git ls-files`.
+    # Untracked Laufzeitreste (z. B. __pycache__) können daher niemals Release-Input
+    # werden und dürfen den eingefrorenen Source-Vertrag nicht verfälschen.
+    dirty = _git("status", "--porcelain=v1", "--untracked-files=no")
     if dirty:
         preview = " | ".join(dirty.splitlines()[:8])
         raise ReleaseInvalidError(
-            "Arbeitsbaum ist nicht eingefroren; Release-Inhalt wäre nicht eindeutig an HEAD gebunden: " + preview
+            "Getrackter Arbeitsbaum ist nicht eingefroren; Release-Inhalt wäre nicht eindeutig an HEAD gebunden: "
+            + preview
         )
     return source_identity()
 
@@ -92,6 +96,8 @@ def load_policy(path: Path) -> tuple[dict, str]:
     isolation = policy.get("build_isolation")
     if not isinstance(isolation, dict) or isolation.get("clean_worktree_required") is not True:
         raise ReleaseInvalidError("Release-Policy verlangt keinen sauberen eingefrorenen Arbeitsbaum")
+    if isolation.get("tracked_source_only") is not True:
+        raise ReleaseInvalidError("Release-Policy muss den Release-Input auf getrackte Quelldateien begrenzen")
     if isolation.get("independent_build_directories") != 2:
         raise ReleaseInvalidError("Release-Policy muss exakt zwei unabhängige Reproduzierbarkeits-Builds verlangen")
     promotion = policy.get("promotion")
