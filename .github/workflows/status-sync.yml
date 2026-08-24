@@ -1,0 +1,46 @@
+name: Status Sync
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: status-sync-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  status-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile status sync checker
+        run: python3 -m compileall -q tools/status_sync.py tests/quality/test_status_sync.py
+
+      - name: Status sync regression tests
+        run: PYTHONPATH=. python3 -m unittest tests.quality.test_status_sync -v
+
+      - name: Detect canonical status drift
+        shell: bash
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            git fetch --no-tags origin main
+            HISTORY_REF="origin/main"
+          else
+            HISTORY_REF="HEAD"
+          fi
+          python3 tools/status_sync.py check --history-ref "${HISTORY_REF}"

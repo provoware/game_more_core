@@ -14,17 +14,22 @@ def _pool_row(pool: str, pool_id: str) -> str:
 
 
 class FeatureStatusConsistencyTests(unittest.TestCase):
-    def test_last_validated_feature_is_consistent_across_status_todo_and_pool(self):
+    def test_last_validated_feature_is_consistent_across_status_todo_pool_and_history(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
 
         iteration = status["last_validated_feature_iteration"]
         validation = status["remote_validation"]
+        history = status["validated_feature_history"]
+        latest = history[-1]
         merge_sha = validation["merged_commit"]
         pr_number = validation["pull_request"]
 
-        self.assertIn(f"Zuletzt remote validierte Feature-Stufe vor aktuellem UX-Slice:** `{iteration}", todo)
+        self.assertEqual(latest["iteration"], iteration)
+        self.assertEqual(latest["pull_request"], pr_number)
+        self.assertEqual(latest["merged_commit"], merge_sha)
+        self.assertIn(f"Zuletzt remote validierte Feature-Stufe:** `{iteration}`", todo)
         self.assertIn(f"PR #{pr_number}", todo)
         self.assertIn(merge_sha, todo)
         self.assertIn(f"**{iteration}:** PR #{pr_number}", pool)
@@ -33,9 +38,9 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
 
-    def test_validated_pool_items_and_active_receipt_owner_are_consistent(self):
+    def test_validated_and_next_pool_items_have_single_current_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
-        for pool_id in (
+        done = (
             "POOL-UX-001", "POOL-STREET-004", "POOL-CRISIS-002",
             "POOL-UX-002", "POOL-WORLD-004", "POOL-PROFILE-002", "POOL-ECON-003",
             "POOL-COMPANION-001", "POOL-COMPANION-002", "POOL-FINANCE-001",
@@ -43,49 +48,60 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-MAP-002", "POOL-STORY-001", "POOL-ECON-004", "POOL-ECON-005",
             "POOL-UX-006", "POOL-ECON-006", "POOL-UX-003", "POOL-ECON-007",
             "POOL-STREET-002", "POOL-ECON-008", "POOL-QA-007", "POOL-QA-008",
-            "POOL-QA-002", "POOL-QA-009", "POOL-STREET-005",
-        ):
+            "POOL-QA-002", "POOL-QA-009", "POOL-STREET-005", "POOL-UX-007",
+            "POOL-QA-010", "POOL-QA-006",
+        )
+        for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-007"))
-        self.assertIn("`IDEA`", _pool_row(pool, "POOL-QA-010"))
+        self.assertIn("`READY`", _pool_row(pool, "POOL-UX-008"))
+        self.assertIn("`READY`", _pool_row(pool, "POOL-QA-011"))
 
-    def test_validated_scout_balance_and_active_receipt_clarity_match_status(self):
+    def test_current_status_describes_validated_avatar_chain_and_next_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
-        economy = status["subsystems"]["economy"]
+        todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
         living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
+        ranking = status["subsystems"]["ranking"]
         process = status["subsystems"]["development_process"]
+        sync = status["status_sync"]
+        validation = status["remote_validation"]
 
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-STREET-SCOUT-BALANCE")
-        self.assertEqual(status["active_iteration"], "0.8.8-UX-RECEIPT-CLARITY")
-        self.assertEqual(status["next_iteration"], "0.8.8-STREET-BOUNDARY-AUDIT")
-        self.assertEqual(status["current_focus"], "district_receipt_clarity_presentation")
-        self.assertFalse(economy["recovery_balance_audit_in_validation"])
-        self.assertTrue(economy["recovery_balance_audit_validated"])
-        self.assertFalse(living_world["district_replay_receipt_precision_in_validation"])
-        self.assertTrue(living_world["district_replay_receipt_precision_validated"])
-        self.assertFalse(living_world["street_effect_audit_in_validation"])
-        self.assertTrue(living_world["street_effect_audit_validated"])
-        self.assertFalse(living_world["street_scout_balance_in_validation"])
-        self.assertTrue(living_world["street_scout_balance_validated"])
-        self.assertFalse(living_world["street_scout_balance_second_engine"])
-        self.assertEqual(living_world["street_scout_discovery_weight"], 40)
+        self.assertIn(status["active_iteration"], todo)
+        self.assertIn(status["active_iteration"], readme)
+        self.assertEqual(status["current_focus"], "avatar_visual_consistency_audit")
+        self.assertEqual(status["next_iteration"], "0.8.8-UX-AVATAR-CONTEXT-E2E")
+
+        self.assertTrue(living_world["street_boundary_clamping_audit_validated"])
+        self.assertTrue(living_world["street_replay_boundary_matrix_validated"])
+        self.assertTrue(living_world["street_real_catalog_replay_audit_validated"])
+        self.assertTrue(living_world["street_approach_catalog_matrix_audit_validated"])
+        self.assertTrue(living_world["street_distribution_report_validated"])
         self.assertEqual(living_world["street_effect_current_strict_dominance"], [])
-        self.assertEqual(
-            living_world["street_effect_expected_hundredths"]["scout"],
-            {"energy": 101, "stress": -9, "reputation": 33},
-        )
-        self.assertTrue(presentation["district_receipt_clarity_in_validation"])
-        self.assertFalse(presentation["district_receipt_clarity_validated"])
-        self.assertEqual(
-            presentation["district_receipt_clarity_states"],
-            ["applied", "idempotent_replay", "not_triggered"],
-        )
-        self.assertEqual(presentation["district_receipt_clarity_source"], "existing_command_metadata")
-        self.assertFalse(presentation["district_receipt_clarity_persisted"])
-        self.assertFalse(presentation["district_receipt_clarity_second_receipt_architecture"])
-        self.assertTrue(presentation["control_deck_focus_mutation_loop_hotfixed"])
+
+        self.assertTrue(presentation["district_receipt_clarity_validated"])
+        self.assertFalse(presentation["district_receipt_clarity_in_validation"])
+        self.assertTrue(presentation["confirmed_event_fx_validated"])
+        self.assertTrue(presentation["crew_identity_hud_confirmed"])
+        self.assertTrue(presentation["crew_identity_hud_refresh_confirmed"])
+        self.assertTrue(presentation["crew_identity_map_owned_presence"])
+        self.assertTrue(presentation["crew_identity_ranking_local_presence"])
+        self.assertFalse(presentation["crew_identity_second_fetch"])
+        self.assertFalse(presentation["crew_identity_second_projection"])
         self.assertFalse(presentation["browser_gameplay_authority"])
+
+        self.assertTrue(ranking["local_confirmed_crew_badge"])
+        self.assertEqual(
+            ranking["crew_badge_match"],
+            "entry.character_id_equals_hall.local_character_id",
+        )
+        self.assertFalse(ranking["foreign_crew_badges_invented"])
+
+        self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
+        self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
+        self.assertFalse(sync["direct_main_write"])
+        self.assertTrue(process["status_sync_automatic_drift_check"])
+        self.assertFalse(process["status_sync_direct_main_write"])
         self.assertTrue(process["focused_read_policy"])
         self.assertTrue(process["planned_read_list_required"])
         self.assertTrue(process["repository_file_classes_enabled"])
@@ -120,8 +136,11 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-002": "`DONE`",
             "POOL-QA-009": "`DONE`",
             "POOL-STREET-005": "`DONE`",
-            "POOL-UX-007": "`PULLED`",
-            "POOL-QA-010": "`IDEA`",
+            "POOL-UX-007": "`DONE`",
+            "POOL-QA-010": "`DONE`",
+            "POOL-QA-006": "`DONE`",
+            "POOL-UX-008": "`READY`",
+            "POOL-QA-011": "`READY`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
