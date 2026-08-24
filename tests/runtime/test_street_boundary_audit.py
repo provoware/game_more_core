@@ -194,53 +194,115 @@ class StreetBoundaryAuditTests(unittest.TestCase):
         self.assertEqual(result.effects["reputation_delta"], -2)
         self.assertEqual(persisted.reputation, 0)
 
-    def test_replay_at_reputation_floor_is_idempotent(self):
-        command_id = "street-boundary-reputation-floor-replay"
-        manifest = forced_manifest(
-            encounter_id="street.audit_reputation_floor_replay",
-            polarity="negative",
-            energy_delta=0,
-            stress_delta=1,
-            reputation_delta=-10,
+    def test_replay_at_all_resource_boundaries_is_idempotent(self):
+        cases = (
+            {
+                "name": "energy_max",
+                "polarity": "positive",
+                "energy": 99,
+                "stress": 50,
+                "reputation": 0,
+                "energy_delta": 10,
+                "stress_delta": 0,
+                "reputation_delta": 0,
+                "expected": {"energy_delta": 1, "stress_delta": 0, "reputation_delta": 0},
+            },
+            {
+                "name": "energy_min",
+                "polarity": "negative",
+                "energy": 1,
+                "stress": 50,
+                "reputation": 0,
+                "energy_delta": -10,
+                "stress_delta": 0,
+                "reputation_delta": 0,
+                "expected": {"energy_delta": -1, "stress_delta": 0, "reputation_delta": 0},
+            },
+            {
+                "name": "stress_min",
+                "polarity": "positive",
+                "energy": 50,
+                "stress": 1,
+                "reputation": 0,
+                "energy_delta": 0,
+                "stress_delta": -10,
+                "reputation_delta": 0,
+                "expected": {"energy_delta": 0, "stress_delta": -1, "reputation_delta": 0},
+            },
+            {
+                "name": "stress_max",
+                "polarity": "negative",
+                "energy": 50,
+                "stress": 99,
+                "reputation": 0,
+                "energy_delta": 0,
+                "stress_delta": 10,
+                "reputation_delta": 0,
+                "expected": {"energy_delta": 0, "stress_delta": 1, "reputation_delta": 0},
+            },
+            {
+                "name": "reputation_floor",
+                "polarity": "negative",
+                "energy": 50,
+                "stress": 50,
+                "reputation": 2,
+                "energy_delta": 0,
+                "stress_delta": 0,
+                "reputation_delta": -10,
+                "expected": {"energy_delta": 0, "stress_delta": 0, "reputation_delta": -2},
+            },
         )
-        character = CharacterState("player-local", "Boundary Replay Tester")
-        character.energy = 50
-        character.stress = 50
-        character.reputation = 2
-        tmp = tempfile.TemporaryDirectory()
-        self.addCleanup(tmp.cleanup)
-        kernel = PersistenceKernel(tmp.name, ALLOWED)
-        kernel.initialize_state({"character": character.to_dict()})
-        service = StreetEncounterService(kernel, manifest)
-        server_sequence = sequence_for_bucket_below(command_id, 49)
 
-        first = service.walk(
-            character,
-            walk_instance_id=command_id,
-            world_seed=WORLD_SEED,
-            journal_context=context(command_id),
-            server_sequence=server_sequence,
-        )
-        state_after_first = kernel.load_state()
-        records_after_first = list(kernel.read_records())
+        for case in cases:
+            with self.subTest(boundary=case["name"]):
+                command_id = f"street-boundary-replay-{case['name']}"
+                encounter_id = f"street.audit_replay_{case['name']}"
+                manifest = forced_manifest(
+                    encounter_id=encounter_id,
+                    polarity=case["polarity"],
+                    energy_delta=case["energy_delta"],
+                    stress_delta=case["stress_delta"],
+                    reputation_delta=case["reputation_delta"],
+                )
+                character = CharacterState("player-local", "Boundary Replay Tester")
+                character.energy = case["energy"]
+                character.stress = case["stress"]
+                character.reputation = case["reputation"]
+                tmp = tempfile.TemporaryDirectory()
+                self.addCleanup(tmp.cleanup)
+                kernel = PersistenceKernel(tmp.name, ALLOWED)
+                kernel.initialize_state({"character": character.to_dict()})
+                service = StreetEncounterService(kernel, manifest)
+                server_sequence = None
+                if case["polarity"] == "negative":
+                    server_sequence = sequence_for_bucket_below(command_id, 49)
 
-        replay = service.walk(
-            character,
-            walk_instance_id=command_id,
-            world_seed=WORLD_SEED,
-            journal_context=context(command_id),
-            server_sequence=server_sequence,
-        )
+                first = service.walk(
+                    character,
+                    walk_instance_id=command_id,
+                    world_seed=WORLD_SEED,
+                    journal_context=context(command_id),
+                    server_sequence=server_sequence,
+                )
+                state_after_first = kernel.load_state()
+                records_after_first = list(kernel.read_records())
 
-        self.assertFalse(first.idempotent_replay)
-        self.assertEqual(first.effects["reputation_delta"], -2)
-        self.assertEqual(first.character_after.reputation, 0)
-        self.assertTrue(replay.idempotent_replay)
-        self.assertEqual(replay.effects["reputation_delta"], -2)
-        self.assertEqual(replay.character_after.reputation, 0)
-        self.assertEqual(replay.committed_event_ids, ())
-        self.assertEqual(kernel.load_state(), state_after_first)
-        self.assertEqual(list(kernel.read_records()), records_after_first)
+                replay = service.walk(
+                    character,
+                    walk_instance_id=command_id,
+                    world_seed=WORLD_SEED,
+                    journal_context=context(command_id),
+                    server_sequence=server_sequence,
+                )
+
+                self.assertFalse(first.idempotent_replay)
+                self.assertEqual(first.encounter_id, encounter_id)
+                self.assertEqual(first.effects, case["expected"])
+                self.assertTrue(replay.idempotent_replay)
+                self.assertEqual(replay.effects, case["expected"])
+                self.assertEqual(replay.committed_event_ids, ())
+                self.assertEqual(kernel.load_state(), state_after_first)
+                self.assertEqual(list(kernel.read_records()), records_after_first)
 
     def test_real_catalog_resource_effects_fit_the_same_bounded_contract(self):
         self.assertGreater(len(STREET["encounters"]), 0)
