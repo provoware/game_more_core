@@ -83,15 +83,15 @@
 
 ## Fortschritt
 
-**55 %** – kleinster Manifest-Patch, direkte Effektregression und Laienhilfe implementiert; Remote-Gates, Merge-Hygiene und Safe Merge stehen noch aus.
+**70 %** – der erste Remote-Lauf deckte zwei bestehende Balance-Invarianten auf; der Patch wurde daraufhin enger gemacht. Manifest, direkte Effektregression, bestehender Balance-Audit, Statusregression und Laienhilfe sind jetzt auf denselben Vertrag ausgerichtet. Finale Remote-Gates, Merge-Hygiene und Safe Merge stehen noch aus.
 
 ## Ziel
 
-`scout` eine klare eigene Auswahlstärke geben und die vollständige Dominanz durch `balanced` beseitigen, ohne neue Encounter-, Zufalls-, Effekt- oder Persistenzlogik einzuführen.
+`scout` eine kleine eigene mathematische Stärke geben und die vollständige Dominanz durch `balanced` beseitigen, ohne neue Encounter-, Zufalls-, Effekt- oder Persistenzlogik einzuführen und ohne den bestehenden Makro-Balancevertrag aufzuweichen.
 
 ## Abnahme
 
-Scout behält den stärksten Discovery-Fokus, erreicht im Erwartungswert `+1,16 Energie / −0,29 Stress / +0,33 Ruf`, wird von keinem anderen Ansatz vollständig dominiert und verändert ausschließlich bestehende Auswahlgewichte.
+Scout behält den stärksten Discovery-Fokus bei 40/100, den bestehenden Polaritätsmix `15 neutral / 60 positiv / 25 negativ` und maximal 20 Punkte pro Einzelbegegnung. Der Erwartungswert wird `+1,01 Energie / −0,09 Stress / +0,33 Ruf`; damit ist Scout knapp energieeffizienter als Balanced, aber klar schwächer bei Stressabbau und Ruf.
 
 ### Planned-Read-Liste gemäß AGENTS.md
 
@@ -102,6 +102,8 @@ Scout behält den stärksten Discovery-Fokus, erreicht im Erwartungswert `+1,16 
 **Arbeitsdateien**
 - `manifests/STREET_ENCOUNTER_MANIFEST.json`
 - `tests/runtime/test_street_effect_audit.py`
+- `tests/runtime/test_street_balance_audit.py` – nach konkretem roten Runtime-Befund
+- `tests/runtime/test_feature_status_consistency.py` – nach konkretem roten Runtime-Befund
 - `docs/LAIENHILFE_STREET_SCOUT_BALANCE.md`
 - `CHANGELOG.md` nur für die fachliche Änderungsnotiz
 
@@ -111,11 +113,14 @@ Scout behält den stärksten Discovery-Fokus, erreicht im Erwartungswert `+1,16 
 
 ### STREET-SCOUT-BALANCE – Vertrag
 
-- [x] ausschließlich Scout-Gewichte verschoben; Summe bleibt 100
-- [x] `street.shortcut` für Scout 20 → 25
-- [x] `street.sudden_rain` für Scout 5 → 0
-- [x] Discovery-Gewicht `shortcut + useful_find + cable_tip` steigt für Scout auf 45 und bleibt höher als bei allen anderen Ansätzen
-- [x] Scout-Erwartungswert: +1,16 Energie / −0,29 Stress / +0,33 Ruf
+- [x] ausschließlich zwei Scout-Gewichte innerhalb der negativen Polarität verschoben; Summe bleibt 100
+- [x] `street.construction_detour` für Scout 5 → 0
+- [x] `street.lost_glove` für Scout 5 → 10
+- [x] Discovery-Gewicht `shortcut + useful_find + cable_tip` bleibt unverändert 40 und höher als bei allen anderen Ansätzen
+- [x] Scout-Polaritätsmix bleibt 15 / 60 / 25
+- [x] maximales Einzelgewicht bleibt 20
+- [x] Manifestversion bleibt `0.8.8-street-pack`; bestehende Replay-/Pack-Verträge werden nicht künstlich versioniert
+- [x] Scout-Erwartungswert: +1,01 Energie / −0,09 Stress / +0,33 Ruf
 - [x] `balanced` dominiert `scout` nicht mehr; gleichzeitig dominiert Scout keinen anderen Ansatz vollständig
 - [x] Recovery bleibt Energie-Spezialist; Network bleibt Stress-/Ruf-Spezialist
 - [x] keine Encounter-Effekte, Runtime-Services, Saves, Journalarten oder UI verändert
@@ -131,6 +136,7 @@ Scout behält den stärksten Discovery-Fokus, erreicht im Erwartungswert `+1,16 
 - keine zweite Zufalls- oder Effektengine
 - keine Produktversionsänderung
 - keine UI-Sonderregel für Scout
+- keine Aufweichung der vorhandenen Street-Balance-Invarianten
 
 ### Danach
 
