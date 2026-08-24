@@ -9,6 +9,13 @@
     highContrast: "ui-high-contrast",
     largeText: "ui-large-text"
   });
+  const CONFIRMED_FX_COMMANDS = new Set(["street.walk", "recovery.run", "incident.resolve"]);
+  const CONFIRMED_FX_CLASSES = [
+    "confirmed-fx",
+    "confirmed-fx-positive",
+    "confirmed-fx-negative",
+    "confirmed-fx-neutral"
+  ];
   let current = { ...DEFAULTS };
 
   function assetUrl(filename) {
@@ -109,6 +116,84 @@
     appendModule("map_usability.js", "map-usability");
   }
 
+  function confirmedFxSnapshot() {
+    const projection = state.projection || {};
+    const character = projection.character || {};
+    const event = projection.event || {};
+    return {
+      energy: character.energy,
+      stress: character.stress,
+      reputation: character.reputation,
+      budget: event.budget_cents,
+      streetText: document.getElementById("street-result")?.textContent || "",
+      recoveryText: document.getElementById("jobs-recovery-feedback")?.textContent || "",
+      incidentText: document.getElementById("incident-content")?.textContent || ""
+    };
+  }
+
+  function pulseConfirmedElement(element, tone = "neutral") {
+    if (!(element instanceof HTMLElement)) return;
+    element.classList.remove(...CONFIRMED_FX_CLASSES);
+    void element.offsetWidth;
+    element.classList.add("confirmed-fx", `confirmed-fx-${tone}`);
+    window.setTimeout(() => element.classList.remove(...CONFIRMED_FX_CLASSES), 900);
+  }
+
+  function resourceTone(key, before, after) {
+    if (before == null || after == null || before === after) return null;
+    if (key === "stress") return after < before ? "positive" : "negative";
+    return after > before ? "positive" : "negative";
+  }
+
+  function renderConfirmedEventFx(commandType, before) {
+    const after = confirmedFxSnapshot();
+    let visibleChange = false;
+
+    for (const [key, elementId] of [
+      ["energy", "hud-energy"],
+      ["stress", "hud-stress"],
+      ["reputation", "hud-reputation"],
+      ["budget", "hud-budget"]
+    ]) {
+      const tone = resourceTone(key, before[key], after[key]);
+      if (!tone) continue;
+      pulseConfirmedElement(document.getElementById(elementId), tone);
+      visibleChange = true;
+    }
+
+    if (commandType === "street.walk" && before.streetText !== after.streetText) {
+      const street = document.getElementById("street-result");
+      const polarity = street?.dataset.polarity;
+      const tone = polarity === "positive" || polarity === "negative" ? polarity : "neutral";
+      pulseConfirmedElement(street, tone);
+      visibleChange = true;
+    }
+
+    if (commandType === "recovery.run" && before.recoveryText !== after.recoveryText) {
+      pulseConfirmedElement(document.getElementById("jobs-recovery-feedback"), "neutral");
+      visibleChange = true;
+    }
+
+    if (commandType === "incident.resolve" && before.incidentText !== after.incidentText) {
+      pulseConfirmedElement(document.getElementById("incident-panel"), "neutral");
+      visibleChange = true;
+    }
+
+    return visibleChange;
+  }
+
+  function installConfirmedEventFx() {
+    if (window.__bunkerConfirmedEventFxInstalled || typeof sendCommand !== "function") return;
+    const baseSendCommand = sendCommand;
+    sendCommand = async function sendCommandWithConfirmedEventFx(command) {
+      const before = confirmedFxSnapshot();
+      await baseSendCommand(command);
+      if (!CONFIRMED_FX_COMMANDS.has(command?.type)) return;
+      window.setTimeout(() => renderConfirmedEventFx(command.type, before), 0);
+    };
+    window.__bunkerConfirmedEventFxInstalled = true;
+  }
+
   function copyConfirmedCrewPreview() {
     const source = document.getElementById("crew-identity-preview");
     const host = document.querySelector(".hud-crew-identity");
@@ -174,6 +259,7 @@
     ensureSceneJobPayoutPreviewModule();
     ensureRecoveryActionsModule();
     ensureMapUsabilityModule();
+    installConfirmedEventFx();
     observeConfirmedCrewIdentity();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
