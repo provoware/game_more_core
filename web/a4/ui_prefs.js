@@ -85,15 +85,37 @@
     document.head.append(link);
   }
 
-  function ensureFocusModule() { appendModule("control_deck_focus.js", "control-deck-focus"); }
-  function ensureDistrictBiographyModule() { appendModule("district_biography.js", "district-biography"); }
-  function ensureFinanceStatementExportModule() { appendModule("finance_statement_export.js", "finance-statement-export"); }
-  function ensureSceneJobPayoutPreviewModule() { appendModule("scene_job_payout_preview.js", "scene-job-payout-preview"); }
-  function ensureRecoveryActionsModule() { appendModule("recovery_actions_ui.js", "recovery-actions"); }
-  function ensureMapUsabilityModule() { appendModule("map_usability.js", "map-usability"); }
-  function ensureConfirmedEventFxModule() { appendModule("confirmed_event_fx.js", "confirmed-event-fx"); }
-  function ensureCrewIdentityHudSyncModule() { appendModule("crew_identity_hud_sync.js", "crew-identity-hud-sync"); }
-  function ensureAvatarMapPresenceModule() { appendModule("avatar_map_presence.js", "avatar-map-presence"); }
+  function ensureFocusModule() {
+    appendModule("control_deck_focus.js", "control-deck-focus");
+  }
+
+  function ensureDistrictBiographyModule() {
+    appendModule("district_biography.js", "district-biography");
+  }
+
+  function ensureFinanceStatementExportModule() {
+    appendModule("finance_statement_export.js", "finance-statement-export");
+  }
+
+  function ensureSceneJobPayoutPreviewModule() {
+    appendModule("scene_job_payout_preview.js", "scene-job-payout-preview");
+  }
+
+  function ensureRecoveryActionsModule() {
+    appendModule("recovery_actions_ui.js", "recovery-actions");
+  }
+
+  function ensureMapUsabilityModule() {
+    appendModule("map_usability.js", "map-usability");
+  }
+
+  function ensureConfirmedEventFxModule() {
+    appendModule("confirmed_event_fx.js", "confirmed-event-fx");
+  }
+
+  function ensureCrewIdentityHudSyncModule() {
+    appendModule("crew_identity_hud_sync.js", "crew-identity-hud-sync");
+  }
 
   function copyConfirmedCrewPreview() {
     const source = document.getElementById("crew-identity-preview");
@@ -120,6 +142,7 @@
     const hudBrand = document.querySelector(".hud-brand");
     const profilePanel = document.getElementById("profile-panel");
     if (!(hudBrand instanceof HTMLElement) || !(profilePanel instanceof HTMLElement)) return;
+
     let host = hudBrand.querySelector(".hud-crew-identity");
     if (!host) {
       host = document.createElement("span");
@@ -129,6 +152,7 @@
       host.innerHTML = '<span class="hud-crew-preview"><span class="hud-crew-symbol">★</span><span class="hud-crew-mark" hidden></span></span>';
       hudBrand.append(host);
     }
+
     let editorObserver = null;
     let observedEditor = null;
     const attachEditor = () => {
@@ -142,6 +166,7 @@
       }
       copyConfirmedCrewPreview();
     };
+
     const panelObserver = new MutationObserver(attachEditor);
     panelObserver.observe(profilePanel, { childList: true });
     attachEditor();
@@ -159,7 +184,6 @@
     ensureMapUsabilityModule();
     ensureConfirmedEventFxModule();
     ensureCrewIdentityHudSyncModule();
-    ensureAvatarMapPresenceModule();
     observeConfirmedCrewIdentity();
     for (const control of document.querySelectorAll("[data-ui-pref]")) {
       control.addEventListener("change", () => set(control.dataset.uiPref, control.checked));
