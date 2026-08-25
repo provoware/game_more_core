@@ -290,6 +290,21 @@ def _avatar_context_harness() -> str:
       if (undersizedMarks.length) {
         throw new Error("Crew-Kurzmarke unter 0.34rem: " + undersizedMarks.join(", "));
       }
+      const clippedMarks = compactMarks.flatMap(([label, node]) => {
+        const style = w.getComputedStyle(node);
+        const horizontalClip = node.scrollWidth > node.clientWidth + 1;
+        const verticalClip = node.scrollHeight > node.clientHeight + 1;
+        const clipsOverflow = ["hidden", "clip"].includes(style.overflow)
+          || ["hidden", "clip"].includes(style.overflowX)
+          || ["hidden", "clip"].includes(style.overflowY);
+        if (!horizontalClip && !verticalClip) return [];
+        const dimensions = `${node.scrollWidth}x${node.scrollHeight}>${node.clientWidth}x${node.clientHeight}`;
+        const overflow = `${style.overflow}/${style.overflowX}/${style.overflowY}`;
+        return [`${label}=${dimensions};overflow=${overflow};wirksam=${clipsOverflow}`];
+      });
+      if (clippedMarks.length) {
+        throw new Error("Crew-Kurzmarke wird abgeschnitten: " + clippedMarks.join(", "));
+      }
       const hudPreview = d.querySelector(".hud-crew-preview");
       const hudStyle = hudPreview ? w.getComputedStyle(hudPreview) : null;
       if (!hudStyle || hudStyle.borderTopStyle === "none" || hudStyle.borderTopWidth === "0px") {
@@ -302,7 +317,7 @@ def _avatar_context_harness() -> str:
       document.body.textContent = `AVATAR_CONTEXT_E2E: PASS
 ● BEREIT
 BUNKERFREQUENZ – Control Deck
-Profil→HUD→Map→Ranking · Runtime-Eigentum · Hoher Kontrast · kleines Fenster · Kurzmarken ≥ 0.34rem`;
+Profil→HUD→Map→Ranking · Runtime-Eigentum · Hoher Kontrast · kleines Fenster · Kurzmarken ≥ 0.34rem · kein Text-Clipping`;
     } catch (error) {
       document.body.textContent = `AVATAR_CONTEXT_E2E: FAIL · ${String(error?.message || error)}`;
     }
