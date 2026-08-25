@@ -84,6 +84,10 @@ def _is_status_only_safe_merge(root: Path, merge_commit: str) -> bool:
     # Repository-Health-/Konsistenzverträge Teil eines Status-Syncs sein. Ein
     # beliebiger Doku-/Test-Merge darf aber niemals als Status-Sync verschwinden:
     # alle drei kanonischen Statusdateien müssen gemeinsam enthalten sein.
+    # Eine reine PROJEKTSTATUS-Korrektur ist ebenfalls nur Statuspflege und darf
+    # keinen neuen fachlichen Anker erzeugen (z. B. historische Label-Reparatur).
+    if paths == {PROJECT_STATUS_PATH}:
+        return True
     return (
         set(CANONICAL_STATUS_PATHS).issubset(paths)
         and all(_is_status_sync_path(path) for path in paths)
