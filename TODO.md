@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E` · PR #192 · Head `7a4953003e4a83e41bcde4b5a1807e100c4a3439` · Merge `f5132827d8d80522f952eb220db63047a091c77d`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #192; Chromium und Firefox prüfen jetzt zusätzlich reale Kurzmarken-Abschneidung fail-closed, ohne dass dafür Produkt-CSS geändert werden musste
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT`
+- **Status-Sync-Anker:** PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT` · PR #194 · Head `cc7cecace77eaa29f90b80549f6649e8f88c08a6` · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-/Story-Linie bis PR #194; der District-Kettenaudit bestätigt belastbare Parent-Evidenz und die read-only Biography-Grenze, aber noch keinen katalogisierten Child-Eventvertrag
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -119,6 +119,12 @@
 - [x] keine zweite Mini-Map, Projection, Fetch- oder Persistenzarchitektur auf Verdacht erzeugt
 - [x] PR #190 · Head `012dd1f3455465e189c17df48c60d894e2700a03` · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db`
 
+## 0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT
+- [x] `world.district_effect_applied` als append-only Parent-Evidenz mit Event-, District- und Source-Referenz bestätigt
+- [x] District-World-Event-Quelle bleibt replaybar; Biography konsumiert nur persistierte Biography-Records und ist keine Kettenautorität
+- [x] fehlender katalogisierter Child-Eventtyp als klare Implementierungsgrenze regressionsgesichert; bewusst keine Micro-Story gebaut
+- [x] PR #194 · Head `cc7cecace77eaa29f90b80549f6649e8f88c08a6` · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
 - [x] `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` verwenden denselben maschinenprüfbaren Safe-Merge-Anker
@@ -129,31 +135,33 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1
 
 ## Fortschritt
 
-**0 %** – nach dem abgeschlossenen Avatar-Clipping-Nachweis wird bewusst wieder ein spielnaher Story-Slice vorbereitet. Zuerst wird ausschließlich geprüft, ob die vorhandenen District-, Journal- und Timeline-Verträge eine kleine erinnernde Ereigniskette tragen, ohne eine zweite Eventengine oder neue Persistenzautorität einzuführen.
+**0 %** – der Contract-Audit ist sicher gemergt. Die nächste kleine Story-Iteration bleibt bewusst vertraglich: zuerst genau einen katalogisierten Child-Eventtyp, die Parent-Referenz und Exactly-once-/Replay-Semantik festlegen; noch keine spielbare Folgegeschichte.
 
 ## Ziel
 
-Den bestehenden District-Event-/Journal-/Timeline-Vertrag gezielt darauf prüfen, ob bestätigte Bezirksereignisse als Voraussetzung für eine spätere kleine Folgebegegnung wiederverwendet werden können.
+Einen minimalen, eindeutigen District-Chain-V1-Vertrag definieren, der ein späteres bestätigtes Kindereignis genau einer bestätigten District-Parent-Evidenz zuordnet und Retry-Duplikate verhindert.
 
 ## Abnahme
 
-- [ ] vorhandenen District-Event-Vertrag, Journal-Katalog und Timeline-/Biography-Projection gezielt lesen
-- [ ] genau eine kanonische Stelle für eine mögliche Folgeketten-Referenz identifizieren oder den Slice als No-Fix-Audit abschließen
-- [ ] keine zweite Eventengine, kein Browser-Story-State und keine Systemzeit als Kettenautorität
-- [ ] bestehende Event-IDs und append-only Journal-Semantik bleiben maßgeblich
-- [ ] Regression zuerst auf Vertragsgrenzen, erst danach ein möglicher kleiner Produktpatch
+- [ ] bestehenden Persistence-Kernel gezielt darauf prüfen, ob `causation_id`/`correlation_id` unverändert geschrieben werden können
+- [ ] genau einen katalogisierten Child-Eventtyp für eine bestätigte District-Folgebegegnung definieren
+- [ ] Parent-`event_id` und `district_id` eindeutig binden; District-Mismatch muss fail-closed sein
+- [ ] identischer Retry darf kein zweites Kind erzeugen
+- [ ] keine Systemzeit als alleinige Trigger-/Seed-Autorität und kein Browser-/Biography-Write
+- [ ] Timeline/Biography bleiben read-only Konsumenten
+- [ ] direkte Regressionen vor einer späteren Micro-Story grün
 - [ ] relevante Runtime-/Repository-/Release-Gates auf finalem Head grün
 - [ ] 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ### Danach
 
+- [ ] **DISTRICT-CHAIN-MICRO-STORY:** nur nach grünem V1-Vertrag genau eine kleine bestätigte Ursache→Folge-Geschichte als Proof of Concept
 - [ ] **STATUS-SYNC-DRIFT-AGE:** bei späterer Drift zusätzlich rein diagnostisch die Anzahl fachlicher Safe Merges Rückstand anzeigen; kein automatischer Write
-- [ ] **STATUS-SYNC-PR-AUTOPREP:** nur falls sich der read-only Driftcheck weiter bewährt; höchstens vorbereiteten PR erzeugen, niemals direkt `main` beschreiben
 - [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
 
 ---
@@ -161,7 +169,7 @@ Den bestehenden District-Event-/Journal-/Timeline-Vertrag gezielt darauf prüfen
 ## Architektur- und Sicherheitsgrenzen
 
 - Git-Historie liefert nur den bestätigten Merge-Anker; die drei vorhandenen Statusdateien bleiben die kanonischen Projektinformationen.
-- Status-Sync verändert keine Runtime-, Gameplay-, Save-, Journal- oder Presentation-Autorität.
+- District-Ketten dürfen erst nach katalogisiertem Child-Eventvertrag Runtime-Zustand erzeugen; Biography und Browser bleiben read-only.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`docs/DISTRICT_EVENT_CHAIN_CONTRACT_AUDIT.md`](docs/DISTRICT_EVENT_CHAIN_CONTRACT_AUDIT.md) · [`AGENTS.md`](AGENTS.md)

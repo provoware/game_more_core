@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Avatar Text Clip E2E validiert" src="https://img.shields.io/badge/Feature_Stand-AVATAR--TEXT--CLIP--E2E_validiert-7dff00">
-  <img alt="Aktive Iteration District Event Chain Contract Audit" src="https://img.shields.io/badge/Aktiv-DISTRICT--CHAIN--CONTRACT--AUDIT-00c2ff">
+  <img alt="Feature Stand District Chain Contract Audit validiert" src="https://img.shields.io/badge/Feature_Stand-DISTRICT--CHAIN--AUDIT_validiert-7dff00">
+  <img alt="Aktive Iteration District Chain Contract V1" src="https://img.shields.io/badge/Aktiv-DISTRICT--CHAIN--CONTRACT--V1-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,11 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E` |
-| **Aktive Iteration** | 🟡 `0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT` |
-| **Danach** | Nur bei eindeutigem vorhandenen District-/Journal-Vertrag einen kleinen Story-Patch ableiten; keine zweite Eventengine |
+| **Status-Sync-Anker** | PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT` |
+| **Aktive Iteration** | 🟡 `0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1` |
+| **Danach** | Erst nach explizitem Child-Event-, Parent- und Exactly-once-Vertrag genau eine kleine District-Micro-Story ableiten |
+| **District-Kettenaudit** | ✅ bestätigte Parent-Evidenz vorhanden · Biography bleibt read-only · eigener katalogisierter Child-Eventtyp fehlt noch |
 | **Avatar-Kette** | ✅ Profil → bestätigtes HUD → runtime-bestätigter eigener Map-Ort → eigener Hall-/Ranking-Eintrag · Chromium + Firefox · High Contrast + kleines Fenster validiert |
 | **Crew-Lesbarkeit** | ✅ HUD-, Map- und Ranking-Kurzmarken werden im echten Chromium-/Firefox-Harness gegen `0.34rem` und zusätzlich gegen reale Textabschneidung geprüft |
 | **Runtime-Owned Evidence** | ✅ derselbe bestätigte `property.purchase` ist in der vorhandenen Browser-Evidence an Location-, Event- und Ledger-Referenzen gebunden |
@@ -44,7 +45,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #192 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #194 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -77,6 +78,7 @@ PROPERTY / HALL OF TRIBUTE
 - append-only Journal, Save, Snapshot, Restart und Recovery
 - deterministische Street Encounters ohne Reload-Reroll
 - persistente District-Werte und cadence-geführte District World Events
+- bestätigte District-Parent-Evidenz für spätere Ketten; Biography bleibt read-only, Child-Eventvertrag ist noch bewusst offen
 - Property Purchase + dreistufige Upgrades
 - Berlin Ops Map mit lokaler read-only Bedienung und validiertem `1:1`-Rückweg aus dem begrenzten Randfokus
 - Competitive Top 10 + Wochen-/Monatszyklen
@@ -219,6 +221,7 @@ Feature-Fortschritt auf `main` ist kein stiller Produktrelease. Eine neue Produk
 | Scene Jobs & Bargeld | [`docs/LAIENHILFE_SCENE_JOBS.md`](docs/LAIENHILFE_SCENE_JOBS.md) |
 | Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Berlin-Erinnerungen | [`docs/LAIENHILFE_DISTRICT_BIO.md`](docs/LAIENHILFE_DISTRICT_BIO.md) |
+| District-Kettenaudit | [`docs/DISTRICT_EVENT_CHAIN_CONTRACT_AUDIT.md`](docs/DISTRICT_EVENT_CHAIN_CONTRACT_AUDIT.md) |
 | Berlin Ops Map | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |
 | Safe Merge | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
 | Repository-Regeln | [`AGENTS.md`](AGENTS.md) |
