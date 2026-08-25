@@ -11,6 +11,8 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 import start_a4_acceptance as acceptance  # noqa: E402
 
+CREW_STYLES = (ROOT / "web" / "a4" / "crew_identity.css").read_text(encoding="utf-8")
+
 
 class AvatarContextBrowserE2ETests(unittest.TestCase):
     def test_harness_uses_existing_ui_and_confirmed_identity_paths(self):
@@ -32,10 +34,21 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         self.assertIn('frame.src = "/";', source)
         self.assertLess(source.index('frame.addEventListener("load"'), source.index('frame.src = "/";'))
         self.assertIn('document.body.textContent = `AVATAR_CONTEXT_E2E: PASS', source)
-        self.assertIn('document.body.textContent = `AVATAR_CONTEXT_E2E: FAIL', source)
+        self.assertIn('document.body.textContent = `AVATAR_CONTEXT_E2E: FAIL ·', source)
+        self.assertIn('href.endsWith("/crew_identity.css")', source)
+        self.assertIn('w.getComputedStyle(hudPreview)', source)
+        self.assertIn('hudStyle.borderTopColor !== "rgb(255, 255, 255)"', source)
         self.assertNotIn('fetch("/api/command")', source)
         self.assertNotIn("property.purchase", source)
         self.assertNotIn('"Timeline wird geladen"', source)
+
+    def test_compact_hud_keeps_confirmed_identity_visible(self):
+        media = '@media (max-width: 1100px)'
+        block = CREW_STYLES[CREW_STYLES.index(media):CREW_STYLES.index('@media (min-width: 721px)')]
+        self.assertIn('.hud-crew-identity', block)
+        self.assertIn('width: 2.25rem', block)
+        self.assertIn('height: 2.25rem', block)
+        self.assertNotIn('display: none', block)
 
     def test_avatar_context_url_preserves_startup_query_on_harness_path(self):
         self.assertEqual(
