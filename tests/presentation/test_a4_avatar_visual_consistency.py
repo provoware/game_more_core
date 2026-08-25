@@ -36,6 +36,18 @@ class A4AvatarVisualConsistencyTests(unittest.TestCase):
             with self.subTest(token=token):
                 self.assertIn(token, CREW_STYLES)
 
+    def test_compact_ranking_mark_keeps_same_readable_floor_as_small_hud(self):
+        ranking_block_start = ".hall-local-crew-preview .hud-crew-mark {"
+        ranking_block = CREW_STYLES[
+            CREW_STYLES.index(ranking_block_start):CREW_STYLES.index("@media (max-width: 1100px)")
+        ]
+        compact_hud = CREW_STYLES[
+            CREW_STYLES.index("@media (max-width: 1100px)"):CREW_STYLES.index("@media (min-width: 721px)")
+        ]
+        self.assertIn("font-size: .34rem", ranking_block)
+        self.assertIn("font-size: .34rem", compact_hud)
+        self.assertNotIn("font-size: .3rem", ranking_block)
+
     def test_map_badges_reuse_hud_preview_so_the_same_contrast_rule_applies(self):
         self.assertIn('badge.className = `hud-crew-preview ${className}`', MAP_UI)
         self.assertIn('crewBadge("map-crew-badge", "1.35rem")', MAP_UI)
