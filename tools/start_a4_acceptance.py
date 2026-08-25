@@ -18,6 +18,8 @@ from urllib.error import URLError
 from urllib.parse import urlsplit, urlunsplit
 from urllib.request import urlopen
 
+import start_a4_game_client as game_client
+
 ROOT = Path(__file__).resolve().parents[1]
 LAUNCHER = ROOT / "tools" / "start_a4_game_client.py"
 BROWSER_NAMES = ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser")
@@ -53,6 +55,53 @@ def find_browser() -> str | None:
         if executable:
             return executable
     return None
+
+
+def prepare_owned_map_fixture(save_dir: str | Path) -> str:
+    """Create isolated confirmed ownership through the canonical runtime purchase path."""
+    runtime = game_client.A4ClientRuntime(Path(save_dir))
+    locations = [
+        item
+        for item in runtime.city_map_manifest.get("locations", ())
+        if isinstance(item, dict)
+        and item.get("purchasable") is True
+        and isinstance(item.get("location_id"), str)
+        and isinstance(item.get("purchase_price_cents"), int)
+        and item["purchase_price_cents"] >= 0
+    ]
+    if not locations:
+        raise RuntimeError("Avatar-Context-E2E findet keine katalogisierte kaufbare Immobilie")
+    location = min(locations, key=lambda item: (item["purchase_price_cents"], item["location_id"]))
+
+    starter_event = runtime.starter.get("event")
+    starter_character = runtime.starter.get("character")
+    if not isinstance(starter_event, dict) or not isinstance(starter_character, dict):
+        raise RuntimeError("Avatar-Context-E2E-Starter besitzt keinen gültigen Event-/Character-State")
+    event_id = starter_event.get("event_id")
+    character_id = starter_character.get("character_id")
+    if not isinstance(event_id, str) or not event_id or not isinstance(character_id, str) or not character_id:
+        raise RuntimeError("Avatar-Context-E2E-Starter besitzt keine gültigen Runtime-IDs")
+
+    starter_event["budget_cents"] = location["purchase_price_cents"]
+    bootstrap = runtime.bootstrap({"command_id": "acceptance-owned-map-bootstrap"})
+    if bootstrap.get("status") != "confirmed":
+        raise RuntimeError(f"Avatar-Context-E2E konnte den isolierten Starter nicht bestätigen: {bootstrap}")
+
+    command_id = "acceptance-owned-map-purchase"
+    result = runtime.session.dispatch(
+        {
+            "type": "property.purchase",
+            "command_id": command_id,
+            "location_id": location["location_id"],
+        },
+        context=runtime._context(command_id, "event", event_id, character_id),
+    )
+    if result.status != "confirmed":
+        raise RuntimeError(
+            "Avatar-Context-E2E konnte Eigentum nicht über property.purchase bestätigen: "
+            f"{result.error_code or result.status}"
+        )
+    return location["location_id"]
 
 
 def _avatar_context_harness() -> str:
@@ -92,9 +141,7 @@ def _avatar_context_harness() -> str:
       await waitFor(() => !markText(d.getElementById("event-timeline-status")).includes("Timeline wird " + "geladen"), "Timeline");
 
       if (visible(d.getElementById("first-run"))) {
-        d.getElementById("character-name").value = "E2E Crew";
-        d.getElementById("event-name").value = "E2E Event";
-        d.getElementById("new-game").click();
+        throw new Error("Runtime-Owned-Map-Fixture fehlt: First Run ist unerwartet sichtbar");
       }
       await waitFor(() => visible(d.getElementById("profile-panel")), "Profil sichtbar");
       const markInput = await waitFor(() => d.getElementById("crew-identity-mark-input"), "Crew-Editor");
@@ -114,14 +161,7 @@ def _avatar_context_harness() -> str:
       }, "eigener Ranking-Eintrag");
 
       const canvas = d.getElementById("berlin-map-canvas");
-      let syntheticOwned = null;
-      if (!canvas.querySelector(".map-marker.owned")) {
-        syntheticOwned = d.createElement("button");
-        syntheticOwned.type = "button";
-        syntheticOwned.className = "map-marker owned";
-        syntheticOwned.setAttribute("aria-label", "E2E read-only owned marker fixture");
-        canvas.append(syntheticOwned);
-      }
+      await waitFor(() => canvas?.querySelector(".map-marker.owned"), "bestätigter Eigentumsmarker");
       const mapMark = await waitFor(() => {
         const mark = d.querySelector("#berlin-map-canvas .map-marker.owned .map-crew-badge .hud-crew-mark");
         return markText(mark) === "E2E" ? mark : null;
@@ -178,11 +218,10 @@ def _avatar_context_harness() -> str:
         throw new Error("Hoher Kontrast erreicht die bestätigte HUD-Marke nicht");
       }
 
-      syntheticOwned?.remove();
       document.body.textContent = `AVATAR_CONTEXT_E2E: PASS
 ● BEREIT
 BUNKERFREQUENZ – Control Deck
-Profil→HUD→Map→Ranking · Hoher Kontrast · kleines Fenster`;
+Profil→HUD→Map→Ranking · Runtime-Eigentum · Hoher Kontrast · kleines Fenster`;
     } catch (error) {
       document.body.textContent = `AVATAR_CONTEXT_E2E: FAIL · ${String(error?.message || error)}`;
     }
@@ -327,6 +366,9 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
         return
 
     with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-acceptance-save-") as save_dir:
+        if browser_check:
+            owned_location = prepare_owned_map_fixture(save_dir)
+            print(f"ACCEPTANCE: RUNTIME-OWNED MAP FIXTURE OK · {owned_location}")
         process = _start_server(save_dir)
         try:
             actual = _wait_for_address(process)
@@ -337,7 +379,7 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
                 if dom is not None:
                     print(
                         "ACCEPTANCE: BROWSER OK · UI reaktionsfähig · /api/state gerendert · "
-                        "Timeline initialisiert · Profil→HUD→Map→Ranking bestätigt"
+                        "Timeline initialisiert · Profil→HUD→Map→Ranking mit Runtime-Eigentum bestätigt"
                     )
         finally:
             if process.poll() is None:
@@ -356,7 +398,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--address", help="bereits laufende lokale Adresse read-only prüfen")
     parser.add_argument("--no-browser-check", action="store_true", help="nur /api/health und /api/state prüfen")
     parser.add_argument("--require-browser", action="store_true", help="ohne Chrome/Chromium fehlschlagen")
+    parser.add_argument("--prepare-owned-map-fixture", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    if args.prepare_owned_map_fixture is not None:
+        try:
+            location_id = prepare_owned_map_fixture(args.prepare_owned_map_fixture)
+        except (RuntimeError, OSError, URLError, json.JSONDecodeError) as exc:
+            print(f"START-SELBSTTEST FEHLGESCHLAGEN – {exc}", file=sys.stderr)
+            return 1
+        print(f"ACCEPTANCE: RUNTIME-OWNED MAP FIXTURE OK · {location_id}")
+        return 0
     try:
         run(args.address, browser_check=not args.no_browser_check, require_browser=args.require_browser)
     except (RuntimeError, OSError, URLError, json.JSONDecodeError) as exc:
