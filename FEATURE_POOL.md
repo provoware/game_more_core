@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433`
+- **Status-Sync-Anker:** PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883`
 
 ## Statuswerte
 
@@ -40,6 +40,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E:** PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883` · Chromium und Firefox prüfen die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking fail-closed gegen den gemeinsamen `0.34rem`-Boden
 - **0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT:** PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433` · kompakte Ranking-Kurzmarke auf denselben `0.34rem`-Lesbarkeitsboden wie das kleine HUD angehoben; keine andere Crew-Geometrie verändert
 - **0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT:** PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c` · vorhandene Chromium-/Firefox-Evidence bindet denselben runtime-bestätigten Property-Kauf an `location_id`, Command-, Event- und Ledger-Referenzen; keine zweite Evidence-Architektur
 - **0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE:** PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d` · Chromium und Firefox prüfen die Crew-Marke jetzt an runtime-bestätigtem Eigentum aus dem kanonischen `property.purchase`-/Projection-Pfad; kein künstlicher `.owned`-DOM-Marker
@@ -89,7 +90,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-014` | `DONE` | Runtime-Owned Map E2E Fixture | künstlichen `.owned`-DOM-Marker durch echten bestätigten Eigentumszustand im isolierten Testspielstand ablösen | PR #181 sicher gemergt; kanonischer Property-/Projection-Pfad, keine Browser-Besitzautorität |
 | `POOL-QA-015` | `DONE` | Runtime-Owned Evidence Receipt | bestätigten Map-Eigentumskontext kompakt in vorhandener Release-Evidence nachweisen | PR #183 sicher gemergt; bestehende Fixture-/Property-/Ledger-Daten, keine zweite Evidence-Architektur |
 | `POOL-UX-009` | `DONE` | Crew Identity Micro Polish Audit | kompakte Ranking-Kurzmarke auf gemeinsamen Lesbarkeitsboden bringen | PR #185 sicher gemergt; genau ein reproduzierter Größenbefund, keine Neugestaltung |
-| `POOL-QA-016` | `PULLED` | Avatar Context Computed Size E2E | tatsächliche Browser-Kaskade der kompakten Crew-Kurzmarken absichern | vorhandener Chromium-/Firefox-Harness; fail-closed unter `0.34rem`, keine zweite Browserarchitektur |
+| `POOL-QA-016` | `DONE` | Avatar Context Computed Size E2E | tatsächliche Browser-Kaskade der kompakten Crew-Kurzmarken absichern | PR #188 sicher gemergt; Chromium/Firefox fail-closed unter `0.34rem`, keine zweite Browserarchitektur |
 
 ---
 
@@ -107,7 +108,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-STREET-003` | `IDEA` | seltene Mini-Kettenereignisse | Ketten-/Replayvertrag |
 | `POOL-QA-001` | `READY` | Native GitHub Branch Protection / Ruleset | geeigneter Admin-Schreibweg |
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
-| `POOL-MAP-003` | `IDEA` | Map-Viewport-Miniübersicht | validierte Map 2 |
+| `POOL-MAP-003` | `PULLED` | Map-Viewport-Miniübersicht | zuerst reproduzierbaren Orientierungsverlust bei kleinem Viewport/höherem Zoom belegen; nur bestehende Map-Projection |
 | `POOL-QA-012` | `IDEA` | Status-Sync-PR-Autoprep | read-only Driftcheck muss sich zuerst im Alltag bewähren; niemals Direktwrite nach `main` |
 
 ---
@@ -124,4 +125,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-QA-016` ist als nächste kleine Iteration gezogen: Der bestehende Chromium-/Firefox-Harness soll zusätzlich die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking auslesen und fail-closed unter der gemeinsamen `0.34rem`-Untergrenze gehen. Es entsteht kein zweites Browserframework und keine neue Identity-, Map-, Ranking- oder Gameplayautorität. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig. `POOL-QA-012` bleibt nur eine spätere Automationsidee und darf niemals direkt `main` beschreiben.
+`POOL-QA-016` ist nach PR #188 `DONE`. Als nächster kleiner sichtbarer UX-Punkt ist `POOL-MAP-003` gezogen, zunächst ausdrücklich als **Audit**: Die vorhandene Berlin Ops Map wird bei kleinem Viewport und höherem zulässigem Zoom auf reproduzierbaren Orientierungsverlust geprüft. Eine Miniübersicht wird nur umgesetzt, wenn dieser konkrete Nutzen belegt ist; andernfalls endet der Slice ohne Produktpatch. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.
