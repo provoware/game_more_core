@@ -42,13 +42,17 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         self.assertNotIn("property.purchase", source)
         self.assertNotIn('"Timeline wird geladen"', source)
 
-    def test_compact_hud_keeps_confirmed_identity_visible(self):
+    def test_compact_hud_keeps_confirmed_identity_visible_without_extra_grid_row(self):
         media = '@media (max-width: 1100px)'
         block = CREW_STYLES[CREW_STYLES.index(media):CREW_STYLES.index('@media (min-width: 721px)')]
-        self.assertIn('.hud-crew-identity', block)
-        self.assertIn('width: 2.25rem', block)
-        self.assertIn('height: 2.25rem', block)
-        self.assertNotIn('display: none', block)
+        self.assertIn('.hud-brand {\n    display: block;', block)
+        self.assertIn('position: absolute;', block)
+        self.assertIn('.ops-hud > .hud-metric:first-of-type', block)
+        self.assertIn('padding-left: 3.15rem;', block)
+        self.assertIn('.hud-crew-identity {\n    position: static;', block)
+        self.assertIn('width: 2.25rem;', block)
+        self.assertIn('height: 2.25rem;', block)
+        self.assertIn('transform: none;', block)
 
     def test_avatar_context_url_preserves_startup_query_on_harness_path(self):
         self.assertEqual(
