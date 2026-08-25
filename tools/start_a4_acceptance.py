@@ -273,7 +273,7 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
         if browser_check:
             dom = browser_dom(address, require_browser=require_browser)
             if dom is not None:
-                print("SELBSTTEST: BROWSER OK · UI + Crew-Kontexte real im Browser bestätigt")
+                print("SELBSTTEST: BROWSER OK · UI reaktionsfähig · Crew-Kontexte real bestätigt")
         return
 
     with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-acceptance-save-") as save_dir:
@@ -286,8 +286,8 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
                 dom = browser_dom(actual, require_browser=require_browser)
                 if dom is not None:
                     print(
-                        "ACCEPTANCE: BROWSER OK · /api/state gerendert · Timeline initialisiert · "
-                        "Profil→HUD→Map→Ranking bestätigt"
+                        "ACCEPTANCE: BROWSER OK · UI reaktionsfähig · /api/state gerendert · "
+                        "Timeline initialisiert · Profil→HUD→Map→Ranking bestätigt"
                     )
         finally:
             if process.poll() is None:
