@@ -22,19 +22,25 @@ Das ist absichtlich ein **sichtbarer Qualitätsfehler**. Der Check repariert `ma
 
 Reine Status-Sync-Merges verändern mindestens gemeinsam `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json`. Optional dürfen nur die bereits katalogisierten Status-Sync-Helfer wie Checker, Tests, Workflow, README, Laienhilfe oder passender Changelog-Nachweis dazukommen.
 
-Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien** wird ausdrücklich als reine Statuskorrektur erkannt. Solche Merges werden bei der Suche nach dem letzten **fachlich relevanten** Safe Merge übersprungen. Dadurch zeigt der Anker weiterhin auf den zuletzt bestätigten Spiel-/QA-/UX-Slice statt auf seine eigene Dokumentationsreparatur.
+Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien** wird ausdrücklich als reine Statuskorrektur erkannt. Solche Merges werden bei der Suche nach dem letzten **fachlich relevanten** Safe Merge übersprungen. Dadurch zeigt der Anker weiterhin auf den zuletzt bestätigten Spiel-/QA-/UX-/Story-Slice statt auf seine eigene Dokumentationsreparatur.
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #192
+## Praktisches Beispiel nach PR #194
 
-PR #192 hat im vorhandenen Chromium-/Firefox-Avatar-Harness die tatsächlich gerenderten Box-Maße der Crew-Kurzmarken geprüft. HUD, eigener Map-Ort und eigener Ranking-Eintrag müssen bei `scrollWidth/clientWidth` sowie `scrollHeight/clientHeight` ohne reale Textabschneidung bleiben. Der finale Browsernachweis war grün; deshalb war **kein Produkt-CSS-Fix** nötig. Der fachliche Safe-Merge ist `f5132827d8d80522f952eb220db63047a091c77d`.
+PR #194 hat den geplanten District-Ereignisketten-Audit abgeschlossen. Das Ergebnis war absichtlich **kein neuer Gameplay-Code**: Ein bestätigtes `world.district_effect_applied` kann bereits als eindeutige Parent-Evidenz dienen und die District-Quelle ist replaybar. Die Biography bleibt dagegen read-only und darf keine Kette aus Anzeigezustand erzeugen.
 
-Direkt danach standen die drei kanonischen Statusdateien noch auf PR #190 und führten `POOL-QA-017` weiterhin als offene Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift.
+Der Audit fand zugleich die harte Grenze: Im Journal existiert noch **kein eigener katalogisierter Child-Eventtyp** für eine District-Folgebegegnung. Deshalb wäre eine Micro-Story an dieser Stelle zu früh und würde den Persistenz-/Replay-Vertrag umgehen.
 
-Die Statuskorrektur übernimmt deshalb PR #192 in alle drei Statusquellen, setzt `POOL-QA-017` auf `DONE` und zieht als nächsten spielnahen Punkt `POOL-WORLD-003 – District-Ereignisketten mit Erinnerung` zunächst nur als **Contract-Audit**.
+Direkt nach dem Safe Merge von PR #194 standen die drei kanonischen Statusdateien noch auf PR #192 und führten den bereits erledigten Audit weiterhin als aktive Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift.
 
-Wichtig: Der Status-Sync baut **noch keine Ereigniskette**. Der nächste eigene Slice liest zuerst die vorhandenen District-, Journal- und Timeline-Verträge. Nur wenn dort eine eindeutige kanonische Anschlussstelle existiert, darf daraus später ein kleiner Story-Patch entstehen. So verhindert die Statuspflege, dass aus einer guten Idee unbemerkt eine zweite Eventengine oder Browser-Story-Autorität wird.
+Die Statuskorrektur übernimmt deshalb PR #194 als gemeinsamen Anker und setzt die aktive Phase desselben `POOL-WORLD-003` auf **`0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1`**. Das ist noch keine Geschichte im Spiel. V1 muss zuerst genau einen Child-Eventtyp, die Parent-Referenz, die District-Bindung und Exactly-once-/Replay-Semantik festlegen.
+
+### Merksatz für Laien
+
+**Erst beweisen, dass A wirklich passiert ist. Dann festlegen, wie B eindeutig auf A zeigt. Erst danach darf B als Geschichte im Spiel passieren.**
+
+So bleibt die Ursache-Wirkungs-Kette verständlich, und ein Retry oder UI-Refresh kann nicht versehentlich eine zweite Storyfolge erzeugen.
 
 ## Für Entwickler
 
