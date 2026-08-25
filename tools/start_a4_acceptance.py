@@ -162,18 +162,27 @@ def _avatar_context_url(address: str) -> str:
     return urlunsplit((parts.scheme, parts.netloc, "/" + AVATAR_CONTEXT_HARNESS, parts.query, ""))
 
 
-def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BROWSER_WALLCLOCK_TIMEOUT) -> str | None:
+def browser_dom(
+    address: str,
+    *,
+    require_browser: bool,
+    timeout: float = MIN_BROWSER_WALLCLOCK_TIMEOUT,
+    avatar_context: bool = False,
+) -> str | None:
     browser = find_browser()
     if browser is None:
         if require_browser:
             raise RuntimeError("Kein Chrome/Chromium für den echten Browser-Acceptance-Test gefunden")
         return None
 
-    harness_path = ROOT / "web" / "a4" / AVATAR_CONTEXT_HARNESS
-    if harness_path.exists():
-        raise RuntimeError(f"Temporärer Browser-Harness-Pfad ist bereits belegt: {harness_path}")
-    harness_path.write_text(_avatar_context_harness(), encoding="utf-8")
-    harness_url = _avatar_context_url(address)
+    harness_path: Path | None = None
+    target_url = address
+    if avatar_context:
+        harness_path = ROOT / "web" / "a4" / AVATAR_CONTEXT_HARNESS
+        if harness_path.exists():
+            raise RuntimeError(f"Temporärer Browser-Harness-Pfad ist bereits belegt: {harness_path}")
+        harness_path.write_text(_avatar_context_harness(), encoding="utf-8")
+        target_url = _avatar_context_url(address)
 
     command = [
         browser,
@@ -190,7 +199,7 @@ def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BRO
         "--window-size=900,760",
         f"--virtual-time-budget={BROWSER_VIRTUAL_TIME_BUDGET_MS}",
         "--dump-dom",
-        harness_url,
+        target_url,
     ]
     try:
         completed = subprocess.run(
@@ -205,13 +214,14 @@ def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BRO
             "Browser reagierte nicht rechtzeitig; möglicher JS-/MutationObserver-Freeze"
         ) from exc
     finally:
-        harness_path.unlink(missing_ok=True)
+        if harness_path is not None:
+            harness_path.unlink(missing_ok=True)
 
     if completed.returncode != 0:
         detail = (completed.stderr or completed.stdout).strip().splitlines()[-5:]
         raise RuntimeError("Headless-Browser scheiterte: " + " | ".join(detail))
     dom = completed.stdout
-    if AVATAR_CONTEXT_PASS not in dom:
+    if avatar_context and AVATAR_CONTEXT_PASS not in dom:
         detail = " | ".join(line.strip() for line in dom.splitlines() if "AVATAR_CONTEXT_E2E:" in line)
         raise RuntimeError("Avatar-Context-E2E lieferte keinen PASS-Nachweis" + (f": {detail}" if detail else ""))
     if "● BEREIT" not in dom:
@@ -271,9 +281,9 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
         probe_http(address)
         print(f"SELBSTTEST: HTTP OK · {address}")
         if browser_check:
-            dom = browser_dom(address, require_browser=require_browser)
+            dom = browser_dom(address, require_browser=require_browser, avatar_context=False)
             if dom is not None:
-                print("SELBSTTEST: BROWSER OK · UI reaktionsfähig · Crew-Kontexte real bestätigt")
+                print("SELBSTTEST: BROWSER OK · UI reaktionsfähig · read-only bestehende Session geprüft")
         return
 
     with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-acceptance-save-") as save_dir:
@@ -283,7 +293,7 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
             probe_http(actual)
             print(f"ACCEPTANCE: HTTP OK · {actual}")
             if browser_check:
-                dom = browser_dom(actual, require_browser=require_browser)
+                dom = browser_dom(actual, require_browser=require_browser, avatar_context=True)
                 if dom is not None:
                     print(
                         "ACCEPTANCE: BROWSER OK · UI reaktionsfähig · /api/state gerendert · "
@@ -303,7 +313,7 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="BUNKERFREQUENZ Start-/Browser-Acceptance")
-    parser.add_argument("--address", help="bereits laufende lokale Adresse prüfen")
+    parser.add_argument("--address", help="bereits laufende lokale Adresse read-only prüfen")
     parser.add_argument("--no-browser-check", action="store_true", help="nur /api/health und /api/state prüfen")
     parser.add_argument("--require-browser", action="store_true", help="ohne Chrome/Chromium fehlschlagen")
     args = parser.parse_args(argv)
