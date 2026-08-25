@@ -2,64 +2,82 @@
 
 ## Was wird geprüft?
 
-Der Release-Browser-Test öffnet BUNKERFREQUENZ in echten Browsern mit kleiner Arbeitsfläche. Für den detaillierten Identitätslauf erzeugt er **immer einen eigenen temporären Test-Spielstand**. Darin legt er genau über den vorhandenen Button ein lokales Spiel an, ändert die Crew-Kurzmarke im normalen Profil-Editor auf `E2E` und speichert sie über den vorhandenen `PROFIL SPEICHERN`-Pfad.
+Der Release-Browser-Test öffnet BUNKERFREQUENZ in echten Browsern mit kleiner Arbeitsfläche. Für den detaillierten Identitätslauf erzeugt er **immer einen eigenen temporären Test-Spielstand**. Die Crew-Kurzmarke wird im normalen Profil-Editor auf `E2E` geändert und über den vorhandenen `PROFIL SPEICHERN`-Pfad bestätigt.
 
-Der identische vorhandene Test-Harness läuft jetzt sowohl im Chromium-Acceptance-Pfad als auch im bereits vorhandenen nativen Firefox-/Geckodriver-Pfad. Es gibt dafür kein zweites Browserframework und keine zweite Avatar-Testlogik.
+Der identische vorhandene Test-Harness läuft sowohl im Chromium-Acceptance-Pfad als auch im bereits vorhandenen nativen Firefox-/Geckodriver-Pfad. Es gibt dafür kein zweites Browserframework und keine zweite Avatar-Testlogik.
 
 Danach muss dieselbe bestätigte Kurzmarke sichtbar bleiben in:
 
 - der Profilvorschau,
 - dem Live-HUD,
 - dem eigenen Ranking-Eintrag,
-- dem vorhandenen Map-Crew-Klonvertrag.
+- einem **wirklich von der Runtime als Eigentum bestätigten Map-Ort**.
 
 Zusätzlich wird der bestehende Modus `Hoher Kontrast` eingeschaltet. Der Test prüft nicht nur, ob Text vorhanden ist, sondern auch, ob `crew_identity.css` im echten Browser erfolgreich geladen wurde, die Crew-Marke sichtbare Geometrie besitzt und die weiße High-Contrast-Kante tatsächlich berechnet wird.
 
-## Was wurde beim kleinen Fenster verbessert?
+## Wie entsteht das Eigentum im Test?
 
-Der Chromium-Browserlauf hat einen echten Schwachpunkt sichtbar gemacht: unter 1100 px wurde die bestätigte Crew-Marke im HUD bisher vollständig ausgeblendet. Das widersprach dem Ziel, die bestätigte Identität durchgehend wiederzuerkennen.
+Ein normaler neuer Spielstand startet mit 1.000 EUR Eventbudget. Die günstigste aktuell katalogisierte kaufbare Immobilie kostet 31.000 EUR. Diesen Unterschied löst der Test **nicht** durch geänderte Spielregeln, billigere Immobilien oder Browser-Tricks.
 
-Der HUD-Avatar bleibt deshalb jetzt auch in kompakteren Fenstern sichtbar, wird dort aber kleiner dargestellt. Der neue Firefox-Nachweis verwendet denselben 900 × 760 Browserrahmen und denselben 760 px breiten Testinhalt. Es entsteht keine zweite Identitätsquelle; weiterhin wird ausschließlich die bereits bestätigte HUD-Marke verwendet.
+Stattdessen wird ausschließlich für den isolierten temporären Acceptance-Spielstand vor dem Serverstart folgender Ablauf ausgeführt:
+
+1. Der Test liest die kaufbaren Orte aus dem vorhandenen `CITY_MAP_MANIFEST.json` und wählt deterministisch den günstigsten Eintrag.
+2. Nur die **im Speicher liegende Kopie** des Starter-Events erhält für diesen Test exakt das dafür erforderliche Budget. `web/a4/starter.json` und alle Gameplaywerte im Repository bleiben unverändert.
+3. Der normale Runtime-Bootstrap legt den temporären Spielstand an.
+4. Danach wird über denselben kanonischen Command `property.purchase` gekauft, den auch das Spiel verwendet. Der Test liefert ausschließlich `location_id`; Kaufpreis, Eigentümer und Budgetdelta bleiben Autorität der bestehenden Property-/Economy-Runtime.
+5. Erst danach startet der Browser. Die Klasse `.map-marker.owned` muss nun aus der bestätigten Projection entstehen. Fehlt sie, wird der Browsernachweis rot.
+
+Damit prüft der Avatar-E2E nicht mehr nur einen nachgebauten Presentation-Zustand, sondern die reale Kette **Runtime-Kauf → persistierter Besitz → Projection → Map-Marker → Crew-Marke**.
+
+## Was wurde gegenüber dem alten Map-Fixture verbessert?
+
+Früher durfte der Browser für den reinen Darstellungsnachweis kurz selbst ein Element mit der Klasse `.owned` einfügen. Das war klar als Presentation-Fixture begrenzt, konnte aber nicht beweisen, dass die Map-Crew-Marke auch an einem tatsächlich bestätigten Eigentumszustand erscheint.
+
+Diese künstliche Besitzmarkierung ist entfernt. Der Browser-Harness:
+
+- erzeugt keinen `.owned`-Marker mehr,
+- setzt keinen Eigentümer,
+- setzt keinen Kaufpreis,
+- sendet keinen Property-Command,
+- wartet ausschließlich auf den von der echten Projection erzeugten Eigentumsmarker.
+
+Ist beim Browserstart noch der First-Run-Bildschirm sichtbar, gilt das ebenfalls als Fehler: Dann wurde das Runtime-Fixture nicht korrekt vorbereitet.
 
 ## Was beweist Firefox zusätzlich?
 
-Der vorhandene Release-Nachweis startete Firefox bereits nativ über Geckodriver, prüfte dort bisher aber nur `BEREIT`, DOM-Reaktion und `/api/health`. Jetzt muss Firefox zusätzlich denselben ausgeführten `AVATAR_CONTEXT_E2E: PASS` liefern wie Chromium.
+Der Firefox-Release-Pfad startet weiterhin seinen eigenen paketierten Server mit eigenem temporären Save-Verzeichnis. Vor diesem Serverstart ruft er jedoch die **im selben Release-Candidate enthaltene** Acceptance-Routine zur Vorbereitung des Runtime-Owned-Fixtures auf. Damit testen Chromium und Firefox denselben Property-Vertrag, ohne Source- und Paketcode zu vermischen.
 
-Damit ist im zweiten Browser konkret abgesichert:
+Firefox muss anschließend denselben ausgeführten `AVATAR_CONTEXT_E2E: PASS` liefern wie Chromium. Damit sind im zweiten Browser weiterhin abgesichert:
 
 - Profiländerung über die echte Oberfläche,
 - bestätigte Crew-Marke im HUD,
 - eigener Ranking-Eintrag,
-- derselbe klar abgegrenzte Map-Presentation-Fixture,
+- Runtime-bestätigter Map-Besitz,
 - Hoher Kontrast,
 - kleines Fenster.
 
 Ein bloß geladener Scripttext reicht nicht: Erst der tatsächlich ausgeführte PASS beendet den Firefox-Slice erfolgreich. Meldet der Harness `FAIL`, wird der Release-Browser-Nachweis sofort rot.
 
-## Warum ist der Map-Punkt ein Test-Fixture?
-
-Ein frisch angelegtes Testspiel startet mit 1.000 EUR Eventbudget, während die günstigste kaufbare Immobilie 31.000 EUR kostet. Der Browser-Test darf deshalb weder Geld erfinden noch die Property-Runtime umgehen. Für den reinen Presentation-Vertrag wird nach bestätigtem Profil-Save kurzfristig ein DOM-Marker mit der bereits verwendeten Klasse `.owned` eingesetzt. Der vorhandene Map-Usability-Code muss daran dieselbe bestätigte HUD-Marke klonen. Der Marker wird danach wieder entfernt.
-
-Damit prüft dieser Slice nur die Darstellungskette. Kaufpreis, Besitz und Persistenz bleiben vollständig bei den bestehenden Runtime- und Property-Tests.
-
 ## Schutz echter Spielstände
 
-Wird `start_a4_acceptance.py` mit `--address` gegen eine bereits laufende Session verwendet, läuft **nur der bisherige read-only Browsercheck**. In diesem Modus wird keine E2E-Testseite erzeugt, kein Profilfeld verändert, kein `PROFIL SPEICHERN` ausgelöst und kein Testcharakter angelegt. Der schreibende Identitätslauf ist ausschließlich an den intern erzeugten temporären Save gebunden.
+Wird `start_a4_acceptance.py` mit `--address` gegen eine bereits laufende Session verwendet, läuft **nur der read-only Browsercheck**. In diesem Modus wird kein Testspielstand vorbereitet, kein Eigentum gekauft, kein Profilfeld verändert und kein Testcharakter angelegt.
 
-Auch der Firefox-Release-Pfad startet einen eigenen paketierten Server mit eigenem temporären Save-Verzeichnis. Die Testseite wird im entpackten temporären Release erzeugt und im `finally`-Pfad wieder gelöscht.
+Der schreibende Identitätslauf ist ausschließlich an intern erzeugte temporäre Save-Verzeichnisse gebunden. Auch der Firefox-Release-Pfad arbeitet nur in seinem entpackten temporären Release- und Save-Kontext. Die temporäre HTML-Testseite wird im `finally`-Pfad wieder gelöscht.
 
 ## Sicherheitsgrenzen
 
-- kein direkter `/api/command`-Aufruf aus dem Test-Harness,
-- kein künstlicher Property-Kauf,
+- kein direkter `/api/command`-Aufruf aus dem Browser-Harness,
+- kein DOM-erfundenes Eigentum,
+- kein künstlich vom Client vorgegebener Kaufpreis oder Eigentümer,
+- keine Änderung an `starter.json`, Property-Preisen oder Gameplaywerten,
 - keine Änderung an echten oder per `--address` übergebenen Spielständen,
-- keine Änderung an Journalverträgen oder Gameplaywerten,
-- keine neue Avatar-, Map- oder Ranking-Datenquelle,
-- Chromium und Firefox verwenden denselben vorhandenen Avatar-Context-Harness,
-- die temporäre HTML-Testseite wird nur für den temporären Test-Spielstand erzeugt und nach dem Browserlauf wieder gelöscht,
+- keine Änderung an Journal-, Save- oder Property-Verträgen,
+- keine neue Avatar-, Map-, Property- oder Ranking-Datenquelle,
+- Chromium und Firefox verwenden denselben vorhandenen Avatar-Context-Harness und denselben Runtime-Fixture-Vertrag,
+- fehlender echter `.map-marker.owned` blockiert den Avatar-E2E,
 - fehlender `AVATAR_CONTEXT_E2E: PASS` blockiert den detaillierten Browser-Acceptance-Test,
 - fehlendes oder wirkungsloses `crew_identity.css` blockiert den visuellen PASS ebenfalls.
 
 ## Spätere sinnvolle Erweiterung
 
-Wenn künftig ein eigener kanonischer Testspielstand mit bestätigtem Eigentum existiert, kann der temporäre `.owned`-DOM-Fixture entfallen und durch einen vollständig runtime-erzeugten Property-Kontext ersetzt werden. Bis dahin bleibt die Trennung zwischen Besitzautorität und Presentation-Test ausdrücklich sichtbar.
+Eine spätere kleine QA-Erweiterung könnte den bereits bestätigten Runtime-Owned-Kontext zusätzlich mit einem kompakten Evidence-Nachweis versehen: `location_id`, bestätigter `property.purchase`-Status und die dazugehörigen bereits vorhandenen Journal-/Ledger-Ereignisse. Das würde die Provenienz des Browsernachweises noch leichter prüfbar machen, ohne neue Gameplay- oder Besitzlogik einzuführen.
