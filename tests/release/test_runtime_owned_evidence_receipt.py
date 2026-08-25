@@ -65,8 +65,10 @@ class RuntimeOwnedEvidenceReceiptTests(unittest.TestCase):
     def test_receipt_uses_confirmed_property_result_and_ledger(self):
         runtime = self._runtime()
         with patch.object(acceptance.game_client, "A4ClientRuntime", return_value=runtime):
-            receipt = acceptance.prepare_owned_map_fixture(Path("/isolated/save"))
+            receipt = acceptance.prepare_owned_map_fixture(Path("/isolated/save"), include_evidence=True)
 
+        self.assertIsInstance(receipt, dict)
+        assert isinstance(receipt, dict)
         self.assertEqual(receipt["status"], "confirmed")
         self.assertEqual(receipt["command_type"], "property.purchase")
         self.assertEqual(receipt["location_id"], "cheap")
@@ -91,6 +93,14 @@ class RuntimeOwnedEvidenceReceiptTests(unittest.TestCase):
         )
         self.assertNotIn("purchase_price_cents", command)
         self.assertNotIn("owner_character_id", command)
+
+    def test_default_fixture_contract_remains_location_id_only(self):
+        runtime = self._runtime()
+        runtime.session.dispatch.return_value = Mock(status="confirmed", error_code=None)
+        with patch.object(acceptance.game_client, "A4ClientRuntime", return_value=runtime):
+            location_id = acceptance.prepare_owned_map_fixture(Path("/isolated/save"))
+        self.assertEqual(location_id, "cheap")
+        runtime.session.read_state.assert_not_called()
 
     def test_desktop_evidence_parser_requires_confirmed_event_and_ledger_references(self):
         payload = {
