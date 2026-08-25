@@ -11,7 +11,13 @@ Danach muss dieselbe bestätigte Kurzmarke sichtbar bleiben in:
 - dem eigenen Ranking-Eintrag,
 - dem vorhandenen Map-Crew-Klonvertrag.
 
-Zusätzlich wird der bestehende Modus `Hoher Kontrast` eingeschaltet und geprüft, dass die Marke in allen vier Kontexten eine sichtbare Geometrie behält.
+Zusätzlich wird der bestehende Modus `Hoher Kontrast` eingeschaltet. Der Test prüft nicht nur, ob Text vorhanden ist, sondern auch, ob `crew_identity.css` im echten Browser erfolgreich geladen wurde, die Crew-Marke sichtbare Geometrie besitzt und die weiße High-Contrast-Kante tatsächlich berechnet wird.
+
+## Was wurde beim kleinen Fenster verbessert?
+
+Der neue Browserlauf hat einen echten Schwachpunkt sichtbar gemacht: unter 1100 px wurde die bestätigte Crew-Marke im HUD bisher vollständig ausgeblendet. Das widerspricht dem Ziel, die bestätigte Identität durchgehend wiederzuerkennen.
+
+Der HUD-Avatar bleibt deshalb jetzt auch in kompakteren Fenstern sichtbar, wird dort aber kleiner dargestellt. Es entsteht keine zweite Identitätsquelle; weiterhin wird ausschließlich die bereits bestätigte HUD-Marke verwendet.
 
 ## Warum ist der Map-Punkt ein Test-Fixture?
 
@@ -31,7 +37,8 @@ Wird `start_a4_acceptance.py` mit `--address` gegen eine bereits laufende Sessio
 - keine Änderung an Journalverträgen oder Gameplaywerten,
 - keine neue Avatar-, Map- oder Ranking-Datenquelle,
 - die temporäre HTML-Testseite wird nur für den temporären Test-Spielstand erzeugt und nach dem Browserlauf wieder gelöscht,
-- fehlender `AVATAR_CONTEXT_E2E: PASS` blockiert den detaillierten Browser-Acceptance-Test.
+- fehlender `AVATAR_CONTEXT_E2E: PASS` blockiert den detaillierten Browser-Acceptance-Test,
+- fehlendes oder wirkungsloses `crew_identity.css` blockiert den visuellen PASS ebenfalls.
 
 ## Spätere sinnvolle Erweiterung
 
