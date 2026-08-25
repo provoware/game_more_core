@@ -26,13 +26,15 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #183
+## Praktisches Beispiel nach PR #185
 
-PR #183 hat den bereits bestätigten Runtime-Property-Kauf nicht erneut ausgeführt, sondern dessen vorhandene Provenienz genauer in die bestehende `DESKTOP_BROWSER_E2E_EVIDENCE.json` gebunden. Chromium und Firefox führen dort nun denselben kompakten read-only Receipt mit `location_id`, bestätigtem `property.purchase`, Event-Referenzen und passender `property_purchase`-Ledger-Buchung. Der fachliche Merge ist `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`.
+PR #185 änderte genau einen reproduzierten Presentation-Befund: Die kompakte Kurzmarke im eigenen Ranking-Eintrag wurde von `0.30rem` auf den bereits im kleinen HUD verwendeten Lesbarkeitsboden `0.34rem` angehoben. Der fachliche Safe-Merge ist `22d2774a8a0f55c645d5eb97141099b8f0ae7433`.
 
-Direkt danach standen die drei kanonischen Statusdateien noch auf PR #181 und beschrieben `POOL-QA-015 – Runtime-Owned Evidence Receipt` weiterhin als offene Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift. Die Korrektur übernimmt deshalb PR #183 in alle drei Statusquellen, setzt `POOL-QA-015` auf `DONE` und zieht als nächsten kleinen sichtbaren Punkt `POOL-UX-009 – Crew Identity Micro Polish Audit`.
+Direkt danach standen die drei kanonischen Statusdateien noch auf PR #183 und führten `POOL-UX-009 – Crew Identity Micro Polish Audit` weiter als offene Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift.
 
-Wichtig: Dieser Status-Sync verändert weder Property-Kauf noch Evidence-Harness oder Crew-Darstellung. Der nächste UX-Slice darf nur konkrete, reproduzierbare Größen-, Abstands- oder Clipping-Befunde aus den bereits validierten Chromium-/Firefox-Kontexten beheben und keine Neugestaltung auf Verdacht starten.
+Die Statuskorrektur übernimmt deshalb PR #185 in alle drei Statusquellen, setzt `POOL-UX-009` auf `DONE` und zieht als nächsten kleinen QA-Punkt `POOL-QA-016 – Avatar Context Computed Size E2E`.
+
+Wichtig: Der Status-Sync verändert dabei **keine CSS-Regel und keinen Browser-Harness**. Er dokumentiert nur den bestätigten Zustand. Erst der nächste eigene Slice darf den bereits vorhandenen Chromium-/Firefox-Harness um die tatsächlich berechnete `font-size` erweitern.
 
 ## Für Entwickler
 
@@ -48,10 +50,10 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. Sie prüft neben Drift und erweiterten Status-Sync-Slices auch den minimalen Drei-Dateien-Fall. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool, Runtime-Owned-Evidence-Vertrag und nächste aktive Arbeit zusammenpassen.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool, Micro-Polish-Vertrag und nächste aktive Arbeit zusammenpassen.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
 ## Spätere Verbesserungsidee
 
-Falls die Driftprüfung sich im Alltag weiter bewährt, kann ein späterer eigener Automations-Slice bei einem roten Main-Check **einen vorbereiteten Status-Sync-PR eröffnen**, aber weiterhin niemals direkt in `main` schreiben. Das hält Auditierbarkeit und `/safe-merge`-Policy erhalten.
+**STATUS-SYNC-PR-AUTOPREP:** Falls die Driftprüfung sich weiter bewährt, kann ein späterer eigener Automations-Slice bei einem roten Main-Check einen normalen Status-Sync-PR **vorbereiten**, aber weiterhin niemals direkt `main` beschreiben. Nutzen: weniger manuelle Statuspflege bei unverändertem Review- und `/safe-merge`-Schutz.
