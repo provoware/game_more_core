@@ -17,11 +17,13 @@ CREW_STYLES = (ROOT / "web" / "a4" / "crew_identity.css").read_text(encoding="ut
 class AvatarContextBrowserE2ETests(unittest.TestCase):
     def test_harness_uses_existing_ui_and_confirmed_identity_paths(self):
         source = acceptance._avatar_context_harness()
-        self.assertIn('d.getElementById("new-game").click()', source)
+        self.assertIn("Runtime-Owned-Map-Fixture fehlt", source)
+        self.assertNotIn('d.getElementById("new-game").click()', source)
         self.assertIn('d.getElementById("save-profile").click()', source)
         self.assertIn('.hud-crew-identity', source)
         self.assertIn('.hall-local-crew .hud-crew-mark', source)
-        self.assertIn('className = "map-marker owned"', source)
+        self.assertIn('canvas?.querySelector(".map-marker.owned")', source)
+        self.assertNotIn('className = "map-marker owned"', source)
         self.assertIn('BunkerUIPrefs.set("highContrast", true)', source)
         self.assertIn('width: 760px', source)
         self.assertIn('Boolean(node && !node.hidden', source)
