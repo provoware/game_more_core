@@ -26,15 +26,15 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #185
+## Praktisches Beispiel nach PR #188
 
-PR #185 änderte genau einen reproduzierten Presentation-Befund: Die kompakte Kurzmarke im eigenen Ranking-Eintrag wurde von `0.30rem` auf den bereits im kleinen HUD verwendeten Lesbarkeitsboden `0.34rem` angehoben. Der fachliche Safe-Merge ist `22d2774a8a0f55c645d5eb97141099b8f0ae7433`.
+PR #188 erweiterte ausschließlich den bestehenden Avatar-Context-Harness: Chromium und Firefox lesen die **tatsächlich berechnete** `font-size` der bestätigten Crew-Kurzmarken in HUD, Map und Ranking und gehen unter dem gemeinsamen `0.34rem`-Boden fail-closed. Der fachliche Safe-Merge ist `2d4a608e765a47990030ec839407a1d80346f883`.
 
-Direkt danach standen die drei kanonischen Statusdateien noch auf PR #183 und führten `POOL-UX-009 – Crew Identity Micro Polish Audit` weiter als offene Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift.
+Direkt danach standen die drei kanonischen Statusdateien noch auf PR #185. Dadurch wurde `POOL-QA-016 – Avatar Context Computed Size E2E` weiterhin als offene Arbeit geführt, obwohl der Browsernachweis bereits vollständig gemergt und remote validiert war. Genau diese Abweichung meldet der Status-Sync als Drift.
 
-Die Statuskorrektur übernimmt deshalb PR #185 in alle drei Statusquellen, setzt `POOL-UX-009` auf `DONE` und zieht als nächsten kleinen QA-Punkt `POOL-QA-016 – Avatar Context Computed Size E2E`.
+Die Statuskorrektur übernimmt deshalb PR #188 in alle drei Statusquellen, setzt `POOL-QA-016` auf `DONE` und zieht als nächsten kleinen sichtbaren UX-Punkt `POOL-MAP-003 – Map-Viewport-Miniübersicht` **zunächst nur als Audit**.
 
-Wichtig: Der Status-Sync verändert dabei **keine CSS-Regel und keinen Browser-Harness**. Er dokumentiert nur den bestätigten Zustand. Erst der nächste eigene Slice darf den bereits vorhandenen Chromium-/Firefox-Harness um die tatsächlich berechnete `font-size` erweitern.
+Wichtig: Der Status-Sync implementiert **keine Miniübersicht** und verändert keine Map. Der nächste eigene Slice prüft zuerst reproduzierbar, ob kleiner Viewport oder höherer zulässiger Zoom tatsächlich Orientierung kostet. Nur bei belegtem Nutzen darf daraus ein minimaler read-only Presentation-Fix entstehen.
 
 ## Für Entwickler
 
@@ -50,10 +50,10 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool, Micro-Polish-Vertrag und nächste aktive Arbeit zusammenpassen.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool, der browserberechnete `0.34rem`-Vertrag und die nächste aktive Arbeit zusammenpassen.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
 ## Spätere Verbesserungsidee
 
-**STATUS-SYNC-PR-AUTOPREP:** Falls die Driftprüfung sich weiter bewährt, kann ein späterer eigener Automations-Slice bei einem roten Main-Check einen normalen Status-Sync-PR **vorbereiten**, aber weiterhin niemals direkt `main` beschreiben. Nutzen: weniger manuelle Statuspflege bei unverändertem Review- und `/safe-merge`-Schutz.
+**STATUS-SYNC-DRIFT-AGE:** Ein späterer rein diagnostischer Slice könnte bei `STATUS SYNC FAIL` zusätzlich ausgeben, wie viele fachlich relevante Safe Merges die Statusquellen hinter dem erkannten Anker liegen. Nutzen: Priorität und Alter einer Drift sind sofort sichtbar, ohne irgendeine Datei automatisch zu schreiben oder den `/safe-merge`-Schutz zu umgehen.

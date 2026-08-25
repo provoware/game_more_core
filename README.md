@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Crew Identity Micro Polish validiert" src="https://img.shields.io/badge/Feature_Stand-CREW--IDENTITY--MICRO--POLISH_validiert-7dff00">
-  <img alt="Aktive Iteration Avatar Context Computed Size E2E" src="https://img.shields.io/badge/Aktiv-AVATAR--COMPUTED--SIZE--E2E-00c2ff">
+  <img alt="Feature Stand Avatar Context Computed Size E2E validiert" src="https://img.shields.io/badge/Feature_Stand-AVATAR--COMPUTED--SIZE--E2E_validiert-7dff00">
+  <img alt="Aktive Iteration Map Viewport Miniuebersicht Audit" src="https://img.shields.io/badge/Aktiv-MAP--VIEWPORT--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,12 +26,12 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT` |
-| **Aktive Iteration** | 🟡 `0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E` |
-| **Danach** | nur anhand des echten Browserbefunds einen kleinsten konkreten Presentation-Fix ableiten oder bewusst keinen Produktpatch vornehmen |
+| **Status-Sync-Anker** | PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E` |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT` |
+| **Danach** | Miniübersicht nur bei reproduzierbarem Orientierungsverlust; sonst Audit ohne Produktpatch abschließen |
 | **Avatar-Kette** | ✅ Profil → bestätigtes HUD → runtime-bestätigter eigener Map-Ort → eigener Hall-/Ranking-Eintrag · Chromium + Firefox · High Contrast + kleines Fenster validiert |
-| **Crew-Lesbarkeit** | ✅ kompakte Ranking-Kurzmarke und kleines HUD teilen den statisch regressionsgesicherten `0.34rem`-Lesbarkeitsboden |
+| **Crew-Lesbarkeit** | ✅ HUD-, Map- und Ranking-Kurzmarken werden im echten Chromium-/Firefox-Harness gegen den wirksamen `0.34rem`-Lesbarkeitsboden geprüft |
 | **Runtime-Owned Evidence** | ✅ derselbe bestätigte `property.purchase` ist in der vorhandenen Browser-Evidence an Location-, Event- und Ledger-Referenzen gebunden |
 | **Living World** | ✅ replaybare Street Encounters · 16 Begegnungen · vier Ansatzprofile · Grenz-/Replay-/Verteilungsaudits |
 | **Ranking** | ✅ Competitive Top 10 · bestätigte Wochen-/Monatszyklen · lokale Crew-Marke nur am eigenen Eintrag |
@@ -44,7 +44,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #185 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #188 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -85,7 +85,7 @@ PROPERTY / HALL OF TRIBUTE
 - bestätigte Crew-Identität im Profil, HUD, auf eigenem Kartenbesitz und im eigenen Ranking-Eintrag
 - gemeinsame High-Contrast-Außenkante und klare Kurzmarken-Trennung für die bestätigte Crew-Identität
 - echter Chromium- und nativer Firefox-Acceptance-Pfad für Profil → HUD → runtime-bestätigten Map-Besitz → eigenen Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
-- kompakte Ranking-Kurzmarke mit demselben `0.34rem`-Lesbarkeitsboden wie das kleine HUD
+- kompakte HUD-, Map- und Ranking-Kurzmarken mit browserberechnet geprüftem `0.34rem`-Lesbarkeitsboden
 - bestehende Desktop-Browser-Evidence bindet denselben runtime-bestätigten Property-Kauf read-only an Location-, Event- und Ledger-Referenzen
 - Scene Jobs, persönliches Bargeld, Bank, Sparzins und Kontoauszug
 - Secret Best Friend Assistant auf bestehenden Scene-Job-/Rundenverträgen
