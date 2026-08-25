@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`
+- **Status-Sync-Anker:** PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433`
 
 ## Statuswerte
 
@@ -40,6 +40,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT:** PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433` · kompakte Ranking-Kurzmarke auf denselben `0.34rem`-Lesbarkeitsboden wie das kleine HUD angehoben; keine andere Crew-Geometrie verändert
 - **0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT:** PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c` · vorhandene Chromium-/Firefox-Evidence bindet denselben runtime-bestätigten Property-Kauf an `location_id`, Command-, Event- und Ledger-Referenzen; keine zweite Evidence-Architektur
 - **0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE:** PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d` · Chromium und Firefox prüfen die Crew-Marke jetzt an runtime-bestätigtem Eigentum aus dem kanonischen `property.purchase`-/Projection-Pfad; kein künstlicher `.owned`-DOM-Marker
 - **0.8.8-UX-AVATAR-CONTEXT-FIREFOX:** PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304` · derselbe bestätigte Profil→HUD→Map→Ranking-Harness läuft nativ in Firefox/Geckodriver inklusive Hohem Kontrast und kleinem Fenster
@@ -87,7 +88,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-013` | `DONE` | Avatar Context Firefox Interaction | denselben bestätigten Identitätsablauf im vorhandenen nativen Firefox-Pfad absichern | PR #179 sicher gemergt; kein zweites Browserframework |
 | `POOL-QA-014` | `DONE` | Runtime-Owned Map E2E Fixture | künstlichen `.owned`-DOM-Marker durch echten bestätigten Eigentumszustand im isolierten Testspielstand ablösen | PR #181 sicher gemergt; kanonischer Property-/Projection-Pfad, keine Browser-Besitzautorität |
 | `POOL-QA-015` | `DONE` | Runtime-Owned Evidence Receipt | bestätigten Map-Eigentumskontext kompakt in vorhandener Release-Evidence nachweisen | PR #183 sicher gemergt; bestehende Fixture-/Property-/Ledger-Daten, keine zweite Evidence-Architektur |
-| `POOL-UX-009` | `PULLED` | Crew Identity Micro Polish Audit | verbleibende visuelle Reibung nach realem Chromium-/Firefox-E2E gezielt beseitigen | nur reproduzierbare Größen-, Abstands- oder Clipping-Befunde; keine Neugestaltung auf Verdacht |
+| `POOL-UX-009` | `DONE` | Crew Identity Micro Polish Audit | kompakte Ranking-Kurzmarke auf gemeinsamen Lesbarkeitsboden bringen | PR #185 sicher gemergt; genau ein reproduzierter Größenbefund, keine Neugestaltung |
+| `POOL-QA-016` | `PULLED` | Avatar Context Computed Size E2E | tatsächliche Browser-Kaskade der kompakten Crew-Kurzmarken absichern | vorhandener Chromium-/Firefox-Harness; fail-closed unter `0.34rem`, keine zweite Browserarchitektur |
 
 ---
 
@@ -122,4 +124,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-UX-009` ist als nächste kleine Iteration gezogen: Nach vollständig bestätigtem Chromium-/Firefox-/Runtime-Owned-/Evidence-Pfad werden ausschließlich konkrete, reproduzierbare Größen-, Abstands- oder Clipping-Befunde der bestehenden Crew-Identität geprüft und gegebenenfalls minimal behoben. Es entsteht keine zweite Identity-, Map-, Ranking- oder Fetch-Architektur. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig. `POOL-QA-012` bleibt nur eine spätere Automationsidee und darf niemals direkt `main` beschreiben.
+`POOL-QA-016` ist als nächste kleine Iteration gezogen: Der bestehende Chromium-/Firefox-Harness soll zusätzlich die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking auslesen und fail-closed unter der gemeinsamen `0.34rem`-Untergrenze gehen. Es entsteht kein zweites Browserframework und keine neue Identity-, Map-, Ranking- oder Gameplayautorität. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig. `POOL-QA-012` bleibt nur eine spätere Automationsidee und darf niemals direkt `main` beschreiben.
