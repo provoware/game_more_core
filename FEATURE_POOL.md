@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883`
+- **Status-Sync-Anker:** PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db`
 
 ## Statuswerte
 
@@ -40,6 +40,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT:** PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db` · realer Randort bleibt bei begrenztem Fokus off-center, vorhandener `1:1`-Reset stellt die Gesamtansicht wieder her; bewusst keine zweite Mini-Map
 - **0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E:** PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883` · Chromium und Firefox prüfen die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking fail-closed gegen den gemeinsamen `0.34rem`-Boden
 - **0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT:** PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433` · kompakte Ranking-Kurzmarke auf denselben `0.34rem`-Lesbarkeitsboden wie das kleine HUD angehoben; keine andere Crew-Geometrie verändert
 - **0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT:** PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c` · vorhandene Chromium-/Firefox-Evidence bindet denselben runtime-bestätigten Property-Kauf an `location_id`, Command-, Event- und Ledger-Referenzen; keine zweite Evidence-Architektur
@@ -91,6 +92,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-015` | `DONE` | Runtime-Owned Evidence Receipt | bestätigten Map-Eigentumskontext kompakt in vorhandener Release-Evidence nachweisen | PR #183 sicher gemergt; bestehende Fixture-/Property-/Ledger-Daten, keine zweite Evidence-Architektur |
 | `POOL-UX-009` | `DONE` | Crew Identity Micro Polish Audit | kompakte Ranking-Kurzmarke auf gemeinsamen Lesbarkeitsboden bringen | PR #185 sicher gemergt; genau ein reproduzierter Größenbefund, keine Neugestaltung |
 | `POOL-QA-016` | `DONE` | Avatar Context Computed Size E2E | tatsächliche Browser-Kaskade der kompakten Crew-Kurzmarken absichern | PR #188 sicher gemergt; Chromium/Firefox fail-closed unter `0.34rem`, keine zweite Browserarchitektur |
+| `POOL-QA-017` | `PULLED` | Avatar Context Text Clip E2E | reale Kurzmarken-Abschneidung in Chromium/Firefox erkennen | bestehender Avatar-Context-Harness; CSS nur bei belegtem Browserbefund |
 
 ---
 
@@ -108,7 +110,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-STREET-003` | `IDEA` | seltene Mini-Kettenereignisse | Ketten-/Replayvertrag |
 | `POOL-QA-001` | `READY` | Native GitHub Branch Protection / Ruleset | geeigneter Admin-Schreibweg |
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
-| `POOL-MAP-003` | `PULLED` | Map-Viewport-Miniübersicht | zuerst reproduzierbaren Orientierungsverlust bei kleinem Viewport/höherem Zoom belegen; nur bestehende Map-Projection |
+| `POOL-MAP-003` | `DONE` | Map-Viewport-Miniübersicht | PR #190 Audit: `1:1`-Reset reicht als Rückweg; keine Miniübersicht auf Verdacht |
 | `POOL-QA-012` | `IDEA` | Status-Sync-PR-Autoprep | read-only Driftcheck muss sich zuerst im Alltag bewähren; niemals Direktwrite nach `main` |
 
 ---
@@ -125,4 +127,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-QA-016` ist nach PR #188 `DONE`. Als nächster kleiner sichtbarer UX-Punkt ist `POOL-MAP-003` gezogen, zunächst ausdrücklich als **Audit**: Die vorhandene Berlin Ops Map wird bei kleinem Viewport und höherem zulässigem Zoom auf reproduzierbaren Orientierungsverlust geprüft. Eine Miniübersicht wird nur umgesetzt, wenn dieser konkrete Nutzen belegt ist; andernfalls endet der Slice ohne Produktpatch. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.
+`POOL-MAP-003` ist nach PR #190 `DONE`: Der reale Randfall wurde belegt, aber der vorhandene `1:1`-Reset löst die Orientierung bereits eindeutig, deshalb entstand bewusst keine zweite Mini-Map. Als nächster kleiner QA-Punkt ist `POOL-QA-017` gezogen: Der bestehende Chromium-/Firefox-Avatar-Harness soll tatsächliches Text-Clipping der kompakten Crew-Kurzmarken messen; CSS oder Markup dürfen nur bei einem reproduzierbaren Browserbefund geändert werden. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.

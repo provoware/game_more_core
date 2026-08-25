@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E` · PR #188 · Head `68d1add03c96fc63b9ff51be6985bd25fcef977a` · Merge `2d4a608e765a47990030ec839407a1d80346f883`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #188; Chromium und Firefox prüfen die bestätigte Crew-Identität inklusive Runtime-Owned-Eigentum, High Contrast, kleinem Fenster und tatsächlich berechneter `font-size` mit gemeinsamem `0.34rem`-Boden
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT`
+- **Status-Sync-Anker:** PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT` · PR #190 · Head `012dd1f3455465e189c17df48c60d894e2700a03` · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #190; der Map-Viewport-Audit belegt den Randfall bei `generator_ost`, bestätigt aber den vorhandenen barrierefreien `1:1`-Reset als ausreichenden Rückweg zur Gesamtansicht – keine zweite Mini-Map nötig
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -112,6 +112,12 @@
 - [x] kompakte Ranking-Kurzmarke auf denselben `0.34rem`-Lesbarkeitsboden wie das kleine HUD angehoben; keine andere Crew-Geometrie verändert; PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433`
 - [x] Chromium und Firefox prüfen die tatsächlich berechnete `font-size` für HUD-, Map- und Ranking-Kurzmarken gegen denselben `0.34rem`-Boden; PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883`
 
+## 0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT
+- [x] realer Randort `generator_ost` bleibt bei `AUSWAHL FOKUS` wegen der begrenzten Pan-Spanne reproduzierbar deutlich außerhalb der Kartenmitte
+- [x] vorhandener zugänglicher `1:1`-Reset stellt Zoom und Pan vollständig auf die Gesamtansicht zurück
+- [x] keine zweite Mini-Map, Projection, Fetch- oder Persistenzarchitektur auf Verdacht erzeugt
+- [x] PR #190 · Head `012dd1f3455465e189c17df48c60d894e2700a03` · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
 - [x] `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` verwenden denselben maschinenprüfbaren Safe-Merge-Anker
@@ -122,31 +128,31 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E
 
 ## Fortschritt
 
-**0 %** – die Berlin Ops Map besitzt bereits begrenzten lokalen Zoom/Pan und Fokus auf gewählte Orte. Vor jeder neuen Miniübersicht wird zuerst geprüft, ob bei kleinen Fenstern oder stärkerem Zoom ein reproduzierbares Orientierungsproblem tatsächlich besteht.
+**0 %** – die kompakte Crew-Identität besitzt bereits einen browserberechnet bestätigten `0.34rem`-Lesbarkeitsboden. Als nächster kleiner QA-Slice wird ausschließlich geprüft, ob die tatsächlich gerenderte Kurzmarke in HUD, Map oder Ranking trotz ausreichender Schriftgröße abgeschnitten werden kann.
 
 ## Ziel
 
-Die vorhandene Map-Bedienung gezielt auf einen konkreten Orientierungsverlust bei kleinem Viewport bzw. höherem Zoom prüfen und nur bei belegtem Nutzen den kleinsten read-only UX-Fix ableiten; keine neue Map- oder Gameplayautorität.
+Im bestehenden Chromium-/Firefox-Avatar-Harness reales Text-Clipping der bestätigten Crew-Kurzmarken messen und nur bei belegtem Befund den kleinsten Presentation-Fix ableiten; keine zweite Browser- oder Avatararchitektur.
 
 ## Abnahme
 
-- [ ] vorhandene Map-/Viewport-Bedienung und direkte Presentation-Regressionen gezielt lesen
-- [ ] mindestens kleinen Viewport und höheren zulässigen Zoom reproduzierbar prüfen
-- [ ] Miniübersicht nur implementieren, wenn ein konkreter Orientierungsverlust belegt ist
-- [ ] andernfalls Audit mit dokumentiertem No-Fix-Ergebnis abschließen
-- [ ] lokale Map-Zustände bleiben nicht persistent und verändern keine Domain-/Save-Werte
-- [ ] keine zweite Map-Projection, kein neuer Fetch und keine Browser-Gameplayautorität
+- [ ] vorhandenen Avatar-Context-Harness und die tatsächlichen Kurzmarken-Container gezielt lesen
+- [ ] in Chromium und Firefox `scrollWidth`/`clientWidth`, `scrollHeight`/`clientHeight` sowie wirksames Overflow der HUD-, Map- und Ranking-Kurzmarke prüfen
+- [ ] ein echter Clipping-Befund muss fail-closed diagnostiziert werden
+- [ ] CSS/Markup nur ändern, wenn der reale Browserbefund einen Fehler belegt
+- [ ] bestehende `0.34rem`-Untergrenze, High Contrast und Reduced Motion bleiben unverändert
+- [ ] keine neue Projection, kein zweiter Fetch und keine Browser-Gameplayautorität
 - [ ] relevante Presentation-/Repository-/Release-Gates auf finalem Head grün
 - [ ] 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ### Danach
 
-- [ ] **AVATAR-CONTEXT-TEXT-CLIP-E2E:** nur bei neuem konkretem Befund; bestehender Browser-Harness statt zweiter QA-Architektur
+- [ ] **STATUS-SYNC-DRIFT-AGE:** bei späterer Drift zusätzlich rein diagnostisch die Anzahl fachlicher Safe Merges Rückstand anzeigen; kein automatischer Write
 - [ ] **STATUS-SYNC-PR-AUTOPREP:** nur falls sich der read-only Driftcheck weiter bewährt; höchstens vorbereiteten PR erzeugen, niemals direkt `main` beschreiben
 - [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
 

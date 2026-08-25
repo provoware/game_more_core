@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Avatar Context Computed Size E2E validiert" src="https://img.shields.io/badge/Feature_Stand-AVATAR--COMPUTED--SIZE--E2E_validiert-7dff00">
-  <img alt="Aktive Iteration Map Viewport Miniuebersicht Audit" src="https://img.shields.io/badge/Aktiv-MAP--VIEWPORT--AUDIT-00c2ff">
+  <img alt="Feature Stand Map Viewport Audit validiert" src="https://img.shields.io/badge/Feature_Stand-MAP--VIEWPORT--AUDIT_validiert-7dff00">
+  <img alt="Aktive Iteration Avatar Text Clip E2E" src="https://img.shields.io/badge/Aktiv-AVATAR--TEXT--CLIP--E2E-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,17 +26,17 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E` |
-| **Aktive Iteration** | 🟡 `0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT` |
-| **Danach** | Miniübersicht nur bei reproduzierbarem Orientierungsverlust; sonst Audit ohne Produktpatch abschließen |
+| **Status-Sync-Anker** | PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT` |
+| **Aktive Iteration** | 🟡 `0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E` |
+| **Danach** | Erst reales Clipping messen; CSS/Markup nur bei reproduzierbarem Browserbefund ändern |
 | **Avatar-Kette** | ✅ Profil → bestätigtes HUD → runtime-bestätigter eigener Map-Ort → eigener Hall-/Ranking-Eintrag · Chromium + Firefox · High Contrast + kleines Fenster validiert |
 | **Crew-Lesbarkeit** | ✅ HUD-, Map- und Ranking-Kurzmarken werden im echten Chromium-/Firefox-Harness gegen den wirksamen `0.34rem`-Lesbarkeitsboden geprüft |
 | **Runtime-Owned Evidence** | ✅ derselbe bestätigte `property.purchase` ist in der vorhandenen Browser-Evidence an Location-, Event- und Ledger-Referenzen gebunden |
 | **Living World** | ✅ replaybare Street Encounters · 16 Begegnungen · vier Ansatzprofile · Grenz-/Replay-/Verteilungsaudits |
 | **Ranking** | ✅ Competitive Top 10 · bestätigte Wochen-/Monatszyklen · lokale Crew-Marke nur am eigenen Eintrag |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 · Runtime-Owned-Map-E2E bestätigt |
-| **Berlin Ops Map** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan · Crew-Marke an runtime-bestätigtem eigenem Besitz |
+| **Berlin Ops Map** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan · Randfall geprüft · `1:1` stellt Gesamtansicht wieder her |
 | **Scene Jobs** | ✅ persönliches Bargeld · Anti-Grind · Lohnvorschau · zwei Recovery-Wahlen |
 | **Assistent** | ✅ sichere Steuerung · bestätigte Rundenausführung · Freundschafts-Nachhall |
 | **Bank & Kontoauszug** | ✅ Wallet↔Bank · Sparzins · read-only TXT/CSV-Export |
@@ -44,7 +44,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #188 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #190 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -78,7 +78,7 @@ PROPERTY / HALL OF TRIBUTE
 - deterministische Street Encounters ohne Reload-Reroll
 - persistente District-Werte und cadence-geführte District World Events
 - Property Purchase + dreistufige Upgrades
-- Berlin Ops Map mit lokaler read-only Bedienung
+- Berlin Ops Map mit lokaler read-only Bedienung und validiertem `1:1`-Rückweg aus dem begrenzten Randfokus
 - Competitive Top 10 + Wochen-/Monatszyklen
 - sichtbare read-only Ereignis-Timeline und Berlin-Erinnerungen
 - Crew-Logo/Fahne als kleines synchronisierbares Identitätsrezept statt Bildblob
