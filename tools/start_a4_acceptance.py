@@ -99,8 +99,8 @@ def _avatar_context_harness() -> str:
       await waitFor(() => visible(d.getElementById("profile-panel")), "Profil sichtbar");
       const markInput = await waitFor(() => d.getElementById("crew-identity-mark-input"), "Crew-Editor");
       markInput.value = "E2E";
-      markInput.dispatchEvent(new Event("input", { bubbles: true }));
-      markInput.dispatchEvent(new Event("change", { bubbles: true }));
+      markInput.dispatchEvent(new w.Event("input", { bubbles: true }));
+      markInput.dispatchEvent(new w.Event("change", { bubbles: true }));
       d.getElementById("save-profile").click();
 
       const hudMark = await waitFor(() => {
@@ -146,11 +146,13 @@ def _avatar_context_harness() -> str:
       }
 
       syntheticOwned?.remove();
-      document.body.textContent =
-        "AVATAR_CONTEXT_E2E: PASS\n● BEREIT\nBUNKERFREQUENZ – Control Deck\n" +
-        "Profil→HUD→Map→Ranking · Hoher Kontrast · kleines Fenster";
+      document.body.textContent = `AVATAR_CONTEXT_E2E: PASS
+● BEREIT
+BUNKERFREQUENZ – Control Deck
+Profil→HUD→Map→Ranking · Hoher Kontrast · kleines Fenster`;
     } catch (error) {
-      document.body.textContent = "AVATAR_CONTEXT_E2E: FAIL\n" + String(error?.message || error);
+      document.body.textContent = `AVATAR_CONTEXT_E2E: FAIL
+${String(error?.message || error)}`;
     }
   }, { once: true });
   frame.src = "/";
