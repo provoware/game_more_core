@@ -59,6 +59,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
     def test_current_status_describes_micro_polish_and_next_computed_size_e2e(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
         living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
         ranking = status["subsystems"]["ranking"]
@@ -67,6 +68,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
+        self.assertIn(status["active_iteration"], readme)
+        self.assertIn(status["last_validated_feature_iteration"], readme)
         self.assertEqual(status["current_focus"], "avatar_context_computed_size_e2e")
         self.assertIsNone(status["next_iteration"])
 
