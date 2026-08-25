@@ -26,6 +26,12 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
+## Praktisches Beispiel nach PR #177
+
+PR #177 hat den echten Chromium-Pfad **Profil → HUD → Map → eigener Ranking-Eintrag** sicher gemergt. Direkt danach hing der dokumentierte Status noch bei PR #175. Der Status-Sync erkennt genau diese Situation als Drift.
+
+Die Korrektur übernimmt deshalb den bestätigten Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7` in alle drei kanonischen Statusdateien, setzt den erledigten Browser-E2E-Punkt auf `DONE` und benennt erst danach den nächsten unabhängigen Prüfpunkt. Die Korrektur verändert dabei weder CSS noch Browserlogik noch Spielzustand.
+
 ## Für Entwickler
 
 Manuelle Prüfung vom Repository-Root:
@@ -40,7 +46,7 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. Sie prüft neben Drift und erweiterten Status-Sync-Slices jetzt auch den minimalen Drei-Dateien-Fall.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. Sie prüft neben Drift und erweiterten Status-Sync-Slices auch den minimalen Drei-Dateien-Fall. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool und nächste aktive Arbeit zusammenpassen.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 

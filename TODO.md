@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT` · PR #175 · Head `be70ea5fac8a6d04a40829d838ad7cd8d01b1204`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #175; Required-, Release-, Status-Sync- und Safe-Merge-Nachweise sind bestätigt
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-AVATAR-CONTEXT-E2E`
+- **Status-Sync-Anker:** PR #177 · Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-AVATAR-CONTEXT-E2E` · PR #177 · Head `fca33b50506614194e684fd910e25b2664d27827`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #177; Required-, Release-, Status-Sync- und Safe-Merge-Nachweise sind bestätigt
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-AVATAR-CONTEXT-FIREFOX`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -105,6 +105,7 @@
 - [x] bestätigte Crew-Marke an eigenen Map-Orten; PR #172 · Merge `d2a1452b4ee6094584d0c63a94a85773c2821890`
 - [x] bestätigte Crew-Marke ausschließlich am eigenen Hall-/Ranking-Eintrag; PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1`
 - [x] High-Contrast-Außenkante, Symbol- und Kurzmarken-Trennung über Profil, HUD/Map-Klon und Ranking vereinheitlicht; PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15`
+- [x] echter Chromium-Pfad Profil → bestätigtes HUD → Map-Klon → eigener Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast; PR #177 · Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7`
 
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
@@ -116,32 +117,31 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-UX-AVATAR-CONTEXT-E2E
+# Aktiv / nächste Iteration – 0.8.8-UX-AVATAR-CONTEXT-FIREFOX
 
 ## Fortschritt
 
-**0 %** – nach dem sicher gemergten Visual-Consistency-Audit fachlich vorbereitet; noch keine Browser-Testlogik geändert.
+**0 %** – Chromium-E2E ist sicher gemergt; der vorhandene native Firefox-/Geckodriver-Pfad ist die nächste kleine unabhängige Browser-Abnahme.
 
 ## Ziel
 
-Dieselbe bestätigte Crew-Identität im echten Browserpfad Profil → HUD → eigener Map-Ort → eigener Ranking-Eintrag nachweisen, inklusive kleinem Fenster, Hohem Kontrast und bestätigter Profiländerung.
+Den bereits in Chromium bewiesenen Crew-Identitätsablauf im vorhandenen nativen Firefox-Pfad nachweisen, ohne ein zweites Browserframework oder neue Avatar-/Runtime-Logik einzuführen.
 
 ## Abnahme
 
-- [ ] bestätigte Profiländerung erscheint ohne zweite Identitätsquelle im HUD
-- [ ] derselbe bestätigte Avatar erscheint an eigenem Map-Ort und eigenem Ranking-Eintrag
-- [ ] kleines Fenster bleibt ohne Identitätsverlust oder Überlagerungsregression bedienbar
-- [ ] Hoher Kontrast bleibt in allen vier Kontexten eindeutig; Reduced Motion entfernt keine Information
-- [ ] keine neue Avatar-, Ranking- oder Map-Datenquelle und keine Gameplay-Autorität im Browser
+- [ ] vorhandenen Firefox-/Geckodriver-Runner wiederverwenden, keine neue Browserarchitektur
+- [ ] Profil → HUD → eigener Ranking-Eintrag sowie kleiner Viewport und Hoher Kontrast im Firefox-Nachweis abdecken
+- [ ] Map-Presentation bleibt bei derselben klar dokumentierten Fixture-Grenze, bis ein kanonischer Eigentums-Teststand existiert
+- [ ] keine Gameplay-, Save-, Journal-, API- oder Avatar-Datenlogik ändern
 - [ ] Runtime Core, Presentation Core und Repository Health auf finalem Head grün
 - [ ] relevante Release-/Status-Sync-Gates grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ### Danach
 
+- [ ] **RUNTIME-OWNED-MAP-E2E-FIXTURE:** erst bei einem kanonischen Testspielstand mit bestätigtem Eigentum den temporären `.owned`-DOM-Marker ablösen
 - [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
-- [ ] **STATUS-SYNC-PR-AUTOPREP:** nur falls sich der read-only Driftcheck bewährt; bei Drift höchstens vorbereiteten PR erzeugen, niemals direkt `main` beschreiben
-- [ ] **CREW-IDENTITY-MICRO-POLISH:** ausschließlich konkrete Browser-E2E-Befunde bei kleinen Map-/Ranking-Marken korrigieren; keine pauschale Neugestaltung
+- [ ] **STATUS-SYNC-PR-AUTOPREP:** nur falls sich der read-only Driftcheck weiter bewährt; höchstens vorbereiteten PR erzeugen, niemals direkt `main` beschreiben
 
 ---
 
