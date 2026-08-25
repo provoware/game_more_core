@@ -129,6 +129,15 @@ def prepare_owned_map_fixture(
     )
     if not isinstance(ledger_entry, dict) or ledger_entry.get("kind") != "property_purchase":
         raise RuntimeError("Runtime-Owned-Evidence findet keine bestätigte Property-Kaufbuchung")
+    expected_item_id = f"property:{location['location_id']}"
+    if ledger_entry.get("item_id") != expected_item_id:
+        raise RuntimeError("Runtime-Owned-Evidence-Ledger verweist auf eine andere Property")
+    confirmed_price = ownership.get("purchase_price_cents")
+    if (
+        ledger_entry.get("unit_price_cents") != confirmed_price
+        or confirmed_price != location["purchase_price_cents"]
+    ):
+        raise RuntimeError("Runtime-Owned-Evidence-Ledger besitzt einen widersprüchlichen Kaufpreis")
     committed = list(result.committed_event_ids)
     property_event_id = f"{command_id}:property"
     economy_event_id = f"{command_id}:economy"
