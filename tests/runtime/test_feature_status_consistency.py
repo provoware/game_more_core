@@ -51,12 +51,13 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-002", "POOL-QA-009", "POOL-STREET-005", "POOL-UX-007",
             "POOL-QA-010", "POOL-QA-006", "POOL-UX-008", "POOL-QA-011", "POOL-QA-013",
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
+            "POOL-QA-017",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-017"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-WORLD-003"))
 
-    def test_current_status_describes_map_viewport_audit_and_next_text_clip_e2e(self):
+    def test_current_status_describes_text_clip_e2e_and_next_story_contract_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -70,12 +71,12 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "avatar_context_text_clip_e2e")
+        self.assertEqual(status["current_focus"], "district_event_chain_contract_audit")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 190)
-        self.assertEqual(validation["validated_head"], "012dd1f3455465e189c17df48c60d894e2700a03")
-        self.assertEqual(validation["merged_commit"], "3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db")
+        self.assertEqual(validation["pull_request"], 192)
+        self.assertEqual(validation["validated_head"], "7a4953003e4a83e41bcde4b5a1807e100c4a3439")
+        self.assertEqual(validation["merged_commit"], "f5132827d8d80522f952eb220db63047a091c77d")
 
         self.assertTrue(living_world["street_boundary_clamping_audit_validated"])
         self.assertTrue(living_world["street_replay_boundary_matrix_validated"])
@@ -91,6 +92,9 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertEqual(presentation["crew_identity_compact_mark_floor_rem"], 0.34)
         self.assertTrue(presentation["crew_identity_computed_size_e2e_validated"])
         self.assertEqual(presentation["crew_identity_computed_size_floor_rem"], 0.34)
+        self.assertTrue(presentation["crew_identity_text_clip_e2e_validated"])
+        self.assertEqual(presentation["crew_identity_text_clip_e2e_contexts"], ["hud", "map", "ranking"])
+        self.assertFalse(presentation["crew_identity_text_clip_e2e_css_fix_required"])
         self.assertFalse(presentation["map_viewport_mini_overview_supported"])
         self.assertFalse(presentation["map_viewport_mini_overview_audit_pending"])
         self.assertTrue(presentation["map_viewport_mini_overview_audit_validated"])
@@ -164,7 +168,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-UX-009": "`DONE`",
             "POOL-QA-016": "`DONE`",
             "POOL-MAP-003": "`DONE`",
-            "POOL-QA-017": "`PULLED`",
+            "POOL-QA-017": "`DONE`",
+            "POOL-WORLD-003": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
