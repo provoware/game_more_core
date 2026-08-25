@@ -145,6 +145,37 @@ def _extract_address(output: str) -> str:
     return addresses[0]
 
 
+def _extract_owned_evidence(output: str) -> dict[str, object]:
+    payloads = [
+        line.split(acceptance.OWNED_EVIDENCE_PREFIX, 1)[1].strip()
+        for line in output.splitlines()
+        if line.startswith(acceptance.OWNED_EVIDENCE_PREFIX)
+    ]
+    if len(payloads) != 1:
+        raise RuntimeError("Runtime-Owned-Evidence lieferte keinen eindeutigen Receipt-Datensatz")
+    try:
+        receipt = json.loads(payloads[0])
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("Runtime-Owned-Evidence ist kein gültiges JSON") from exc
+    if not isinstance(receipt, dict):
+        raise RuntimeError("Runtime-Owned-Evidence ist kein JSON-Objekt")
+    if receipt.get("status") != "confirmed" or receipt.get("command_type") != "property.purchase":
+        raise RuntimeError("Runtime-Owned-Evidence bestätigt keinen property.purchase")
+    location_id = receipt.get("location_id")
+    transaction_id = receipt.get("economy_transaction_id")
+    property_event_id = receipt.get("property_event_id")
+    committed = receipt.get("committed_event_ids")
+    if not isinstance(location_id, str) or not location_id:
+        raise RuntimeError("Runtime-Owned-Evidence besitzt keine location_id")
+    if not isinstance(transaction_id, str) or not transaction_id:
+        raise RuntimeError("Runtime-Owned-Evidence besitzt keine Economy-Transaktionsreferenz")
+    if not isinstance(property_event_id, str) or not isinstance(committed, list) or property_event_id not in committed:
+        raise RuntimeError("Runtime-Owned-Evidence besitzt keine bestätigte Property-Ereignisreferenz")
+    if receipt.get("ledger_kind") != "property_purchase":
+        raise RuntimeError("Runtime-Owned-Evidence besitzt keine Property-Kaufbuchung")
+    return receipt
+
+
 def _assert_server_stopped(address: str, timeout: float = 3.0) -> None:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
@@ -216,12 +247,14 @@ def _scenario_chromium_dom(product_root: Path) -> dict[str, object]:
         raise RuntimeError("Browser-Acceptance lieferte keinen bestätigten DOM/BEREIT-Nachweis")
     if "RUNTIME-OWNED MAP FIXTURE OK" not in output:
         raise RuntimeError("Browser-Acceptance bestätigte kein Runtime-Owned-Map-Fixture")
+    receipt = _extract_owned_evidence(output)
     return {
         "browser": "chromium",
         "real_browser_required": True,
         "dom_ready": True,
         "ui_responsive": True,
         "runtime_owned_map_fixture": True,
+        "runtime_owned_evidence_receipt": receipt,
     }
 
 
@@ -254,7 +287,7 @@ def _wait_http_ready(url: str, process: subprocess.Popen[bytes], timeout: float 
     raise RuntimeError("Geckodriver wurde nicht rechtzeitig bereit")
 
 
-def _prepare_packaged_owned_map_fixture(product_root: Path, save_dir: Path) -> None:
+def _prepare_packaged_owned_map_fixture(product_root: Path, save_dir: Path) -> dict[str, object]:
     completed = subprocess.run(
         [
             sys.executable,
@@ -274,11 +307,12 @@ def _prepare_packaged_owned_map_fixture(product_root: Path, save_dir: Path) -> N
             "Paketserver konnte Runtime-Owned-Map-Fixture nicht vorbereiten: "
             + " | ".join(output.splitlines()[-10:])
         )
+    return _extract_owned_evidence(output)
 
 
-def _start_packaged_server(product_root: Path, root: Path) -> tuple[subprocess.Popen[str], str]:
+def _start_packaged_server(product_root: Path, root: Path) -> tuple[subprocess.Popen[str], str, dict[str, object]]:
     save_dir = root / "save"
-    _prepare_packaged_owned_map_fixture(product_root, save_dir)
+    receipt = _prepare_packaged_owned_map_fixture(product_root, save_dir)
     process = subprocess.Popen(
         [
             sys.executable,
@@ -306,7 +340,7 @@ def _start_packaged_server(product_root: Path, root: Path) -> tuple[subprocess.P
             clean = line.rstrip()
             lines.append(clean)
             if clean.startswith("ADRESSE: "):
-                return process, clean.split("ADRESSE: ", 1)[1].strip()
+                return process, clean.split("ADRESSE: ", 1)[1].strip(), receipt
         elif process.poll() is not None:
             break
         else:
@@ -327,7 +361,7 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
         raise RuntimeError(f"Temporärer Firefox-Harness-Pfad ist bereits belegt: {harness_path}")
     harness_path.write_text(acceptance._avatar_context_harness(), encoding="utf-8")
 
-    server, address = _start_packaged_server(product_root, root / "server")
+    server, address, receipt = _start_packaged_server(product_root, root / "server")
     target_url = acceptance._avatar_context_url(address)
     port = _free_loopback_port()
     driver = subprocess.Popen(
@@ -388,11 +422,7 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
                 continue
             body_value = result.get("value")
             body_text = body_value if isinstance(body_value, str) else ""
-            if (
-                acceptance.AVATAR_CONTEXT_PASS in body_text
-                and "● BEREIT" in body_text
-                and "BUNKERFREQUENZ" in body_text
-            ):
+            if acceptance.AVATAR_CONTEXT_PASS in body_text and "● BEREIT" in body_text and "BUNKERFREQUENZ" in body_text:
                 break
             if "AVATAR_CONTEXT_E2E: FAIL" in body_text:
                 raise RuntimeError("Firefox Avatar-Context-E2E meldete: " + body_text.strip())
@@ -403,10 +433,7 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
         health = _webdriver_json(
             "POST",
             f"{base}/session/{session_id}/execute/sync",
-            {
-                "script": "return fetch('/api/health').then(r => r.json()).then(x => x.status);",
-                "args": [],
-            },
+            {"script": "return fetch('/api/health').then(r => r.json()).then(x => x.status);", "args": []},
             timeout=FIREFOX_WEBDRIVER_CALL_TIMEOUT_SECONDS,
         )
         if health.get("value") != "ready":
@@ -420,6 +447,7 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
             "health_ready": True,
             "avatar_context_pass": True,
             "runtime_owned_map_fixture": True,
+            "runtime_owned_evidence_receipt": receipt,
             "small_viewport": True,
             "high_contrast": True,
         }
@@ -505,6 +533,7 @@ def run(output_dir: Path, prior_subgate: Path) -> dict[str, object]:
             "real_chromium_dom_ready",
             "real_firefox_dom_ready",
             "runtime_owned_map_fixture_from_property_purchase",
+            "runtime_owned_evidence_receipt_location_event_ledger",
             "firefox_avatar_context_profile_hud_map_ranking",
             "firefox_avatar_context_high_contrast_small_viewport",
             "same_candidate_sha_across_browsers",
