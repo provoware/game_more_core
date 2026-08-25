@@ -38,7 +38,7 @@ class DesktopBrowserE2EContractTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "Firefox und Geckodriver"):
                 desktop._scenario_firefox_dom(Path("/unused"), Path("/unused"))
 
-    def test_firefox_harness_is_bounded_and_cannot_block_on_driver_log_pipe(self):
+    def test_firefox_harness_is_bounded_and_reuses_avatar_context_contract(self):
         source = (ROOT / "tools" / "desktop_browser_e2e_pro.py").read_text(encoding="utf-8")
         self.assertEqual(desktop.FIREFOX_DRIVER_READY_TIMEOUT_SECONDS, 20.0)
         self.assertEqual(desktop.FIREFOX_SESSION_TIMEOUT_SECONDS, 35.0)
@@ -49,9 +49,17 @@ class DesktopBrowserE2EContractTests(unittest.TestCase):
         self.assertIn("stdout=subprocess.DEVNULL", source)
         self.assertIn("stderr=subprocess.DEVNULL", source)
         self.assertIn('"pageLoadStrategy": "eager"', source)
-        self.assertIn('"Timeline wird geladen" not in body_text', source)
+        self.assertIn("acceptance._avatar_context_harness()", source)
+        self.assertIn("acceptance._avatar_context_url(address)", source)
+        self.assertIn("acceptance.AVATAR_CONTEXT_PASS in body_text", source)
+        self.assertIn('"avatar_context_pass": True', source)
+        self.assertIn('"small_viewport": True', source)
+        self.assertIn('"high_contrast": True', source)
+        self.assertIn("harness_path.unlink(missing_ok=True)", source)
         self.assertIn("except (TimeoutError, OSError, URLError, HTTPError, json.JSONDecodeError):", source)
         self.assertNotIn("driver.stdout.close()", source)
+        self.assertIn("firefox_avatar_context_profile_hud_map_ranking", source)
+        self.assertIn("firefox_avatar_context_high_contrast_small_viewport", source)
 
     def test_source_identity_rejects_tracked_drift_but_not_untracked_evidence(self):
         with patch.object(desktop, "_git") as git:
