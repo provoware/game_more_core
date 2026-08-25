@@ -26,15 +26,15 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #188
+## Praktisches Beispiel nach PR #190
 
-PR #188 erweiterte ausschließlich den bestehenden Avatar-Context-Harness: Chromium und Firefox lesen die **tatsächlich berechnete** `font-size` der bestätigten Crew-Kurzmarken in HUD, Map und Ranking und gehen unter dem gemeinsamen `0.34rem`-Boden fail-closed. Der fachliche Safe-Merge ist `2d4a608e765a47990030ec839407a1d80346f883`.
+PR #190 prüfte den bereits gezogenen Map-Viewport-Audit. Der reale Randort `generator_ost` bleibt bei `AUSWAHL FOKUS` wegen der begrenzten Pan-Spanne deutlich außerhalb der Kartenmitte. Gleichzeitig stellt der vorhandene zugängliche **`1:1`-Button** Zoom und Verschiebung vollständig auf die Gesamtansicht zurück. Der Audit wurde deshalb bewusst **ohne zweite Mini-Map** abgeschlossen. Der fachliche Safe-Merge ist `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db`.
 
-Direkt danach standen die drei kanonischen Statusdateien noch auf PR #185. Dadurch wurde `POOL-QA-016 – Avatar Context Computed Size E2E` weiterhin als offene Arbeit geführt, obwohl der Browsernachweis bereits vollständig gemergt und remote validiert war. Genau diese Abweichung meldet der Status-Sync als Drift.
+Direkt danach standen die drei kanonischen Statusdateien noch auf PR #188 und führten `POOL-MAP-003` weiterhin als offene Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift.
 
-Die Statuskorrektur übernimmt deshalb PR #188 in alle drei Statusquellen, setzt `POOL-QA-016` auf `DONE` und zieht als nächsten kleinen sichtbaren UX-Punkt `POOL-MAP-003 – Map-Viewport-Miniübersicht` **zunächst nur als Audit**.
+Die Statuskorrektur übernimmt deshalb PR #190 in alle drei Statusquellen, setzt `POOL-MAP-003` auf `DONE` und zieht als nächsten kleinen QA-Punkt `POOL-QA-017 – Avatar Context Text Clip E2E`.
 
-Wichtig: Der Status-Sync implementiert **keine Miniübersicht** und verändert keine Map. Der nächste eigene Slice prüft zuerst reproduzierbar, ob kleiner Viewport oder höherer zulässiger Zoom tatsächlich Orientierung kostet. Nur bei belegtem Nutzen darf daraus ein minimaler read-only Presentation-Fix entstehen.
+Wichtig: Der Status-Sync implementiert **keinen** Clipping-Fix. Der nächste eigene Slice verwendet ausschließlich den bereits vorhandenen Chromium-/Firefox-Avatar-Harness und misst zuerst, ob die bestätigten Kurzmarken in HUD, Map oder Ranking tatsächlich abgeschnitten werden. CSS oder Markup darf erst bei einem reproduzierbaren Browserbefund verändert werden.
 
 ## Für Entwickler
 
@@ -50,7 +50,7 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool, der browserberechnete `0.34rem`-Vertrag und die nächste aktive Arbeit zusammenpassen.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool, der abgeschlossene Map-Viewport-Audit und die nächste aktive Arbeit zusammenpassen.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
