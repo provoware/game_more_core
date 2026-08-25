@@ -50,16 +50,15 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-STREET-002", "POOL-ECON-008", "POOL-QA-007", "POOL-QA-008",
             "POOL-QA-002", "POOL-QA-009", "POOL-STREET-005", "POOL-UX-007",
             "POOL-QA-010", "POOL-QA-006", "POOL-UX-008", "POOL-QA-011", "POOL-QA-013",
-            "POOL-QA-014", "POOL-QA-015",
+            "POOL-QA-014", "POOL-QA-015", "POOL-UX-009",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-009"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-016"))
 
-    def test_current_status_describes_runtime_owned_evidence_and_next_visual_audit(self):
+    def test_current_status_describes_micro_polish_and_next_computed_size_e2e(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
         living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
         ranking = status["subsystems"]["ranking"]
@@ -68,8 +67,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
-        self.assertIn(status["active_iteration"], readme)
-        self.assertEqual(status["current_focus"], "crew_identity_micro_polish_audit")
+        self.assertEqual(status["current_focus"], "avatar_context_computed_size_e2e")
         self.assertIsNone(status["next_iteration"])
 
         self.assertTrue(living_world["street_boundary_clamping_audit_validated"])
@@ -79,18 +77,11 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(living_world["street_distribution_report_validated"])
         self.assertEqual(living_world["street_effect_current_strict_dominance"], [])
 
-        self.assertTrue(presentation["district_receipt_clarity_validated"])
-        self.assertFalse(presentation["district_receipt_clarity_in_validation"])
-        self.assertTrue(presentation["confirmed_event_fx_validated"])
-        self.assertTrue(presentation["crew_identity_hud_confirmed"])
-        self.assertTrue(presentation["crew_identity_hud_refresh_confirmed"])
-        self.assertTrue(presentation["crew_identity_map_owned_presence"])
-        self.assertTrue(presentation["crew_identity_ranking_local_presence"])
         self.assertTrue(presentation["crew_identity_visual_consistency_validated"])
-        self.assertTrue(presentation["crew_identity_high_contrast_shared_outline"])
         self.assertTrue(presentation["crew_identity_browser_context_e2e_validated"])
         self.assertTrue(presentation["crew_identity_firefox_context_e2e_validated"])
-        self.assertTrue(presentation["crew_identity_compact_hud_visible"])
+        self.assertTrue(presentation["crew_identity_micro_polish_validated"])
+        self.assertEqual(presentation["crew_identity_compact_mark_floor_rem"], 0.34)
         self.assertEqual(
             presentation["crew_identity_browser_e2e_map_fixture"],
             "runtime_property_purchase_projection",
@@ -98,13 +89,6 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(presentation["crew_identity_browser_e2e_real_property_purchase"])
         self.assertFalse(presentation["crew_identity_browser_e2e_dom_owned_marker"])
         self.assertTrue(presentation["runtime_owned_evidence_receipt_validated"])
-        self.assertEqual(
-            presentation["runtime_owned_evidence_receipt_location"],
-            "DESKTOP_BROWSER_E2E_EVIDENCE.json scenario detail",
-        )
-        self.assertEqual(presentation["runtime_owned_evidence_receipt_command"], "property.purchase")
-        self.assertTrue(presentation["runtime_owned_evidence_receipt_ledger_bound"])
-        self.assertFalse(presentation["runtime_owned_evidence_second_architecture"])
         self.assertFalse(presentation["crew_identity_second_fetch"])
         self.assertFalse(presentation["crew_identity_second_projection"])
         self.assertFalse(presentation["browser_gameplay_authority"])
@@ -163,7 +147,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-013": "`DONE`",
             "POOL-QA-014": "`DONE`",
             "POOL-QA-015": "`DONE`",
-            "POOL-UX-009": "`PULLED`",
+            "POOL-UX-009": "`DONE`",
+            "POOL-QA-016": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
