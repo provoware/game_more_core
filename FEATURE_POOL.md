@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d`
+- **Status-Sync-Anker:** PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`
 
 ## Statuswerte
 
@@ -40,6 +40,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT:** PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c` · vorhandene Chromium-/Firefox-Evidence bindet denselben runtime-bestätigten Property-Kauf an `location_id`, Command-, Event- und Ledger-Referenzen; keine zweite Evidence-Architektur
 - **0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE:** PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d` · Chromium und Firefox prüfen die Crew-Marke jetzt an runtime-bestätigtem Eigentum aus dem kanonischen `property.purchase`-/Projection-Pfad; kein künstlicher `.owned`-DOM-Marker
 - **0.8.8-UX-AVATAR-CONTEXT-FIREFOX:** PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304` · derselbe bestätigte Profil→HUD→Map→Ranking-Harness läuft nativ in Firefox/Geckodriver inklusive Hohem Kontrast und kleinem Fenster
 - **0.8.8-UX-AVATAR-CONTEXT-E2E:** PR #177 · Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7` · echter Chromium-Pfad Profil → HUD → Map → eigener Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
@@ -85,7 +86,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-011` | `DONE` | Avatar Context Browser E2E | bestätigte Identität durch Profil → HUD → Map → Ranking beweisen | PR #177 sicher gemergt; bestehender Chromium-Acceptance-Pfad |
 | `POOL-QA-013` | `DONE` | Avatar Context Firefox Interaction | denselben bestätigten Identitätsablauf im vorhandenen nativen Firefox-Pfad absichern | PR #179 sicher gemergt; kein zweites Browserframework |
 | `POOL-QA-014` | `DONE` | Runtime-Owned Map E2E Fixture | künstlichen `.owned`-DOM-Marker durch echten bestätigten Eigentumszustand im isolierten Testspielstand ablösen | PR #181 sicher gemergt; kanonischer Property-/Projection-Pfad, keine Browser-Besitzautorität |
-| `POOL-QA-015` | `PULLED` | Runtime-Owned Evidence Receipt | bestätigten Map-Eigentumskontext kompakt in vorhandener Release-Evidence nachweisen | nur bestehende Fixture-/Property-/Ledger-Daten lesen; keine zweite Evidence-Architektur |
+| `POOL-QA-015` | `DONE` | Runtime-Owned Evidence Receipt | bestätigten Map-Eigentumskontext kompakt in vorhandener Release-Evidence nachweisen | PR #183 sicher gemergt; bestehende Fixture-/Property-/Ledger-Daten, keine zweite Evidence-Architektur |
+| `POOL-UX-009` | `PULLED` | Crew Identity Micro Polish Audit | verbleibende visuelle Reibung nach realem Chromium-/Firefox-E2E gezielt beseitigen | nur reproduzierbare Größen-, Abstands- oder Clipping-Befunde; keine Neugestaltung auf Verdacht |
 
 ---
 
@@ -120,4 +122,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-QA-015` ist als nächste kleine Iteration gezogen: Der in PR #181 bestätigte Runtime-Owned-Map-Kontext soll in der bereits vorhandenen Release-Evidence kompakt über `location_id`, bestätigten `property.purchase`-Status und vorhandene Property-/Ledger-Referenzen nachvollziehbar werden. Es entsteht weder ein zweiter Receipt- noch ein zweiter Property-/Evidence-Pfad. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig. `POOL-QA-012` bleibt nur eine spätere Automationsidee und darf niemals direkt `main` beschreiben.
+`POOL-UX-009` ist als nächste kleine Iteration gezogen: Nach vollständig bestätigtem Chromium-/Firefox-/Runtime-Owned-/Evidence-Pfad werden ausschließlich konkrete, reproduzierbare Größen-, Abstands- oder Clipping-Befunde der bestehenden Crew-Identität geprüft und gegebenenfalls minimal behoben. Es entsteht keine zweite Identity-, Map-, Ranking- oder Fetch-Architektur. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig. `POOL-QA-012` bleibt nur eine spätere Automationsidee und darf niemals direkt `main` beschreiben.
