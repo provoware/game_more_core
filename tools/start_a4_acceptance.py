@@ -61,8 +61,12 @@ def find_browser() -> str | None:
     return None
 
 
-def prepare_owned_map_fixture(save_dir: str | Path) -> dict[str, object]:
-    """Create isolated confirmed ownership and return compact canonical purchase evidence."""
+def prepare_owned_map_fixture(
+    save_dir: str | Path,
+    *,
+    include_evidence: bool = False,
+) -> str | dict[str, object]:
+    """Create isolated confirmed ownership; optionally expose canonical purchase evidence."""
     runtime = game_client.A4ClientRuntime(Path(save_dir))
     locations = [
         item
@@ -105,6 +109,8 @@ def prepare_owned_map_fixture(save_dir: str | Path) -> dict[str, object]:
             "Avatar-Context-E2E konnte Eigentum nicht über property.purchase bestätigen: "
             f"{result.error_code or result.status}"
         )
+    if not include_evidence:
+        return location["location_id"]
 
     ownership = (result.metadata or {}).get("property")
     if not isinstance(ownership, dict) or ownership.get("location_id") != location["location_id"]:
@@ -408,7 +414,8 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
 
     with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-acceptance-save-") as save_dir:
         if browser_check:
-            owned_receipt = prepare_owned_map_fixture(save_dir)
+            owned_receipt = prepare_owned_map_fixture(save_dir, include_evidence=True)
+            assert isinstance(owned_receipt, dict)
             _print_owned_evidence(owned_receipt)
         process = _start_server(save_dir)
         try:
@@ -443,7 +450,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.prepare_owned_map_fixture is not None:
         try:
-            receipt = prepare_owned_map_fixture(args.prepare_owned_map_fixture)
+            receipt = prepare_owned_map_fixture(args.prepare_owned_map_fixture, include_evidence=True)
+            assert isinstance(receipt, dict)
         except (RuntimeError, OSError, URLError, json.JSONDecodeError) as exc:
             print(f"START-SELBSTTEST FEHLGESCHLAGEN – {exc}", file=sys.stderr)
             return 1
