@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d`
+- **Status-Sync-Anker:** PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e`
 
 ## Statuswerte
 
@@ -40,6 +40,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT:** PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e` · Parent-Evidenz und read-only Biography-Grenze bestätigt; eigener katalogisierter Child-Eventtyp fehlt noch, deshalb bewusst keine Micro-Story
 - **0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E:** PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d` · Chromium und Firefox messen gerenderte Kurzmarken-Boxen in HUD, Map und Ranking fail-closed; kein Clipping reproduziert, kein CSS-Fix nötig
 - **0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT:** PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db` · realer Randort bleibt bei begrenztem Fokus off-center, vorhandener `1:1`-Reset stellt die Gesamtansicht wieder her; bewusst keine zweite Mini-Map
 - **0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E:** PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883` · Chromium und Firefox prüfen die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking fail-closed gegen den gemeinsamen `0.34rem`-Boden
@@ -78,7 +79,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-ECON-007` | `DONE` | Regenerationsfeedback | Vorher→Nachher nach bestätigter Regeneration verständlich zeigen | PR #125 sicher gemergt; nur bestätigte Projection-Snapshots |
 | `POOL-STREET-002` | `DONE` | Straßenereignis-Erweiterungspakete | mehr Abwechslung | PR #126 sicher gemergt; 16 Begegnungen, gleiche Engine |
 | `POOL-ECON-008` | `DONE` | Weitere Regenerationsentscheidungen | unterschiedliche Erholungsstrategien | PR #127 sicher gemergt; Balancevertrag zuerst, keine Echtzeitregeneration |
-| `POOL-QA-007` | `DONE` | Street-Balance-Audit | Ansatzprofile und Katalogdominanz deterministisch prüfen | PR #128 sicher gemergt; keine Telemetrie, keine Gameplayänderung |
+| `POOL-QA-007` | `DONE` | Street-Balance-Audit | Ansatzprofile und Katalogdominanz deterministisch prüfen | PR #128 sicher gemerggt; keine Telemetrie, keine Gameplayänderung |
 | `POOL-QA-008` | `DONE` | Recovery-Balance-Audit | beide Recovery-Wege über Energie×Stress-Matrix gegen Dominanz und Gratisfolgen prüfen | PR #129 sicher gemergt; test-only |
 | `POOL-QA-002` | `DONE` | District-No-op-Replay-Semantik präzisieren | exaktere Receipt-Auskunft und Regression | PR #133 sicher gemergt; keine zweite Receipt-Architektur |
 | `POOL-QA-009` | `DONE` | Street-Effekt-Erwartungswert-Audit | Energie-/Stress-/Rufwirkung der vier Ansätze mathematisch vergleichen | PR #136 sicher gemergt; Balancebefund führte zum Scout-Fix |
@@ -102,7 +103,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | ID | Status | Feature | Voraussetzung |
 |---|---|---|---|
 | `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
-| `POOL-WORLD-003` | `PULLED` | District-Ereignisketten mit Erinnerung | zuerst Story-/Journalvertrag im Contract-Audit bestätigen; keine zweite Eventengine |
+| `POOL-WORLD-003` | `PULLED` | District-Ereignisketten mit Erinnerung | Audit PR #194 bestätigt Parent-Evidenz; jetzt genau einen katalogisierten Child-Event-, Parent- und Exactly-once-Vertrag definieren, noch keine Micro-Story |
 | `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
@@ -123,9 +124,9 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 3. Gameplay-Folgen nur über katalogisierte Regeln und zuständige Services.
 4. Presentation darf erklären, filtern, zoomen, maximieren, exportieren und hervorheben, aber keine Fachwerte erfinden.
 5. Zufall, Zinsen, Cadence und wiederholte Assistentenaktionen verwenden bestätigte Spielautorität; Systemzeit nie allein.
-6. Nach remote validiertem Safe Merge wird `PULLED` auf `DONE` gesetzt.
+6. Nach remote validiertem Safe Merge wird `PULLED` auf `DONE` gesetzt, wenn der Pool-Punkt vollständig abgeschlossen ist; Contract-Audits dürfen denselben Owner bewusst `PULLED` lassen, wenn der produktive Vertrag noch fehlt.
 7. Status-Sync verwendet ausschließlich den letzten fachlich relevanten Safe-Merge-Anker; reine Statuskorrektur-Merges werden zur Vermeidung von Selbstdrift übersprungen.
 
 ## Nächste Entnahme
 
-`POOL-QA-017` ist nach PR #192 `DONE`: Chromium und Firefox prüfen reale Kurzmarken-Abschneidung über die tatsächlich gerenderten Box-Maße; ein Produkt-CSS-Fix war nicht nötig. Als nächster spielnaher Punkt ist `POOL-WORLD-003` gezogen, zunächst ausdrücklich nur als District-Event-Chain-Contract-Audit. Erst wenn vorhandene District-, Journal- und Timeline-Verträge eine eindeutige kanonische Anschlussstelle liefern, darf daraus ein eigener kleiner Story-Patch entstehen. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.
+`POOL-WORLD-003` bleibt nach PR #194 bewusst `PULLED`: Der Audit hat die bestätigte Parent-Evidenz und die read-only Biography-Grenze bewiesen, aber zugleich den fehlenden katalogisierten Child-Eventvertrag als harte Grenze fixiert. Die nächste Entnahme ist daher `0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1`: genau einen Child-Eventtyp, Parent-Referenz, District-Bindung und Exactly-once-/Replay-Semantik definieren. Erst danach darf genau eine Micro-Story als separater Produkt-Slice entstehen. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.
