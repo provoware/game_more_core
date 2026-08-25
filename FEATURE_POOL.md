@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #177 · Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7`
+- **Status-Sync-Anker:** PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304`
 
 ## Statuswerte
 
@@ -40,6 +40,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-UX-AVATAR-CONTEXT-FIREFOX:** PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304` · derselbe bestätigte Profil→HUD→Map→Ranking-Harness läuft nativ in Firefox/Geckodriver inklusive Hohem Kontrast und kleinem Fenster
 - **0.8.8-UX-AVATAR-CONTEXT-E2E:** PR #177 · Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7` · echter Chromium-Pfad Profil → HUD → Map → eigener Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
 - **0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT:** PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15` · High-Contrast-Grenzen und Kurzmarken über Profil, HUD/Map-Klon und eigenen Ranking-Eintrag vereinheitlicht
 - **0.8.8-UX-AVATAR-RANKING-PRESENCE:** PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1` · bestätigte Crew-Marke ausschließlich am eigenen `local_character_id`-Ranking-Eintrag
@@ -81,7 +82,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-006` | `DONE` | Status-Sync nach Safe Merge automatisieren | Drift der drei kanonischen Statusdateien automatisch erkennen | read-only Git-Anker; kein direkter Bot-Push auf `main` |
 | `POOL-UX-008` | `DONE` | Avatar Visual Consistency Audit | Profil, HUD, Karte und Ranking visuell vereinheitlichen | PR #175 sicher gemergt; nur konkrete Presentation-Inkonsistenzen |
 | `POOL-QA-011` | `DONE` | Avatar Context Browser E2E | bestätigte Identität durch Profil → HUD → Map → Ranking beweisen | PR #177 sicher gemergt; bestehender Chromium-Acceptance-Pfad |
-| `POOL-QA-013` | `PULLED` | Avatar Context Firefox Interaction | denselben bestätigten Identitätsablauf im vorhandenen nativen Firefox-Pfad absichern | Geckodriver-/Firefox-Pfad wiederverwenden; kein zweites Browserframework |
+| `POOL-QA-013` | `DONE` | Avatar Context Firefox Interaction | denselben bestätigten Identitätsablauf im vorhandenen nativen Firefox-Pfad absichern | PR #179 sicher gemergt; kein zweites Browserframework |
+| `POOL-QA-014` | `PULLED` | Runtime-Owned Map E2E Fixture | temporären `.owned`-DOM-Marker durch echten bestätigten Eigentumszustand im isolierten Testspielstand ablösen | vorhandenen Property-/Projection-Pfad verwenden; keine Browser-Besitzautorität |
 
 ---
 
@@ -116,4 +118,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-QA-013` ist als nächste kleine Iteration gezogen: derselbe in Chromium bewiesene Crew-Identitätsablauf soll im bereits vorhandenen nativen Firefox-/Geckodriver-Pfad abgesichert werden. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig. `POOL-QA-012` bleibt nur eine spätere Automationsidee und darf niemals direkt `main` beschreiben.
+`POOL-QA-014` ist als nächste kleine Iteration gezogen: Der bereits in Chromium und Firefox bestätigte Avatar-Context-E2E soll seinen temporären `.owned`-DOM-Marker erst dann verlieren, wenn ein isolierter kanonischer Testspielstand Eigentum über den vorhandenen Property-/Projection-Pfad bestätigt. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig. `POOL-QA-012` bleibt nur eine spätere Automationsidee und darf niemals direkt `main` beschreiben.

@@ -26,11 +26,13 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #177
+## Praktisches Beispiel nach PR #179
 
-PR #177 hat den echten Chromium-Pfad **Profil → HUD → Map → eigener Ranking-Eintrag** sicher gemergt. Direkt danach hing der dokumentierte Status noch bei PR #175. Der Status-Sync erkennt genau diese Situation als Drift.
+PR #179 hat den bereits in Chromium bewiesenen Identitätslauf auch im vorhandenen nativen Firefox-/Geckodriver-Pfad bestätigt: **Profil → HUD → Map-Fixture → eigener Ranking-Eintrag**, zusätzlich Hoher Kontrast und kleines Fenster. Der fachliche Merge ist `8988e2883b842d29acc12e7e40140cfc4b46e304`.
 
-Die Korrektur übernimmt deshalb den bestätigten Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7` in alle drei kanonischen Statusdateien, setzt den erledigten Browser-E2E-Punkt auf `DONE` und benennt erst danach den nächsten unabhängigen Prüfpunkt. Die Korrektur verändert dabei weder CSS noch Browserlogik noch Spielzustand.
+Direkt danach standen die drei kanonischen Statusdateien noch auf PR #177. Genau diese Abweichung meldet der Status-Sync als Drift. Die Korrektur übernimmt deshalb PR #179 in alle drei Statusquellen, setzt `POOL-QA-013` auf `DONE` und zieht als nächsten unabhängigen QA-Punkt die echte Runtime-Owned-Map-Fixture. Dabei werden weder Firefox-Harness noch CSS, Gameplay, Save, Journal oder Property-Logik verändert.
+
+Wichtig: Der nächste Map-E2E-Schritt darf einen echten Eigentumszustand nur über einen kanonischen Testspielstand erzeugen. Der Status-Sync selbst erzeugt keinen Besitz und ersetzt keine Runtime-Autorität.
 
 ## Für Entwickler
 
