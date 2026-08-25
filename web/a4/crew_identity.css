@@ -325,9 +325,24 @@
   }
 }
 
+body.ui-high-contrast .crew-identity-preview,
+body.ui-high-contrast .hud-crew-preview,
 body.ui-high-contrast .hall-local-crew-preview {
   border-color: #fff;
   box-shadow: 0 0 0 2px #000, 0 0 0 3px var(--crew-accent, #ff5a1f);
+}
+
+body.ui-high-contrast .crew-identity-symbol,
+body.ui-high-contrast .hud-crew-symbol {
+  outline: 1px solid #fff;
+  outline-offset: 1px;
+}
+
+body.ui-high-contrast .crew-identity-mark,
+body.ui-high-contrast .hud-crew-mark {
+  border-color: #fff;
+  background: #000;
+  color: #fff;
 }
 
 @media (prefers-reduced-motion: reduce) {
