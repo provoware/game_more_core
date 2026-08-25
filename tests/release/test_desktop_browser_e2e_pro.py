@@ -130,7 +130,11 @@ class DesktopBrowserE2EContractTests(unittest.TestCase):
         probe.assert_called_once()
 
     def test_browser_acceptance_enforces_bounded_cold_start_floor(self):
-        completed = unittest.mock.Mock(returncode=0, stdout="● BEREIT\nBUNKERFREQUENZ – Control Deck", stderr="")
+        completed = unittest.mock.Mock(
+            returncode=0,
+            stdout="AVATAR_CONTEXT_E2E: PASS\n● BEREIT\nBUNKERFREQUENZ – Control Deck",
+            stderr="",
+        )
         with (
             patch.object(acceptance, "find_browser", return_value="/usr/bin/chromium"),
             patch.object(acceptance.subprocess, "run", return_value=completed) as run,
