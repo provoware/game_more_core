@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT` · PR #190 · Head `012dd1f3455465e189c17df48c60d894e2700a03` · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #190; der Map-Viewport-Audit belegt den Randfall bei `generator_ost`, bestätigt aber den vorhandenen barrierefreien `1:1`-Reset als ausreichenden Rückweg zur Gesamtansicht – keine zweite Mini-Map nötig
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E`
+- **Status-Sync-Anker:** PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E` · PR #192 · Head `7a4953003e4a83e41bcde4b5a1807e100c4a3439` · Merge `f5132827d8d80522f952eb220db63047a091c77d`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #192; Chromium und Firefox prüfen jetzt zusätzlich reale Kurzmarken-Abschneidung fail-closed, ohne dass dafür Produkt-CSS geändert werden musste
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -111,6 +111,7 @@
 - [x] vorhandene Chromium-/Firefox-Evidence bindet `location_id`, bestätigten `property.purchase`, Event-IDs und passende `property_purchase`-Ledger-Buchung an denselben Runtime-Owned-Kontext; PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`
 - [x] kompakte Ranking-Kurzmarke auf denselben `0.34rem`-Lesbarkeitsboden wie das kleine HUD angehoben; keine andere Crew-Geometrie verändert; PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433`
 - [x] Chromium und Firefox prüfen die tatsächlich berechnete `font-size` für HUD-, Map- und Ranking-Kurzmarken gegen denselben `0.34rem`-Boden; PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883`
+- [x] Chromium und Firefox prüfen reale Kurzmarken-Abschneidung in HUD, Map und Ranking über gerenderte Box-Maße; kein CSS-Fix nötig; PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d`
 
 ## 0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT
 - [x] realer Randort `generator_ost` bleibt bei `AUSWAHL FOKUS` wegen der begrenzten Pan-Spanne reproduzierbar deutlich außerhalb der Kartenmitte
@@ -128,25 +129,24 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E
+# Aktiv / nächste Iteration – 0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT
 
 ## Fortschritt
 
-**0 %** – die kompakte Crew-Identität besitzt bereits einen browserberechnet bestätigten `0.34rem`-Lesbarkeitsboden. Als nächster kleiner QA-Slice wird ausschließlich geprüft, ob die tatsächlich gerenderte Kurzmarke in HUD, Map oder Ranking trotz ausreichender Schriftgröße abgeschnitten werden kann.
+**0 %** – nach dem abgeschlossenen Avatar-Clipping-Nachweis wird bewusst wieder ein spielnaher Story-Slice vorbereitet. Zuerst wird ausschließlich geprüft, ob die vorhandenen District-, Journal- und Timeline-Verträge eine kleine erinnernde Ereigniskette tragen, ohne eine zweite Eventengine oder neue Persistenzautorität einzuführen.
 
 ## Ziel
 
-Im bestehenden Chromium-/Firefox-Avatar-Harness reales Text-Clipping der bestätigten Crew-Kurzmarken messen und nur bei belegtem Befund den kleinsten Presentation-Fix ableiten; keine zweite Browser- oder Avatararchitektur.
+Den bestehenden District-Event-/Journal-/Timeline-Vertrag gezielt darauf prüfen, ob bestätigte Bezirksereignisse als Voraussetzung für eine spätere kleine Folgebegegnung wiederverwendet werden können.
 
 ## Abnahme
 
-- [ ] vorhandenen Avatar-Context-Harness und die tatsächlichen Kurzmarken-Container gezielt lesen
-- [ ] in Chromium und Firefox `scrollWidth`/`clientWidth`, `scrollHeight`/`clientHeight` sowie wirksames Overflow der HUD-, Map- und Ranking-Kurzmarke prüfen
-- [ ] ein echter Clipping-Befund muss fail-closed diagnostiziert werden
-- [ ] CSS/Markup nur ändern, wenn der reale Browserbefund einen Fehler belegt
-- [ ] bestehende `0.34rem`-Untergrenze, High Contrast und Reduced Motion bleiben unverändert
-- [ ] keine neue Projection, kein zweiter Fetch und keine Browser-Gameplayautorität
-- [ ] relevante Presentation-/Repository-/Release-Gates auf finalem Head grün
+- [ ] vorhandenen District-Event-Vertrag, Journal-Katalog und Timeline-/Biography-Projection gezielt lesen
+- [ ] genau eine kanonische Stelle für eine mögliche Folgeketten-Referenz identifizieren oder den Slice als No-Fix-Audit abschließen
+- [ ] keine zweite Eventengine, kein Browser-Story-State und keine Systemzeit als Kettenautorität
+- [ ] bestehende Event-IDs und append-only Journal-Semantik bleiben maßgeblich
+- [ ] Regression zuerst auf Vertragsgrenzen, erst danach ein möglicher kleiner Produktpatch
+- [ ] relevante Runtime-/Repository-/Release-Gates auf finalem Head grün
 - [ ] 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 

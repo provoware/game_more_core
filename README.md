@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Map Viewport Audit validiert" src="https://img.shields.io/badge/Feature_Stand-MAP--VIEWPORT--AUDIT_validiert-7dff00">
-  <img alt="Aktive Iteration Avatar Text Clip E2E" src="https://img.shields.io/badge/Aktiv-AVATAR--TEXT--CLIP--E2E-00c2ff">
+  <img alt="Feature Stand Avatar Text Clip E2E validiert" src="https://img.shields.io/badge/Feature_Stand-AVATAR--TEXT--CLIP--E2E_validiert-7dff00">
+  <img alt="Aktive Iteration District Event Chain Contract Audit" src="https://img.shields.io/badge/Aktiv-DISTRICT--CHAIN--CONTRACT--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,12 +26,12 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT` |
-| **Aktive Iteration** | 🟡 `0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E` |
-| **Danach** | Erst reales Clipping messen; CSS/Markup nur bei reproduzierbarem Browserbefund ändern |
+| **Status-Sync-Anker** | PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E` |
+| **Aktive Iteration** | 🟡 `0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT` |
+| **Danach** | Nur bei eindeutigem vorhandenen District-/Journal-Vertrag einen kleinen Story-Patch ableiten; keine zweite Eventengine |
 | **Avatar-Kette** | ✅ Profil → bestätigtes HUD → runtime-bestätigter eigener Map-Ort → eigener Hall-/Ranking-Eintrag · Chromium + Firefox · High Contrast + kleines Fenster validiert |
-| **Crew-Lesbarkeit** | ✅ HUD-, Map- und Ranking-Kurzmarken werden im echten Chromium-/Firefox-Harness gegen den wirksamen `0.34rem`-Lesbarkeitsboden geprüft |
+| **Crew-Lesbarkeit** | ✅ HUD-, Map- und Ranking-Kurzmarken werden im echten Chromium-/Firefox-Harness gegen `0.34rem` und zusätzlich gegen reale Textabschneidung geprüft |
 | **Runtime-Owned Evidence** | ✅ derselbe bestätigte `property.purchase` ist in der vorhandenen Browser-Evidence an Location-, Event- und Ledger-Referenzen gebunden |
 | **Living World** | ✅ replaybare Street Encounters · 16 Begegnungen · vier Ansatzprofile · Grenz-/Replay-/Verteilungsaudits |
 | **Ranking** | ✅ Competitive Top 10 · bestätigte Wochen-/Monatszyklen · lokale Crew-Marke nur am eigenen Eintrag |
@@ -44,7 +44,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #190 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #192 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -85,7 +85,7 @@ PROPERTY / HALL OF TRIBUTE
 - bestätigte Crew-Identität im Profil, HUD, auf eigenem Kartenbesitz und im eigenen Ranking-Eintrag
 - gemeinsame High-Contrast-Außenkante und klare Kurzmarken-Trennung für die bestätigte Crew-Identität
 - echter Chromium- und nativer Firefox-Acceptance-Pfad für Profil → HUD → runtime-bestätigten Map-Besitz → eigenen Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
-- kompakte HUD-, Map- und Ranking-Kurzmarken mit browserberechnet geprüftem `0.34rem`-Lesbarkeitsboden
+- kompakte HUD-, Map- und Ranking-Kurzmarken mit browserberechnet geprüftem `0.34rem`-Lesbarkeitsboden und realer Clipping-Prüfung
 - bestehende Desktop-Browser-Evidence bindet denselben runtime-bestätigten Property-Kauf read-only an Location-, Event- und Ledger-Referenzen
 - Scene Jobs, persönliches Bargeld, Bank, Sparzins und Kontoauszug
 - Secret Best Friend Assistant auf bestehenden Scene-Job-/Rundenverträgen
