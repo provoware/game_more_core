@@ -102,6 +102,19 @@ class RuntimeOwnedEvidenceReceiptTests(unittest.TestCase):
         self.assertEqual(location_id, "cheap")
         runtime.session.read_state.assert_not_called()
 
+    def test_receipt_rejects_ledger_item_or_price_that_disagrees_with_ownership(self):
+        runtime = self._runtime()
+        runtime.session.read_state.return_value["economy"]["ledger"][0]["item_id"] = "property:expensive"
+        with patch.object(acceptance.game_client, "A4ClientRuntime", return_value=runtime):
+            with self.assertRaisesRegex(RuntimeError, "andere Property"):
+                acceptance.prepare_owned_map_fixture(Path("/isolated/save"), include_evidence=True)
+
+        runtime = self._runtime()
+        runtime.session.read_state.return_value["economy"]["ledger"][0]["unit_price_cents"] = 3_100_001
+        with patch.object(acceptance.game_client, "A4ClientRuntime", return_value=runtime):
+            with self.assertRaisesRegex(RuntimeError, "widersprüchlichen Kaufpreis"):
+                acceptance.prepare_owned_map_fixture(Path("/isolated/save"), include_evidence=True)
+
     def test_desktop_evidence_parser_requires_confirmed_event_and_ledger_references(self):
         payload = {
             "location_id": "cheap",
