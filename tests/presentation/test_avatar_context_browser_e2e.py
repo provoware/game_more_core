@@ -24,6 +24,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         self.assertIn('width: 760px', source)
         self.assertNotIn('fetch("/api/command")', source)
         self.assertNotIn("property.purchase", source)
+        self.assertNotIn('"Timeline wird geladen"', source)
 
     def test_avatar_context_url_preserves_startup_query_on_harness_path(self):
         self.assertEqual(
