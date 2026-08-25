@@ -132,6 +132,17 @@ def _avatar_context_harness() -> str:
       }
       w.BunkerUIPrefs.set("highContrast", true);
       await waitFor(() => d.body.classList.contains("ui-high-contrast"), "Hoher Kontrast");
+      await waitFor(() => {
+        for (const sheet of d.styleSheets) {
+          try {
+            const href = new URL(sheet.href || "", d.baseURI).pathname;
+            if (href.endsWith("/crew_identity.css") && sheet.cssRules.length > 0) return sheet;
+          } catch {
+            // Ein fremdes oder noch nicht lesbares Stylesheet ist kein Crew-Stylesheet-Nachweis.
+          }
+        }
+        return null;
+      }, "Crew-Stylesheet geladen");
 
       const profileMark = d.getElementById("crew-identity-mark");
       const nodes = [profileMark, hudMark, hallMark, mapMark];
@@ -144,6 +155,14 @@ def _avatar_context_harness() -> str:
       if (markText(profileMark) !== "E2E") {
         throw new Error("Profilvorschau verlor die bestätigte Kurzmarke");
       }
+      const hudPreview = d.querySelector(".hud-crew-preview");
+      const hudStyle = hudPreview ? w.getComputedStyle(hudPreview) : null;
+      if (!hudStyle || hudStyle.borderTopStyle === "none" || hudStyle.borderTopWidth === "0px") {
+        throw new Error("Crew-Stylesheet wirkt nicht auf die bestätigte HUD-Marke");
+      }
+      if (hudStyle.borderTopColor !== "rgb(255, 255, 255)") {
+        throw new Error("Hoher Kontrast erreicht die bestätigte HUD-Marke nicht");
+      }
 
       syntheticOwned?.remove();
       document.body.textContent = `AVATAR_CONTEXT_E2E: PASS
@@ -151,8 +170,7 @@ def _avatar_context_harness() -> str:
 BUNKERFREQUENZ – Control Deck
 Profil→HUD→Map→Ranking · Hoher Kontrast · kleines Fenster`;
     } catch (error) {
-      document.body.textContent = `AVATAR_CONTEXT_E2E: FAIL
-${String(error?.message || error)}`;
+      document.body.textContent = `AVATAR_CONTEXT_E2E: FAIL · ${String(error?.message || error)}`;
     }
   }, { once: true });
   frame.src = "/";
