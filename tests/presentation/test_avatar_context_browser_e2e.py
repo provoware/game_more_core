@@ -32,6 +32,28 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
             "http://127.0.0.1:8044/__avatar_context_e2e__.html?startup=cache-token",
         )
 
+    def test_existing_address_browser_check_stays_read_only_and_uses_original_url(self):
+        completed = Mock(
+            returncode=0,
+            stdout="<html><body>● BEREIT\nBUNKERFREQUENZ – Control Deck</body></html>",
+            stderr="",
+        )
+        with tempfile.TemporaryDirectory() as root_value:
+            root = Path(root_value)
+            (root / "web" / "a4").mkdir(parents=True)
+            with (
+                patch.object(acceptance, "ROOT", root),
+                patch.object(acceptance, "find_browser", return_value="/usr/bin/chromium"),
+                patch.object(acceptance.subprocess, "run", return_value=completed) as run,
+            ):
+                acceptance.browser_dom(
+                    "http://127.0.0.1:8044/?startup=real-session",
+                    require_browser=True,
+                    avatar_context=False,
+                )
+            self.assertEqual(run.call_args.args[0][-1], "http://127.0.0.1:8044/?startup=real-session")
+            self.assertFalse((root / "web" / "a4" / acceptance.AVATAR_CONTEXT_HARNESS).exists())
+
     def test_browser_acceptance_requires_avatar_context_pass_and_cleans_harness(self):
         completed = Mock(
             returncode=0,
@@ -52,6 +74,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
                 dom = acceptance.browser_dom(
                     "http://127.0.0.1:8044/?startup=cache-token",
                     require_browser=True,
+                    avatar_context=True,
                 )
 
             self.assertIn(acceptance.AVATAR_CONTEXT_PASS, dom)
@@ -85,6 +108,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
                     acceptance.browser_dom(
                         "http://127.0.0.1:8044/",
                         require_browser=True,
+                        avatar_context=True,
                     )
             self.assertFalse((root / "web" / "a4" / acceptance.AVATAR_CONTEXT_HARNESS).exists())
 
