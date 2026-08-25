@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e`
+- **Status-Sync-Anker:** PR #196 · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577`
 
 ## Statuswerte
 
@@ -40,7 +40,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
-- **0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT:** PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e` · Parent-Evidenz und read-only Biography-Grenze bestätigt; eigener katalogisierter Child-Eventtyp fehlt noch, deshalb bewusst keine Micro-Story
+- **0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1:** PR #196 · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577` · genau `world.district_followup_resolved` katalogisiert; Parent-/District-Bindung sowie Exactly-once-/Replay-Semantik auf bestehendem PersistenceKernel bestätigt; noch keine Micro-Story
+- **0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT:** PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e` · Parent-Evidenz und read-only Biography-Grenze bestätigt; eigener katalogisierter Child-Eventtyp fehlte noch, deshalb bewusst keine Micro-Story
 - **0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E:** PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d` · Chromium und Firefox messen gerenderte Kurzmarken-Boxen in HUD, Map und Ranking fail-closed; kein Clipping reproduziert, kein CSS-Fix nötig
 - **0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT:** PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db` · realer Randort bleibt bei begrenztem Fokus off-center, vorhandener `1:1`-Reset stellt die Gesamtansicht wieder her; bewusst keine zweite Mini-Map
 - **0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E:** PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883` · Chromium und Firefox prüfen die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking fail-closed gegen den gemeinsamen `0.34rem`-Boden
@@ -103,7 +104,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | ID | Status | Feature | Voraussetzung |
 |---|---|---|---|
 | `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
-| `POOL-WORLD-003` | `PULLED` | District-Ereignisketten mit Erinnerung | Audit PR #194 bestätigt Parent-Evidenz; jetzt genau einen katalogisierten Child-Event-, Parent- und Exactly-once-Vertrag definieren, noch keine Micro-Story |
+| `POOL-WORLD-003` | `PULLED` | District-Ereignisketten mit Erinnerung | Contract V1 PR #196 bestätigt genau einen Child-Event-, Parent-/District- und Exactly-once-Vertrag; als nächster separater Produkt-Slice genau eine Micro-Story, keine generische Kettenengine |
 | `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
@@ -129,4 +130,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-WORLD-003` bleibt nach PR #194 bewusst `PULLED`: Der Audit hat die bestätigte Parent-Evidenz und die read-only Biography-Grenze bewiesen, aber zugleich den fehlenden katalogisierten Child-Eventvertrag als harte Grenze fixiert. Die nächste Entnahme ist daher `0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1`: genau einen Child-Eventtyp, Parent-Referenz, District-Bindung und Exactly-once-/Replay-Semantik definieren. Erst danach darf genau eine Micro-Story als separater Produkt-Slice entstehen. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.
+`POOL-WORLD-003` bleibt nach PR #196 bewusst `PULLED`: Contract V1 hat genau `world.district_followup_resolved`, Parent-/District-Bindung und Exactly-once-/Replay-Semantik bestätigt. Die nächste Entnahme ist deshalb `0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001`: genau eine bestätigte Ursache→Folge-Geschichte auf diesem Vertrag umsetzen, ohne generische zweite Eventengine. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.
