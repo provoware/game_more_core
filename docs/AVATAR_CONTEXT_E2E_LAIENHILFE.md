@@ -66,6 +66,20 @@ Darum wurde **nur** diese eine Schriftgröße auf `0.34rem` angehoben. Das verä
 
 Eine direkte Presentation-Regression schützt diese Untergrenze. High Contrast, Reduced Motion, Profilvorschau, HUD, Map-Klon, Ranking-Datenquelle und alle Runtime-Verträge bleiben unverändert.
 
+## Wie wird die echte Browser-Schriftgröße geprüft?
+
+Die statische CSS-Regel allein reicht nicht aus: Media Queries oder später spezifischere Selektoren könnten den Wert im echten Browser überschreiben. Deshalb liest derselbe bereits vorhandene Avatar-Context-Harness jetzt zusätzlich die **berechnete `font-size`** der bestätigten Kurzmarken in HUD, Map und Ranking aus.
+
+Die Untergrenze bleibt `0.34rem`. Der Test rechnet diesen Wert nicht in eine fest verdrahtete Pixelzahl um, sondern liest zuerst die tatsächlich berechnete Root-Schriftgröße des Dokuments und bildet daraus den wirksamen Grenzwert. Dadurch bleibt die Prüfung korrekt, selbst wenn Browser oder spätere UI-Regeln die Root-Schriftgröße verändern.
+
+Für jeden kompakten Kontext gilt:
+
+- HUD-Kurzmarke muss mindestens `0.34rem` wirksam berechnen,
+- Ranking-Kurzmarke muss mindestens `0.34rem` wirksam berechnen,
+- Map-Kurzmarke muss mindestens `0.34rem` wirksam berechnen.
+
+Ist ein Wert nicht messbar oder kleiner, meldet der Harness `AVATAR_CONTEXT_E2E: FAIL` und der bestehende Browser-/Release-Nachweis wird rot. Profil bleibt bewusst außerhalb dieser kompakten Untergrenze, weil dort ein anderer, größerer Darstellungskontext gilt.
+
 ## Schutz echter Spielstände
 
 Wird `start_a4_acceptance.py` mit `--address` gegen eine bereits laufende Session verwendet, läuft **nur der read-only Browsercheck**. In diesem Modus wird kein Testspielstand vorbereitet, kein Eigentum gekauft, kein Profilfeld verändert und kein Testcharakter angelegt.
@@ -84,8 +98,9 @@ Der schreibende Identitätslauf ist ausschließlich an intern erzeugte temporär
 - Chromium und Firefox verwenden denselben vorhandenen Avatar-Context-Harness und denselben Runtime-Fixture-Vertrag,
 - fehlender echter `.map-marker.owned` blockiert den Avatar-E2E,
 - fehlender `AVATAR_CONTEXT_E2E: PASS` blockiert den detaillierten Browser-Acceptance-Test,
-- fehlendes oder wirkungsloses `crew_identity.css` blockiert den visuellen PASS ebenfalls.
+- fehlendes oder wirkungsloses `crew_identity.css` blockiert den visuellen PASS ebenfalls,
+- eine berechnete kompakte Kurzmarke unter `0.34rem` blockiert den visuellen PASS.
 
 ## Spätere sinnvolle Erweiterung
 
-**AVATAR-CONTEXT-COMPUTED-SIZE-E2E:** Der bestehende Chromium-/Firefox-Harness kann später zusätzlich die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking auslesen und fail-closed prüfen, dass kein kompakter Kontext unter die gemeinsame `0.34rem`-Untergrenze fällt. Nutzen: Nicht nur der CSS-Quelltext, sondern die im echten Browser wirksame Kaskade würde Größen-Drift erkennen. Begründung: Media Queries oder spätere spezifischere Selektoren könnten den Quelltextvertrag sonst unbemerkt übersteuern, obwohl die statische Regression grün bleibt.
+**AVATAR-CONTEXT-TEXT-CLIP-E2E:** Der bestehende Harness kann später zusätzlich prüfen, ob die vollständig gerenderte Kurzmarke in HUD, Map und Ranking innerhalb ihres sichtbaren Containers bleibt, indem `scrollWidth/scrollHeight` gegen die reale Content-Box und Overflow-Regeln abgeglichen werden. Nutzen: Eine ausreichend große Schrift könnte durch spätere Padding-, Width- oder Overflow-Änderungen trotzdem abgeschnitten werden. Begründung: Dieser Nachweis ergänzt die jetzt reale Größenprüfung, ohne neue UI- oder Identity-Architektur einzuführen.

@@ -100,6 +100,27 @@ class StatusSyncTests(unittest.TestCase):
         self.assertEqual(checked, expected)
         self.assertEqual(errors, [])
 
+    def test_project_status_only_correction_does_not_create_new_feature_anchor(self):
+        expected = self.merge_feature(185)
+        write_status(self.root, expected)
+        git(self.root, "add", "TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json")
+        git(self.root, "commit", "-m", "status after feature")
+
+        git(self.root, "checkout", "-b", "project-status-correction")
+        status_path = self.root / "PROJEKTSTATUS.json"
+        data = json.loads(status_path.read_text(encoding="utf-8"))
+        data["history_label"] = "read_only"
+        status_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+        git(self.root, "add", "PROJEKTSTATUS.json")
+        git(self.root, "commit", "-m", "status: restore historical label")
+        git(self.root, "checkout", "main")
+        git(self.root, "merge", "--no-ff", "project-status-correction", "-m", "Safe merge PR #187")
+
+        self.assertEqual(latest_relevant_safe_merge(self.root), expected)
+        checked, errors = check_status_sync(self.root)
+        self.assertEqual(checked, expected)
+        self.assertEqual(errors, [])
+
     def test_status_only_safe_merge_with_readme_does_not_create_self_drift_loop(self):
         expected = self.merge_feature()
         git(self.root, "checkout", "-b", "status-sync")

@@ -271,6 +271,25 @@ def _avatar_context_harness() -> str:
       if (markText(profileMark) !== "E2E") {
         throw new Error("Profilvorschau verlor die bestätigte Kurzmarke");
       }
+      const compactMarks = [
+        ["HUD", hudMark],
+        ["Ranking", hallMark],
+        ["Map", mapMark]
+      ];
+      const rootFontSizePx = Number.parseFloat(w.getComputedStyle(d.documentElement).fontSize);
+      if (!Number.isFinite(rootFontSizePx) || rootFontSizePx <= 0) {
+        throw new Error("Root-Schriftgröße ist im Browser nicht messbar");
+      }
+      const minCompactFontSizePx = rootFontSizePx * 0.34;
+      const undersizedMarks = compactMarks.flatMap(([label, node]) => {
+        const fontSizePx = Number.parseFloat(w.getComputedStyle(node).fontSize);
+        if (Number.isFinite(fontSizePx) && fontSizePx + 0.01 >= minCompactFontSizePx) return [];
+        const shown = Number.isFinite(fontSizePx) ? fontSizePx.toFixed(2) + "px" : "ungültig";
+        return [`${label}=${shown}`];
+      });
+      if (undersizedMarks.length) {
+        throw new Error("Crew-Kurzmarke unter 0.34rem: " + undersizedMarks.join(", "));
+      }
       const hudPreview = d.querySelector(".hud-crew-preview");
       const hudStyle = hudPreview ? w.getComputedStyle(hudPreview) : null;
       if (!hudStyle || hudStyle.borderTopStyle === "none" || hudStyle.borderTopWidth === "0px") {
@@ -283,7 +302,7 @@ def _avatar_context_harness() -> str:
       document.body.textContent = `AVATAR_CONTEXT_E2E: PASS
 ● BEREIT
 BUNKERFREQUENZ – Control Deck
-Profil→HUD→Map→Ranking · Runtime-Eigentum · Hoher Kontrast · kleines Fenster`;
+Profil→HUD→Map→Ranking · Runtime-Eigentum · Hoher Kontrast · kleines Fenster · Kurzmarken ≥ 0.34rem`;
     } catch (error) {
       document.body.textContent = `AVATAR_CONTEXT_E2E: FAIL · ${String(error?.message || error)}`;
     }

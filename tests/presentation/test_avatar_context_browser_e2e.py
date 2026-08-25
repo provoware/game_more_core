@@ -45,6 +45,19 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         self.assertNotIn("property.purchase", source)
         self.assertNotIn('"Timeline wird geladen"', source)
 
+    def test_harness_checks_computed_compact_mark_sizes_against_rem_floor(self):
+        source = acceptance._avatar_context_harness()
+        self.assertIn('const compactMarks = [', source)
+        self.assertIn('["HUD", hudMark]', source)
+        self.assertIn('["Ranking", hallMark]', source)
+        self.assertIn('["Map", mapMark]', source)
+        self.assertNotIn('["Profil", profileMark],\n        ["HUD", hudMark],\n        ["Ranking", hallMark],\n        ["Map", mapMark]\n      ];\n      const rootFontSizePx', source)
+        self.assertIn('w.getComputedStyle(d.documentElement).fontSize', source)
+        self.assertIn('const minCompactFontSizePx = rootFontSizePx * 0.34;', source)
+        self.assertIn('w.getComputedStyle(node).fontSize', source)
+        self.assertIn('Crew-Kurzmarke unter 0.34rem:', source)
+        self.assertIn('Kurzmarken ≥ 0.34rem', source)
+
     def test_compact_hud_keeps_confirmed_identity_visible_without_extra_grid_row(self):
         media = '@media (max-width: 1100px)'
         block = CREW_STYLES[CREW_STYLES.index(media):CREW_STYLES.index('@media (min-width: 721px)')]
