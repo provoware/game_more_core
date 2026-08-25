@@ -80,7 +80,7 @@
     {"iteration": "0.8.8-ECON-JOB-PREVIEW", "pull_request": 121, "merged_commit": "040be951665a34dd8d81694ab695128e0b846bd5", "feature": "scene_job_confirmed_effective_payout_preview"},
     {"iteration": "0.8.8-UX-EXPORT-PROOF", "pull_request": 122, "merged_commit": "0909f3c38642f97d4474cd200af11c960e1ada66", "feature": "finance_statement_export_preview_copy_checksum"},
     {"iteration": "0.8.8-ECON-RECOVERY-ACTIONS", "pull_request": 123, "merged_commit": "7ed085b111a03173f0359bd76129d8d3b5f71900", "feature": "confirmed_active_energy_recovery_for_stress"},
-    {"iteration": "0.8.8-UX-TIMELINE-FILTER", "pull_request": 124, "merged_commit": "465dc5040c5a1283fee5e7af52590455feaa9a01", "feature": "local_event_timeline_filters"},
+    {"iteration": "0.8.8-UX-TIMELINE-FILTER", "pull_request": 124, "merged_commit": "465dc5040c5a1283fee5e7af52590455feaa9a01", "feature": "local_read_only_event_timeline_filters"},
     {"iteration": "0.8.8-ECON-RECOVERY-FEEDBACK", "pull_request": 125, "merged_commit": "c8e8cba3dab103c90937f26e90a02a13139dd0f5", "feature": "confirmed_recovery_before_after_feedback"},
     {"iteration": "0.8.8-STREET-PACK", "pull_request": 126, "merged_commit": "00c14d57bf642e688a65c0a9e99d39b52857eb0b", "feature": "expanded_deterministic_street_encounter_catalog"},
     {"iteration": "0.8.8-ECON-RECOVERY-VARIANTS", "pull_request": 127, "merged_commit": "c9732c28cc723984d59b02018fbed02c3c681913", "feature": "second_confirmed_recovery_tradeoff"},
