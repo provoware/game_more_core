@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Runtime Owned Map E2E validiert" src="https://img.shields.io/badge/Feature_Stand-RUNTIME--OWNED--MAP--E2E_validiert-7dff00">
-  <img alt="Aktive Iteration Runtime Owned Evidence Receipt" src="https://img.shields.io/badge/Aktiv-RUNTIME--OWNED--EVIDENCE-00c2ff">
+  <img alt="Feature Stand Runtime Owned Evidence Receipt validiert" src="https://img.shields.io/badge/Feature_Stand-RUNTIME--OWNED--EVIDENCE_validiert-7dff00">
+  <img alt="Aktive Iteration Crew Identity Micro Polish Audit" src="https://img.shields.io/badge/Aktiv-CREW--IDENTITY--MICRO--POLISH-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,11 +26,12 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE` |
-| **Aktive Iteration** | 🟡 `0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT` |
-| **Danach** | nur konkrete Crew-Identity-Micro-Polish-Befunde aus echten E2E-Läufen bearbeiten |
+| **Status-Sync-Anker** | PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT` |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT` |
+| **Danach** | nur anhand des Audit-Befunds einen kleinsten konkreten Presentation-Fix oder bewusst keinen Produktpatch ableiten |
 | **Avatar-Kette** | ✅ Profil → bestätigtes HUD → runtime-bestätigter eigener Map-Ort → eigener Hall-/Ranking-Eintrag · Chromium + Firefox · High Contrast + kleines Fenster validiert |
+| **Runtime-Owned Evidence** | ✅ derselbe bestätigte `property.purchase` ist in der vorhandenen Browser-Evidence an Location-, Event- und Ledger-Referenzen gebunden |
 | **Living World** | ✅ replaybare Street Encounters · 16 Begegnungen · vier Ansatzprofile · Grenz-/Replay-/Verteilungsaudits |
 | **Ranking** | ✅ Competitive Top 10 · bestätigte Wochen-/Monatszyklen · lokale Crew-Marke nur am eigenen Eintrag |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 · Runtime-Owned-Map-E2E bestätigt |
@@ -42,7 +43,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #181 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #183 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -83,6 +84,7 @@ PROPERTY / HALL OF TRIBUTE
 - bestätigte Crew-Identität im Profil, HUD, auf eigenem Kartenbesitz und im eigenen Ranking-Eintrag
 - gemeinsame High-Contrast-Außenkante und klare Kurzmarken-Trennung für die bestätigte Crew-Identität
 - echter Chromium- und nativer Firefox-Acceptance-Pfad für Profil → HUD → runtime-bestätigten Map-Besitz → eigenen Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
+- bestehende Desktop-Browser-Evidence bindet denselben runtime-bestätigten Property-Kauf read-only an Location-, Event- und Ledger-Referenzen
 - Scene Jobs, persönliches Bargeld, Bank, Sparzins und Kontoauszug
 - Secret Best Friend Assistant auf bestehenden Scene-Job-/Rundenverträgen
 - lokale Presentation-FX ausschließlich nach bestätigten Runtime-Ergebnissen
