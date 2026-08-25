@@ -69,7 +69,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertEqual(status["current_focus"], "avatar_context_browser_e2e")
-        self.assertEqual(status["next_iteration"], "0.8.8-UX-AVATAR-CONTEXT-E2E")
+        self.assertIsNone(status["next_iteration"])
 
         self.assertTrue(living_world["street_boundary_clamping_audit_validated"])
         self.assertTrue(living_world["street_replay_boundary_matrix_validated"])
