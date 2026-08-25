@@ -25,6 +25,12 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         self.assertNotIn('fetch("/api/command")', source)
         self.assertNotIn("property.purchase", source)
 
+    def test_avatar_context_url_preserves_startup_query_on_harness_path(self):
+        self.assertEqual(
+            acceptance._avatar_context_url("http://127.0.0.1:8044/?startup=cache-token"),
+            "http://127.0.0.1:8044/__avatar_context_e2e__.html?startup=cache-token",
+        )
+
     def test_browser_acceptance_requires_avatar_context_pass_and_cleans_harness(self):
         completed = Mock(
             returncode=0,
@@ -43,7 +49,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
                 patch.object(acceptance.subprocess, "run", return_value=completed) as run,
             ):
                 dom = acceptance.browser_dom(
-                    "http://127.0.0.1:8044/",
+                    "http://127.0.0.1:8044/?startup=cache-token",
                     require_browser=True,
                 )
 
@@ -54,7 +60,10 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
                 f"--virtual-time-budget={acceptance.BROWSER_VIRTUAL_TIME_BUDGET_MS}",
                 command,
             )
-            self.assertTrue(command[-1].endswith("/" + acceptance.AVATAR_CONTEXT_HARNESS))
+            self.assertEqual(
+                command[-1],
+                "http://127.0.0.1:8044/__avatar_context_e2e__.html?startup=cache-token",
+            )
             self.assertFalse((root / "web" / "a4" / acceptance.AVATAR_CONTEXT_HARNESS).exists())
 
     def test_browser_acceptance_fails_closed_without_avatar_context_pass(self):
