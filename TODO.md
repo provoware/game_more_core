@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-AVATAR-CONTEXT-FIREFOX` · PR #179 · Head `f8d7102d2b9bead43433d9c181cdc193a13ba390` · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #179; Chromium- und Firefox-Identitätsnachweis sowie Required-, Release-, Status-Sync- und Safe-Merge-Nachweise sind bestätigt
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE`
+- **Status-Sync-Anker:** PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE` · PR #181 · Head `a22d626b9af74e3f8370d76ae1d717f4ee7e3f3f` · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #181; Chromium und Firefox prüfen die Crew-Identitätskette jetzt mit runtime-bestätigtem Eigentum statt künstlichem `.owned`-DOM-Marker
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -107,6 +107,7 @@
 - [x] High-Contrast-Außenkante, Symbol- und Kurzmarken-Trennung über Profil, HUD/Map-Klon und Ranking vereinheitlicht; PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15`
 - [x] echter Chromium-Pfad Profil → bestätigtes HUD → Map-Klon → eigener Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast; PR #177 · Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7`
 - [x] derselbe Identitäts-Harness im vorhandenen nativen Firefox-/Geckodriver-Pfad inklusive kleinem Fenster und Hohem Kontrast; PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304`
+- [x] isolierter Acceptance-Spielstand kauft deterministisch über `property.purchase`; Map-Avatar wird an runtime-bestätigtem Eigentum geprüft, kein künstlicher `.owned`-DOM-Marker; PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d`
 
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
@@ -118,23 +119,23 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE
+# Aktiv / nächste Iteration – 0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT
 
 ## Fortschritt
 
-**0 %** – Chromium und Firefox bestätigen dieselbe Crew-Identitätskette; die verbliebene Map-Grenze ist der bewusst temporäre `.owned`-DOM-Marker.
+**0 %** – der Runtime-Owned-Map-E2E ist vollständig remote validiert; offen ist nur ein kompakter read-only Provenienz-Nachweis für genau diesen bereits bestätigten Testkontext.
 
 ## Ziel
 
-Einen kanonischen isolierten Testspielstand mit bestätigt erzeugtem Eigentum für den vorhandenen Avatar-Context-E2E bereitstellen und erst dann den temporären `.owned`-Presentation-Marker ablösen, ohne Property-, Map- oder Browserautorität zu duplizieren.
+Den bestehenden Release-Evidence-Nachweis um die bereits vorhandenen Daten des runtime-bestätigten Property-Kaufs ergänzen, ohne einen zweiten Receipt-, Property- oder Evidence-Pfad zu erzeugen.
 
 ## Abnahme
 
-- [ ] vorhandenen Property-Purchase-/Projection-Pfad verwenden; kein direktes DOM-Erfinden von Besitz
-- [ ] isolierter temporärer Testspielstand, keine echten Nutzersaves verändern
-- [ ] Map-Avatar weiterhin ausschließlich aus bestätigter Crew-Identität und bestätigtem Eigentum ableiten
-- [ ] keine Gameplaywerte, Kaufpreise, Besitzregeln oder Save-/Journalverträge ändern
-- [ ] Regression beweist, dass der Browser keinen `.owned`-Marker mehr als Besitzautorität setzen muss
+- [ ] ausschließlich vorhandene Fixture-/Property-/Ledger-Daten lesen
+- [ ] mindestens `location_id`, bestätigten `property.purchase`-Status und vorhandene Property-/Ledger-Ereignisreferenz kompakt nachweisen
+- [ ] keine Gameplay-, Kaufpreis-, Eigentums-, Save-, Journal- oder Map-Logik verändern
+- [ ] kein neuer Browser-Command und keine zweite Evidence-Architektur
+- [ ] Regression beweist, dass Evidence aus dem bereits bestätigten Runtime-Owned-Kontext stammt
 - [ ] Runtime Core, Presentation Core und Repository Health auf finalem Head grün
 - [ ] relevante Release-/Status-Sync-Gates grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
