@@ -366,8 +366,8 @@
     "status_sync_direct_main_write": false,
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
-  "next_iteration": "0.8.8-UX-AVATAR-CONTEXT-E2E",
-  "next_goal": "Dieselbe bestätigte Crew-Identität im echten Browserpfad Profil → HUD → Map → Ranking inklusive kleinem Fenster, Hohem Kontrast und bestätigter Profiländerung nachweisen.",
+  "next_iteration": null,
+  "next_goal": "Wird erst aus dem Ergebnis von 0.8.8-UX-AVATAR-CONTEXT-E2E abgeleitet; keine Folgeiteration wird vor dem Browser-Nachweis vorgezogen.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
