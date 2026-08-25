@@ -57,7 +57,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-WORLD-003"))
 
-    def test_current_status_describes_chain_audit_and_next_contract_v1(self):
+    def test_current_status_describes_contract_v1_and_next_micro_story(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -71,12 +71,12 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "district_chain_contract_v1")
+        self.assertEqual(status["current_focus"], "district_chain_micro_story_001")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 194)
-        self.assertEqual(validation["validated_head"], "cc7cecace77eaa29f90b80549f6649e8f88c08a6")
-        self.assertEqual(validation["merged_commit"], "60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e")
+        self.assertEqual(validation["pull_request"], 196)
+        self.assertEqual(validation["validated_head"], "004d3fd60c9794f27d38e74eb298862c5fe10e35")
+        self.assertEqual(validation["merged_commit"], "ca5af40fb6bee1e90b1325bea8f6026fef8bc577")
 
         self.assertTrue(living_world["street_boundary_clamping_audit_validated"])
         self.assertTrue(living_world["street_replay_boundary_matrix_validated"])
@@ -91,11 +91,16 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         )
         self.assertTrue(living_world["district_event_chain_parent_source_replayable"])
         self.assertFalse(living_world["district_event_chain_biography_authority"])
-        self.assertFalse(living_world["district_event_chain_child_event_contract_present"])
+        self.assertTrue(living_world["district_event_chain_child_event_contract_present"])
+        self.assertEqual(living_world["district_event_chain_child_event_type"], "world.district_followup_resolved")
+        self.assertEqual(living_world["district_event_chain_parent_binding"], "causation_id=parent_event_id")
+        self.assertTrue(living_world["district_event_chain_district_must_match_parent"])
+        self.assertTrue(living_world["district_event_chain_exactly_once_retry_validated"])
+        self.assertTrue(living_world["district_event_chain_conflicting_retry_rejected"])
         self.assertFalse(living_world["district_event_chain_micro_story_implemented"])
         self.assertEqual(
             living_world["district_event_chain_next_contract"],
-            "0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1",
+            "0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001",
         )
 
         self.assertTrue(presentation["crew_identity_visual_consistency_validated"])

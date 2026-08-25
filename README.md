@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand District Chain Contract Audit validiert" src="https://img.shields.io/badge/Feature_Stand-DISTRICT--CHAIN--AUDIT_validiert-7dff00">
-  <img alt="Aktive Iteration District Chain Contract V1" src="https://img.shields.io/badge/Aktiv-DISTRICT--CHAIN--CONTRACT--V1-00c2ff">
+  <img alt="Feature Stand District Chain Contract V1 validiert" src="https://img.shields.io/badge/Feature_Stand-DISTRICT--CHAIN--CONTRACT--V1_validiert-7dff00">
+  <img alt="Aktive Iteration District Chain Micro Story 001" src="https://img.shields.io/badge/Aktiv-DISTRICT--CHAIN--MICRO--STORY--001-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,11 +26,11 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT` |
-| **Aktive Iteration** | 🟡 `0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1` |
-| **Danach** | Erst nach explizitem Child-Event-, Parent- und Exactly-once-Vertrag genau eine kleine District-Micro-Story ableiten |
-| **District-Kettenaudit** | ✅ bestätigte Parent-Evidenz vorhanden · Biography bleibt read-only · eigener katalogisierter Child-Eventtyp fehlt noch |
+| **Status-Sync-Anker** | PR #196 · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1` |
+| **Aktive Iteration** | 🟡 `0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001` |
+| **Danach** | Nach genau einer validierten Ursache→Folge-Geschichte Parent und Child read-only in bestehender Timeline/Biografie kausal zusammenführen |
+| **District-Kettenvertrag** | ✅ `world.district_followup_resolved` katalogisiert · Parent/District gebunden · Exactly-once-/Replay-Konflikt geprüft · noch keine Micro-Story |
 | **Avatar-Kette** | ✅ Profil → bestätigtes HUD → runtime-bestätigter eigener Map-Ort → eigener Hall-/Ranking-Eintrag · Chromium + Firefox · High Contrast + kleines Fenster validiert |
 | **Crew-Lesbarkeit** | ✅ HUD-, Map- und Ranking-Kurzmarken werden im echten Chromium-/Firefox-Harness gegen `0.34rem` und zusätzlich gegen reale Textabschneidung geprüft |
 | **Runtime-Owned Evidence** | ✅ derselbe bestätigte `property.purchase` ist in der vorhandenen Browser-Evidence an Location-, Event- und Ledger-Referenzen gebunden |
@@ -45,7 +45,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #194 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #196 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -78,7 +78,7 @@ PROPERTY / HALL OF TRIBUTE
 - append-only Journal, Save, Snapshot, Restart und Recovery
 - deterministische Street Encounters ohne Reload-Reroll
 - persistente District-Werte und cadence-geführte District World Events
-- bestätigte District-Parent-Evidenz für spätere Ketten; Biography bleibt read-only, Child-Eventvertrag ist noch bewusst offen
+- bestätigte District-Parent-Evidenz plus katalogisierter Child-Eventvertrag `world.district_followup_resolved`; Biography bleibt read-only, erste Micro-Story ist noch offen
 - Property Purchase + dreistufige Upgrades
 - Berlin Ops Map mit lokaler read-only Bedienung und validiertem `1:1`-Rückweg aus dem begrenzten Randfokus
 - Competitive Top 10 + Wochen-/Monatszyklen
@@ -222,6 +222,7 @@ Feature-Fortschritt auf `main` ist kein stiller Produktrelease. Eine neue Produk
 | Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Berlin-Erinnerungen | [`docs/LAIENHILFE_DISTRICT_BIO.md`](docs/LAIENHILFE_DISTRICT_BIO.md) |
 | District-Kettenaudit | [`docs/DISTRICT_EVENT_CHAIN_CONTRACT_AUDIT.md`](docs/DISTRICT_EVENT_CHAIN_CONTRACT_AUDIT.md) |
+| District-Chain Contract V1 | [`docs/DISTRICT_CHAIN_CONTRACT_V1.md`](docs/DISTRICT_CHAIN_CONTRACT_V1.md) |
 | Berlin Ops Map | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |
 | Safe Merge | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
 | Repository-Regeln | [`AGENTS.md`](AGENTS.md) |

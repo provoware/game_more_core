@@ -2,33 +2,33 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1",
-  "status": "0_8_8_story_district_event_chain_contract_audit_remote_validated_chain_contract_v1_active",
-  "current_focus": "district_chain_contract_v1",
-  "last_validated_feature_iteration": "0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT",
+  "active_iteration": "0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001",
+  "status": "0_8_8_story_district_chain_contract_v1_remote_validated_micro_story_001_active",
+  "current_focus": "district_chain_micro_story_001",
+  "last_validated_feature_iteration": "0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #194 / head cc7cecace77eaa29f90b80549f6649e8f88c08a6 / merge 60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e",
+  "validation_reference": "PR #196 / head 004d3fd60c9794f27d38e74eb298862c5fe10e35 / merge ca5af40fb6bee1e90b1325bea8f6026fef8bc577",
   "remote_validation": {
-    "status": "success_for_0.8.8_story_district_event_chain_contract_audit",
-    "pull_request": 194,
-    "validated_head": "cc7cecace77eaa29f90b80549f6649e8f88c08a6",
-    "runtime_core_workflow_run": 32892541565,
-    "presentation_core_workflow_run": 32892541534,
-    "repository_health_workflow_run": 32892541644,
-    "release_acceptance_workflow_run": 32892541531,
-    "release_package_workflow_run": 32892541606,
-    "status_sync_workflow_run": 32892541525,
+    "status": "success_for_0.8.8_story_district_chain_contract_v1",
+    "pull_request": 196,
+    "validated_head": "004d3fd60c9794f27d38e74eb298862c5fe10e35",
+    "runtime_core_workflow_run": 32903658835,
+    "presentation_core_workflow_run": 32903658824,
+    "repository_health_workflow_run": 32903658661,
+    "release_acceptance_workflow_run": 32903658782,
+    "release_package_workflow_run": 32903658769,
+    "status_sync_workflow_run": 32903658806,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e"
+    "merged_commit": "ca5af40fb6bee1e90b1325bea8f6026fef8bc577"
   },
   "status_sync": {
     "mode": "read_only_latest_relevant_safe_merge_anchor",
-    "anchor_pull_request": 194,
-    "anchor_merge_commit": "60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e",
-    "anchor_iteration": "0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT",
+    "anchor_pull_request": 196,
+    "anchor_merge_commit": "ca5af40fb6bee1e90b1325bea8f6026fef8bc577",
+    "anchor_iteration": "0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1",
     "canonical_documents": ["TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json"],
     "checker": "tools/status_sync.py",
     "workflow": ".github/workflows/status-sync.yml",
@@ -116,7 +116,8 @@
     {"iteration": "0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E", "pull_request": 188, "merged_commit": "2d4a608e765a47990030ec839407a1d80346f883", "feature": "avatar_context_computed_size_e2e"},
     {"iteration": "0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT", "pull_request": 190, "merged_commit": "3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db", "feature": "map_viewport_mini_overview_audit_no_fix"},
     {"iteration": "0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E", "pull_request": 192, "merged_commit": "f5132827d8d80522f952eb220db63047a091c77d", "feature": "avatar_context_text_clip_e2e"},
-    {"iteration": "0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT", "pull_request": 194, "merged_commit": "60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e", "feature": "district_event_chain_contract_audit"}
+    {"iteration": "0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT", "pull_request": 194, "merged_commit": "60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e", "feature": "district_event_chain_contract_audit"},
+    {"iteration": "0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1", "pull_request": 196, "merged_commit": "ca5af40fb6bee1e90b1325bea8f6026fef8bc577", "feature": "district_chain_child_event_contract_v1"}
   ],
   "subsystems": {
     "character_forge": {"status": "validated", "skills": 16, "trait_names": 165, "level_cap_before_resonance": 50, "profile_personalization": true, "crew_identity_logo_flag": true},
@@ -201,7 +202,7 @@
       "recovery_balance_audit_gameplay_changes": false
     },
     "living_world": {
-      "status": "district_event_chain_contract_audit_remote_validated",
+      "status": "district_chain_contract_v1_remote_validated",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -266,9 +267,15 @@
       "district_event_chain_parent_evidence_event_type": "world.district_effect_applied",
       "district_event_chain_parent_source_replayable": true,
       "district_event_chain_biography_authority": false,
-      "district_event_chain_child_event_contract_present": false,
+      "district_event_chain_child_event_contract_present": true,
+      "district_event_chain_child_event_type": "world.district_followup_resolved",
+      "district_event_chain_parent_binding": "causation_id=parent_event_id",
+      "district_event_chain_correlation_pattern": "district-chain:{parent_event_id}",
+      "district_event_chain_district_must_match_parent": true,
+      "district_event_chain_exactly_once_retry_validated": true,
+      "district_event_chain_conflicting_retry_rejected": true,
       "district_event_chain_micro_story_implemented": false,
-      "district_event_chain_next_contract": "0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1"
+      "district_event_chain_next_contract": "0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001"
     },
     "properties": {"status": "remote_validated_and_safe_merged", "purchase_iteration": "0.8.6-A", "upgrade_iteration": "0.8.6-B", "purchasable_locations": 7, "upgrade_types": 10, "max_upgrade_level": 3, "client_price_authority": false, "client_level_authority": false, "combined_recovery": true, "resale_supported": false, "rent_supported": false, "yield_supported": false},
     "ranking": {"status": "crew_identity_micro_polish_remote_validated", "seasonal_hall_iteration": "0.8.7-A", "seasonal_hall_pull_request": 87, "seasonal_hall_merge": "841258a37915e05d7f87eed7841c8e4b8d79bf46", "weekly_monthly_cycles": true, "system_time_sole_authority": false, "fake_local_champion_titles": false, "local_confirmed_crew_badge": true, "crew_badge_match": "entry.character_id_equals_hall.local_character_id", "foreign_crew_badges_invented": false},
@@ -406,10 +413,10 @@
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
   "next_iteration": null,
-  "next_goal": "0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1 definiert genau einen katalogisierten Child-Eventtyp, bindet Parent-event_id und district_id und legt Exactly-once-/Replay-Semantik fest; erst danach darf eine eigene Micro-Story entstehen.",
+  "next_goal": "0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001 erzeugt genau eine bestätigte Ursache-Folge-Geschichte auf world.district_followup_resolved, prüft District-Gleichheit vor Commit und bleibt bei Retry Exactly-once; keine generische zweite Kettenengine.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-25T19:59:18Z"
+  "updated_at": "2026-08-25T22:54:38Z"
 }
