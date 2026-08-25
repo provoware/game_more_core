@@ -145,12 +145,26 @@ def _avatar_context_harness() -> str:
       }, "Crew-Stylesheet geladen");
 
       const profileMark = d.getElementById("crew-identity-mark");
-      const nodes = [profileMark, hudMark, hallMark, mapMark];
-      if (nodes.some((node) => !node || node.getBoundingClientRect().width <= 0 || node.getBoundingClientRect().height <= 0)) {
-        throw new Error("Crew-Marke in mindestens einem Kontext ohne sichtbare Geometrie");
+      const contexts = [
+        ["Profil", profileMark],
+        ["HUD", hudMark],
+        ["Ranking", hallMark],
+        ["Map", mapMark]
+      ];
+      const invalidGeometry = contexts.flatMap(([label, node]) => {
+        if (!node) return [`${label}=fehlt`];
+        const rect = node.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0 ? [] : [`${label}=${rect.width.toFixed(1)}x${rect.height.toFixed(1)}`];
+      });
+      if (invalidGeometry.length) {
+        throw new Error("Crew-Geometrie ungültig: " + invalidGeometry.join(", "));
       }
-      if (nodes.some((node) => node.getBoundingClientRect().left < -1)) {
-        throw new Error("Crew-Marke ragt im kleinen Fenster links aus dem sichtbaren Bereich");
+      const leftOverflow = contexts.flatMap(([label, node]) => {
+        const rect = node.getBoundingClientRect();
+        return rect.left < -1 ? [`${label}=${rect.left.toFixed(1)}`] : [];
+      });
+      if (leftOverflow.length) {
+        throw new Error("Crew-Marke ragt links heraus: " + leftOverflow.join(", "));
       }
       if (markText(profileMark) !== "E2E") {
         throw new Error("Profilvorschau verlor die bestätigte Kurzmarke");
