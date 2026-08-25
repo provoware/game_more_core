@@ -93,7 +93,6 @@ class RuntimeOwnedEvidenceReceiptTests(unittest.TestCase):
         self.assertNotIn("owner_character_id", command)
 
     def test_desktop_evidence_parser_requires_confirmed_event_and_ledger_references(self):
-        receipt = acceptance.prepare_owned_map_fixture
         payload = {
             "location_id": "cheap",
             "command_type": "property.purchase",
