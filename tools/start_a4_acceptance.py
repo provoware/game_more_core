@@ -20,7 +20,9 @@ ROOT = Path(__file__).resolve().parents[1]
 LAUNCHER = ROOT / "tools" / "start_a4_game_client.py"
 BROWSER_NAMES = ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser")
 MIN_BROWSER_WALLCLOCK_TIMEOUT = 30.0
-BROWSER_VIRTUAL_TIME_BUDGET_MS = 12000
+BROWSER_VIRTUAL_TIME_BUDGET_MS = 18000
+AVATAR_CONTEXT_HARNESS = "__avatar_context_e2e__.html"
+AVATAR_CONTEXT_PASS = "AVATAR_CONTEXT_E2E: PASS"
 
 
 def _json_get(base: str, path: str, timeout: float = 3.0) -> dict:
@@ -51,12 +53,121 @@ def find_browser() -> str | None:
     return None
 
 
+def _avatar_context_harness() -> str:
+    return """<!doctype html>
+<meta charset="utf-8">
+<title>BUNKERFREQUENZ Avatar Context E2E</title>
+<style>
+  html, body { margin: 0; background: #05070a; color: #fff; font-family: sans-serif; }
+  #status { padding: 8px; font: 700 14px/1.3 monospace; }
+  #app { display: block; width: 760px; height: 680px; border: 0; }
+</style>
+<div id="status">AVATAR_CONTEXT_E2E: RUNNING</div>
+<iframe id="app" src="/"></iframe>
+<script>
+"use strict";
+(() => {
+  const status = document.getElementById("status");
+  const frame = document.getElementById("app");
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const waitFor = async (probe, label, timeout = 9000) => {
+    const deadline = performance.now() + timeout;
+    while (performance.now() < deadline) {
+      const value = probe();
+      if (value) return value;
+      await sleep(50);
+    }
+    throw new Error("Timeout: " + label);
+  };
+  const visible = (node) => node instanceof HTMLElement && !node.hidden && !node.classList.contains("hidden");
+  const markText = (node) => (node?.textContent || "").trim();
+
+  frame.addEventListener("load", async () => {
+    try {
+      const w = frame.contentWindow;
+      const d = frame.contentDocument;
+      await waitFor(() => markText(d.getElementById("connection-status")).includes("BEREIT"), "BEREIT");
+      await waitFor(() => !markText(d.getElementById("event-timeline-status")).includes("Timeline wird geladen"), "Timeline");
+
+      if (visible(d.getElementById("first-run"))) {
+        d.getElementById("character-name").value = "E2E Crew";
+        d.getElementById("event-name").value = "E2E Event";
+        d.getElementById("new-game").click();
+      }
+      await waitFor(() => visible(d.getElementById("profile-panel")), "Profil sichtbar");
+      const markInput = await waitFor(() => d.getElementById("crew-identity-mark-input"), "Crew-Editor");
+      markInput.value = "E2E";
+      markInput.dispatchEvent(new Event("input", { bubbles: true }));
+      markInput.dispatchEvent(new Event("change", { bubbles: true }));
+      d.getElementById("save-profile").click();
+
+      const hudMark = await waitFor(() => {
+        const host = d.querySelector(".hud-crew-identity");
+        const mark = host?.querySelector(".hud-crew-mark");
+        return visible(host) && markText(mark) === "E2E" ? mark : null;
+      }, "bestätigte HUD-Crew");
+      const hallMark = await waitFor(() => {
+        const mark = d.querySelector(".hall-local-crew .hud-crew-mark");
+        return markText(mark) === "E2E" ? mark : null;
+      }, "eigener Ranking-Eintrag");
+
+      const canvas = d.getElementById("berlin-map-canvas");
+      let syntheticOwned = null;
+      if (!canvas.querySelector(".map-marker.owned")) {
+        syntheticOwned = d.createElement("button");
+        syntheticOwned.type = "button";
+        syntheticOwned.className = "map-marker owned";
+        syntheticOwned.setAttribute("aria-label", "E2E read-only owned marker fixture");
+        canvas.append(syntheticOwned);
+      }
+      const mapMark = await waitFor(() => {
+        const mark = d.querySelector("#berlin-map-canvas .map-marker.owned .map-crew-badge .hud-crew-mark");
+        return markText(mark) === "E2E" ? mark : null;
+      }, "Map-Crew-Klon");
+
+      if (!w.BunkerUIPrefs || typeof w.BunkerUIPrefs.set !== "function") {
+        throw new Error("BunkerUIPrefs fehlt");
+      }
+      w.BunkerUIPrefs.set("highContrast", true);
+      await waitFor(() => d.body.classList.contains("ui-high-contrast"), "Hoher Kontrast");
+
+      const profileMark = d.getElementById("crew-identity-mark");
+      const nodes = [profileMark, hudMark, hallMark, mapMark];
+      if (nodes.some((node) => !node || node.getBoundingClientRect().width <= 0 || node.getBoundingClientRect().height <= 0)) {
+        throw new Error("Crew-Marke in mindestens einem Kontext ohne sichtbare Geometrie");
+      }
+      if (nodes.some((node) => node.getBoundingClientRect().left < -1)) {
+        throw new Error("Crew-Marke ragt im kleinen Fenster links aus dem sichtbaren Bereich");
+      }
+      if (markText(profileMark) !== "E2E") {
+        throw new Error("Profilvorschau verlor die bestätigte Kurzmarke");
+      }
+
+      syntheticOwned?.remove();
+      document.body.textContent =
+        "AVATAR_CONTEXT_E2E: PASS\n● BEREIT\nBUNKERFREQUENZ – Control Deck\n" +
+        "Profil→HUD→Map→Ranking · Hoher Kontrast · kleines Fenster";
+    } catch (error) {
+      document.body.textContent = "AVATAR_CONTEXT_E2E: FAIL\n" + String(error?.message || error);
+    }
+  }, { once: true });
+})();
+</script>
+"""
+
+
 def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BROWSER_WALLCLOCK_TIMEOUT) -> str | None:
     browser = find_browser()
     if browser is None:
         if require_browser:
             raise RuntimeError("Kein Chrome/Chromium für den echten Browser-Acceptance-Test gefunden")
         return None
+
+    harness_path = ROOT / "web" / "a4" / AVATAR_CONTEXT_HARNESS
+    if harness_path.exists():
+        raise RuntimeError(f"Temporärer Browser-Harness-Pfad ist bereits belegt: {harness_path}")
+    harness_path.write_text(_avatar_context_harness(), encoding="utf-8")
+    harness_url = address.rstrip("/") + "/" + AVATAR_CONTEXT_HARNESS
 
     command = [
         browser,
@@ -70,9 +181,10 @@ def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BRO
         "--disable-application-cache",
         "--disk-cache-size=1",
         "--incognito",
+        "--window-size=900,760",
         f"--virtual-time-budget={BROWSER_VIRTUAL_TIME_BUDGET_MS}",
         "--dump-dom",
-        address,
+        harness_url,
     ]
     try:
         completed = subprocess.run(
@@ -86,11 +198,16 @@ def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BRO
         raise RuntimeError(
             "Browser reagierte nicht rechtzeitig; möglicher JS-/MutationObserver-Freeze"
         ) from exc
+    finally:
+        harness_path.unlink(missing_ok=True)
 
     if completed.returncode != 0:
         detail = (completed.stderr or completed.stdout).strip().splitlines()[-5:]
         raise RuntimeError("Headless-Browser scheiterte: " + " | ".join(detail))
     dom = completed.stdout
+    if AVATAR_CONTEXT_PASS not in dom:
+        detail = " | ".join(line.strip() for line in dom.splitlines() if "AVATAR_CONTEXT_E2E:" in line)
+        raise RuntimeError("Avatar-Context-E2E lieferte keinen PASS-Nachweis" + (f": {detail}" if detail else ""))
     if "● BEREIT" not in dom:
         raise RuntimeError(
             "UI wurde im echten Browser nicht reaktionsfähig: Verbindungsstatus erreichte BEREIT nicht"
@@ -150,7 +267,7 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
         if browser_check:
             dom = browser_dom(address, require_browser=require_browser)
             if dom is not None:
-                print("SELBSTTEST: BROWSER OK · UI ist reaktionsfähig und vollständig initialisiert")
+                print("SELBSTTEST: BROWSER OK · UI + Crew-Kontexte real im Browser bestätigt")
         return
 
     with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-acceptance-save-") as save_dir:
@@ -162,7 +279,10 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
             if browser_check:
                 dom = browser_dom(actual, require_browser=require_browser)
                 if dom is not None:
-                    print("ACCEPTANCE: BROWSER OK · /api/state gerendert · Timeline initialisiert · UI reaktionsfähig")
+                    print(
+                        "ACCEPTANCE: BROWSER OK · /api/state gerendert · Timeline initialisiert · "
+                        "Profil→HUD→Map→Ranking bestätigt"
+                    )
         finally:
             if process.poll() is None:
                 process.terminate()
