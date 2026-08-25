@@ -18,7 +18,10 @@ from urllib.error import URLError
 from urllib.parse import urlsplit, urlunsplit
 from urllib.request import urlopen
 
-import start_a4_game_client as game_client
+TOOLS = Path(__file__).resolve().parent
+if str(TOOLS) not in sys.path:
+    sys.path.insert(0, str(TOOLS))
+import start_a4_game_client as game_client  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 LAUNCHER = ROOT / "tools" / "start_a4_game_client.py"
