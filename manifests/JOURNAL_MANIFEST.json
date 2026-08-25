@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.8-d2",
+  "version": "0.8.8-d3",
   "append_only": true,
   "canonical_order_key": ["sequence", "event_id"],
   "hash_chain": true,
@@ -51,6 +51,7 @@
     "world.location_discovered",
     "world.location_updated",
     "world.district_effect_applied",
+    "world.district_followup_resolved",
     "world.property_purchased",
     "world.property_upgraded",
     "event.created",
@@ -92,6 +93,7 @@
       "assistant.round_processed",
       "street.encounter_resolved",
       "world.district_effect_applied",
+      "world.district_followup_resolved",
       "world.property_purchased",
       "world.property_upgraded",
       "mission.completed",
