@@ -7,6 +7,7 @@ import argparse
 import json
 from pathlib import Path
 import queue
+import re
 import shutil
 import subprocess
 import sys
@@ -80,7 +81,7 @@ def _avatar_context_harness() -> str:
     }
     throw new Error("Timeout: " + label);
   };
-  const visible = (node) => node instanceof HTMLElement && !node.hidden && !node.classList.contains("hidden");
+  const visible = (node) => Boolean(node && !node.hidden && !node.classList.contains("hidden"));
   const markText = (node) => (node?.textContent || "").trim();
 
   frame.addEventListener("load", async () => {
@@ -162,6 +163,10 @@ def _avatar_context_url(address: str) -> str:
     return urlunsplit((parts.scheme, parts.netloc, "/" + AVATAR_CONTEXT_HARNESS, parts.query, ""))
 
 
+def _avatar_context_passed(dom: str) -> bool:
+    return re.search(r"<body(?:\s[^>]*)?>\s*AVATAR_CONTEXT_E2E: PASS(?:\s|<)", dom, flags=re.IGNORECASE) is not None
+
+
 def browser_dom(
     address: str,
     *,
@@ -221,9 +226,9 @@ def browser_dom(
         detail = (completed.stderr or completed.stdout).strip().splitlines()[-5:]
         raise RuntimeError("Headless-Browser scheiterte: " + " | ".join(detail))
     dom = completed.stdout
-    if avatar_context and AVATAR_CONTEXT_PASS not in dom:
+    if avatar_context and not _avatar_context_passed(dom):
         detail = " | ".join(line.strip() for line in dom.splitlines() if "AVATAR_CONTEXT_E2E:" in line)
-        raise RuntimeError("Avatar-Context-E2E lieferte keinen PASS-Nachweis" + (f": {detail}" if detail else ""))
+        raise RuntimeError("Avatar-Context-E2E lieferte keinen ausgeführten PASS-Nachweis" + (f": {detail}" if detail else ""))
     if "● BEREIT" not in dom:
         raise RuntimeError(
             "UI wurde im echten Browser nicht reaktionsfähig: Verbindungsstatus erreichte BEREIT nicht"
