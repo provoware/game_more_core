@@ -88,4 +88,4 @@ Der schreibende Identitätslauf ist ausschließlich an intern erzeugte temporär
 
 ## Spätere sinnvolle Erweiterung
 
-Falls nach weiteren echten Browserläufen ein konkreter visueller Restbefund sichtbar wird, sollte als nächster Presentation-Slice ausschließlich dessen berechnete Geometrie oder Lesbarkeit regressionsgesichert werden. Ohne reproduzierbaren Befund bleibt die Crew-Identität unverändert; eine pauschale Neugestaltung wäre unnötig.
+**AVATAR-CONTEXT-COMPUTED-SIZE-E2E:** Der bestehende Chromium-/Firefox-Harness kann später zusätzlich die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking auslesen und fail-closed prüfen, dass kein kompakter Kontext unter die gemeinsame `0.34rem`-Untergrenze fällt. Nutzen: Nicht nur der CSS-Quelltext, sondern die im echten Browser wirksame Kaskade würde Größen-Drift erkennen. Begründung: Media Queries oder spätere spezifischere Selektoren könnten den Quelltextvertrag sonst unbemerkt übersteuern, obwohl die statische Regression grün bleibt.
