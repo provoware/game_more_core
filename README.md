@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Avatar Context Firefox validiert" src="https://img.shields.io/badge/Feature_Stand-AVATAR--CONTEXT--FIREFOX_validiert-7dff00">
-  <img alt="Aktive Iteration Runtime Owned Map E2E Fixture" src="https://img.shields.io/badge/Aktiv-RUNTIME--OWNED--MAP--E2E-00c2ff">
+  <img alt="Feature Stand Runtime Owned Map E2E validiert" src="https://img.shields.io/badge/Feature_Stand-RUNTIME--OWNED--MAP--E2E_validiert-7dff00">
+  <img alt="Aktive Iteration Runtime Owned Evidence Receipt" src="https://img.shields.io/badge/Aktiv-RUNTIME--OWNED--EVIDENCE-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,15 +26,15 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-UX-AVATAR-CONTEXT-FIREFOX` |
-| **Aktive Iteration** | 🟡 `0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE` |
+| **Status-Sync-Anker** | PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE` |
+| **Aktive Iteration** | 🟡 `0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT` |
 | **Danach** | nur konkrete Crew-Identity-Micro-Polish-Befunde aus echten E2E-Läufen bearbeiten |
-| **Avatar-Kette** | ✅ Profil → bestätigtes HUD → eigene Map-Orte → eigener Hall-/Ranking-Eintrag · Chromium + Firefox · High Contrast + kleines Fenster validiert |
+| **Avatar-Kette** | ✅ Profil → bestätigtes HUD → runtime-bestätigter eigener Map-Ort → eigener Hall-/Ranking-Eintrag · Chromium + Firefox · High Contrast + kleines Fenster validiert |
 | **Living World** | ✅ replaybare Street Encounters · 16 Begegnungen · vier Ansatzprofile · Grenz-/Replay-/Verteilungsaudits |
 | **Ranking** | ✅ Competitive Top 10 · bestätigte Wochen-/Monatszyklen · lokale Crew-Marke nur am eigenen Eintrag |
-| **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
-| **Berlin Ops Map** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan · Crew-Marke an eigenem Besitz |
+| **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 · Runtime-Owned-Map-E2E bestätigt |
+| **Berlin Ops Map** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan · Crew-Marke an runtime-bestätigtem eigenem Besitz |
 | **Scene Jobs** | ✅ persönliches Bargeld · Anti-Grind · Lohnvorschau · zwei Recovery-Wahlen |
 | **Assistent** | ✅ sichere Steuerung · bestätigte Rundenausführung · Freundschafts-Nachhall |
 | **Bank & Kontoauszug** | ✅ Wallet↔Bank · Sparzins · read-only TXT/CSV-Export |
@@ -42,7 +42,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #179 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #181 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -82,7 +82,7 @@ PROPERTY / HALL OF TRIBUTE
 - Crew-Logo/Fahne als kleines synchronisierbares Identitätsrezept statt Bildblob
 - bestätigte Crew-Identität im Profil, HUD, auf eigenem Kartenbesitz und im eigenen Ranking-Eintrag
 - gemeinsame High-Contrast-Außenkante und klare Kurzmarken-Trennung für die bestätigte Crew-Identität
-- echter Chromium- und nativer Firefox-Acceptance-Pfad für Profil → HUD → Map-Klon → eigenen Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
+- echter Chromium- und nativer Firefox-Acceptance-Pfad für Profil → HUD → runtime-bestätigten Map-Besitz → eigenen Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
 - Scene Jobs, persönliches Bargeld, Bank, Sparzins und Kontoauszug
 - Secret Best Friend Assistant auf bestehenden Scene-Job-/Rundenverträgen
 - lokale Presentation-FX ausschließlich nach bestätigten Runtime-Ergebnissen
