@@ -289,7 +289,7 @@
     border-right: 0;
   }
 
-  .hud-brand > span,
+  .hud-brand > span:not(.hud-crew-identity),
   .hud-brand > strong {
     display: none;
   }
