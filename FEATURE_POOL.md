@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1`
+- **Status-Sync-Anker:** PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15`
 
 ## Statuswerte
 
@@ -40,9 +40,9 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT:** PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15` · High-Contrast-Grenzen und Kurzmarken über Profil, HUD/Map-Klon und eigenen Ranking-Eintrag vereinheitlicht
 - **0.8.8-UX-AVATAR-RANKING-PRESENCE:** PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1` · bestätigte Crew-Marke ausschließlich am eigenen `local_character_id`-Ranking-Eintrag
 - **0.8.8-UX-AVATAR-MAP-PRESENCE:** PR #172 · Merge `d2a1452b4ee6094584d0c63a94a85773c2821890` · bestätigte Crew-Marke read-only an eigenen Orten und im Map-Detail
-- **0.8.8-UX-AVATAR-STICKY-OFFSET-FIX:** PR #171 · Merge `6d42e3b6ba180a4f97a9ab89a03265e01adc0980` · mittlere Fensterbreiten bleiben unter HUD + Quick-Navigation überlagerungsfrei
 - **0.8.8-CONFIRMED-EVENT-FX:** PR #169 · Merge `6259237050454526366cdf83c4ed4b19e6818b3b` · bestätigte Street-/Recovery-/Krisenergebnisse erhalten lokale visuelle Rückmeldung
 - **0.8.8-STREET-BOUNDARY-DISTRIBUTION-REPORT:** PR #168 · Merge `d00ac7675a5a6a125cd0713789d51386ccd10205` · alle 100 Auswahl-Buckets entsprechen exakt den deklarierten Gewichten
 
@@ -78,8 +78,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-STREET-005` | `DONE` | Scout-Balance nach Effekt-Audit | Scout als Discovery-Tradeoff statt dominierte Scheinwahl | PR #156 sicher gemergt; bestehende Engine/Invarianten erhalten |
 | `POOL-QA-010` | `DONE` | Street-Effekt-Grenzzustandsaudit | Clamping und Replay an realen Grenzwerten beweisen | PRs #158–#163 plus Bucket-Nachweis #168; test-only |
 | `POOL-QA-006` | `DONE` | Status-Sync nach Safe Merge automatisieren | Drift der drei kanonischen Statusdateien automatisch erkennen | read-only Git-Anker; kein direkter Bot-Push auf `main` |
-| `POOL-UX-008` | `READY` | Avatar Visual Consistency Audit | Profil, HUD, Karte und Ranking visuell vereinheitlichen | nur konkrete Presentation-Inkonsistenzen; keine neue Avatarquelle |
-| `POOL-QA-011` | `READY` | Avatar Context Browser E2E | bestätigte Identität durch Profil → HUD → Map → Ranking beweisen | Browser-Nachweis, keine neue Fachlogik |
+| `POOL-UX-008` | `DONE` | Avatar Visual Consistency Audit | Profil, HUD, Karte und Ranking visuell vereinheitlichen | PR #175 sicher gemergt; nur konkrete Presentation-Inkonsistenzen |
+| `POOL-QA-011` | `PULLED` | Avatar Context Browser E2E | bestätigte Identität durch Profil → HUD → Map → Ranking beweisen | Browser-Nachweis, keine neue Fachlogik |
 
 ---
 
@@ -114,4 +114,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-UX-008` ist als nächste kleine Iteration vorbereitet: Profil, HUD, Karte und Ranking gemeinsam auf Größenverhältnisse, Kontrast, Kurzmarken-Clipping, High Contrast und Reduced Motion prüfen. Danach folgt `POOL-QA-011` als echter Browser-Nachweis derselben bestätigten Crew-Identität. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig.
+`POOL-QA-011` ist als nächste kleine Iteration gezogen: dieselbe bestätigte Crew-Identität soll im echten Browserpfad Profil → HUD → eigener Map-Ort → eigener Ranking-Eintrag inklusive kleinem Fenster, Hohem Kontrast und bestätigter Profiländerung nachgewiesen werden. `POOL-COMPANION-003` bleibt weiterhin vom echten kanonischen Rundenproduzenten abhängig. `POOL-QA-012` bleibt nur eine spätere Automationsidee und darf niemals direkt `main` beschreiben.
