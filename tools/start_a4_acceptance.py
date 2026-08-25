@@ -30,6 +30,7 @@ MIN_BROWSER_WALLCLOCK_TIMEOUT = 30.0
 BROWSER_VIRTUAL_TIME_BUDGET_MS = 18000
 AVATAR_CONTEXT_HARNESS = "__avatar_context_e2e__.html"
 AVATAR_CONTEXT_PASS = "AVATAR_CONTEXT_E2E: PASS"
+OWNED_EVIDENCE_PREFIX = "ACCEPTANCE_OWNED_EVIDENCE: "
 
 
 def _json_get(base: str, path: str, timeout: float = 3.0) -> dict:
@@ -60,8 +61,12 @@ def find_browser() -> str | None:
     return None
 
 
-def prepare_owned_map_fixture(save_dir: str | Path) -> str:
-    """Create isolated confirmed ownership through the canonical runtime purchase path."""
+def prepare_owned_map_fixture(
+    save_dir: str | Path,
+    *,
+    include_evidence: bool = False,
+) -> str | dict[str, object]:
+    """Create isolated confirmed ownership; optionally expose canonical purchase evidence."""
     runtime = game_client.A4ClientRuntime(Path(save_dir))
     locations = [
         item
@@ -104,7 +109,61 @@ def prepare_owned_map_fixture(save_dir: str | Path) -> str:
             "Avatar-Context-E2E konnte Eigentum nicht über property.purchase bestätigen: "
             f"{result.error_code or result.status}"
         )
-    return location["location_id"]
+    if not include_evidence:
+        return location["location_id"]
+
+    ownership = (result.metadata or {}).get("property")
+    if not isinstance(ownership, dict) or ownership.get("location_id") != location["location_id"]:
+        raise RuntimeError("Runtime-Owned-Evidence besitzt keinen bestätigten Property-Ownership-Record")
+    transaction_id = ownership.get("economy_transaction_id")
+    if not isinstance(transaction_id, str) or not transaction_id:
+        raise RuntimeError("Runtime-Owned-Evidence besitzt keine Economy-Transaktionsreferenz")
+    state = runtime.session.read_state()
+    economy = state.get("economy")
+    ledger = economy.get("ledger") if isinstance(economy, dict) else None
+    if not isinstance(ledger, list):
+        raise RuntimeError("Runtime-Owned-Evidence besitzt kein bestätigtes Economy-Ledger")
+    ledger_entry = next(
+        (entry for entry in ledger if isinstance(entry, dict) and entry.get("transaction_id") == transaction_id),
+        None,
+    )
+    if not isinstance(ledger_entry, dict) or ledger_entry.get("kind") != "property_purchase":
+        raise RuntimeError("Runtime-Owned-Evidence findet keine bestätigte Property-Kaufbuchung")
+    expected_item_id = f"property:{location['location_id']}"
+    if ledger_entry.get("item_id") != expected_item_id:
+        raise RuntimeError("Runtime-Owned-Evidence-Ledger verweist auf eine andere Property")
+    confirmed_price = ownership.get("purchase_price_cents")
+    if (
+        ledger_entry.get("unit_price_cents") != confirmed_price
+        or confirmed_price != location["purchase_price_cents"]
+    ):
+        raise RuntimeError("Runtime-Owned-Evidence-Ledger besitzt einen widersprüchlichen Kaufpreis")
+    committed = list(result.committed_event_ids)
+    property_event_id = f"{command_id}:property"
+    economy_event_id = f"{command_id}:economy"
+    if property_event_id not in committed or economy_event_id not in committed:
+        raise RuntimeError("Runtime-Owned-Evidence besitzt nicht beide bestätigten Property-/Economy-Ereignisse")
+
+    return {
+        "location_id": location["location_id"],
+        "command_type": "property.purchase",
+        "command_id": command_id,
+        "status": result.status,
+        "property_event_id": property_event_id,
+        "economy_event_id": economy_event_id,
+        "committed_event_ids": committed,
+        "economy_transaction_id": transaction_id,
+        "ledger_kind": ledger_entry.get("kind"),
+        "ledger_item_id": ledger_entry.get("item_id"),
+        "purchase_price_cents": ledger_entry.get("unit_price_cents"),
+        "owner_character_id": ownership.get("owner_character_id"),
+        "event_id": ownership.get("event_id"),
+    }
+
+
+def _print_owned_evidence(receipt: dict[str, object]) -> None:
+    print(f"ACCEPTANCE: RUNTIME-OWNED MAP FIXTURE OK · {receipt['location_id']}")
+    print(OWNED_EVIDENCE_PREFIX + json.dumps(receipt, ensure_ascii=False, sort_keys=True))
 
 
 def _avatar_context_harness() -> str:
@@ -292,9 +351,7 @@ def browser_dom(
             timeout=max(timeout, MIN_BROWSER_WALLCLOCK_TIMEOUT),
         )
     except subprocess.TimeoutExpired as exc:
-        raise RuntimeError(
-            "Browser reagierte nicht rechtzeitig; möglicher JS-/MutationObserver-Freeze"
-        ) from exc
+        raise RuntimeError("Browser reagierte nicht rechtzeitig; möglicher JS-/MutationObserver-Freeze") from exc
     finally:
         if harness_path is not None:
             harness_path.unlink(missing_ok=True)
@@ -307,15 +364,11 @@ def browser_dom(
         detail = " | ".join(line.strip() for line in dom.splitlines() if "AVATAR_CONTEXT_E2E:" in line)
         raise RuntimeError("Avatar-Context-E2E lieferte keinen ausgeführten PASS-Nachweis" + (f": {detail}" if detail else ""))
     if "● BEREIT" not in dom:
-        raise RuntimeError(
-            "UI wurde im echten Browser nicht reaktionsfähig: Verbindungsstatus erreichte BEREIT nicht"
-        )
+        raise RuntimeError("UI wurde im echten Browser nicht reaktionsfähig: Verbindungsstatus erreichte BEREIT nicht")
     if "BUNKERFREQUENZ – Control Deck" not in dom:
         raise RuntimeError("Control-Deck-DOM fehlt im Browserergebnis")
     if "Timeline wird geladen" in dom:
-        raise RuntimeError(
-            "UI erreichte zwar BEREIT, aber die Timeline blieb im Initialzustand; möglicher nachgelagerter JS-Freeze"
-        )
+        raise RuntimeError("UI erreichte zwar BEREIT, aber die Timeline blieb im Initialzustand; möglicher nachgelagerter JS-Freeze")
     return dom
 
 
@@ -370,8 +423,9 @@ def run(address: str | None, *, browser_check: bool, require_browser: bool) -> N
 
     with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-acceptance-save-") as save_dir:
         if browser_check:
-            owned_location = prepare_owned_map_fixture(save_dir)
-            print(f"ACCEPTANCE: RUNTIME-OWNED MAP FIXTURE OK · {owned_location}")
+            owned_receipt = prepare_owned_map_fixture(save_dir, include_evidence=True)
+            assert isinstance(owned_receipt, dict)
+            _print_owned_evidence(owned_receipt)
         process = _start_server(save_dir)
         try:
             actual = _wait_for_address(process)
@@ -405,11 +459,12 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.prepare_owned_map_fixture is not None:
         try:
-            location_id = prepare_owned_map_fixture(args.prepare_owned_map_fixture)
+            receipt = prepare_owned_map_fixture(args.prepare_owned_map_fixture, include_evidence=True)
+            assert isinstance(receipt, dict)
         except (RuntimeError, OSError, URLError, json.JSONDecodeError) as exc:
             print(f"START-SELBSTTEST FEHLGESCHLAGEN – {exc}", file=sys.stderr)
             return 1
-        print(f"ACCEPTANCE: RUNTIME-OWNED MAP FIXTURE OK · {location_id}")
+        _print_owned_evidence(receipt)
         return 0
     try:
         run(args.address, browser_check=not args.no_browser_check, require_browser=args.require_browser)
