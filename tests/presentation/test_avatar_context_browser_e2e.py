@@ -38,6 +38,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         self.assertIn('href.endsWith("/crew_identity.css")', source)
         self.assertIn('w.getComputedStyle(hudPreview)', source)
         self.assertIn('hudStyle.borderTopColor !== "rgb(255, 255, 255)"', source)
+        self.assertIn('Crew-Geometrie ungültig:', source)
         self.assertNotIn('fetch("/api/command")', source)
         self.assertNotIn("property.purchase", source)
         self.assertNotIn('"Timeline wird geladen"', source)
@@ -47,6 +48,8 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         block = CREW_STYLES[CREW_STYLES.index(media):CREW_STYLES.index('@media (min-width: 721px)')]
         self.assertIn('.hud-brand {\n    display: block;', block)
         self.assertIn('position: absolute;', block)
+        self.assertIn('.hud-brand > span:not(.hud-crew-identity)', block)
+        self.assertNotIn('.hud-brand > span,\n', block)
         self.assertIn('.ops-hud > .hud-metric:first-of-type', block)
         self.assertIn('padding-left: 3.15rem;', block)
         self.assertIn('.hud-crew-identity {\n    position: static;', block)
