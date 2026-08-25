@@ -26,13 +26,13 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #179
+## Praktisches Beispiel nach PR #181
 
-PR #179 hat den bereits in Chromium bewiesenen Identitätslauf auch im vorhandenen nativen Firefox-/Geckodriver-Pfad bestätigt: **Profil → HUD → Map-Fixture → eigener Ranking-Eintrag**, zusätzlich Hoher Kontrast und kleines Fenster. Der fachliche Merge ist `8988e2883b842d29acc12e7e40140cfc4b46e304`.
+PR #181 hat die letzte künstliche Besitzannahme aus dem Avatar-Browsernachweis entfernt. Der isolierte Acceptance-Spielstand erzeugt Eigentum jetzt über den vorhandenen Runtime-Pfad `property.purchase`; die bestätigte Projection erzeugt anschließend den echten `.map-marker.owned`. Chromium und Firefox prüfen darauf die vorhandene Crew-Marke. Der fachliche Merge ist `48f16864c319123e8ae4bcd04ba446aaa6ff153d`.
 
-Direkt danach standen die drei kanonischen Statusdateien noch auf PR #177. Genau diese Abweichung meldet der Status-Sync als Drift. Die Korrektur übernimmt deshalb PR #179 in alle drei Statusquellen, setzt `POOL-QA-013` auf `DONE` und zieht als nächsten unabhängigen QA-Punkt die echte Runtime-Owned-Map-Fixture. Dabei werden weder Firefox-Harness noch CSS, Gameplay, Save, Journal oder Property-Logik verändert.
+Direkt danach standen die drei kanonischen Statusdateien noch auf PR #179 und beschrieben die Runtime-Owned-Map-Fixture weiterhin als offene Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift. Die Korrektur übernimmt deshalb PR #181 in alle drei Statusquellen, setzt `POOL-QA-014` auf `DONE` und zieht als nächsten kleinen read-only QA-Punkt `POOL-QA-015 – Runtime-Owned Evidence Receipt`.
 
-Wichtig: Der nächste Map-E2E-Schritt darf einen echten Eigentumszustand nur über einen kanonischen Testspielstand erzeugen. Der Status-Sync selbst erzeugt keinen Besitz und ersetzt keine Runtime-Autorität.
+Wichtig: Dieser Status-Sync verändert weder Property-Kauf noch Browser-Harness. Er dokumentiert nur den bereits bestätigten Zustand. Der nächste Evidence-Slice darf ebenfalls ausschließlich vorhandene Fixture-/Property-/Ledger-Daten lesen und keine zweite Besitz- oder Receipt-Autorität erzeugen.
 
 ## Für Entwickler
 
@@ -48,7 +48,7 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. Sie prüft neben Drift und erweiterten Status-Sync-Slices auch den minimalen Drei-Dateien-Fall. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool und nächste aktive Arbeit zusammenpassen.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. Sie prüft neben Drift und erweiterten Status-Sync-Slices auch den minimalen Drei-Dateien-Fall. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool, Runtime-Owned-Map-Vertrag und nächste aktive Arbeit zusammenpassen.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
