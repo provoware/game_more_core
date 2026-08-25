@@ -19,6 +19,7 @@ from urllib.request import Request, urlopen
 import zipfile
 
 from build_release import build
+import start_a4_acceptance as acceptance
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_NAME = "DESKTOP_BROWSER_E2E_EVIDENCE.json"
@@ -290,7 +291,13 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
     if not firefox or not geckodriver:
         raise RuntimeError("Nativer Firefox und Geckodriver müssen für MULTI-BROWSER-E2E vorhanden sein")
 
+    harness_path = product_root / "web" / "a4" / acceptance.AVATAR_CONTEXT_HARNESS
+    if harness_path.exists():
+        raise RuntimeError(f"Temporärer Firefox-Harness-Pfad ist bereits belegt: {harness_path}")
+    harness_path.write_text(acceptance._avatar_context_harness(), encoding="utf-8")
+
     server, address = _start_packaged_server(product_root, root / "server")
+    target_url = acceptance._avatar_context_url(address)
     port = _free_loopback_port()
     driver = subprocess.Popen(
         [geckodriver, "--host", "127.0.0.1", "--port", str(port), "--log", "fatal"],
@@ -322,8 +329,14 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
         session_id = value["sessionId"]
         _webdriver_json(
             "POST",
+            f"{base}/session/{session_id}/window/rect",
+            {"width": 900, "height": 760},
+            timeout=FIREFOX_WEBDRIVER_CALL_TIMEOUT_SECONDS,
+        )
+        _webdriver_json(
+            "POST",
             f"{base}/session/{session_id}/url",
-            {"url": address},
+            {"url": target_url},
             timeout=FIREFOX_NAVIGATION_TIMEOUT_SECONDS,
         )
 
@@ -345,14 +358,16 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
             body_value = result.get("value")
             body_text = body_value if isinstance(body_value, str) else ""
             if (
-                "● BEREIT" in body_text
+                acceptance.AVATAR_CONTEXT_PASS in body_text
+                and "● BEREIT" in body_text
                 and "BUNKERFREQUENZ" in body_text
-                and "Timeline wird geladen" not in body_text
             ):
                 break
+            if "AVATAR_CONTEXT_E2E: FAIL" in body_text:
+                raise RuntimeError("Firefox Avatar-Context-E2E meldete: " + body_text.strip())
             time.sleep(0.25)
         else:
-            raise RuntimeError("Firefox-DOM erreichte den bestätigten BEREIT-Zustand nicht innerhalb der Cold-Start-Grenze")
+            raise RuntimeError("Firefox erreichte den bestätigten Avatar-Context-PASS nicht innerhalb der Cold-Start-Grenze")
 
         health = _webdriver_json(
             "POST",
@@ -372,8 +387,12 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
             "dom_ready": True,
             "ui_responsive": True,
             "health_ready": True,
+            "avatar_context_pass": True,
+            "small_viewport": True,
+            "high_contrast": True,
         }
     finally:
+        harness_path.unlink(missing_ok=True)
         if session_id is not None:
             try:
                 _webdriver_json("DELETE", f"{base}/session/{session_id}", timeout=5.0)
@@ -453,6 +472,8 @@ def run(output_dir: Path, prior_subgate: Path) -> dict[str, object]:
             "real_clickstart_orchestrator",
             "real_chromium_dom_ready",
             "real_firefox_dom_ready",
+            "firefox_avatar_context_profile_hud_map_ranking",
+            "firefox_avatar_context_high_contrast_small_viewport",
             "same_candidate_sha_across_browsers",
             "post_start_shutdown",
             "anti_flake_quarantine",
