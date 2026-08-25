@@ -63,6 +63,10 @@ Der Ansatz verändert nur die Wahrscheinlichkeit katalogisierter Begegnungen. De
 
 Die Map zeigt 8 Districts, 12 Orte, District-Werte, Score/Tier, Eigentum, Ausbauten und Hall of Tribute. Die Karte selbst schreibt keine Gameplaywerte. Kaufen und Ausbauen erfolgt weiterhin im Property-Bereich.
 
+Die Kartenansicht darf lokal gezoomt und verschoben werden. Bei einem stark am Rand liegenden Ort kann **AUSWAHL FOKUS** den Ort wegen der absichtlich begrenzten Verschiebung weiterhin deutlich außerhalb der Kartenmitte lassen. Das ist kein verlorener Spielzustand. Für sofortige Orientierung drückst du **1:1**: Dadurch werden Zoom und Verschiebung vollständig auf die Gesamtansicht zurückgesetzt.
+
+Eine zusätzliche Miniübersicht wird deshalb nicht auf Verdacht eingebaut. Erst wenn der vorhandene **1:1**-Rückweg bei einem realen Bedienablauf nicht ausreicht, ist eine zweite Orientierungshilfe sinnvoll.
+
 ## 7. Immobilien und Ausbau
 
 Bei kaufbaren Orten gibt es **ÜBERNEHMEN**. Preis und Eigentümer bestimmt der Spielkern. Eigene Orte können über katalogisierte Ausbauarten bis Level 3 verbessert werden. Der Browser darf weder Preis noch Ziellevel erfinden.
