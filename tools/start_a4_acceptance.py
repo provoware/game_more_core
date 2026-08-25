@@ -88,7 +88,7 @@ def _avatar_context_harness() -> str:
       const w = frame.contentWindow;
       const d = frame.contentDocument;
       await waitFor(() => markText(d.getElementById("connection-status")).includes("BEREIT"), "BEREIT");
-      await waitFor(() => !markText(d.getElementById("event-timeline-status")).includes("Timeline wird geladen"), "Timeline");
+      await waitFor(() => !markText(d.getElementById("event-timeline-status")).includes("Timeline wird " + "geladen"), "Timeline");
 
       if (visible(d.getElementById("first-run"))) {
         d.getElementById("character-name").value = "E2E Crew";
