@@ -58,6 +58,14 @@ Firefox muss anschließend denselben ausgeführten `AVATAR_CONTEXT_E2E: PASS` li
 
 Ein bloß geladener Scripttext reicht nicht: Erst der tatsächlich ausgeführte PASS beendet den Firefox-Slice erfolgreich. Meldet der Harness `FAIL`, wird der Release-Browser-Nachweis sofort rot.
 
+## Micro-Polish: Warum wurde die Ranking-Kurzmarke leicht vergrößert?
+
+Der gezielte visuelle Audit fand genau eine reproduzierbare Größenabweichung: Die kurze Crew-Kennung im eigenen Ranking-Eintrag war mit `0.30rem` kleiner als die bereits für kompakte HUD-/Map-Kontexte verwendete Untergrenze von `0.34rem`.
+
+Darum wurde **nur** diese eine Schriftgröße auf `0.34rem` angehoben. Das verändert weder den Ranking-Eintrag noch die Crew-Identität selbst. Es sorgt lediglich dafür, dass dieselbe kurze Kennung in den kleinen bestätigten Kontexten nicht unnötig unterschiedlich klein dargestellt wird.
+
+Eine direkte Presentation-Regression schützt diese Untergrenze. High Contrast, Reduced Motion, Profilvorschau, HUD, Map-Klon, Ranking-Datenquelle und alle Runtime-Verträge bleiben unverändert.
+
 ## Schutz echter Spielstände
 
 Wird `start_a4_acceptance.py` mit `--address` gegen eine bereits laufende Session verwendet, läuft **nur der read-only Browsercheck**. In diesem Modus wird kein Testspielstand vorbereitet, kein Eigentum gekauft, kein Profilfeld verändert und kein Testcharakter angelegt.
@@ -80,4 +88,4 @@ Der schreibende Identitätslauf ist ausschließlich an intern erzeugte temporär
 
 ## Spätere sinnvolle Erweiterung
 
-Eine spätere kleine QA-Erweiterung könnte den bereits bestätigten Runtime-Owned-Kontext zusätzlich mit einem kompakten Evidence-Nachweis versehen: `location_id`, bestätigter `property.purchase`-Status und die dazugehörigen bereits vorhandenen Journal-/Ledger-Ereignisse. Das würde die Provenienz des Browsernachweises noch leichter prüfbar machen, ohne neue Gameplay- oder Besitzlogik einzuführen.
+**AVATAR-CONTEXT-COMPUTED-SIZE-E2E:** Der bestehende Chromium-/Firefox-Harness kann später zusätzlich die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking auslesen und fail-closed prüfen, dass kein kompakter Kontext unter die gemeinsame `0.34rem`-Untergrenze fällt. Nutzen: Nicht nur der CSS-Quelltext, sondern die im echten Browser wirksame Kaskade würde Größen-Drift erkennen. Begründung: Media Queries oder spätere spezifischere Selektoren könnten den Quelltextvertrag sonst unbemerkt übersteuern, obwohl die statische Regression grün bleibt.
