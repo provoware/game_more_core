@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT` · PR #183 · Head `5dbfefd8cc1453fa7084a9d4e7bc37f4aba24bf0` · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #183; Chromium und Firefox prüfen runtime-bestätigtes Eigentum und die vorhandene Release-Evidence bindet denselben Kauf an Property-/Ledger-Referenzen
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT`
+- **Status-Sync-Anker:** PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT` · PR #185 · Head `bdec854bdfa29b354f84761d25de84c9a4c4616a` · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #185; Chromium und Firefox prüfen die bestätigte Crew-Identität, Runtime-Owned-Eigentum ist evidence-gebunden und die kompakte Ranking-Kurzmarke hält nun dieselbe `0.34rem`-Untergrenze wie das kleine HUD
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -109,6 +109,7 @@
 - [x] derselbe Identitäts-Harness im vorhandenen nativen Firefox-/Geckodriver-Pfad inklusive kleinem Fenster und Hohem Kontrast; PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304`
 - [x] isolierter Acceptance-Spielstand kauft deterministisch über `property.purchase`; Map-Avatar wird an runtime-bestätigtem Eigentum geprüft, kein künstlicher `.owned`-DOM-Marker; PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d`
 - [x] vorhandene Chromium-/Firefox-Evidence bindet `location_id`, bestätigten `property.purchase`, Event-IDs und passende `property_purchase`-Ledger-Buchung an denselben Runtime-Owned-Kontext; PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`
+- [x] kompakte Ranking-Kurzmarke auf denselben `0.34rem`-Lesbarkeitsboden wie das kleine HUD angehoben; keine andere Crew-Geometrie verändert; PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433`
 
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
@@ -120,23 +121,24 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E
 
 ## Fortschritt
 
-**0 %** – Chromium, Firefox, Runtime-Owned-Map und Evidence-Provenienz sind vollständig remote validiert; offen ist nur ein gezielter visueller Audit der bereits bestehenden Crew-Marken in den bewiesenen Kontexten.
+**0 %** – die sichtbare `0.34rem`-Untergrenze ist statisch regressionsgesichert; offen ist der echte Browsernachweis, dass Chromium und Firefox diese Untergrenze in HUD, Map und Ranking nach CSS-Kaskade tatsächlich berechnen.
 
 ## Ziel
 
-Nur reproduzierbare Restprobleme bei Größe, Abstand oder Clipping der bestehenden Crew-Identität identifizieren und gegebenenfalls mit dem kleinsten Presentation-Patch beheben, ohne Avatar-, Map-, Ranking- oder Fetch-Architektur neu zu bauen.
+Den bestehenden Avatar-Context-Harness minimal erweitern, sodass er die berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking ausliest und fail-closed unter `0.34rem` geht, ohne neues Browserframework oder zweite Identity-Logik.
 
 ## Abnahme
 
-- [ ] Profil, HUD, runtime-bestätigter eigener Map-Ort und eigener Ranking-Eintrag mit bestehendem Chromium-/Firefox-Harness prüfen
-- [ ] nur konkret reproduzierte Größen-, Abstands- oder Clipping-Befunde ändern
-- [ ] kein neuer Fetch, keine zweite Identity-Projection, keine Gameplay-/Save-/Journal-/Property-Autorität
-- [ ] High Contrast, Reduced Motion und kleines Fenster unverändert regressionssichern
-- [ ] direkte Presentation-Regression für jeden tatsächlich behobenen Befund
+- [ ] vorhandenen Chromium-/Firefox-Harness wiederverwenden
+- [ ] berechnete `font-size` für HUD-, Map- und Ranking-Kurzmarke auslesen
+- [ ] jeder kompakte Kontext muss mindestens `0.34rem` wirksam berechnen
+- [ ] High Contrast, Reduced Motion, kleines Fenster und Runtime-Owned-Kontext unverändert lassen
+- [ ] kein neuer Fetch, keine zweite Identity-/Map-/Ranking-Projection, keine Gameplay-/Save-/Journal-/Property-Autorität
+- [ ] direkte Regression gegen Quelltext-PASS ohne ausgeführten Browsernachweis
 - [ ] Runtime Core, Presentation Core und Repository Health auf finalem Head grün
 - [ ] relevante Release-/Status-Sync-Gates grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
