@@ -15,9 +15,15 @@ Der bestehende Avatar-Context-Browsertest prüft deshalb zusätzlich die tatsäc
 
 Ein CSS-Patch ist erst gerechtfertigt, wenn Chromium oder Firefox reales Clipping reproduzierbar melden.
 
+## Firefox-Cold-Start im Gate
+
+Beim ersten Remote-Lauf und beim unveränderten Wiederholungslauf zeigte der erste Firefox-Anti-Flake-Durchgang denselben Session-Start-Timeout, während der jeweils zweite Firefox-Durchgang den vollständigen Avatar-Context-Vertrag bestand. Deshalb erhält ausschließlich die bestehende WebDriver-Session-Erzeugung begrenzten Cold-Start-Spielraum: 55 statt 35 Sekunden.
+
+Die eigentliche DOM-Grenze bleibt bei 40 Sekunden, zwei Anti-Flake-Läufe bleiben Pflicht und unterschiedliche Ergebnisse bleiben weiterhin `FLAKY` und blockieren die Release-Abnahme. Der Test wird damit nicht weicher; lediglich ein reproduzierbar zu knappes Startfenster wird an die reale Runner-Kaltstartzeit angepasst.
+
 ## Für Laien
 
-Kurz gesagt: Der Test schaut nicht nur, ob die Buchstaben groß genug sind. Er prüft auch, ob die Buchstaben wirklich komplett in ihr Kästchen passen. Wenn etwas abgeschnitten wird, stoppt die Abnahme statt den Fehler zu übersehen.
+Kurz gesagt: Der Test schaut nicht nur, ob die Buchstaben groß genug sind. Er prüft auch, ob die Buchstaben wirklich komplett in ihr Kästchen passen. Wenn etwas abgeschnitten wird, stoppt die Abnahme statt den Fehler zu übersehen. Firefox bekommt beim allerersten Start etwas mehr Zeit zum Hochfahren, danach gelten dieselben harten Prüfungen wie vorher.
 
 ## Spätere Verbesserungsidee
 
