@@ -65,7 +65,7 @@ def _avatar_context_harness() -> str:
   #app { display: block; width: 760px; height: 680px; border: 0; }
 </style>
 <div id="status">AVATAR_CONTEXT_E2E: RUNNING</div>
-<iframe id="app" src="/"></iframe>
+<iframe id="app"></iframe>
 <script>
 "use strict";
 (() => {
@@ -153,6 +153,7 @@ def _avatar_context_harness() -> str:
       document.body.textContent = "AVATAR_CONTEXT_E2E: FAIL\n" + String(error?.message || error);
     }
   }, { once: true });
+  frame.src = "/";
 })();
 </script>
 """
