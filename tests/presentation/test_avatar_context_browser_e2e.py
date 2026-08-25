@@ -22,6 +22,8 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         self.assertIn('className = "map-marker owned"', source)
         self.assertIn('BunkerUIPrefs.set("highContrast", true)', source)
         self.assertIn('width: 760px', source)
+        self.assertIn('Boolean(node && !node.hidden', source)
+        self.assertNotIn('instanceof HTMLElement', source)
         self.assertNotIn('fetch("/api/command")', source)
         self.assertNotIn("property.purchase", source)
         self.assertNotIn('"Timeline wird geladen"', source)
@@ -31,6 +33,18 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
             acceptance._avatar_context_url("http://127.0.0.1:8044/?startup=cache-token"),
             "http://127.0.0.1:8044/__avatar_context_e2e__.html?startup=cache-token",
         )
+
+    def test_avatar_pass_requires_executed_body_not_script_source(self):
+        source_only = (
+            "<html><body><div>AVATAR_CONTEXT_E2E: RUNNING</div>"
+            "<script>const result = 'AVATAR_CONTEXT_E2E: PASS';</script></body></html>"
+        )
+        executed = (
+            "<html><head></head><body>AVATAR_CONTEXT_E2E: PASS\n"
+            "● BEREIT\nBUNKERFREQUENZ – Control Deck</body></html>"
+        )
+        self.assertFalse(acceptance._avatar_context_passed(source_only))
+        self.assertTrue(acceptance._avatar_context_passed(executed))
 
     def test_existing_address_browser_check_stays_read_only_and_uses_original_url(self):
         completed = Mock(
@@ -58,7 +72,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         completed = Mock(
             returncode=0,
             stdout=(
-                "<html><body>AVATAR_CONTEXT_E2E: PASS\n"
+                "<html><head></head><body>AVATAR_CONTEXT_E2E: PASS\n"
                 "● BEREIT\nBUNKERFREQUENZ – Control Deck</body></html>"
             ),
             stderr="",
@@ -77,7 +91,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
                     avatar_context=True,
                 )
 
-            self.assertIn(acceptance.AVATAR_CONTEXT_PASS, dom)
+            self.assertTrue(acceptance._avatar_context_passed(dom))
             command = run.call_args.args[0]
             self.assertIn("--window-size=900,760", command)
             self.assertIn(
@@ -90,10 +104,14 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
             )
             self.assertFalse((root / "web" / "a4" / acceptance.AVATAR_CONTEXT_HARNESS).exists())
 
-    def test_browser_acceptance_fails_closed_without_avatar_context_pass(self):
+    def test_browser_acceptance_fails_closed_without_executed_avatar_context_pass(self):
         completed = Mock(
             returncode=0,
-            stdout="<html><body>AVATAR_CONTEXT_E2E: FAIL Timeout: bestätigte HUD-Crew</body></html>",
+            stdout=(
+                "<html><body><div>AVATAR_CONTEXT_E2E: RUNNING</div>"
+                "<script>const result='AVATAR_CONTEXT_E2E: PASS';</script>"
+                "● BEREIT BUNKERFREQUENZ – Control Deck</body></html>"
+            ),
             stderr="",
         )
         with tempfile.TemporaryDirectory() as root_value:
@@ -104,7 +122,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
                 patch.object(acceptance, "find_browser", return_value="/usr/bin/chromium"),
                 patch.object(acceptance.subprocess, "run", return_value=completed),
             ):
-                with self.assertRaisesRegex(RuntimeError, "Avatar-Context-E2E"):
+                with self.assertRaisesRegex(RuntimeError, "ausgeführten PASS-Nachweis"):
                     acceptance.browser_dom(
                         "http://127.0.0.1:8044/",
                         require_browser=True,
