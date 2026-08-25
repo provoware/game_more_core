@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from urllib.error import URLError
 
 ROOT = Path(__file__).parents[2]
@@ -53,13 +53,76 @@ class DesktopBrowserE2EContractTests(unittest.TestCase):
         self.assertIn("acceptance._avatar_context_url(address)", source)
         self.assertIn("acceptance.AVATAR_CONTEXT_PASS in body_text", source)
         self.assertIn('"avatar_context_pass": True', source)
+        self.assertIn('"runtime_owned_map_fixture": True', source)
         self.assertIn('"small_viewport": True', source)
         self.assertIn('"high_contrast": True', source)
+        self.assertIn('"--prepare-owned-map-fixture"', source)
         self.assertIn("harness_path.unlink(missing_ok=True)", source)
         self.assertIn("except (TimeoutError, OSError, URLError, HTTPError, json.JSONDecodeError):", source)
         self.assertNotIn("driver.stdout.close()", source)
+        self.assertIn("runtime_owned_map_fixture_from_property_purchase", source)
         self.assertIn("firefox_avatar_context_profile_hud_map_ranking", source)
         self.assertIn("firefox_avatar_context_high_contrast_small_viewport", source)
+
+    def test_avatar_context_map_requires_runtime_owned_marker(self):
+        harness = acceptance._avatar_context_harness()
+        self.assertIn('canvas?.querySelector(".map-marker.owned")', harness)
+        self.assertIn("bestätigter Eigentumsmarker", harness)
+        self.assertIn("Runtime-Owned-Map-Fixture fehlt", harness)
+        self.assertNotIn("syntheticOwned", harness)
+        self.assertNotIn('className = "map-marker owned"', harness)
+        self.assertNotIn("E2E read-only owned marker fixture", harness)
+
+    def test_owned_map_fixture_uses_cheapest_catalogued_property_and_canonical_command(self):
+        fake_runtime = Mock()
+        fake_runtime.city_map_manifest = {
+            "locations": [
+                {
+                    "location_id": "expensive",
+                    "purchasable": True,
+                    "purchase_price_cents": 9_000_000,
+                },
+                {
+                    "location_id": "cheap",
+                    "purchasable": True,
+                    "purchase_price_cents": 3_100_000,
+                },
+                {
+                    "location_id": "not-for-sale",
+                    "purchasable": False,
+                    "purchase_price_cents": 1,
+                },
+            ]
+        }
+        fake_runtime.starter = {
+            "event": {"event_id": "event-e2e", "budget_cents": 100_000},
+            "character": {"character_id": "player-local"},
+        }
+        fake_runtime.bootstrap.return_value = {"status": "confirmed"}
+        fake_runtime._context.return_value = object()
+        fake_runtime.session.dispatch.return_value = Mock(status="confirmed", error_code=None)
+
+        with patch.object(acceptance.game_client, "A4ClientRuntime", return_value=fake_runtime):
+            location_id = acceptance.prepare_owned_map_fixture(Path("/isolated/save"))
+
+        self.assertEqual(location_id, "cheap")
+        self.assertEqual(fake_runtime.starter["event"]["budget_cents"], 3_100_000)
+        fake_runtime.bootstrap.assert_called_once_with({"command_id": "acceptance-owned-map-bootstrap"})
+        fake_runtime._context.assert_called_once_with(
+            "acceptance-owned-map-purchase", "event", "event-e2e", "player-local"
+        )
+        fake_runtime.session.dispatch.assert_called_once()
+        command = fake_runtime.session.dispatch.call_args.args[0]
+        self.assertEqual(
+            command,
+            {
+                "type": "property.purchase",
+                "command_id": "acceptance-owned-map-purchase",
+                "location_id": "cheap",
+            },
+        )
+        self.assertNotIn("purchase_price_cents", command)
+        self.assertNotIn("owner_character_id", command)
 
     def test_source_identity_rejects_tracked_drift_but_not_untracked_evidence(self):
         with patch.object(desktop, "_git") as git:

@@ -214,7 +214,15 @@ def _scenario_chromium_dom(product_root: Path) -> dict[str, object]:
         raise RuntimeError("Browser-Acceptance scheiterte: " + " | ".join(output.splitlines()[-12:]))
     if "BROWSER OK" not in output or "UI reaktionsfähig" not in output:
         raise RuntimeError("Browser-Acceptance lieferte keinen bestätigten DOM/BEREIT-Nachweis")
-    return {"browser": "chromium", "real_browser_required": True, "dom_ready": True, "ui_responsive": True}
+    if "RUNTIME-OWNED MAP FIXTURE OK" not in output:
+        raise RuntimeError("Browser-Acceptance bestätigte kein Runtime-Owned-Map-Fixture")
+    return {
+        "browser": "chromium",
+        "real_browser_required": True,
+        "dom_ready": True,
+        "ui_responsive": True,
+        "runtime_owned_map_fixture": True,
+    }
 
 
 def _free_loopback_port() -> int:
@@ -246,8 +254,31 @@ def _wait_http_ready(url: str, process: subprocess.Popen[bytes], timeout: float 
     raise RuntimeError("Geckodriver wurde nicht rechtzeitig bereit")
 
 
+def _prepare_packaged_owned_map_fixture(product_root: Path, save_dir: Path) -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(product_root / "tools" / "start_a4_acceptance.py"),
+            "--prepare-owned-map-fixture",
+            str(save_dir),
+        ],
+        cwd=product_root,
+        env={**os.environ, "PYTHONPATH": "", "PYTHONDONTWRITEBYTECODE": "1"},
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    output = completed.stdout + completed.stderr
+    if completed.returncode != 0 or "RUNTIME-OWNED MAP FIXTURE OK" not in output:
+        raise RuntimeError(
+            "Paketserver konnte Runtime-Owned-Map-Fixture nicht vorbereiten: "
+            + " | ".join(output.splitlines()[-10:])
+        )
+
+
 def _start_packaged_server(product_root: Path, root: Path) -> tuple[subprocess.Popen[str], str]:
     save_dir = root / "save"
+    _prepare_packaged_owned_map_fixture(product_root, save_dir)
     process = subprocess.Popen(
         [
             sys.executable,
@@ -388,6 +419,7 @@ def _scenario_firefox_dom(product_root: Path, root: Path) -> dict[str, object]:
             "ui_responsive": True,
             "health_ready": True,
             "avatar_context_pass": True,
+            "runtime_owned_map_fixture": True,
             "small_viewport": True,
             "high_contrast": True,
         }
@@ -472,6 +504,7 @@ def run(output_dir: Path, prior_subgate: Path) -> dict[str, object]:
             "real_clickstart_orchestrator",
             "real_chromium_dom_ready",
             "real_firefox_dom_ready",
+            "runtime_owned_map_fixture_from_property_purchase",
             "firefox_avatar_context_profile_hud_map_ranking",
             "firefox_avatar_context_high_contrast_small_viewport",
             "same_candidate_sha_across_browsers",
