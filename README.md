@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Avatar Ranking Presence validiert" src="https://img.shields.io/badge/Feature_Stand-AVATAR--RANKING--PRESENCE_validiert-7dff00">
-  <img alt="Aktive Iteration Avatar Visual Consistency Audit" src="https://img.shields.io/badge/Aktiv-AVATAR--VISUAL--CONSISTENCY--AUDIT-00c2ff">
+  <img alt="Feature Stand Avatar Visual Consistency validiert" src="https://img.shields.io/badge/Feature_Stand-AVATAR--VISUAL--CONSISTENCY_validiert-7dff00">
+  <img alt="Aktive Iteration Avatar Context E2E" src="https://img.shields.io/badge/Aktiv-AVATAR--CONTEXT--E2E-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,11 +26,11 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-UX-AVATAR-RANKING-PRESENCE` |
-| **Aktive Iteration** | 🟡 `0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT` |
-| **Danach** | `0.8.8-UX-AVATAR-CONTEXT-E2E` |
-| **Avatar-Kette** | ✅ Profil → bestätigtes HUD → eigene Map-Orte → eigener Hall-/Ranking-Eintrag |
+| **Status-Sync-Anker** | PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT` |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-AVATAR-CONTEXT-E2E` |
+| **Danach** | abhängig vom Browser-E2E-Befund; keine vorgezogene Fachänderung |
+| **Avatar-Kette** | ✅ Profil → bestätigtes HUD → eigene Map-Orte → eigener Hall-/Ranking-Eintrag · High Contrast vereinheitlicht |
 | **Living World** | ✅ replaybare Street Encounters · 16 Begegnungen · vier Ansatzprofile · Grenz-/Replay-/Verteilungsaudits |
 | **Ranking** | ✅ Competitive Top 10 · bestätigte Wochen-/Monatszyklen · lokale Crew-Marke nur am eigenen Eintrag |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 |
@@ -42,7 +42,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #173 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #175 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -81,6 +81,7 @@ PROPERTY / HALL OF TRIBUTE
 - sichtbare read-only Ereignis-Timeline und Berlin-Erinnerungen
 - Crew-Logo/Fahne als kleines synchronisierbares Identitätsrezept statt Bildblob
 - bestätigte Crew-Identität im Profil, HUD, auf eigenem Kartenbesitz und im eigenen Ranking-Eintrag
+- gemeinsame High-Contrast-Außenkante und klare Kurzmarken-Trennung für die bestätigte Crew-Identität
 - Scene Jobs, persönliches Bargeld, Bank, Sparzins und Kontoauszug
 - Secret Best Friend Assistant auf bestehenden Scene-Job-/Rundenverträgen
 - lokale Presentation-FX ausschließlich nach bestätigten Runtime-Ergebnissen

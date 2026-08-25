@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-AVATAR-RANKING-PRESENCE` · PR #173 · Head `39dea64a95a1e82b9161e6d51d03acd98645e901`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #173; Required-, Release- und Safe-Merge-Nachweise sind bestätigt
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT`
+- **Status-Sync-Anker:** PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT` · PR #175 · Head `be70ea5fac8a6d04a40829d838ad7cd8d01b1204`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #175; Required-, Release-, Status-Sync- und Safe-Merge-Nachweise sind bestätigt
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-AVATAR-CONTEXT-E2E`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -104,9 +104,10 @@
 - [x] Avatar-Sticky-Offset bei mittleren Fensterbreiten korrigiert; PR #171 · Merge `6d42e3b6ba180a4f97a9ab89a03265e01adc0980`
 - [x] bestätigte Crew-Marke an eigenen Map-Orten; PR #172 · Merge `d2a1452b4ee6094584d0c63a94a85773c2821890`
 - [x] bestätigte Crew-Marke ausschließlich am eigenen Hall-/Ranking-Eintrag; PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1`
+- [x] High-Contrast-Außenkante, Symbol- und Kurzmarken-Trennung über Profil, HUD/Map-Klon und Ranking vereinheitlicht; PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15`
 
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
-- [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand bis PR #173 zurückgeführt
+- [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
 - [x] `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` verwenden denselben maschinenprüfbaren Safe-Merge-Anker
 - [x] read-only Checker erkennt den letzten fachlich relevanten Safe Merge aus der Git-First-Parent-Historie
 - [x] reine Status-Sync-Merges werden übersprungen, damit kein Selbstdrift entsteht
@@ -115,32 +116,32 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-UX-AVATAR-CONTEXT-E2E
 
 ## Fortschritt
 
-**0 %** – fachlich vorbereitet; Umsetzung beginnt erst nach bestätigtem Safe Merge des Status-Sync-Slices.
+**0 %** – nach dem sicher gemergten Visual-Consistency-Audit fachlich vorbereitet; noch keine Browser-Testlogik geändert.
 
 ## Ziel
 
-Profil, HUD, Karte und Ranking auf einheitliche Avatar-Größenverhältnisse, Kontrast, Kurzmarken-Clipping sowie High-Contrast-/Reduced-Motion-Verhalten prüfen und nur konkrete Inkonsistenzen korrigieren.
+Dieselbe bestätigte Crew-Identität im echten Browserpfad Profil → HUD → eigener Map-Ort → eigener Ranking-Eintrag nachweisen, inklusive kleinem Fenster, Hohem Kontrast und bestätigter Profiländerung.
 
 ## Abnahme
 
-- [ ] dieselbe bestätigte Crew-Identität bleibt in Profil, HUD, Karte und eigenem Ranking-Eintrag eindeutig wiedererkennbar
-- [ ] keine abgeschnittene Kurzmarke bei kleinen und mittleren Fenstern
-- [ ] High Contrast besitzt überall sichtbare Avatar-Grenzen
-- [ ] Reduced Motion verändert keine Information oder Identitätszuordnung
-- [ ] keine zweite Avatar-, Ranking- oder Map-Datenquelle
+- [ ] bestätigte Profiländerung erscheint ohne zweite Identitätsquelle im HUD
+- [ ] derselbe bestätigte Avatar erscheint an eigenem Map-Ort und eigenem Ranking-Eintrag
+- [ ] kleines Fenster bleibt ohne Identitätsverlust oder Überlagerungsregression bedienbar
+- [ ] Hoher Kontrast bleibt in allen vier Kontexten eindeutig; Reduced Motion entfernt keine Information
+- [ ] keine neue Avatar-, Ranking- oder Map-Datenquelle und keine Gameplay-Autorität im Browser
 - [ ] Runtime Core, Presentation Core und Repository Health auf finalem Head grün
-- [ ] relevante Release-Gates grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
+- [ ] relevante Release-/Status-Sync-Gates grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ### Danach
 
-- [ ] **0.8.8-UX-AVATAR-CONTEXT-E2E:** Browser-Nachweis Profil → HUD → Map → Ranking inklusive kleinem Fenster und bestätigter Profiländerung
 - [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
 - [ ] **STATUS-SYNC-PR-AUTOPREP:** nur falls sich der read-only Driftcheck bewährt; bei Drift höchstens vorbereiteten PR erzeugen, niemals direkt `main` beschreiben
+- [ ] **CREW-IDENTITY-MICRO-POLISH:** ausschließlich konkrete Browser-E2E-Befunde bei kleinen Map-/Ranking-Marken korrigieren; keine pauschale Neugestaltung
 
 ---
 

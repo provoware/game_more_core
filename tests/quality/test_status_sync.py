@@ -86,6 +86,20 @@ class StatusSyncTests(unittest.TestCase):
         self.assertEqual(checked, expected)
         self.assertEqual(errors, [])
 
+    def test_minimal_three_file_status_safe_merge_does_not_create_self_drift(self):
+        expected = self.merge_feature(175)
+        git(self.root, "checkout", "-b", "minimal-status-sync")
+        write_status(self.root, expected)
+        git(self.root, "add", "TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json")
+        git(self.root, "commit", "-m", "status: sync canonical documents only")
+        git(self.root, "checkout", "main")
+        git(self.root, "merge", "--no-ff", "minimal-status-sync", "-m", "Safe merge PR #176")
+
+        self.assertEqual(latest_relevant_safe_merge(self.root), expected)
+        checked, errors = check_status_sync(self.root)
+        self.assertEqual(checked, expected)
+        self.assertEqual(errors, [])
+
     def test_status_only_safe_merge_with_readme_does_not_create_self_drift_loop(self):
         expected = self.merge_feature()
         git(self.root, "checkout", "-b", "status-sync")
