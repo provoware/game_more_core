@@ -41,7 +41,7 @@ class DesktopBrowserE2EContractTests(unittest.TestCase):
     def test_firefox_harness_is_bounded_and_reuses_avatar_context_contract(self):
         source = (ROOT / "tools" / "desktop_browser_e2e_pro.py").read_text(encoding="utf-8")
         self.assertEqual(desktop.FIREFOX_DRIVER_READY_TIMEOUT_SECONDS, 20.0)
-        self.assertEqual(desktop.FIREFOX_SESSION_TIMEOUT_SECONDS, 35.0)
+        self.assertEqual(desktop.FIREFOX_SESSION_TIMEOUT_SECONDS, 55.0)
         self.assertEqual(desktop.FIREFOX_NAVIGATION_TIMEOUT_SECONDS, 20.0)
         self.assertEqual(desktop.FIREFOX_DOM_READY_TIMEOUT_SECONDS, 40.0)
         self.assertEqual(desktop.FIREFOX_WEBDRIVER_CALL_TIMEOUT_SECONDS, 8.0)
