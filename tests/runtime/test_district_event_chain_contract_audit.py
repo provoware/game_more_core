@@ -1,13 +1,16 @@
 import json
 from pathlib import Path
+import tempfile
 import unittest
 
 from bunkerfrequenz.application.district_world_event_service import DistrictWorldEventService
+from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 from bunkerfrequenz.presentation.biography_projection import build_biography_projection
 
 
 ROOT = Path(__file__).parents[2]
 JOURNAL = json.loads((ROOT / "manifests" / "JOURNAL_MANIFEST.json").read_text(encoding="utf-8"))
+DISTRICT_EVENTS = json.loads((ROOT / "manifests" / "DISTRICT_EVENT_MANIFEST.json").read_text(encoding="utf-8"))
 
 
 class DistrictEventChainContractAuditTests(unittest.TestCase):
@@ -56,17 +59,64 @@ class DistrictEventChainContractAuditTests(unittest.TestCase):
         projection = build_biography_projection("char-1", [district_record, biography_record])
         self.assertEqual([item["event_id"] for item in projection], ["bio-1"])
 
-    def test_follow_up_runtime_must_wait_for_explicit_catalogued_child_event_contract(self):
-        event_types = set(JOURNAL["event_types"])
-        self.assertFalse(
-            {
-                "world.district_followup_resolved",
-                "world.district_chain_progressed",
-                "world.district_memory_triggered",
-            }
-            & event_types,
-            "Eine Folgeketten-Runtime darf erst nach einem expliziten Journal-Eventvertrag entstehen",
+    def test_follow_up_contract_v1_catalogues_one_child_and_parent_binding(self):
+        contract = DISTRICT_EVENTS["follow_up_contract"]
+        self.assertEqual(contract["journal_event_type"], "world.district_followup_resolved")
+        self.assertEqual(contract["parent_event_type"], "world.district_effect_applied")
+        self.assertEqual(contract["required_payload_fields"], ["parent_event_id", "district_id", "followup_id"])
+        self.assertEqual(contract["causation_id_source"], "parent_event_id")
+        self.assertEqual(contract["correlation_id_pattern"], "district-chain:{parent_event_id}")
+        self.assertTrue(contract["district_must_match_parent"])
+        self.assertTrue(contract["runtime_authority_only"])
+        self.assertFalse(contract["client_can_write"])
+        self.assertIn(contract["journal_event_type"], JOURNAL["event_types"])
+        self.assertIn(contract["journal_event_type"], JOURNAL["undo_policy_groups"]["not_user_undoable"])
+
+    def test_persistence_preserves_causation_and_exact_retry_is_idempotent(self):
+        event_type = DISTRICT_EVENTS["follow_up_contract"]["journal_event_type"]
+        parent_event_id = "command-42:district-effect"
+        child = {
+            "event_id": "district-followup:command-42:district-effect:afterglow-1",
+            "event_type": event_type,
+            "causation_id": parent_event_id,
+            "correlation_id": f"district-chain:{parent_event_id}",
+            "payload": {
+                "parent_event_id": parent_event_id,
+                "district_id": "kreuzberg",
+                "followup_id": "afterglow-1",
+            },
+        }
+        context = JournalContext(
+            "2026-08-25T22:00:00+02:00",
+            "session-1",
+            "player-1",
+            "district",
+            "kreuzberg",
+            "command-42",
+            "runtime",
+            "0.8.8",
+            "char-1",
         )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            kernel = PersistenceKernel(root, set(JOURNAL["event_types"]))
+            first = kernel.commit("chain-tx-1", [child], {"ok": True}, context)
+            self.assertEqual(first.event_ids, (child["event_id"],))
+
+            stored = json.loads((root / "journal" / "events.jsonl").read_text(encoding="utf-8").splitlines()[-1])
+            self.assertEqual(stored["causation_id"], parent_event_id)
+            self.assertEqual(stored["correlation_id"], f"district-chain:{parent_event_id}")
+            self.assertEqual(stored["payload"]["district_id"], "kreuzberg")
+
+            retry = kernel.commit("chain-tx-2", [child], {"ok": False}, context)
+            self.assertEqual(retry.event_ids, ())
+            self.assertEqual(kernel.load_state(), {"ok": True})
+
+            conflicting_parent = dict(child)
+            conflicting_parent["payload"] = dict(child["payload"], parent_event_id="other-parent")
+            with self.assertRaises(PersistenceError):
+                kernel.commit("chain-tx-3", [conflicting_parent], {"ok": False}, context)
 
 
 if __name__ == "__main__":

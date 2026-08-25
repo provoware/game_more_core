@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "0.8.7-c5",
+  "version": "0.8.8-chain-v1",
   "district_state_manifest_version": "0.8.5-d1",
   "city_map_manifest_version": "0.8.3-b2-foundation",
   "selection": {
@@ -28,6 +28,18 @@
     "per_event_delta_minimum": -6,
     "per_event_delta_maximum": 6,
     "district_bounds_remain": {"minimum": 0, "maximum": 100}
+  },
+  "follow_up_contract": {
+    "journal_event_type": "world.district_followup_resolved",
+    "parent_event_type": "world.district_effect_applied",
+    "required_payload_fields": ["parent_event_id", "district_id", "followup_id"],
+    "causation_id_source": "parent_event_id",
+    "correlation_id_pattern": "district-chain:{parent_event_id}",
+    "event_id_pattern": "district-followup:{parent_event_id}:{followup_id}",
+    "replay_policy": "same_event_id_same_payload_is_idempotent",
+    "district_must_match_parent": true,
+    "runtime_authority_only": true,
+    "client_can_write": false
   },
   "events": [
     {
