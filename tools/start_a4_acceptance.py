@@ -14,6 +14,7 @@ import tempfile
 import threading
 import time
 from urllib.error import URLError
+from urllib.parse import urlsplit, urlunsplit
 from urllib.request import urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -156,6 +157,11 @@ def _avatar_context_harness() -> str:
 """
 
 
+def _avatar_context_url(address: str) -> str:
+    parts = urlsplit(address)
+    return urlunsplit((parts.scheme, parts.netloc, "/" + AVATAR_CONTEXT_HARNESS, parts.query, ""))
+
+
 def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BROWSER_WALLCLOCK_TIMEOUT) -> str | None:
     browser = find_browser()
     if browser is None:
@@ -167,7 +173,7 @@ def browser_dom(address: str, *, require_browser: bool, timeout: float = MIN_BRO
     if harness_path.exists():
         raise RuntimeError(f"Temporärer Browser-Harness-Pfad ist bereits belegt: {harness_path}")
     harness_path.write_text(_avatar_context_harness(), encoding="utf-8")
-    harness_url = address.rstrip("/") + "/" + AVATAR_CONTEXT_HARNESS
+    harness_url = _avatar_context_url(address)
 
     command = [
         browser,
