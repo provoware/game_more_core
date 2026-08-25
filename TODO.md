@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE` · PR #181 · Head `a22d626b9af74e3f8370d76ae1d717f4ee7e3f3f` · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #181; Chromium und Firefox prüfen die Crew-Identitätskette jetzt mit runtime-bestätigtem Eigentum statt künstlichem `.owned`-DOM-Marker
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT`
+- **Status-Sync-Anker:** PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT` · PR #183 · Head `5dbfefd8cc1453fa7084a9d4e7bc37f4aba24bf0` · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-Linie bis PR #183; Chromium und Firefox prüfen runtime-bestätigtes Eigentum und die vorhandene Release-Evidence bindet denselben Kauf an Property-/Ledger-Referenzen
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -108,6 +108,7 @@
 - [x] echter Chromium-Pfad Profil → bestätigtes HUD → Map-Klon → eigener Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast; PR #177 · Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7`
 - [x] derselbe Identitäts-Harness im vorhandenen nativen Firefox-/Geckodriver-Pfad inklusive kleinem Fenster und Hohem Kontrast; PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304`
 - [x] isolierter Acceptance-Spielstand kauft deterministisch über `property.purchase`; Map-Avatar wird an runtime-bestätigtem Eigentum geprüft, kein künstlicher `.owned`-DOM-Marker; PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d`
+- [x] vorhandene Chromium-/Firefox-Evidence bindet `location_id`, bestätigten `property.purchase`, Event-IDs und passende `property_purchase`-Ledger-Buchung an denselben Runtime-Owned-Kontext; PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`
 
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
@@ -119,32 +120,32 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT
+# Aktiv / nächste Iteration – 0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT
 
 ## Fortschritt
 
-**0 %** – der Runtime-Owned-Map-E2E ist vollständig remote validiert; offen ist nur ein kompakter read-only Provenienz-Nachweis für genau diesen bereits bestätigten Testkontext.
+**0 %** – Chromium, Firefox, Runtime-Owned-Map und Evidence-Provenienz sind vollständig remote validiert; offen ist nur ein gezielter visueller Audit der bereits bestehenden Crew-Marken in den bewiesenen Kontexten.
 
 ## Ziel
 
-Den bestehenden Release-Evidence-Nachweis um die bereits vorhandenen Daten des runtime-bestätigten Property-Kaufs ergänzen, ohne einen zweiten Receipt-, Property- oder Evidence-Pfad zu erzeugen.
+Nur reproduzierbare Restprobleme bei Größe, Abstand oder Clipping der bestehenden Crew-Identität identifizieren und gegebenenfalls mit dem kleinsten Presentation-Patch beheben, ohne Avatar-, Map-, Ranking- oder Fetch-Architektur neu zu bauen.
 
 ## Abnahme
 
-- [ ] ausschließlich vorhandene Fixture-/Property-/Ledger-Daten lesen
-- [ ] mindestens `location_id`, bestätigten `property.purchase`-Status und vorhandene Property-/Ledger-Ereignisreferenz kompakt nachweisen
-- [ ] keine Gameplay-, Kaufpreis-, Eigentums-, Save-, Journal- oder Map-Logik verändern
-- [ ] kein neuer Browser-Command und keine zweite Evidence-Architektur
-- [ ] Regression beweist, dass Evidence aus dem bereits bestätigten Runtime-Owned-Kontext stammt
+- [ ] Profil, HUD, runtime-bestätigter eigener Map-Ort und eigener Ranking-Eintrag mit bestehendem Chromium-/Firefox-Harness prüfen
+- [ ] nur konkret reproduzierte Größen-, Abstands- oder Clipping-Befunde ändern
+- [ ] kein neuer Fetch, keine zweite Identity-Projection, keine Gameplay-/Save-/Journal-/Property-Autorität
+- [ ] High Contrast, Reduced Motion und kleines Fenster unverändert regressionssichern
+- [ ] direkte Presentation-Regression für jeden tatsächlich behobenen Befund
 - [ ] Runtime Core, Presentation Core und Repository Health auf finalem Head grün
 - [ ] relevante Release-/Status-Sync-Gates grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ### Danach
 
-- [ ] **CREW-IDENTITY-MICRO-POLISH:** nur konkrete verbleibende E2E-Befunde zu Größen, Abständen oder Clipping beheben; keine Neugestaltung auf Verdacht
-- [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
 - [ ] **STATUS-SYNC-PR-AUTOPREP:** nur falls sich der read-only Driftcheck weiter bewährt; höchstens vorbereiteten PR erzeugen, niemals direkt `main` beschreiben
+- [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
+- [ ] **MAP-VIEWPORT-MINIÜBERSICHT / POOL-MAP-003:** erst als eigener UX-Slice nach konkretem Map-Bedienbefund; keine neue Map-Autorität
 
 ---
 

@@ -26,13 +26,13 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #181
+## Praktisches Beispiel nach PR #183
 
-PR #181 hat die letzte künstliche Besitzannahme aus dem Avatar-Browsernachweis entfernt. Der isolierte Acceptance-Spielstand erzeugt Eigentum jetzt über den vorhandenen Runtime-Pfad `property.purchase`; die bestätigte Projection erzeugt anschließend den echten `.map-marker.owned`. Chromium und Firefox prüfen darauf die vorhandene Crew-Marke. Der fachliche Merge ist `48f16864c319123e8ae4bcd04ba446aaa6ff153d`.
+PR #183 hat den bereits bestätigten Runtime-Property-Kauf nicht erneut ausgeführt, sondern dessen vorhandene Provenienz genauer in die bestehende `DESKTOP_BROWSER_E2E_EVIDENCE.json` gebunden. Chromium und Firefox führen dort nun denselben kompakten read-only Receipt mit `location_id`, bestätigtem `property.purchase`, Event-Referenzen und passender `property_purchase`-Ledger-Buchung. Der fachliche Merge ist `9803d68a2d7ce71aa38db8c909fd68257bef1d9c`.
 
-Direkt danach standen die drei kanonischen Statusdateien noch auf PR #179 und beschrieben die Runtime-Owned-Map-Fixture weiterhin als offene Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift. Die Korrektur übernimmt deshalb PR #181 in alle drei Statusquellen, setzt `POOL-QA-014` auf `DONE` und zieht als nächsten kleinen read-only QA-Punkt `POOL-QA-015 – Runtime-Owned Evidence Receipt`.
+Direkt danach standen die drei kanonischen Statusdateien noch auf PR #181 und beschrieben `POOL-QA-015 – Runtime-Owned Evidence Receipt` weiterhin als offene Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift. Die Korrektur übernimmt deshalb PR #183 in alle drei Statusquellen, setzt `POOL-QA-015` auf `DONE` und zieht als nächsten kleinen sichtbaren Punkt `POOL-UX-009 – Crew Identity Micro Polish Audit`.
 
-Wichtig: Dieser Status-Sync verändert weder Property-Kauf noch Browser-Harness. Er dokumentiert nur den bereits bestätigten Zustand. Der nächste Evidence-Slice darf ebenfalls ausschließlich vorhandene Fixture-/Property-/Ledger-Daten lesen und keine zweite Besitz- oder Receipt-Autorität erzeugen.
+Wichtig: Dieser Status-Sync verändert weder Property-Kauf noch Evidence-Harness oder Crew-Darstellung. Der nächste UX-Slice darf nur konkrete, reproduzierbare Größen-, Abstands- oder Clipping-Befunde aus den bereits validierten Chromium-/Firefox-Kontexten beheben und keine Neugestaltung auf Verdacht starten.
 
 ## Für Entwickler
 
@@ -48,7 +48,7 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. Sie prüft neben Drift und erweiterten Status-Sync-Slices auch den minimalen Drei-Dateien-Fall. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool, Runtime-Owned-Map-Vertrag und nächste aktive Arbeit zusammenpassen.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. Sie prüft neben Drift und erweiterten Status-Sync-Slices auch den minimalen Drei-Dateien-Fall. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool, Runtime-Owned-Evidence-Vertrag und nächste aktive Arbeit zusammenpassen.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
