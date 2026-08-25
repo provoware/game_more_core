@@ -49,12 +49,11 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-UX-006", "POOL-ECON-006", "POOL-UX-003", "POOL-ECON-007",
             "POOL-STREET-002", "POOL-ECON-008", "POOL-QA-007", "POOL-QA-008",
             "POOL-QA-002", "POOL-QA-009", "POOL-STREET-005", "POOL-UX-007",
-            "POOL-QA-010", "POOL-QA-006",
+            "POOL-QA-010", "POOL-QA-006", "POOL-UX-008",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`READY`", _pool_row(pool, "POOL-UX-008"))
-        self.assertIn("`READY`", _pool_row(pool, "POOL-QA-011"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-011"))
 
     def test_current_status_describes_validated_avatar_chain_and_next_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
@@ -69,7 +68,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
 
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
-        self.assertEqual(status["current_focus"], "avatar_visual_consistency_audit")
+        self.assertEqual(status["current_focus"], "avatar_context_browser_e2e")
         self.assertEqual(status["next_iteration"], "0.8.8-UX-AVATAR-CONTEXT-E2E")
 
         self.assertTrue(living_world["street_boundary_clamping_audit_validated"])
@@ -86,6 +85,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(presentation["crew_identity_hud_refresh_confirmed"])
         self.assertTrue(presentation["crew_identity_map_owned_presence"])
         self.assertTrue(presentation["crew_identity_ranking_local_presence"])
+        self.assertTrue(presentation["crew_identity_visual_consistency_validated"])
+        self.assertTrue(presentation["crew_identity_high_contrast_shared_outline"])
         self.assertFalse(presentation["crew_identity_second_fetch"])
         self.assertFalse(presentation["crew_identity_second_projection"])
         self.assertFalse(presentation["browser_gameplay_authority"])
@@ -139,8 +140,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-UX-007": "`DONE`",
             "POOL-QA-010": "`DONE`",
             "POOL-QA-006": "`DONE`",
-            "POOL-UX-008": "`READY`",
-            "POOL-QA-011": "`READY`",
+            "POOL-UX-008": "`DONE`",
+            "POOL-QA-011": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
