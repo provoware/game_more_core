@@ -74,6 +74,13 @@
       const body = document.createElement("span");
       body.textContent = entry?.body || "";
       info.append(title, body);
+      const causedBy = entry?.caused_by;
+      if (typeof causedBy?.title === "string" && causedBy.title) {
+        const cause = document.createElement("span");
+        cause.className = "micro-label";
+        cause.textContent = `Folge von: ${causedBy.title}`;
+        info.append(cause);
+      }
       item.append(info);
       list.append(item);
     }
