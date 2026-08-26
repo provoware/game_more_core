@@ -41,6 +41,12 @@
     "runtime_authority_only": true,
     "client_can_write": false
   },
+  "micro_story_001": {
+    "parent_catalog_event_id": "district.power_flicker",
+    "followup_id": "power_flicker_afterglow",
+    "title_key": "district_followup.power_flicker_afterglow.title",
+    "body_key": "district_followup.power_flicker_afterglow.body"
+  },
   "events": [
     {
       "event_id": "district.power_flicker",
