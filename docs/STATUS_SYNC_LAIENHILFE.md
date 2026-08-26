@@ -26,21 +26,21 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #194
+## Praktisches Beispiel nach PR #198
 
-PR #194 hat den geplanten District-Ereignisketten-Audit abgeschlossen. Das Ergebnis war absichtlich **kein neuer Gameplay-Code**: Ein bestätigtes `world.district_effect_applied` kann bereits als eindeutige Parent-Evidenz dienen und die District-Quelle ist replaybar. Die Biography bleibt dagegen read-only und darf keine Kette aus Anzeigezustand erzeugen.
+PR #198 hat erstmals eine echte District-Ursache→Folge-Geschichte sicher gemergt. Das bestätigte Ereignis `district.power_flicker` kann bei einem **späteren bestätigten District-Zyklus desselben Bezirks** genau den Nachhall `power_flicker_afterglow` erzeugen.
 
-Der Audit fand zugleich die harte Grenze: Im Journal existiert noch **kein eigener katalogisierter Child-Eventtyp** für eine District-Folgebegegnung. Deshalb wäre eine Micro-Story an dieser Stelle zu früh und würde den Persistenz-/Replay-Vertrag umgehen.
+Wichtig: Der Folge-Record verwendet weiterhin den bestehenden Journal-/Persistence-Vertrag. Parent-ID, District-ID, `causation_id`, `correlation_id` und deterministische Child-ID bleiben gebunden; ein Retry erzeugt keinen zweiten Child-Record und ein anderer Bezirk darf die Folge nicht übernehmen.
 
-Direkt nach dem Safe Merge von PR #194 standen die drei kanonischen Statusdateien noch auf PR #192 und führten den bereits erledigten Audit weiterhin als aktive Arbeit. Genau diese Abweichung meldet der Status-Sync als Drift.
+Direkt nach diesem fachlichen Safe Merge standen die drei kanonischen Statusdateien noch auf PR #196 und nannten Micro-Story 001 weiterhin als offene Arbeit. Genau diese Abweichung ist Statusdrift.
 
-Die Statuskorrektur übernimmt deshalb PR #194 als gemeinsamen Anker und setzt die aktive Phase desselben `POOL-WORLD-003` auf **`0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1`**. Das ist noch keine Geschichte im Spiel. V1 muss zuerst genau einen Child-Eventtyp, die Parent-Referenz, die District-Bindung und Exactly-once-/Replay-Semantik festlegen.
+Die Statuskorrektur übernimmt deshalb PR #198 als gemeinsamen Anker und setzt die nächste aktive Phase desselben `POOL-WORLD-003` auf **`0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION`**. Dabei wird keine zweite Storyengine gebaut. Die bereits persistierte Ursache→Folge-Kette soll nur in der vorhandenen Timeline/Biografie verständlich sichtbar werden.
 
 ### Merksatz für Laien
 
-**Erst beweisen, dass A wirklich passiert ist. Dann festlegen, wie B eindeutig auf A zeigt. Erst danach darf B als Geschichte im Spiel passieren.**
+**Das Spiel schreibt die Ursache und die Folge. Die Oberfläche darf anschließend nur zeigen, wie beides zusammenhängt.**
 
-So bleibt die Ursache-Wirkungs-Kette verständlich, und ein Retry oder UI-Refresh kann nicht versehentlich eine zweite Storyfolge erzeugen.
+So bleibt klar getrennt, wer Spielzustand erzeugt und wer ihn lediglich erklärt.
 
 ## Für Entwickler
 
