@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #196 · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577`
+- **Status-Sync-Anker:** PR #198 · Merge `030d40e4b22c38a11fd98a2d028b398779955507`
 
 ## Statuswerte
 
@@ -40,8 +40,9 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
-- **0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1:** PR #196 · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577` · genau `world.district_followup_resolved` katalogisiert; Parent-/District-Bindung sowie Exactly-once-/Replay-Semantik auf bestehendem PersistenceKernel bestätigt; noch keine Micro-Story
-- **0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT:** PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e` · Parent-Evidenz und read-only Biography-Grenze bestätigt; eigener katalogisierter Child-Eventtyp fehlte noch, deshalb bewusst keine Micro-Story
+- **0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001:** PR #198 · Merge `030d40e4b22c38a11fd98a2d028b398779955507` · verzögerter `power_flicker_afterglow` nutzt denselben District-/Journalvertrag; Exactly-once, gleiche District-Bindung und keine zweite Eventengine bestätigt
+- **0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1:** PR #196 · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577` · genau `world.district_followup_resolved` katalogisiert; Parent-/District-Bindung sowie Exactly-once-/Replay-Semantik auf bestehendem PersistenceKernel bestätigt
+- **0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT:** PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e` · Parent-Evidenz und read-only Biography-Grenze bestätigt
 - **0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E:** PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d` · Chromium und Firefox messen gerenderte Kurzmarken-Boxen in HUD, Map und Ranking fail-closed; kein Clipping reproduziert, kein CSS-Fix nötig
 - **0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT:** PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db` · realer Randort bleibt bei begrenztem Fokus off-center, vorhandener `1:1`-Reset stellt die Gesamtansicht wieder her; bewusst keine zweite Mini-Map
 - **0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E:** PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883` · Chromium und Firefox prüfen die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking fail-closed gegen den gemeinsamen `0.34rem`-Boden
@@ -104,7 +105,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | ID | Status | Feature | Voraussetzung |
 |---|---|---|---|
 | `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
-| `POOL-WORLD-003` | `PULLED` | District-Ereignisketten mit Erinnerung | Contract V1 PR #196 bestätigt genau einen Child-Event-, Parent-/District- und Exactly-once-Vertrag; als nächster separater Produkt-Slice genau eine Micro-Story, keine generische Kettenengine |
+| `POOL-WORLD-003` | `PULLED` | District-Ereignisketten mit Erinnerung | Micro-Story 001 PR #198 bestätigt eine echte Ursache→Folge-Kette; als nächster separater Slice dieselbe Kausalität read-only in vorhandener Timeline/Biografie zeigen, keine Browserautorität |
 | `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
@@ -130,4 +131,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-WORLD-003` bleibt nach PR #196 bewusst `PULLED`: Contract V1 hat genau `world.district_followup_resolved`, Parent-/District-Bindung und Exactly-once-/Replay-Semantik bestätigt. Die nächste Entnahme ist deshalb `0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001`: genau eine bestätigte Ursache→Folge-Geschichte auf diesem Vertrag umsetzen, ohne generische zweite Eventengine. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.
+`POOL-WORLD-003` bleibt nach PR #198 bewusst `PULLED`: Micro-Story 001 hat eine echte verzögerte `power_flicker_afterglow`-Folge auf dem bestehenden Contract V1 bestätigt. Die nächste Entnahme ist deshalb `0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION`: Parent und Child aus derselben Journal-Evidenz kausal sichtbar machen, ohne neue Timeline-, Biography- oder Browserautorität. Erst danach wird geprüft, ob eine zweite Micro-Story fachlich lohnt. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.
