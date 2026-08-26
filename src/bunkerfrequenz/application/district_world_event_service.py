@@ -66,6 +66,7 @@ class DistrictWorldEventService:
             raise ValueError("District-Event-Katalog ist leer")
         self.events = tuple(deepcopy(events))
         self._validate_catalog(selection)
+        self.micro_story = self._validate_micro_story(self.manifest.get("micro_story_001"))
 
     def trigger(self, *, world_seed: str, district_id: str, trigger_id: str, context: JournalContext) -> DistrictWorldEventResult:
         world_seed = self._text(world_seed, "world_seed")
@@ -92,14 +93,93 @@ class DistrictWorldEventService:
             event = self._select(eligible, world_seed=world_seed, district_id=district_id, trigger_id=trigger_id)
 
         event_instance_id = f"{source_prefix}{event['event_id']}"
-        result = self.district_service._apply(
+        district_result = self.district_service._apply(
             source_type="district_event",
             source_id=event_instance_id,
             district_id=district_id,
             requested_deltas=event["effects"],
             context=context,
         )
-        return DistrictWorldEventResult(event["event_id"], event["title_key"], event["body_key"], event_instance_id, result)
+        district_result = self._resolve_previous_micro_story(
+            current_event_instance_id=event_instance_id,
+            district_id=district_id,
+            context=context,
+            district_result=district_result,
+        )
+        return DistrictWorldEventResult(event["event_id"], event["title_key"], event["body_key"], event_instance_id, district_result)
+
+    def _resolve_previous_micro_story(
+        self,
+        *,
+        current_event_instance_id: str,
+        district_id: str,
+        context: JournalContext,
+        district_result: DistrictCommitResult,
+    ) -> DistrictCommitResult:
+        parent_suffix = f":{self.micro_story['parent_catalog_event_id']}"
+        candidates = []
+        for record in self.district_service.persistence.read_records():
+            if record.get("event_type") != self.micro_story["parent_event_type"]:
+                continue
+            payload = record.get("payload")
+            if not isinstance(payload, Mapping):
+                continue
+            source_id = payload.get("source_id")
+            if (
+                payload.get("source_type") == "district_event"
+                and payload.get("district_id") == district_id
+                and isinstance(source_id, str)
+                and source_id != current_event_instance_id
+                and source_id.endswith(parent_suffix)
+            ):
+                candidates.append(record)
+        if not candidates:
+            return district_result
+        parent = max(candidates, key=lambda item: int(item.get("sequence", 0)))
+        parent_payload = parent.get("payload")
+        if not isinstance(parent_payload, Mapping) or parent_payload.get("district_id") != district_id:
+            raise PersistenceError("District-Micro-Story und Parent müssen denselben District besitzen")
+
+        parent_event_id = self._text(parent.get("event_id"), "parent.event_id")
+        followup_id = self.micro_story["followup_id"]
+        child_event_id = f"district-followup:{parent_event_id}:{followup_id}"
+        child_payload = {
+            "parent_event_id": parent_event_id,
+            "district_id": district_id,
+            "followup_id": followup_id,
+            "title_key": self.micro_story["title_key"],
+            "body_key": self.micro_story["body_key"],
+        }
+        child = {
+            "event_id": child_event_id,
+            "event_type": self.micro_story["journal_event_type"],
+            "causation_id": parent_event_id,
+            "correlation_id": f"district-chain:{parent_event_id}",
+            "payload": child_payload,
+        }
+        was_present = self.district_service.persistence.has_event(child_event_id)
+        receipt = self.district_service.persistence.commit(
+            transaction_id=f"tx:{child_event_id}",
+            events=[child],
+            derived_state=deepcopy(self.district_service.persistence.load_state() or {}),
+            context=context,
+        )
+        metadata = deepcopy(district_result.metadata)
+        metadata["followup"] = {
+            "event_id": child_event_id,
+            "followup_id": followup_id,
+            "parent_event_id": parent_event_id,
+            "district_id": district_id,
+            "title_key": self.micro_story["title_key"],
+            "body_key": self.micro_story["body_key"],
+        }
+        return DistrictCommitResult(
+            district_result.state,
+            district_result.committed_event_ids + receipt.event_ids,
+            district_result.idempotent_replay and was_present and not receipt.event_ids,
+            district_result.applied,
+            metadata,
+        )
 
     def _no_event(self, district_id: str, trigger_id: str, reason: str) -> DistrictWorldEventResult:
         state = self.district_service.current_state()
@@ -239,6 +319,31 @@ class DistrictWorldEventService:
                     raise ValueError(f"{field} liegt außerhalb des Vertrags [{minimum}, {maximum}]")
         if total_weight != expected_weight:
             raise ValueError(f"District-Event-Kataloggewicht {total_weight} weicht von selection.weight_total {expected_weight} ab")
+
+    def _validate_micro_story(self, raw: Any) -> dict[str, str]:
+        if not isinstance(raw, Mapping):
+            raise ValueError("DISTRICT_EVENT_MANIFEST benötigt micro_story_001")
+        story = {
+            "parent_catalog_event_id": self._text(raw.get("parent_catalog_event_id"), "micro_story_001.parent_catalog_event_id"),
+            "followup_id": self._text(raw.get("followup_id"), "micro_story_001.followup_id"),
+            "title_key": self._text(raw.get("title_key"), "micro_story_001.title_key"),
+            "body_key": self._text(raw.get("body_key"), "micro_story_001.body_key"),
+        }
+        parent_ids = {str(event.get("event_id")) for event in self.events}
+        if story["parent_catalog_event_id"] not in parent_ids:
+            raise ValueError("micro_story_001 verweist auf unbekanntes District-Event")
+        contract = self.manifest.get("follow_up_contract")
+        if not isinstance(contract, Mapping):
+            raise ValueError("District-Event-Manifest benötigt follow_up_contract")
+        if contract.get("event_id_pattern") != "district-followup:{parent_event_id}:{followup_id}":
+            raise ValueError("District-Follow-up Event-ID-Vertrag ist unbekannt")
+        if contract.get("correlation_id_pattern") != "district-chain:{parent_event_id}":
+            raise ValueError("District-Follow-up Correlation-Vertrag ist unbekannt")
+        if contract.get("district_must_match_parent") is not True or contract.get("runtime_authority_only") is not True:
+            raise ValueError("District-Follow-up benötigt Runtime-Autorität und District-Bindung")
+        story["journal_event_type"] = self._text(contract.get("journal_event_type"), "follow_up_contract.journal_event_type")
+        story["parent_event_type"] = self._text(contract.get("parent_event_type"), "follow_up_contract.parent_event_type")
+        return story
 
     def _existing_event_id(self, source_prefix: str) -> str | None:
         state = self.district_service.current_state()

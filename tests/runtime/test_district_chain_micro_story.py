@@ -1,0 +1,133 @@
+import json
+from pathlib import Path
+import tempfile
+import unittest
+
+from bunkerfrequenz.application.district_service import DistrictService
+from bunkerfrequenz.application.district_world_event_service import DistrictWorldEventService
+from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceKernel
+
+
+ROOT = Path(__file__).parents[2]
+JOURNAL = json.loads((ROOT / "manifests" / "JOURNAL_MANIFEST.json").read_text(encoding="utf-8"))
+DISTRICTS = json.loads((ROOT / "manifests" / "DISTRICT_STATE_MANIFEST.json").read_text(encoding="utf-8"))
+CITY_MAP = json.loads((ROOT / "manifests" / "CITY_MAP_MANIFEST.json").read_text(encoding="utf-8"))
+DISTRICT_EVENTS = json.loads((ROOT / "manifests" / "DISTRICT_EVENT_MANIFEST.json").read_text(encoding="utf-8"))
+ALLOWED = set(JOURNAL["event_types"])
+
+
+def context(command_id: str, district_id: str = "friedrichshain") -> JournalContext:
+    return JournalContext(
+        "2026-08-26T01:00:00+02:00",
+        "session-micro-story",
+        "player-local",
+        "district",
+        district_id,
+        command_id,
+        "district-chain-micro-story-test",
+        "0.8.8",
+        "player-local",
+    )
+
+
+class DistrictChainMicroStoryTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.kernel = PersistenceKernel(self.tmp.name, ALLOWED)
+        self.districts = DistrictService(self.kernel, DISTRICTS, CITY_MAP)
+        self.service = DistrictWorldEventService(self.districts, DISTRICT_EVENTS)
+        self.service._cadence_block_reason = lambda _trigger_id: None
+
+    def _force_event(self, event_id: str) -> None:
+        selected = next(item for item in self.service.events if item["event_id"] == event_id)
+        self.service._select = lambda _eligible, **_kwargs: selected
+
+    def test_power_flicker_followup_is_delayed_until_next_confirmed_district_cycle(self):
+        self._force_event("district.power_flicker")
+        first = self.service.trigger(
+            world_seed="story-seed",
+            district_id="friedrichshain",
+            trigger_id="cycle-001",
+            context=context("district-story-001"),
+        )
+        first_records = self.kernel.read_records()
+        self.assertEqual(first.event_id, "district.power_flicker")
+        self.assertEqual([r["event_type"] for r in first_records], ["world.district_effect_applied"])
+
+        self._force_event("district.word_of_mouth_wave")
+        second = self.service.trigger(
+            world_seed="story-seed",
+            district_id="friedrichshain",
+            trigger_id="cycle-002",
+            context=context("district-story-002"),
+        )
+        records = self.kernel.read_records()
+        parents = [r for r in records if r["event_type"] == "world.district_effect_applied"]
+        children = [r for r in records if r["event_type"] == "world.district_followup_resolved"]
+
+        self.assertEqual(second.event_id, "district.word_of_mouth_wave")
+        self.assertEqual(len(parents), 2)
+        self.assertEqual(len(children), 1)
+        child = children[0]
+        first_parent = parents[0]
+        self.assertEqual(child["causation_id"], first_parent["event_id"])
+        self.assertEqual(child["correlation_id"], f"district-chain:{first_parent['event_id']}")
+        self.assertEqual(child["payload"]["parent_event_id"], first_parent["event_id"])
+        self.assertEqual(child["payload"]["district_id"], "friedrichshain")
+        self.assertEqual(child["payload"]["followup_id"], "power_flicker_afterglow")
+        self.assertEqual(child["payload"]["title_key"], "district_followup.power_flicker_afterglow.title")
+        self.assertEqual(
+            second.district_result.metadata["followup"]["event_id"],
+            child["event_id"],
+        )
+
+    def test_retry_of_second_cycle_does_not_duplicate_followup(self):
+        self._force_event("district.power_flicker")
+        self.service.trigger(
+            world_seed="story-seed",
+            district_id="friedrichshain",
+            trigger_id="cycle-001",
+            context=context("district-story-001"),
+        )
+        self._force_event("district.word_of_mouth_wave")
+        self.service.trigger(
+            world_seed="story-seed",
+            district_id="friedrichshain",
+            trigger_id="cycle-002",
+            context=context("district-story-002"),
+        )
+        before = self.kernel.read_records()
+
+        retry = self.service.trigger(
+            world_seed="different-seed",
+            district_id="friedrichshain",
+            trigger_id="cycle-002",
+            context=context("district-story-002-retry"),
+        )
+
+        self.assertTrue(retry.district_result.idempotent_replay)
+        self.assertEqual(self.kernel.read_records(), before)
+
+    def test_followup_never_crosses_district_boundary(self):
+        self._force_event("district.power_flicker")
+        self.service.trigger(
+            world_seed="story-seed",
+            district_id="friedrichshain",
+            trigger_id="cycle-001",
+            context=context("district-story-001"),
+        )
+        self._force_event("district.word_of_mouth_wave")
+        self.service.trigger(
+            world_seed="story-seed",
+            district_id="mitte",
+            trigger_id="cycle-002",
+            context=context("district-story-002", "mitte"),
+        )
+
+        children = [r for r in self.kernel.read_records() if r["event_type"] == "world.district_followup_resolved"]
+        self.assertEqual(children, [])
+
+
+if __name__ == "__main__":
+    unittest.main()
