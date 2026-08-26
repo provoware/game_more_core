@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #196 · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1` · PR #196 · Head `004d3fd60c9794f27d38e74eb298862c5fe10e35` · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-/Story-Linie bis PR #196; Contract V1 katalogisiert genau `world.district_followup_resolved`, bindet Parent/District und beweist Exactly-once-/Replay-Semantik ohne zweite Persistenzarchitektur
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001`
+- **Status-Sync-Anker:** PR #198 · Merge `030d40e4b22c38a11fd98a2d028b398779955507`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001` · PR #198 · Head `231ecc47ee43e1bf81907cc6e66ab58951888daf` · Merge `030d40e4b22c38a11fd98a2d028b398779955507`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-/Story-Linie bis PR #198; genau eine verzögerte `power_flicker_afterglow`-Folge nutzt den bestehenden District-/Journalvertrag, bleibt Exactly-once und überschreitet keine District-Grenze
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -132,6 +132,13 @@
 - [x] bestehender `PersistenceKernel` wiederverwendet; keine zweite Event-/Replay-/Save-Architektur
 - [x] PR #196 · Head `004d3fd60c9794f27d38e74eb298862c5fe10e35` · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577`
 
+## 0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001
+- [x] genau eine verzögerte Folgegeschichte `power_flicker_afterglow` auf dem bestehenden Child-Eventvertrag umgesetzt
+- [x] Folge entsteht erst in einem späteren bestätigten District-Zyklus desselben Bezirks; kein Cross-District-Nachhall
+- [x] Parent-ID, `causation_id`, `correlation_id` und deterministische Child-ID bleiben Exactly-once gebunden
+- [x] keine neuen Balanceeffekte, keine zweite Eventengine, Texte außerhalb der Runtime
+- [x] PR #198 · Head `231ecc47ee43e1bf81907cc6e66ab58951888daf` · Merge `030d40e4b22c38a11fd98a2d028b398779955507`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
 - [x] `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` verwenden denselben maschinenprüfbaren Safe-Merge-Anker
@@ -142,32 +149,31 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001
+# Aktiv / nächste Iteration – 0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION
 
 ## Fortschritt
 
-**0 %** – Contract V1 ist sicher gemergt. Die nächste kleine Story-Iteration darf jetzt genau eine bestätigte Ursache→Folge-Geschichte auf dem vorhandenen Child-Eventvertrag umsetzen; keine generische Kettenengine.
+**0 %** – Micro-Story 001 ist sicher gemergt. Die nächste kleine Story-/UX-Iteration soll die bereits persistierte Ursache→Folge-Kette ausschließlich read-only sichtbar machen; keine neue Storyautorität im Browser.
 
 ## Ziel
 
-Genau eine District-Folgegeschichte aus einer bestätigten `world.district_effect_applied`-Parent-Evidenz erzeugen, District-Gleichheit vor Commit fail-closed prüfen und deterministisch genau einen `world.district_followup_resolved`-Record schreiben.
+Parent `world.district_effect_applied` und Child `world.district_followup_resolved` in der bestehenden Timeline kausal zusammenhängend darstellen, ausschließlich aus bestätigter Journal-Evidenz.
 
 ## Abnahme
 
-- [ ] bestätigten Parent ausschließlich aus dem bestehenden Journal-/Runtime-Vertrag laden
-- [ ] Parent- und Child-`district_id` vor Commit zwingend abgleichen; Mismatch muss fail-closed sein
-- [ ] deterministische `followup_id`/Child-`event_id` aus bestätigter Ursache ableiten; keine Systemzeit als alleinige Autorität
-- [ ] genau eine kleine Storyvariante implementieren; keine generische zweite Eventengine
-- [ ] identischer Retry darf keinen zweiten Child-Record erzeugen
-- [ ] Timeline/Biography bleiben read-only Konsumenten; kein Browser-Write
-- [ ] direkte Runtime-Regressionen für Erfolg, Retry und District-Mismatch grün
-- [ ] relevante Runtime-/Repository-/Release-Gates auf finalem Head grün
+- [ ] vorhandene Timeline-Projection als einzige Presentation-Quelle wiederverwenden
+- [ ] Child anhand `causation_id` seinem bestätigten Parent zuordnen; kein Browser-State als Autorität
+- [ ] klaren Hinweis wie `Folge von: …` aus bestehenden Textschlüsseln ableiten
+- [ ] unverknüpfte oder unbekannte Parent-Referenzen fail-safe ohne erfundene Ursache darstellen
+- [ ] bestehende Sortierung, Filter und Entry-Limits unverändert lassen
+- [ ] direkte Presentation-/Projection-Regressionen für verknüpfte und fehlende Parents grün
+- [ ] relevante Runtime-/Presentation-/Repository-/Release-Gates auf finalem Head grün
 - [ ] 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ### Danach
 
-- [ ] **DISTRICT-CHAIN-READONLY-PROJECTION:** Parent und Child in bestehender Timeline/Biografie kausal zusammenhängend sichtbar machen, ohne Gameplay-Autorität
+- [ ] **DISTRICT-MICRO-STORY-002-AUDIT:** erst nach sichtbarer Kausalitätsdarstellung prüfen, welches weitere District-Ereignis einen sinnvollen Nachhall trägt
 - [ ] **STATUS-SYNC-DRIFT-AGE:** bei späterer Drift zusätzlich rein diagnostisch die Anzahl fachlicher Safe Merges Rückstand anzeigen; kein automatischer Write
 - [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
 
@@ -176,7 +182,7 @@ Genau eine District-Folgegeschichte aus einer bestätigten `world.district_effec
 ## Architektur- und Sicherheitsgrenzen
 
 - Git-Historie liefert nur den bestätigten Merge-Anker; die drei vorhandenen Statusdateien bleiben die kanonischen Projektinformationen.
-- District-Ketten verwenden ausschließlich den katalogisierten Child-Eventvertrag; Biography und Browser bleiben read-only.
+- District-Ketten verwenden ausschließlich den katalogisierten Child-Eventvertrag; Timeline, Biography und Browser bleiben read-only.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`docs/DISTRICT_CHAIN_CONTRACT_V1.md`](docs/DISTRICT_CHAIN_CONTRACT_V1.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`docs/DISTRICT_CHAIN_MICRO_STORY_001.md`](docs/DISTRICT_CHAIN_MICRO_STORY_001.md) · [`AGENTS.md`](AGENTS.md)
