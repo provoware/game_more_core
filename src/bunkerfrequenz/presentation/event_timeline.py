@@ -7,6 +7,7 @@ from typing import Any, Mapping, Sequence
 SUPPORTED_EVENT_TYPES = frozenset({
     "street.encounter_resolved",
     "world.district_effect_applied",
+    "world.district_followup_resolved",
     "event.incident_resolved",
 })
 DISTRICT_METRICS = ("heat", "prestige", "police_pressure", "scene_activity")
@@ -62,6 +63,14 @@ def build_event_timeline_projection(
                 district_specs,
                 district_text_catalog,
             )
+        elif event_type == "world.district_followup_resolved":
+            entry = _district_followup_entry(
+                sequence,
+                event_id,
+                payload,
+                district_text_catalog,
+                causation_id=raw.get("causation_id"),
+            )
         else:
             entry = _incident_entry(
                 sequence,
@@ -73,6 +82,7 @@ def build_event_timeline_projection(
         if entry is not None:
             projected.append(entry)
 
+    _attach_district_causes(projected)
     projected.sort(key=lambda item: (item["sequence"], item["event_id"]))
     return deepcopy(projected[-limit:])
 
@@ -145,6 +155,74 @@ def _district_entry(
             "deltas": _district_deltas(payload.get("deltas")),
         },
     }
+
+
+def _district_followup_entry(
+    sequence: int,
+    event_id: str,
+    payload: Mapping[str, Any],
+    texts: Mapping[str, str],
+    *,
+    causation_id: Any,
+) -> dict[str, Any] | None:
+    parent_event_id = payload.get("parent_event_id")
+    district_id = payload.get("district_id")
+    followup_id = payload.get("followup_id")
+    title_key = payload.get("title_key")
+    body_key = payload.get("body_key")
+    required = (parent_event_id, district_id, followup_id, title_key, body_key, causation_id)
+    if not all(isinstance(value, str) and value for value in required):
+        return None
+    if causation_id != parent_event_id:
+        return None
+    title = texts.get(title_key)
+    body = texts.get(body_key)
+    if not isinstance(title, str) or not title or not isinstance(body, str) or not body:
+        return None
+    return {
+        "sequence": sequence,
+        "event_id": event_id,
+        "kind": "district",
+        "title": title,
+        "body": body,
+        "metadata": {
+            "district_id": district_id,
+            "followup_id": followup_id,
+            "parent_event_id": parent_event_id,
+        },
+    }
+
+
+def _attach_district_causes(projected: Sequence[dict[str, Any]]) -> None:
+    parents: dict[str, dict[str, Any]] = {}
+    for entry in projected:
+        metadata = entry.get("metadata")
+        if (
+            entry.get("kind") == "district"
+            and isinstance(metadata, Mapping)
+            and isinstance(metadata.get("district_event_id"), str)
+        ):
+            parents[entry["event_id"]] = entry
+
+    for entry in projected:
+        metadata = entry.get("metadata")
+        if not isinstance(metadata, Mapping) or not isinstance(metadata.get("followup_id"), str):
+            continue
+        parent_id = metadata.get("parent_event_id")
+        parent = parents.get(parent_id) if isinstance(parent_id, str) else None
+        if parent is None:
+            continue
+        parent_metadata = parent.get("metadata")
+        if not isinstance(parent_metadata, Mapping):
+            continue
+        if parent_metadata.get("district_id") != metadata.get("district_id"):
+            continue
+        if parent.get("sequence", 0) >= entry.get("sequence", 0):
+            continue
+        entry["caused_by"] = {
+            "event_id": parent["event_id"],
+            "title": parent["title"],
+        }
 
 
 def _incident_entry(
