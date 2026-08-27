@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #206 · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E` · PR #206 · Head `14a1c2914c6b366bda1ca71198340f00f58cef3a` · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973`
-- **Start-/Release-Qualität:** beide District-Micro-Stories sind durch Runtime → Journal/Persistenz → read-only Projection → `/api/state` → echtes Chromium-DOM belegt; Retry und Cross-District bleiben fail-closed
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT`
+- **Status-Sync-Anker:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E` · PR #215 · Head `ab15032ecf1b67aa2724ce6c461c613674a63c26` · Merge `1acceec43514caf7e2e945535896bce9472a19de`
+- **Start-/Release-Qualität:** beide produktiven Street-Micro-Stories sind durch Runtime → Journal/Persistenz → Reload → `/api/state` → echtes Chromium-DOM belegt; Retry bleibt Exactly-once
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -139,63 +139,47 @@
 - [x] keine Gameplay-, Balance-, Journal-, Projection-, Browser- oder CSS-Produktlogik geändert
 - [x] PR #206 · Head `14a1c2914c6b366bda1ca71198340f00f58cef3a` · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973`
 
+## 0.8.8-STORY-STREET-MINI-CHAIN
+- [x] Contract-Audit und eigener `street.followup_resolved`-Vertrag ohne District-Resolver-Kopie
+- [x] Story 001 `street.cable_tip → cable_tip_echo` und Story 002 `street.lost_glove → lost_glove_fence_echo` auf demselben Contract umgesetzt
+- [x] beide Folgen read-only in der bestehenden Timeline mit belegtem `Folge von: …` sichtbar
+- [x] beide Stories Runtime→Persistenz→Reload→API→Chromium-E2E und Exactly-once regressionsgesichert
+- [x] PRs #208–#215 sicher gemergt; zuletzt PR #215 · Head `ab15032ecf1b67aa2724ce6c461c613674a63c26` · Merge `1acceec43514caf7e2e945535896bce9472a19de`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT
 
 ## Fortschritt
 
-**Audit in Remote-Validierung.** Parent-ID und Entity-Bindung sind stabil/replaybar; eine Review-Regression hat zusätzlich gezeigt, dass das optionale Journalfeld `character_id` heute vom kanonisch validierten `entity_id` abweichen kann. Deshalb ist direkter Storycontent ausdrücklich blockiert.
+**Bereit für fokussierten Audit.** Zwei Street-Nachhalle sind produktiv und vollständig E2E-belegt. Vor Story 003 wird bewusst kein weiterer Content ergänzt, bis Tonalität und Wiederholungsmuster geprüft sind.
 
 ## Ziel
 
-Den kleinsten kanonischen Anschluss für **seltene Street-Mini-Ketten** bestimmen, ohne District-Storyengine, Browserzustand oder zweite Persistenzarchitektur zu übernehmen.
+Die zwei vorhandenen Street-Nachhalle gegen soziale, räumliche, materielle und leicht unheimliche Kandidaten vergleichen und genau einen dramaturgisch deutlich anderen Story-003-Kandidaten auswählen.
 
 ## Abnahme
 
-- [x] `StreetEncounterService`, bestehende Journal-Records, Replay-Semantik und Timeline-Projection gezielt geprüft
-- [x] `street.encounter_resolved` als stabile Parent-ID mit `entity_type=character` / validierter `entity_id` bestätigt
-- [x] vorhandene `causation_id` / `correlation_id` und Persistence-Exactly-once sind generisch wiederverwendbar
-- [x] District-spezifische Childtypen/Resolver werden ausdrücklich **nicht** in Street kopiert
-- [x] fehlender Street-Childvertrag als Pflicht-Vorstufe benannt: empfohlen `street.followup_resolved`
-- [x] Review-Grenzfall reproduziert: optionales Parent-`character_id` kann aktuell von `entity_id` abweichen und darf deshalb nicht ungeprüft Kettenautorität werden
-- [x] kreative spätere Kandidaten bewertet; `street.cable_tip` → `cable_tip_echo` / „Der Tipp macht die Runde.“ gewinnt, wird aber noch nicht implementiert
-- [x] passende Regressionen für Parent, Replay, fehlenden Childvertrag, generische Kausalität und Character-ID-Grenze ergänzt
-- [ ] relevante Runtime-/Presentation-/Repository-/Status-/Release-Gates auf **finalem** Head grün
-- [ ] 0 ungelöste Review-Threads, 0 Commits hinter `main`
+- [ ] Story 001 und 002 nach Ton, Motiv, Raumbezug und Pointe klassifizieren
+- [ ] mindestens drei vorhandene Street-Parents als Story-003-Kandidaten prüfen
+- [ ] Seltenheit, Kausalität, Balance-Neutralität und Contract-Eignung bewerten
+- [ ] einen Gewinner begründet auswählen oder Story 003 ausdrücklich zurückstellen
+- [ ] keine Runtime-, Manifest-, Balance-, Journal-, Projection- oder Browseränderung im Audit
+- [ ] fokussierte Regression sichert Auditannahmen gegen den echten Street-Katalog
+- [ ] Laienhilfe und Changelog aktualisieren
+- [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
-
-### Verbindlich danach – 0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-V1
-
-**Story 001 bleibt bis dahin gesperrt.** Contract V1 muss mindestens:
-
-- [ ] genau `street.followup_resolved` katalogisieren, ohne `world.district_followup_resolved` wiederzuverwenden
-- [ ] Parent `street.encounter_resolved` und dessen bestätigte `entity_id` als kanonische Character-Autorität festlegen
-- [ ] Parent-`character_id` bei Vorhandensein gegen `entity_id` prüfen; Widerspruch fail-closed ablehnen
-- [ ] Child-`character_id` an dieselbe bestätigte Parent-Identität binden
-- [ ] `parent_event_id` im Child-Payload führen
-- [ ] `causation_id = parent_event_id` und `correlation_id = street-chain:{parent_event_id}` festlegen
-- [ ] deterministische Child-ID und Exactly-once-/Konfliktregression definieren
-- [ ] erst späterer bestätigter Street-Walk darf ein Child auslösen; höchstens ein Follow-up pro Walk
-- [ ] keine Balancewirkung und keine Browserautorität in Contract V1
-
-### Erst danach
-
-- [ ] **STREET-MINI-CHAIN-001**: nur bei grünem Contract V1 genau eine kleine Ursache→Folge-Geschichte umsetzen
-- [ ] **VENUE-BENEFITS-CONTRACT-AUDIT** als alternative nächste Gameplay-Vertiefung
-- [ ] **DISTRICT-STORY-TONE-BALANCE** erst ab mindestens drei District-Micro-Stories
-
----
 
 ## Architektur- und Sicherheitsgrenzen
 
-- keine District-spezifische Storylogik in Street duplizieren.
-- keine Browser-/Timeline-Autorität; Presentation bleibt read-only.
-- kein neues Netzwerk, kein neuer Persistenzkernel, keine Balanceänderung im Audit.
+- derselbe `street.followup_resolved`-Contract bleibt einzige Street-Kettenarchitektur.
+- keine Story 003 im Audit implementieren.
+- keine Inventar-, NPC-, Location-, Economy- oder Progressionspersistenz aus erzählerischen Motiven ableiten.
+- Presentation bleibt read-only.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STREET_MINI_CHAIN_CONTRACT_AUDIT.md`](docs/STREET_MINI_CHAIN_CONTRACT_AUDIT.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STREET_MINI_CHAIN_LAIENHILFE.md`](docs/STREET_MINI_CHAIN_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)

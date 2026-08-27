@@ -50,13 +50,13 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-002", "POOL-QA-009", "POOL-STREET-005", "POOL-UX-007",
             "POOL-QA-010", "POOL-QA-006", "POOL-UX-008", "POOL-QA-011", "POOL-QA-013",
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
-            "POOL-QA-017", "POOL-WORLD-003",
+            "POOL-QA-017", "POOL-WORLD-003", "POOL-STREET-003",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-STREET-003"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-STORY-002"))
 
-    def test_current_status_describes_district_chain_e2e_and_active_street_chain_audit(self):
+    def test_current_status_describes_street_story_002_e2e_and_active_tone_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -69,44 +69,42 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "street_mini_chain_contract_audit")
+        self.assertEqual(status["current_focus"], "street_story_tone_diversity_audit")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 206)
-        self.assertEqual(validation["validated_head"], "14a1c2914c6b366bda1ca71198340f00f58cef3a")
-        self.assertEqual(validation["merged_commit"], "75aea005dcbf95abf80159b0ed96b0149bec0973")
+        self.assertEqual(validation["pull_request"], 215)
+        self.assertEqual(validation["validated_head"], "ab15032ecf1b67aa2724ce6c461c613674a63c26")
+        self.assertEqual(validation["merged_commit"], "1acceec43514caf7e2e945535896bce9472a19de")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E")
 
-        self.assertTrue(living_world["district_event_chain_contract_audit_validated"])
-        self.assertEqual(living_world["district_event_chain_child_event_type"], "world.district_followup_resolved")
-        self.assertEqual(living_world["district_event_chain_parent_binding"], "causation_id=parent_event_id")
-        self.assertTrue(living_world["district_event_chain_district_must_match_parent"])
-        self.assertTrue(living_world["district_event_chain_exactly_once_retry_validated"])
-        self.assertTrue(living_world["district_event_chain_readonly_projection_validated"])
-        self.assertFalse(living_world["district_event_chain_readonly_projection_browser_authority"])
-        self.assertTrue(living_world["district_micro_story_002_audit_validated"])
-        self.assertTrue(living_world["district_micro_story_002_implemented"])
-        self.assertEqual(living_world["district_micro_story_002_parent_catalog_event_id"], "district.temporary_space_opens")
-        self.assertEqual(living_world["district_micro_story_002_followup_id"], "temporary_space_afterimage")
-        self.assertEqual(living_world["district_micro_story_002_title"], "Die Tür ist zu – die Adresse lebt weiter.")
-        self.assertTrue(living_world["district_micro_story_002_delayed_to_later_cycle"])
-        self.assertFalse(living_world["district_micro_story_002_cross_district_allowed"])
-        self.assertFalse(living_world["district_micro_story_002_balance_effects"])
-        self.assertEqual(living_world["district_micro_story_catalog_count"], 2)
-        self.assertEqual(living_world["district_micro_story_max_followups_per_cycle"], 1)
-        self.assertTrue(living_world["district_chain_runtime_browser_e2e_validated"])
-        self.assertEqual(living_world["district_chain_runtime_browser_e2e_browser"], "chromium")
-        self.assertTrue(living_world["district_chain_runtime_browser_e2e_retry_validated"])
-        self.assertTrue(living_world["district_chain_runtime_browser_e2e_cross_district_fail_closed"])
+        self.assertTrue(living_world["street_chain_contract_audit_validated"])
+        self.assertEqual(living_world["street_chain_child_event_type"], "street.followup_resolved")
+        self.assertEqual(living_world["street_chain_parent_event_type"], "street.encounter_resolved")
+        self.assertEqual(living_world["street_chain_parent_character_authority"], "entity_id")
+        self.assertTrue(living_world["street_chain_parent_character_mismatch_fail_closed"])
+        self.assertEqual(living_world["street_chain_parent_binding"], "causation_id=parent_event_id")
+        self.assertEqual(living_world["street_chain_correlation_pattern"], "street-chain:{parent_event_id}")
+        self.assertTrue(living_world["street_chain_exactly_once_retry_validated"])
+        self.assertEqual(living_world["street_chain_micro_story_count"], 2)
+        self.assertEqual(living_world["street_chain_story_001_parent_catalog_event_id"], "street.cable_tip")
+        self.assertEqual(living_world["street_chain_story_001_followup_id"], "cable_tip_echo")
+        self.assertEqual(living_world["street_chain_story_002_parent_catalog_event_id"], "street.lost_glove")
+        self.assertEqual(living_world["street_chain_story_002_followup_id"], "lost_glove_fence_echo")
+        self.assertFalse(living_world["street_chain_story_002_inventory_return"])
+        self.assertFalse(living_world["street_chain_balance_effects"])
+        self.assertTrue(living_world["street_chain_readonly_projection_validated"])
+        self.assertTrue(living_world["street_chain_runtime_browser_e2e_validated"])
+        self.assertEqual(living_world["street_chain_runtime_browser_e2e_browser"], "chromium")
         self.assertEqual(
-            living_world["district_event_chain_next_contract"],
-            "0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT",
+            living_world["street_chain_next_audit"],
+            "0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT",
         )
 
-        self.assertIn("world.district_followup_resolved", presentation["event_timeline_sources"])
-        self.assertTrue(presentation["district_chain_cause_projection_validated"])
-        self.assertEqual(presentation["district_chain_cause_projection_label"], "Folge von:")
-        self.assertFalse(presentation["district_chain_cause_projection_invents_missing_parent"])
-        self.assertFalse(presentation["district_chain_cause_projection_browser_write_authority"])
+        self.assertIn("street.followup_resolved", presentation["event_timeline_sources"])
+        self.assertTrue(presentation["street_chain_cause_projection_validated"])
+        self.assertEqual(presentation["street_chain_cause_projection_label"], "Folge von:")
+        self.assertFalse(presentation["street_chain_cause_projection_invents_missing_parent"])
+        self.assertFalse(presentation["street_chain_cause_projection_browser_write_authority"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
@@ -142,7 +140,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-014": "`DONE`", "POOL-QA-015": "`DONE`",
             "POOL-UX-009": "`DONE`", "POOL-QA-016": "`DONE`",
             "POOL-MAP-003": "`DONE`", "POOL-QA-017": "`DONE`",
-            "POOL-WORLD-003": "`DONE`", "POOL-STREET-003": "`PULLED`",
+            "POOL-WORLD-003": "`DONE`", "POOL-STREET-003": "`DONE`",
+            "POOL-STORY-002": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
