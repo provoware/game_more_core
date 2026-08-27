@@ -41,6 +41,12 @@
     "runtime_authority_only": true,
     "client_can_write": false
   },
+  "micro_story_001": {
+    "parent_encounter_id": "street.cable_tip",
+    "followup_id": "cable_tip_echo",
+    "title_key": "street.followup.cable_tip_echo.title",
+    "body_key": "street.followup.cable_tip_echo.body"
+  },
   "approaches": [
     {
       "approach_id": "balanced",
