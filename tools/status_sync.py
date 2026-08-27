@@ -64,6 +64,8 @@ def _is_status_sync_path(path: str) -> bool:
         "docs/STATUS_SYNC_LAIENHILFE.md",
     }:
         return True
+    if path.startswith("docs/STATUS_SYNC_") and path.endswith(".md"):
+        return True
     if path.startswith("CHANGELOG.d/") and "STATUS-SYNC" in Path(path).name.upper():
         return True
     return False
@@ -80,12 +82,12 @@ def _changed_paths(root: Path, merge_commit: str) -> tuple[str, ...]:
 
 def _is_status_only_safe_merge(root: Path, merge_commit: str) -> bool:
     paths = set(_changed_paths(root, merge_commit))
-    # README und der bestehende Runtime-Statusvertrag dürfen wegen der
-    # Repository-Health-/Konsistenzverträge Teil eines Status-Syncs sein. Ein
-    # beliebiger Doku-/Test-Merge darf aber niemals als Status-Sync verschwinden:
-    # alle drei kanonischen Statusdateien müssen gemeinsam enthalten sein.
-    # Eine reine PROJEKTSTATUS-Korrektur ist ebenfalls nur Statuspflege und darf
-    # keinen neuen fachlichen Anker erzeugen (z. B. historische Label-Reparatur).
+    # README, Status-Regressionen und versionsbezogene Status-Laienhilfen dürfen
+    # wegen der Repository-Health-/Konsistenzverträge Teil eines Status-Syncs
+    # sein. Ein beliebiger Doku-/Test-Merge darf aber niemals als Status-Sync
+    # verschwinden: alle drei kanonischen Statusdateien müssen gemeinsam
+    # enthalten sein. Eine reine PROJEKTSTATUS-Korrektur ist ebenfalls nur
+    # Statuspflege und darf keinen neuen fachlichen Anker erzeugen.
     if paths == {PROJECT_STATUS_PATH}:
         return True
     return (
