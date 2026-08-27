@@ -8,7 +8,7 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Street Story 002 Runtime Browser E2E validiert" src="https://img.shields.io/badge/Feature_Stand-STREET--STORY--002--E2E_validiert-7dff00">
+  <img alt="Feature Stand Jobs Trade Guidance validiert" src="https://img.shields.io/badge/Feature_Stand-ECON--JOBS--TRADE_validiert-7dff00">
   <img alt="Aktive Iteration Street Tone Diversity Audit" src="https://img.shields.io/badge/Aktiv-STREET--TONE--DIVERSITY--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
@@ -26,8 +26,8 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E` |
+| **Status-Sync-Anker** | PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL` |
 | **Aktive Iteration** | 🟡 `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT` |
 | **Danach** | Story 003 nur bei klar anders gefärbtem, seltenem und balance-neutralem Gewinner auf demselben Street-Follow-up-Contract |
 | **District-Ereigniskette 001** | ✅ `district.power_flicker` → späterer `power_flicker_afterglow` · Exactly-once · keine Balancewirkung · Ursache read-only sichtbar |
@@ -41,14 +41,14 @@
 | **Ranking** | ✅ Competitive Top 10 · bestätigte Wochen-/Monatszyklen · lokale Crew-Marke nur am eigenen Eintrag |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 · Runtime-Owned-Map-E2E bestätigt |
 | **Berlin Ops Map** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan · Randfall geprüft · `1:1` stellt Gesamtansicht wieder her |
-| **Scene Jobs** | ✅ persönliches Bargeld · Anti-Grind · Lohnvorschau · zwei Recovery-Wahlen |
+| **Scene Jobs & Handel** | ✅ persönliches Bargeld · Anti-Grind · Stunden-/Effektivlohn · Kaufen/Verkaufen/Reservieren/Freigeben mit Runtime-Marktpreis |
 | **Assistent** | ✅ sichere Steuerung · bestätigte Rundenausführung · Freundschafts-Nachhall |
 | **Bank & Kontoauszug** | ✅ Wallet↔Bank · Sparzins · read-only TXT/CSV-Export |
 | **Event-Feedback** | ✅ Street-, Recovery- und Krisen-FX nur nach bestätigter Runtime-Antwort |
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #215 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #218 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -60,9 +60,11 @@ BUNKERFREQUENZ ist ein lokales Techno-/FreeTekno-Crew-RPG. Bestätigte Aktionen,
 
 ```text
 SCENE JOBS → PERSÖNLICHES BARGELD → BANK / SPAREN → KONTOAUSZUG
-      ↓
-STRASSE / SPIELERANSATZ
-      ↓
+      ↓                              ↓
+STUNDEN-/EFFEKTIVLOHN            EQUIPMENT-HANDEL
+      ↓                              ↓
+STRASSE / SPIELERANSATZ        KAUFEN · VERKAUFEN
+      ↓                        RESERVIEREN · FREIGEBEN
 CHARAKTER & CREW
       ↓
 EVENT PLANEN → STARTEN → KRISE? → ENTSCHEIDEN → SETTLEMENT
@@ -102,7 +104,9 @@ PROPERTY / HALL OF TRIBUTE
 - echter Chromium- und nativer Firefox-Acceptance-Pfad für Profil → HUD → runtime-bestätigten Map-Besitz → eigenen Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
 - kompakte HUD-, Map- und Ranking-Kurzmarken mit browserberechnet geprüftem `0.34rem`-Lesbarkeitsboden und realer Clipping-Prüfung
 - bestehende Desktop-Browser-Evidence bindet denselben runtime-bestätigten Property-Kauf read-only an Location-, Event- und Ledger-Referenzen
-- Scene Jobs, persönliches Bargeld, Bank, Sparzins und Kontoauszug
+- Scene Jobs mit Stundenlohn, kanonischer Erschöpfungs-Lohnvorschau, persönlichem Bargeld, Bank und Sparzins
+- vollständige Bedienung des vorhandenen Equipment-Handels: Kaufen, Verkaufen, Reservieren und Freigeben; Marktpreis und freier Bestand kommen aus der Runtime-Projektion
+- Kontoauszug und lokaler TXT/CSV-Export
 - Secret Best Friend Assistant auf bestehenden Scene-Job-/Rundenverträgen
 - lokale Presentation-FX ausschließlich nach bestätigten Runtime-Ergebnissen
 
@@ -228,10 +232,12 @@ Feature-Fortschritt auf `main` ist kein stiller Produktrelease. Eine neue Produk
 | Projektmanifest | [`PROJEKTMANIFEST.json`](PROJEKTMANIFEST.json) |
 | Status-Sync erklärt | [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) |
 | Anfängerstart | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
+| Control-Deck-Hilfe | [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) |
 | Crew-Logo/Fahne | [`docs/LAIENHILFE_CREW_LOGO_FAHNE.md`](docs/LAIENHILFE_CREW_LOGO_FAHNE.md) |
 | Avatar im Ranking | [`docs/LAIENHILFE_CREW_AVATAR_RANKING.md`](docs/LAIENHILFE_CREW_AVATAR_RANKING.md) |
 | Avatar auf der Karte | [`docs/LAIENHILFE_CREW_AVATAR_KARTE.md`](docs/LAIENHILFE_CREW_AVATAR_KARTE.md) |
 | Scene Jobs & Bargeld | [`docs/LAIENHILFE_SCENE_JOBS.md`](docs/LAIENHILFE_SCENE_JOBS.md) |
+| Arbeit, Geld & Handel | [`docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md`](docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md) |
 | Bank, Sparen & Kontoauszug | [`docs/LAIENHILFE_BANK_UND_SPAREN.md`](docs/LAIENHILFE_BANK_UND_SPAREN.md) |
 | Street-Mini-Ketten | [`docs/STREET_MINI_CHAIN_LAIENHILFE.md`](docs/STREET_MINI_CHAIN_LAIENHILFE.md) |
 | Berlin-Erinnerungen | [`docs/LAIENHILFE_DISTRICT_BIO.md`](docs/LAIENHILFE_DISTRICT_BIO.md) |
