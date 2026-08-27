@@ -1,27 +1,37 @@
 # Laienhilfe – zweite Street-Micro-Story
 
-## Was wurde hier gemacht?
+## Was ist jetzt eingebaut?
 
-Noch keine neue Geschichte eingebaut. Zuerst wurde geprüft, **welches bestehende Straßenereignis sich für einen glaubwürdigen späteren Nachhall eignet**, ohne neue Spielsysteme zu erfinden.
+Die zuvor geprüfte zweite kleine Straßen-Geschichte ist jetzt umgesetzt:
 
-## Welche Idee gewinnt?
+**Ein Handschuh weniger → Der Handschuh wartet noch.**
 
-`Ein Handschuh weniger` soll später einmal zu **„Der Handschuh wartet noch.“** führen können.
+Du verlierst bei einem bestätigten Straßengang einen Handschuh. Bei einem späteren bestätigten Straßengang desselben Charakters kann genau dieser Moment nachhallen: Der Handschuh hängt sichtbar über einem Bauzaun, weil ihn jemand aufgehoben und dort abgelegt hat.
 
-Die einfache Idee: Du verlierst unterwegs einen Handschuh. Bei einem späteren bestätigten Straßengang hängt genau dieser Handschuh sichtbar über einem Bauzaun. Jemand hat ihn aufgehoben.
+## Was passiert dabei im Spiel?
 
-## Warum ist das geeignet?
+- Die ursprüngliche Begegnung bleibt eine normale Street-Begegnung.
+- Erst ein späterer bestätigter Street-Walk darf den Nachhall auslösen.
+- Ursache und Folge werden eindeutig miteinander verknüpft.
+- Ein Retry oder Neuladen erzeugt keine zweite Kopie derselben Folge.
+- Pro späterem Street-Walk entsteht weiterhin höchstens ein Street-Nachhall.
 
-- Die Ursache ist leicht verständlich.
-- Es braucht keine neue Figur und keinen neuen Ort im Save.
-- Es verändert keine Werte.
-- Der verlorene Handschuh ist ein seltenes Ereignis und wirkt deshalb nicht dauernd.
-- Die Geschichte fühlt sich anders an als der bereits vorhandene Kabeltipp-Nachhall.
+## Wichtig: Der Handschuh wird nicht zum Gegenstand
 
-## Wichtig
+Die Szene ist **nur Story und Atmosphäre**. Der Handschuh wird nicht ins Inventar gelegt, nicht als wiedergefunden verbucht und erzeugt keinen Bonus. Energie, Stress, Ruf, Geld und Economy erhalten durch den Nachhall keine zusätzliche Wirkung.
 
-Der Handschuh wird dabei **nicht als Gegenstand zurückgegeben**. Die spätere Szene wäre nur eine kleine bestätigte Storyreaktion. Dadurch entstehen keine versteckten Inventar- oder Balancefolgen.
+Dadurch bleibt die Geschichte glaubwürdig, ohne heimlich ein neues Inventar-, Orts- oder Belohnungssystem einzuführen.
 
-## Nächster Umsetzungsschritt
+## Warum ist das technisch robust?
 
-Erst in einer eigenen späteren Iteration darf diese Story auf dem bereits vorhandenen `street.followup_resolved`-Vertrag umgesetzt und anschließend mit Runtime-, Replay- und Browserregressionen bewiesen werden.
+Story 002 verwendet exakt denselben vorhandenen `street.followup_resolved`-Vertrag wie der Kabeltipp-Nachhall. Die Runtime besitzt bereits einen generischen Resolver für mehrere `micro_story_*`-Einträge. Es wurde deshalb **keine zweite Storyengine** ergänzt.
+
+Eine Regression erzeugt den verlorenen Handschuh über den normalen Street-Service, löst den Nachhall erst beim späteren Walk aus und prüft Parent-ID, `causation_id`, `correlation_id`, Character-Bindung, fehlende Gameplay-Effekte und Exactly-once beim Retry.
+
+## Was bleibt noch offen?
+
+Die vorhandene read-only Timeline kann Street-Follow-ups grundsätzlich bereits darstellen. Ein eigener Browser-Ende-zu-Ende-Nachweis für Story 002 ist jedoch ein sinnvoller späterer QA-Schritt, damit auch der komplette Weg Save → `/api/state` → sichtbares Browser-DOM ausdrücklich für diese zweite Geschichte belegt ist.
+
+## Sinnvolle spätere Erweiterung
+
+Nach zwei unterschiedlichen Street-Nachhallen sollte vor Story 003 ein kleiner **Story-Tone-Diversity-Audit** prüfen, ob die Geschichten abwechslungsreich genug wirken und nicht immer nach demselben Muster funktionieren.
