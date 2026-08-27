@@ -25,7 +25,7 @@ class StreetChainRuntimeBrowserE2ETests(unittest.TestCase):
         selected = next(item for item in service.encounters if item["encounter_id"] == encounter_id)
         return patch.object(street_module, "_select", return_value=selected)
 
-    def test_confirmed_street_chain_survives_retry_reopen_api_and_real_browser(self):
+    def test_confirmed_street_chains_survive_retry_reopen_api_and_real_browser(self):
         with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-street-chain-browser-") as root:
             save_dir = Path(root) / "save"
             runtime = game_client.A4ClientRuntime(save_dir)
@@ -73,6 +73,68 @@ class StreetChainRuntimeBrowserE2ETests(unittest.TestCase):
             self.assertEqual(runtime.kernel.read_records(), records_before_retry)
             self.assertEqual(sum(record["event_id"] == child_event_id for record in records_before_retry), 1)
 
+            with self._force_encounter(runtime, "street.lost_glove"):
+                glove_parent = runtime.command({
+                    "type": "street.walk",
+                    "command_id": "street-chain-e2e-glove-parent",
+                    "approach_id": "balanced",
+                })
+            self.assertEqual(glove_parent.get("status"), "confirmed")
+            self.assertEqual(
+                glove_parent["metadata"]["street_encounter"]["encounter_id"],
+                "street.lost_glove",
+            )
+
+            glove_parent_event_id = "street-chain-e2e-glove-parent:001"
+            glove_child_event_id = (
+                f"street-followup:{glove_parent_event_id}:lost_glove_fence_echo"
+            )
+            self.assertFalse(runtime.kernel.has_event(glove_child_event_id))
+
+            with self._force_encounter(runtime, "street.none"):
+                glove_child = runtime.command({
+                    "type": "street.walk",
+                    "command_id": "street-chain-e2e-glove-child",
+                    "approach_id": "balanced",
+                })
+            self.assertEqual(glove_child.get("status"), "confirmed")
+            self.assertIn(glove_child_event_id, glove_child.get("committed_event_ids", []))
+
+            glove_record = next(
+                record
+                for record in runtime.kernel.read_records()
+                if record["event_id"] == glove_child_event_id
+            )
+            self.assertEqual(glove_record["event_type"], "street.followup_resolved")
+            self.assertEqual(glove_record["causation_id"], glove_parent_event_id)
+            self.assertEqual(
+                glove_record["correlation_id"],
+                f"street-chain:{glove_parent_event_id}",
+            )
+            self.assertEqual(glove_record["payload"]["parent_event_id"], glove_parent_event_id)
+            self.assertEqual(
+                glove_record["payload"]["character_id"],
+                runtime.starter["character"]["character_id"],
+            )
+            self.assertEqual(
+                glove_record["payload"]["followup_id"],
+                "lost_glove_fence_echo",
+            )
+
+            glove_records_before_retry = runtime.kernel.read_records()
+            glove_retry = runtime.command({
+                "type": "street.walk",
+                "command_id": "street-chain-e2e-glove-child",
+                "approach_id": "balanced",
+            })
+            self.assertEqual(glove_retry.get("status"), "confirmed")
+            self.assertTrue(glove_retry.get("idempotent_replay"))
+            self.assertEqual(runtime.kernel.read_records(), glove_records_before_retry)
+            self.assertEqual(
+                sum(record["event_id"] == glove_child_event_id for record in glove_records_before_retry),
+                1,
+            )
+
             projected = runtime.projection()["event_timeline"]
             child_projection = next(
                 entry
@@ -82,6 +144,15 @@ class StreetChainRuntimeBrowserE2ETests(unittest.TestCase):
             self.assertEqual(child_projection["title"], "Der Tipp macht die Runde")
             self.assertEqual(child_projection["caused_by"]["event_id"], parent_event_id)
             self.assertEqual(child_projection["caused_by"]["title"], "Kabeltipp am Bauzaun")
+
+            glove_projection = next(
+                entry
+                for entry in projected
+                if entry.get("metadata", {}).get("followup_id") == "lost_glove_fence_echo"
+            )
+            self.assertEqual(glove_projection["title"], "Der Handschuh wartet noch")
+            self.assertEqual(glove_projection["caused_by"]["event_id"], glove_parent_event_id)
+            self.assertEqual(glove_projection["caused_by"]["title"], "Ein Handschuh weniger")
 
             # Re-open the exact persisted save through the normal local server and real Chromium DOM.
             del runtime
@@ -99,11 +170,21 @@ class StreetChainRuntimeBrowserE2ETests(unittest.TestCase):
                 self.assertEqual(api_child["title"], "Der Tipp macht die Runde")
                 self.assertEqual(api_child["caused_by"]["title"], "Kabeltipp am Bauzaun")
 
+                api_glove_child = next(
+                    entry
+                    for entry in api_timeline
+                    if entry.get("metadata", {}).get("followup_id") == "lost_glove_fence_echo"
+                )
+                self.assertEqual(api_glove_child["title"], "Der Handschuh wartet noch")
+                self.assertEqual(api_glove_child["caused_by"]["title"], "Ein Handschuh weniger")
+
                 dom = acceptance.browser_dom(address, require_browser=True, avatar_context=False)
                 self.assertIsNotNone(dom)
                 assert dom is not None
                 self.assertIn("Der Tipp macht die Runde", dom)
                 self.assertIn("Folge von: Kabeltipp am Bauzaun", dom)
+                self.assertIn("Der Handschuh wartet noch", dom)
+                self.assertIn("Folge von: Ein Handschuh weniger", dom)
             finally:
                 if process.poll() is None:
                     process.terminate()
