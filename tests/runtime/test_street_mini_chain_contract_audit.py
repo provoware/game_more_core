@@ -96,7 +96,7 @@ class StreetMiniChainContractAuditTests(unittest.TestCase):
         self.assertTrue(CONTRACT["runtime_authority_only"])
         self.assertFalse(CONTRACT["client_can_write"])
         self.assertEqual(CONTRACT["trigger_policy"], "later_confirmed_street_walk_only")
-        self.assertEqual(CONTRACT["maximum_open_followups_per_character"], 1)
+        self.assertEqual(CONTRACT["maximum_followups_per_trigger_walk"], 1)
 
     def test_contract_v1_binds_character_to_parent_entity_id_and_fails_closed_on_mismatch(self):
         self.assertEqual(CONTRACT["parent_character_id_source"], "entity_id")
