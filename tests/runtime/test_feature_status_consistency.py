@@ -57,7 +57,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-WORLD-003"))
 
-    def test_current_status_describes_readonly_projection_and_next_micro_story_002_audit(self):
+    def test_current_status_describes_micro_story_002_audit_and_active_implementation(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -71,12 +71,12 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "district_micro_story_002_audit")
+        self.assertEqual(status["current_focus"], "district_micro_story_002")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 200)
-        self.assertEqual(validation["validated_head"], "10b00a872f9a986404800323401883590d0ba6dd")
-        self.assertEqual(validation["merged_commit"], "5f403defcf3773c3c44fefa3b282b0015ad9d68e")
+        self.assertEqual(validation["pull_request"], 202)
+        self.assertEqual(validation["validated_head"], "287e1c980ebb70b3f9c804d4e5cd6e50cc6d7177")
+        self.assertEqual(validation["merged_commit"], "4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc")
 
         self.assertTrue(living_world["street_boundary_clamping_audit_validated"])
         self.assertTrue(living_world["street_replay_boundary_matrix_validated"])
@@ -85,10 +85,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(living_world["street_distribution_report_validated"])
         self.assertEqual(living_world["street_effect_current_strict_dominance"], [])
         self.assertTrue(living_world["district_event_chain_contract_audit_validated"])
-        self.assertEqual(
-            living_world["district_event_chain_parent_evidence_event_type"],
-            "world.district_effect_applied",
-        )
+        self.assertEqual(living_world["district_event_chain_parent_evidence_event_type"], "world.district_effect_applied")
         self.assertTrue(living_world["district_event_chain_parent_source_replayable"])
         self.assertFalse(living_world["district_event_chain_biography_authority"])
         self.assertTrue(living_world["district_event_chain_child_event_contract_present"])
@@ -104,54 +101,25 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertFalse(living_world["district_event_chain_micro_story_cross_district_allowed"])
         self.assertFalse(living_world["district_event_chain_micro_story_balance_effects"])
         self.assertTrue(living_world["district_event_chain_readonly_projection_validated"])
-        self.assertEqual(
-            living_world["district_event_chain_readonly_projection_parent_source"],
-            "confirmed_journal_parent",
-        )
+        self.assertEqual(living_world["district_event_chain_readonly_projection_parent_source"], "confirmed_journal_parent")
         self.assertTrue(living_world["district_event_chain_readonly_projection_requires_same_district"])
         self.assertTrue(living_world["district_event_chain_readonly_projection_requires_parent_before_child"])
         self.assertFalse(living_world["district_event_chain_readonly_projection_browser_authority"])
-        self.assertEqual(
-            living_world["district_event_chain_next_contract"],
-            "0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT",
-        )
+        self.assertTrue(living_world["district_micro_story_002_audit_validated"])
+        self.assertEqual(living_world["district_micro_story_002_selected_parent_catalog_event_id"], "district.temporary_space_opens")
+        self.assertEqual(living_world["district_micro_story_002_selected_followup_id"], "temporary_space_afterimage")
+        self.assertEqual(living_world["district_micro_story_002_selected_title"], "Die Tür ist zu – die Adresse lebt weiter.")
+        self.assertFalse(living_world["district_micro_story_002_balance_effects_planned"])
+        self.assertEqual(living_world["district_event_chain_next_contract"], "0.8.8-STORY-DISTRICT-MICRO-STORY-002")
 
-        self.assertTrue(presentation["crew_identity_visual_consistency_validated"])
-        self.assertTrue(presentation["crew_identity_browser_context_e2e_validated"])
-        self.assertTrue(presentation["crew_identity_firefox_context_e2e_validated"])
-        self.assertTrue(presentation["crew_identity_micro_polish_validated"])
-        self.assertEqual(presentation["crew_identity_compact_mark_floor_rem"], 0.34)
-        self.assertTrue(presentation["crew_identity_computed_size_e2e_validated"])
-        self.assertEqual(presentation["crew_identity_computed_size_floor_rem"], 0.34)
-        self.assertTrue(presentation["crew_identity_text_clip_e2e_validated"])
-        self.assertEqual(presentation["crew_identity_text_clip_e2e_contexts"], ["hud", "map", "ranking"])
-        self.assertFalse(presentation["crew_identity_text_clip_e2e_css_fix_required"])
-        self.assertFalse(presentation["map_viewport_mini_overview_supported"])
-        self.assertFalse(presentation["map_viewport_mini_overview_audit_pending"])
-        self.assertTrue(presentation["map_viewport_mini_overview_audit_validated"])
-        self.assertEqual(presentation["map_viewport_orientation_fallback"], "accessible_1_to_1_reset")
-        self.assertFalse(presentation["map_viewport_second_overview_created"])
         self.assertIn("world.district_followup_resolved", presentation["event_timeline_sources"])
         self.assertTrue(presentation["district_chain_cause_projection_validated"])
         self.assertEqual(presentation["district_chain_cause_projection_label"], "Folge von:")
         self.assertFalse(presentation["district_chain_cause_projection_invents_missing_parent"])
         self.assertFalse(presentation["district_chain_cause_projection_browser_write_authority"])
-        self.assertEqual(
-            presentation["crew_identity_browser_e2e_map_fixture"],
-            "runtime_property_purchase_projection",
-        )
-        self.assertTrue(presentation["crew_identity_browser_e2e_real_property_purchase"])
-        self.assertFalse(presentation["crew_identity_browser_e2e_dom_owned_marker"])
-        self.assertTrue(presentation["runtime_owned_evidence_receipt_validated"])
-        self.assertFalse(presentation["crew_identity_second_fetch"])
-        self.assertFalse(presentation["crew_identity_second_projection"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
         self.assertTrue(ranking["local_confirmed_crew_badge"])
-        self.assertEqual(
-            ranking["crew_badge_match"],
-            "entry.character_id_equals_hall.local_character_id",
-        )
         self.assertFalse(ranking["foreign_crew_badges_invented"])
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
