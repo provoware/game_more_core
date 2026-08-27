@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.8-d3",
+  "version": "0.8.8-d4",
   "append_only": true,
   "canonical_order_key": ["sequence", "event_id"],
   "hash_chain": true,
@@ -28,6 +28,7 @@
     "character.resonance_rank_up",
     "character.biography_entry_added",
     "street.encounter_resolved",
+    "street.followup_resolved",
     "training.started",
     "training.completed",
     "training.cancelled",
@@ -92,6 +93,7 @@
       "assistant.control_changed",
       "assistant.round_processed",
       "street.encounter_resolved",
+      "street.followup_resolved",
       "world.district_effect_applied",
       "world.district_followup_resolved",
       "world.property_purchased",
