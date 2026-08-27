@@ -50,16 +50,17 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-002", "POOL-QA-009", "POOL-STREET-005", "POOL-UX-007",
             "POOL-QA-010", "POOL-QA-006", "POOL-UX-008", "POOL-QA-011", "POOL-QA-013",
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
-            "POOL-QA-017", "POOL-WORLD-003", "POOL-STREET-003",
+            "POOL-QA-017", "POOL-WORLD-003", "POOL-STREET-003", "POOL-ECON-009",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-STORY-002"))
 
-    def test_current_status_describes_street_story_002_e2e_and_active_tone_audit(self):
+    def test_current_status_describes_economy_guidance_and_active_tone_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        economy = status["subsystems"]["economy"]
         living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
@@ -72,10 +73,20 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertEqual(status["current_focus"], "street_story_tone_diversity_audit")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 215)
-        self.assertEqual(validation["validated_head"], "ab15032ecf1b67aa2724ce6c461c613674a63c26")
-        self.assertEqual(validation["merged_commit"], "1acceec43514caf7e2e945535896bce9472a19de")
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E")
+        self.assertEqual(validation["pull_request"], 218)
+        self.assertEqual(validation["validated_head"], "39a3a4343657231872de08b7fed5376b9ff99c6e")
+        self.assertEqual(validation["merged_commit"], "eb97181f80678110ca12063165d446273cfcff5e")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL")
+        self.assertEqual(validation["status_sync_feature_run_result"], "expected_drift_before_post_merge_status_sync")
+
+        self.assertEqual(economy["equipment_market_price_source"], "domain.economy.market_price")
+        self.assertTrue(economy["equipment_market_current_price_projection"])
+        self.assertTrue(economy["equipment_market_sell_visible"])
+        self.assertTrue(economy["equipment_market_release_visible"])
+        self.assertTrue(economy["equipment_market_available_to_sell_projection"])
+        self.assertFalse(economy["browser_can_supply_equipment_price"])
+        self.assertTrue(economy["scene_job_hourly_rate_visible"])
+        self.assertTrue(economy["scene_job_money_loop_guidance_visible"])
 
         self.assertTrue(living_world["street_chain_contract_audit_validated"])
         self.assertEqual(living_world["street_chain_child_event_type"], "street.followup_resolved")
@@ -90,21 +101,19 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertEqual(living_world["street_chain_story_001_followup_id"], "cable_tip_echo")
         self.assertEqual(living_world["street_chain_story_002_parent_catalog_event_id"], "street.lost_glove")
         self.assertEqual(living_world["street_chain_story_002_followup_id"], "lost_glove_fence_echo")
-        self.assertFalse(living_world["street_chain_story_002_inventory_return"])
-        self.assertFalse(living_world["street_chain_balance_effects"])
-        self.assertTrue(living_world["street_chain_readonly_projection_validated"])
-        self.assertTrue(living_world["street_chain_runtime_browser_e2e_validated"])
-        self.assertEqual(living_world["street_chain_runtime_browser_e2e_browser"], "chromium")
         self.assertEqual(
             living_world["street_chain_next_audit"],
             "0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT",
         )
 
         self.assertIn("street.followup_resolved", presentation["event_timeline_sources"])
-        self.assertTrue(presentation["street_chain_cause_projection_validated"])
-        self.assertEqual(presentation["street_chain_cause_projection_label"], "Folge von:")
-        self.assertFalse(presentation["street_chain_cause_projection_invents_missing_parent"])
-        self.assertFalse(presentation["street_chain_cause_projection_browser_write_authority"])
+        self.assertTrue(presentation["scene_job_hourly_rate_visible"])
+        self.assertTrue(presentation["scene_job_money_loop_guidance_visible"])
+        self.assertTrue(presentation["equipment_market_current_price_visible"])
+        self.assertTrue(presentation["equipment_market_sell_visible"])
+        self.assertTrue(presentation["equipment_market_release_visible"])
+        self.assertTrue(presentation["economy_experience_visual_layer"])
+        self.assertTrue(presentation["economy_experience_reduced_motion_fallback"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
@@ -141,7 +150,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-UX-009": "`DONE`", "POOL-QA-016": "`DONE`",
             "POOL-MAP-003": "`DONE`", "POOL-QA-017": "`DONE`",
             "POOL-WORLD-003": "`DONE`", "POOL-STREET-003": "`DONE`",
-            "POOL-STORY-002": "`PULLED`",
+            "POOL-ECON-009": "`DONE`", "POOL-STORY-002": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
