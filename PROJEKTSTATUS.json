@@ -2,33 +2,33 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E",
-  "status": "0_8_8_story_district_micro_story_002_remote_validated_runtime_browser_e2e_active",
-  "current_focus": "district_chain_runtime_browser_e2e",
-  "last_validated_feature_iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002",
+  "active_iteration": "0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT",
+  "status": "0_8_8_district_chain_runtime_browser_e2e_remote_validated_street_mini_chain_contract_audit_active",
+  "current_focus": "street_mini_chain_contract_audit",
+  "last_validated_feature_iteration": "0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #204 / head edc10eb491f706b9c56ab4c0d7722e91cbdcc50a / merge a03cf981b352064415e4cbf1fc3a8f88f34beed6",
+  "validation_reference": "PR #206 / head 14a1c2914c6b366bda1ca71198340f00f58cef3a / merge 75aea005dcbf95abf80159b0ed96b0149bec0973",
   "remote_validation": {
-    "status": "success_for_0.8.8_story_district_micro_story_002",
-    "pull_request": 204,
-    "validated_head": "edc10eb491f706b9c56ab4c0d7722e91cbdcc50a",
-    "runtime_core_workflow_run": 33031612134,
-    "presentation_core_workflow_run": 33031612103,
-    "repository_health_workflow_run": 33031612022,
-    "release_acceptance_workflow_run": 33031612059,
-    "release_package_workflow_run": 33031612038,
-    "status_sync_workflow_run": 33031612081,
+    "status": "success_for_0.8.8_qa_district_chain_runtime_browser_e2e",
+    "pull_request": 206,
+    "validated_head": "14a1c2914c6b366bda1ca71198340f00f58cef3a",
+    "runtime_core_workflow_run": 33034172426,
+    "presentation_core_workflow_run": 33034172363,
+    "repository_health_workflow_run": 33034172355,
+    "release_acceptance_workflow_run": 33034172453,
+    "release_package_workflow_run": 33034172423,
+    "status_sync_workflow_run": 33034172336,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "a03cf981b352064415e4cbf1fc3a8f88f34beed6"
+    "merged_commit": "75aea005dcbf95abf80159b0ed96b0149bec0973"
   },
   "status_sync": {
     "mode": "read_only_latest_relevant_safe_merge_anchor",
-    "anchor_pull_request": 204,
-    "anchor_merge_commit": "a03cf981b352064415e4cbf1fc3a8f88f34beed6",
-    "anchor_iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002",
+    "anchor_pull_request": 206,
+    "anchor_merge_commit": "75aea005dcbf95abf80159b0ed96b0149bec0973",
+    "anchor_iteration": "0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E",
     "canonical_documents": ["TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json"],
     "checker": "tools/status_sync.py",
     "workflow": ".github/workflows/status-sync.yml",
@@ -121,7 +121,8 @@
     {"iteration": "0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001", "pull_request": 198, "merged_commit": "030d40e4b22c38a11fd98a2d028b398779955507", "feature": "district_chain_power_flicker_afterglow_micro_story"},
     {"iteration": "0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION", "pull_request": 200, "merged_commit": "5f403defcf3773c3c44fefa3b282b0015ad9d68e", "feature": "district_chain_readonly_causality_projection"},
     {"iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT", "pull_request": 202, "merged_commit": "4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc", "feature": "district_micro_story_002_candidate_audit"},
-    {"iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002", "pull_request": 204, "merged_commit": "a03cf981b352064415e4cbf1fc3a8f88f34beed6", "feature": "district_temporary_space_afterimage_micro_story"}
+    {"iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002", "pull_request": 204, "merged_commit": "a03cf981b352064415e4cbf1fc3a8f88f34beed6", "feature": "district_temporary_space_afterimage_micro_story"},
+    {"iteration": "0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E", "pull_request": 206, "merged_commit": "75aea005dcbf95abf80159b0ed96b0149bec0973", "feature": "district_chain_runtime_browser_e2e"}
   ],
   "subsystems": {
     "character_forge": {"status": "validated", "skills": 16, "trait_names": 165, "level_cap_before_resonance": 50, "profile_personalization": true, "crew_identity_logo_flag": true},
@@ -206,7 +207,7 @@
       "recovery_balance_audit_gameplay_changes": false
     },
     "living_world": {
-      "status": "district_micro_story_002_remote_validated",
+      "status": "district_chain_runtime_browser_e2e_remote_validated",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -299,7 +300,11 @@
       "district_micro_story_002_balance_effects": false,
       "district_micro_story_catalog_count": 2,
       "district_micro_story_max_followups_per_cycle": 1,
-      "district_event_chain_next_contract": "0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E"
+      "district_chain_runtime_browser_e2e_validated": true,
+      "district_chain_runtime_browser_e2e_browser": "chromium",
+      "district_chain_runtime_browser_e2e_retry_validated": true,
+      "district_chain_runtime_browser_e2e_cross_district_fail_closed": true,
+      "district_event_chain_next_contract": "0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT"
     },
     "properties": {"status": "remote_validated_and_safe_merged", "purchase_iteration": "0.8.6-A", "upgrade_iteration": "0.8.6-B", "purchasable_locations": 7, "upgrade_types": 10, "max_upgrade_level": 3, "client_price_authority": false, "combined_recovery": true, "resale_supported": false, "rent_supported": false, "yield_supported": false},
     "ranking": {"status": "crew_identity_micro_polish_remote_validated", "seasonal_hall_iteration": "0.8.7-A", "seasonal_hall_pull_request": 87, "seasonal_hall_merge": "841258a37915e05d7f87eed7841c8e4b8d79bf46", "weekly_monthly_cycles": true, "system_time_sole_authority": false, "fake_local_champion_titles": false, "local_confirmed_crew_badge": true, "crew_badge_match": "entry.character_id_equals_hall.local_character_id", "foreign_crew_badges_invented": false},
@@ -441,10 +446,10 @@
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
   "next_iteration": null,
-  "next_goal": "0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E beweist beide realen District-Storyketten durch Runtime, Journal/Persistenz, read-only Projection und Browser inklusive Replay- und District-Grenzen.",
+  "next_goal": "0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT prüft den kleinsten replay-sicheren Kausalitätsvertrag für seltene Street-Folgeereignisse, ohne District-Storylogik zu duplizieren.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-27T02:05:00Z"
+  "updated_at": "2026-08-27T02:47:00Z"
 }
