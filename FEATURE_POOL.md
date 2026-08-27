@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #206 · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973`
+- **Status-Sync-Anker:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de`
 
 ## Statuswerte
 
@@ -40,6 +40,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de` · beide produktiven Street-Micro-Stories durch echte Runtime → Journal/Persistenz → Reload → `/api/state` → Chromium-DOM bewiesen; Retry Exactly-once
+- **0.8.8-STORY-STREET-MICRO-STORY-002:** PR #214 · Merge `3e863e5d54d058f1542a2d9754e5cf98056e814f` · `street.lost_glove` erzeugt später `lost_glove_fence_echo` über denselben Street-Follow-up-Contract; keine Inventar- oder Balancewirkung
 - **0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E:** PR #206 · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973` · beide produktiven District-Micro-Stories durch echte Runtime → Journal/Persistenz → read-only Projection → `/api/state` → Chromium-DOM bewiesen; Retry und Cross-District fail-closed
 - **0.8.8-STORY-DISTRICT-MICRO-STORY-002:** PR #204 · Merge `a03cf981b352064415e4cbf1fc3a8f88f34beed6` · `district.temporary_space_opens` erzeugt im späteren bestätigten Zyklus desselben Bezirks `temporary_space_afterimage`; Exactly-once, balance-neutral und über dieselbe read-only Kausalitätsprojection sichtbar
 - **0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT:** PR #202 · Merge `4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc` · drei verbleibende District-Parents dramaturgisch/technisch verglichen; `district.temporary_space_opens` mit `temporary_space_afterimage` als stärkster zweiter Nachhall ausgewählt
@@ -101,6 +103,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-UX-009` | `DONE` | Crew Identity Micro Polish Audit | kompakte Ranking-Kurzmarke auf gemeinsamen Lesbarkeitsboden bringen | PR #185 sicher gemergt; genau ein reproduzierter Größenbefund, keine Neugestaltung |
 | `POOL-QA-016` | `DONE` | Avatar Context Computed Size E2E | tatsächliche Browser-Kaskade der kompakten Crew-Kurzmarken absichern | PR #188 sicher gemergt; Chromium/Firefox fail-closed unter `0.34rem`, keine zweite Browserarchitektur |
 | `POOL-QA-017` | `DONE` | Avatar Context Text Clip E2E | reale Kurzmarken-Abschneidung in Chromium/Firefox erkennen | PR #192 sicher gemergt; gerenderte Box-Maße fail-closed, kein CSS-Fix nötig |
+| `POOL-STORY-002` | `PULLED` | Street Story Tone Diversity Audit | Story 003 bewusst von den zwei vorhandenen Nachhallen absetzen | Audit-only; keine Story 003, keine neue Engine |
 
 ---
 
@@ -115,7 +118,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
 | `POOL-NET-002` | `DEPENDENCY` | Crew-Identity-Synchronisation | `POOL-NET-001` |
 | `POOL-RANK-004` | `DEPENDENCY` | echte Netzwerk-Rankingzyklen | `POOL-NET-001` |
-| `POOL-STREET-003` | `PULLED` | seltene Mini-Kettenereignisse | aktiver Contract-Audit prüft vorhandene Street-Parent-Evidenz, Replay und Kausalitätsfelder; keine District-Resolver-Kopie |
+| `POOL-STREET-003` | `DONE` | seltene Mini-Kettenereignisse | eigener Contract, zwei produktive Street-Stories, read-only Kausalitätsprojection und Runtime→Browser-E2E bis PR #215 vollständig validiert |
 | `POOL-QA-001` | `READY` | Native GitHub Branch Protection / Ruleset | geeigneter Admin-Schreibweg |
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
 | `POOL-MAP-003` | `DONE` | Map-Viewport-Miniübersicht | PR #190 Audit: `1:1`-Reset reicht als Rückweg; keine Miniübersicht auf Verdacht |
@@ -135,4 +138,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-WORLD-003` ist nach PR #206 abgeschlossen: beide District-Ketten sind fachlich und Ende-zu-Ende belegt. Aktiv ist jetzt ausschließlich `POOL-STREET-003` mit `0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT`. Der Audit prüft, ob `street.encounter_resolved` als eindeutige Parent-Evidenz genügt und ob die vorhandenen Journal-/Exactly-once-/Kausalitätsfelder wiederverwendbar sind. District-spezifische Resolver, District-ID-Regeln und Storytexte werden ausdrücklich nicht kopiert. Erst bei positivem Vertragsbefund darf genau eine Street-Micro-Story folgen.
+`POOL-STREET-003` ist nach PR #215 abgeschlossen: eigener Follow-up-Contract, zwei produktive Street-Micro-Stories, read-only Kausalitätsprojection und echter Runtime→Browser-Nachweis sind vorhanden. Aktiv ist jetzt `POOL-STORY-002` mit `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT`. Der Audit vergleicht Story 001 und 002 mit sozialen, räumlichen, materiellen und leicht unheimlichen Kandidaten. Story 003 wird erst umgesetzt, wenn ein Kandidat dramaturgisch deutlich anders, selten, kausal sauber, balance-neutral und auf demselben `street.followup_resolved`-Contract realisierbar ist.

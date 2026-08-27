@@ -26,27 +26,30 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #200
+## Praktisches Beispiel nach PR #215
 
-PR #200 hat die bereits echte District-Ursache→Folge-Geschichte erstmals auch **verständlich sichtbar** gemacht. Die vorhandene Timeline projiziert bestätigte `world.district_followup_resolved`-Records und zeigt `Folge von: …` nur, wenn Parent, Bezirk und Journal-Reihenfolge wirklich zusammenpassen.
+PR #215 hat die zweite Street-Micro-Story **„Der Handschuh wartet noch“** durch den vollständigen Pfad Runtime → Journal/Persistenz → Reload → `/api/state` → echtes Chromium-DOM bewiesen. Gleichzeitig bleibt Story 001 **„Der Tipp macht die Runde“** im selben E2E-Test abgesichert.
 
-Fehlt der Parent, gehört er zu einem anderen Bezirk oder liegt die Reihenfolge falsch, wird keine Ursache erfunden. Der Browser schreibt dabei nichts zurück; er erklärt ausschließlich die bestätigte Projection.
+Direkt danach standen `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` noch auf dem alten Anker PR #206. Das Spiel war also weiter als seine drei kanonischen Projektübersichten. Genau diese Abweichung meldet `Status Sync` als Drift.
 
-Direkt nach diesem fachlichen Safe Merge standen die drei kanonischen Statusdateien noch auf PR #198 und nannten die Read-only-Projection weiterhin als offene Arbeit. Genau diese Abweichung ist Statusdrift.
+Die Statuskorrektur übernimmt deshalb PR #215 / `1acceec43514caf7e2e945535896bce9472a19de` als gemeinsamen fachlichen Anker. Der Status-only Safe Merge dieser Korrektur wird anschließend bewusst übersprungen, damit er sich nicht selbst zum neuen Spielstand erklärt.
 
-Die Statuskorrektur übernimmt deshalb PR #200 als gemeinsamen Anker und setzt die nächste aktive Phase desselben `POOL-WORLD-003` auf **`0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT`**.
+### Was ist danach der echte nächste Inhaltsschritt?
 
-Dieser Audit baut noch **keine** zweite Story. Er vergleicht zuerst die drei übrigen District-Ereignisse:
+Nicht sofort Story 003. Zuerst wird mit `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT` geprüft, ob die zwei vorhandenen Nachhalle dramaturgisch zu ähnlich sind.
 
-- `district.word_of_mouth_wave` – soziale Dynamik und Gerüchte,
-- `district.patrol_sweep` – Druck, Erinnerung und kollektive Vorsicht,
-- `district.temporary_space_opens` – kurze Gelegenheit, Verlust und möglicher Mythos.
+Dabei werden Kandidaten nach vier einfachen Fragen verglichen:
 
-Vorläufig ist `district.temporary_space_opens` dramaturgisch besonders interessant: Die erste Geschichte folgt dem Muster **Störung → Wiederkehr → Erinnerung**. Ein temporärer Raum kann dagegen **Chance → kurze Ekstase → Verlust → Mythos** erzählen. Das erweitert die emotionale Bandbreite, ohne die bestehende Kettenarchitektur zu verändern.
+- **sozial:** verändert sich etwas zwischen Menschen oder Gerüchten?
+- **räumlich:** erinnert ein Ort sichtbar an eine frühere Begegnung?
+- **materiell:** taucht eine Spur oder ein Gegenstand wieder auf, ohne Inventarbonus zu werden?
+- **leicht unheimlich:** wirkt die Stadt, als hätte sie sich etwas gemerkt, ohne eine neue Mystery-Engine zu erfinden?
+
+Story 003 darf erst folgen, wenn ein Kandidat deutlich anders wirkt, selten genug ist, eine klare Ursache besitzt, keine Balancewirkung erzeugt und denselben `street.followup_resolved`-Vertrag verwenden kann.
 
 ### Merksatz für Laien
 
-**Erst muss das Spiel beweisen, was passiert ist. Dann darf die Oberfläche erklären, wie es zusammenhängt. Und erst danach lohnt sich die nächste Geschichte.**
+**Der Status-Sync sorgt dafür, dass die Projektanzeige nicht hinter dem Spiel herläuft. Er erfindet nichts und repariert nichts heimlich – er zwingt die Dokumentation, die bereits geprüfte Realität korrekt zu nennen.**
 
 ## Für Entwickler
 
