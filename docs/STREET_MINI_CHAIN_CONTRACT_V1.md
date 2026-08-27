@@ -28,7 +28,7 @@ Ein identischer Retry bleibt über den bestehenden `PersistenceKernel` idempoten
 
 ## Triggergrenze
 
-Contract V1 führt noch **keinen** Storyresolver ein. Für den späteren Resolver gilt bereits verbindlich: Ein Child darf erst durch einen späteren bestätigten Street-Walk entstehen, pro Character darf höchstens ein offenes Follow-up geführt werden. Browser und Client dürfen kein Child schreiben.
+Contract V1 führt noch **keinen** Storyresolver ein. Für den späteren Resolver gilt bereits verbindlich: Ein Child darf erst durch einen späteren bestätigten Street-Walk entstehen. Ein solcher bestätigter Trigger-Walk darf höchstens **ein** Follow-up auslösen. Browser und Client dürfen kein Child schreiben.
 
 ## Nicht-Ziele
 
@@ -36,7 +36,7 @@ Keine konkrete Story, keine Texte in Runtimecode, keine Balancewirkung, keine Di
 
 ## Laienhilfe
 
-Eine normale Straßenbegegnung wird wie ein nummerierter Beleg gespeichert. Eine spätere Folge darf nur dann auf diesen Beleg zeigen, wenn eindeutig dieselbe Spielfigur gemeint ist. Gibt es zwei widersprüchliche Figuren-IDs, wird die Folge nicht erzeugt. So kann später eine kleine Geschichte entstehen, ohne dass das Spiel eine falsche Ursache erfindet.
+Eine normale Straßenbegegnung wird wie ein nummerierter Beleg gespeichert. Eine spätere Folge darf nur dann auf diesen Beleg zeigen, wenn eindeutig dieselbe Spielfigur gemeint ist. Gibt es zwei widersprüchliche Figuren-IDs, wird die Folge nicht erzeugt. Außerdem darf ein bestätigter späterer Straßengang nur eine solche Folge auslösen. So kann eine kleine Geschichte entstehen, ohne dass das Spiel falsche Ursachen oder doppelte Folgen erfindet.
 
 ## Nächster erlaubter Slice
 
