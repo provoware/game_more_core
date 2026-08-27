@@ -5,7 +5,7 @@ from typing import Any, Mapping, Sequence
 
 from bunkerfrequenz.application.event_execution_service import EventExecutionService
 from bunkerfrequenz.domain.character import CharacterState
-from bunkerfrequenz.domain.economy import EconomyState
+from bunkerfrequenz.domain.economy import EconomyState, market_price
 from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.incident import IncidentState
 from bunkerfrequenz.domain.settlement import SettlementState
@@ -207,9 +207,20 @@ def build_a4_game_projection(
                     "item_id": item_id,
                     "label": spec["label"],
                     "base_price_cents": spec["base_price_cents"],
+                    "current_price_cents": market_price(
+                        spec["base_price_cents"], economy.market_tick, spec["volatility_bps"]
+                    ),
+                    "price_delta_cents": market_price(
+                        spec["base_price_cents"], economy.market_tick, spec["volatility_bps"]
+                    ) - spec["base_price_cents"],
+                    "volatility_bps": spec["volatility_bps"],
                     "consumable": spec["consumable"],
                     "owned": economy.inventory.get(item_id, {}).get("owned", 0),
                     "reserved": economy.inventory.get(item_id, {}).get("reserved", 0),
+                    "available_to_sell": (
+                        economy.inventory.get(item_id, {}).get("owned", 0)
+                        - economy.inventory.get(item_id, {}).get("reserved", 0)
+                    ),
                 }
                 for item_id, spec in economy.catalog.items()
             ],

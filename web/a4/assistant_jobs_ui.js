@@ -2,7 +2,17 @@
 
 (function installAssistantJobsUi() {
   const baseRenderSceneJobs = renderSceneJobs;
+  const baseRenderEconomy = renderEconomy;
   let statementFilter = "all";
+
+  function installEconomyExperienceStyles() {
+    if (document.querySelector('link[data-economy-experience-style="true"]')) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "economy_experience.css";
+    link.dataset.economyExperienceStyle = "true";
+    document.head.append(link);
+  }
 
   function assistantCommandId() {
     const suffix = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -42,6 +52,39 @@
       direction,
       amount_cents: amountCents
     });
+  }
+
+  function ensureEarningGuide() {
+    let guide = document.getElementById("jobs-earning-guide");
+    if (guide) return guide;
+    const panel = document.getElementById("jobs-panel");
+    const list = document.getElementById("jobs-list");
+    if (!panel || !list) return null;
+    guide = document.createElement("section");
+    guide.id = "jobs-earning-guide";
+    guide.className = "earning-guide";
+    guide.setAttribute("aria-labelledby", "jobs-earning-guide-title");
+    const eyebrow = document.createElement("p");
+    eyebrow.className = "eyebrow";
+    eyebrow.textContent = "DEIN GELDKREISLAUF // 5 SCHRITTE";
+    const title = document.createElement("h3");
+    title.id = "jobs-earning-guide-title";
+    title.textContent = "So kommst du vom Job zum Ausbau";
+    const steps = document.createElement("ol");
+    for (const text of [
+      "Job wählen: Stundenlohn, Energie und Stress vergleichen.",
+      "Bargeld prüfen: Erschöpfung kann den tatsächlichen Lohn drücken.",
+      "Bank nutzen: Geld sichern und bestätigte Sparzinsen mitnehmen.",
+      "Equipment handeln: aktuellen Marktpreis sehen, kaufen oder freien Bestand verkaufen.",
+      "Investieren: Event, Orte und Ausbauten erst bezahlen, wenn dein Polster reicht."
+    ]) {
+      const item = document.createElement("li");
+      item.textContent = text;
+      steps.append(item);
+    }
+    guide.append(eyebrow, title, steps);
+    list.before(guide);
+    return guide;
   }
 
   function ensureAssistantControl() {
@@ -317,6 +360,38 @@
     renderFinanceStatements(sceneJobs);
   }
 
+  function decorateJobEconomics(sceneJobs) {
+    ensureEarningGuide();
+    const rows = Array.from(document.querySelectorAll("#jobs-list .equipment-row"));
+    for (const [index, job] of (sceneJobs.jobs || []).entries()) {
+      const row = rows[index];
+      const info = row?.firstElementChild;
+      if (!row || !info) continue;
+      row.classList.add("job-economy-card");
+      const rate = job.duration_hours > 0 ? Math.round(job.payout_cents / job.duration_hours) : job.payout_cents;
+      const effective = Number.isInteger(job.effective_payout_cents) ? job.effective_payout_cents : job.payout_cents;
+      const kpis = document.createElement("div");
+      kpis.className = "job-kpis";
+      for (const [label, value] of [
+        ["Stundenlohn", money(rate)],
+        ["Jetzt", money(effective)],
+        ["Energie", signed(job.energy_delta)],
+        ["Stress", signed(job.stress_delta)]
+      ]) {
+        const chip = document.createElement("span");
+        chip.innerHTML = `<small>${label}</small><strong>${value}</strong>`;
+        kpis.append(chip);
+      }
+      info.append(kpis);
+      if (effective < job.payout_cents) {
+        const warning = document.createElement("small");
+        warning.className = "income-warning";
+        warning.textContent = `Erschöpfung drückt diesen Lauf von ${money(job.payout_cents)} auf ${money(effective)}.`;
+        info.append(warning);
+      }
+    }
+  }
+
   function renderAssistantControl(sceneJobs, hasCharacter) {
     if (!hasCharacter || !sceneJobs?.available) return;
     const control = ensureAssistantControl();
@@ -364,8 +439,76 @@
     }
   }
 
+  function economyTrade(kind, itemId) {
+    return sendCommand({
+      type: "economy.transact",
+      command_id: commandId(`market-${kind}`),
+      kind,
+      item_id: itemId,
+      quantity: 1
+    });
+  }
+
+  function renderEconomyMarket(economy) {
+    const host = document.getElementById("equipment-list");
+    if (!host || !economy) {
+      baseRenderEconomy(economy);
+      return;
+    }
+    host.replaceChildren();
+    const intro = document.createElement("div");
+    intro.className = "market-overview";
+    intro.innerHTML = `<div><small>MARKTSTAND</small><strong>${economy.market_tick ?? 0}</strong></div><div><small>BUCHUNGEN</small><strong>${economy.ledger_entries ?? 0}</strong></div><p>Der angezeigte Marktpreis kommt aus derselben bestätigten Preisregel wie Kauf und Verkauf. Reservierte Stücke bleiben geschützt und können erst nach Freigabe verkauft werden.</p>`;
+    host.append(intro);
+
+    for (const item of economy.items || []) {
+      const row = document.createElement("article");
+      row.className = "equipment-row market-card";
+      const info = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = item.label;
+      const price = Number.isInteger(item.current_price_cents) ? item.current_price_cents : item.base_price_cents;
+      const delta = Number.isInteger(item.price_delta_cents) ? item.price_delta_cents : 0;
+      const detail = document.createElement("span");
+      detail.textContent = `Markt ${money(price)} · Basis ${money(item.base_price_cents)} · Besitz ${item.owned} · reserviert ${item.reserved}`;
+      const trend = document.createElement("span");
+      trend.className = `market-trend ${delta > 0 ? "up" : delta < 0 ? "down" : "flat"}`;
+      trend.textContent = delta > 0 ? `▲ ${signedMoney(delta)} über Basis` : delta < 0 ? `▼ ${signedMoney(delta)} unter Basis` : "● auf Basispreis";
+      info.append(title, detail, trend);
+
+      const actions = document.createElement("div");
+      actions.className = "inline-actions market-actions";
+      const buy = document.createElement("button");
+      buy.className = "primary";
+      buy.textContent = `KAUFEN · ${money(price)}`;
+      buy.addEventListener("click", () => economyTrade("buy", item.item_id));
+      const sell = document.createElement("button");
+      sell.textContent = `VERKAUFEN · ${money(price)}`;
+      sell.disabled = (item.available_to_sell ?? Math.max(0, item.owned - item.reserved)) <= 0;
+      sell.addEventListener("click", () => economyTrade("sell", item.item_id));
+      const reserve = document.createElement("button");
+      reserve.textContent = "RESERVIEREN";
+      reserve.disabled = item.owned - item.reserved <= 0;
+      reserve.addEventListener("click", () => economyTrade("reserve", item.item_id));
+      const release = document.createElement("button");
+      release.textContent = "FREIGEBEN";
+      release.disabled = item.reserved <= 0;
+      release.addEventListener("click", () => economyTrade("release", item.item_id));
+      actions.append(buy, sell, reserve, release);
+      row.append(info, actions);
+      host.append(row);
+    }
+  }
+
   renderSceneJobs = function renderSceneJobsWithAssistant(sceneJobs, hasCharacter) {
+    installEconomyExperienceStyles();
     baseRenderSceneJobs(sceneJobs, hasCharacter);
+    decorateJobEconomics(sceneJobs || {});
     renderAssistantControl(sceneJobs, hasCharacter);
+  };
+
+  renderEconomy = function renderEconomyWithMarket(economy) {
+    installEconomyExperienceStyles();
+    renderEconomyMarket(economy);
   };
 })();

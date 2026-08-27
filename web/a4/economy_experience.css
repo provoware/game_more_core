@@ -1,0 +1,95 @@
+:root {
+  --econ-glow: color-mix(in srgb, var(--accent) 34%, transparent);
+  --econ-cyan: color-mix(in srgb, var(--accent-2) 42%, transparent);
+}
+
+#jobs-panel,
+#economy-panel {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+#jobs-panel::after,
+#economy-panel::after {
+  content: "";
+  position: absolute;
+  inset: -6rem -4rem auto auto;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--econ-cyan), transparent 68%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.earning-guide {
+  margin: .85rem 0;
+  padding: .9rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 48%, var(--line));
+  border-radius: .75rem;
+  background: linear-gradient(135deg, #0b131a, #101820 62%, #131711);
+  box-shadow: inset 0 1px #ffffff08, 0 .7rem 2rem #0005;
+}
+
+.earning-guide h3 { margin: .2rem 0 .65rem; color: #fff; }
+.earning-guide ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .45rem; margin: 0; padding: 0; list-style: none; counter-reset: econ-step; }
+.earning-guide li { counter-increment: econ-step; min-width: 0; padding: .7rem; border: 1px solid #32404b; border-radius: .55rem; background: #080d12c9; color: var(--muted); font-size: .74rem; line-height: 1.38; }
+.earning-guide li::before { content: counter(econ-step); display: grid; place-items: center; width: 1.55rem; height: 1.55rem; margin-bottom: .45rem; border-radius: 50%; background: var(--accent); color: #0a0c08; font-weight: 900; }
+
+.job-economy-card,
+.market-card {
+  position: relative;
+  align-items: stretch;
+  background: linear-gradient(135deg, #101821, #0b1016 60%, #11150f);
+  transition: transform 130ms ease, border-color 130ms ease, box-shadow 130ms ease;
+}
+.job-economy-card:hover,
+.market-card:hover { transform: translateY(-2px); border-color: #526474; box-shadow: 0 .9rem 2rem #0005; }
+.job-economy-card[data-assistant-active="true"] { border-color: var(--accent); box-shadow: inset .2rem 0 var(--accent), 0 .8rem 2rem #0005; }
+
+.job-kpis { display: grid; grid-template-columns: repeat(4, minmax(5.5rem, 1fr)); gap: .35rem; margin-top: .65rem; }
+.job-kpis > span { display: grid; gap: .12rem; padding: .42rem .5rem; border: 1px solid #303b47; border-radius: .45rem; background: #080c10; }
+.job-kpis small { color: var(--muted); font-size: .6rem; letter-spacing: .06em; text-transform: uppercase; }
+.job-kpis strong { color: #fff; font-size: .84rem; }
+.income-warning { display: block; margin-top: .5rem; color: #ffd28c !important; font-weight: 750; }
+
+.market-overview { display: grid; grid-template-columns: 8rem 8rem 1fr; gap: .55rem; align-items: stretch; margin-bottom: .75rem; }
+.market-overview > div { display: grid; align-content: center; padding: .65rem; border: 1px solid #3c4b59; border-radius: .55rem; background: linear-gradient(160deg, #0e1820, #080c10); }
+.market-overview small { color: var(--muted); font-size: .6rem; letter-spacing: .08em; }
+.market-overview strong { color: var(--accent); font-size: 1.3rem; }
+.market-overview p { margin: 0; padding: .65rem .8rem; border-left: 3px solid var(--accent-2); background: #0b1117; }
+
+.market-card > div:first-child { align-content: center; }
+.market-trend { width: fit-content; margin-top: .35rem; padding: .25rem .45rem; border-radius: 999px; font-size: .68rem !important; font-weight: 850; letter-spacing: .03em; }
+.market-trend.up { color: #ffd28c; background: #33250f; }
+.market-trend.down { color: var(--accent); background: #16200d; }
+.market-trend.flat { color: var(--accent-2); background: #0e1d24; }
+.market-actions { justify-content: flex-end; align-content: center; max-width: 26rem; }
+.market-actions button { min-width: 8.5rem; }
+
+#jobs-bank-control,
+#jobs-assistant-control {
+  border-radius: .7rem;
+  border-top: 1px solid #4b5d6d;
+  background: linear-gradient(145deg, #0c131a, #0e1116);
+}
+#jobs-finance-statement-summary { padding: .55rem .65rem; border-radius: .45rem; background: #080c10; color: #fff; font-weight: 800; letter-spacing: .02em; }
+
+@media (max-width: 1050px) {
+  .earning-guide ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .market-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .market-overview p { grid-column: 1 / -1; }
+}
+
+@media (max-width: 700px) {
+  .earning-guide ol, .job-kpis, .market-overview { grid-template-columns: 1fr; }
+  .market-overview p { grid-column: auto; }
+  .job-economy-card, .market-card { display: grid; }
+  .market-actions { max-width: none; justify-content: stretch; }
+  .market-actions button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .job-economy-card, .market-card { transition: none; }
+  .job-economy-card:hover, .market-card:hover { transform: none; }
+}
