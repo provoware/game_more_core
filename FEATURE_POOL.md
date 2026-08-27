@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #200 · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e`
+- **Status-Sync-Anker:** PR #202 · Merge `4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc`
 
 ## Statuswerte
 
@@ -40,6 +40,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT:** PR #202 · Merge `4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc` · drei verbleibende District-Parents dramaturgisch/technisch verglichen; `district.temporary_space_opens` mit `temporary_space_afterimage` als stärkster zweiter Nachhall ausgewählt, noch ohne Runtime-/Manifeständerung
 - **0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION:** PR #200 · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e` · bestätigte District-Folgeevents werden in der bestehenden Timeline projiziert; `Folge von: …` erscheint nur bei bestätigtem Parent, gleichem Bezirk und gültiger Journal-Reihenfolge
 - **0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001:** PR #198 · Merge `030d40e4b22c38a11fd98a2d028b398779955507` · verzögerter `power_flicker_afterglow` nutzt denselben District-/Journalvertrag; Exactly-once, gleiche District-Bindung und keine zweite Eventengine bestätigt
 - **0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1:** PR #196 · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577` · genau `world.district_followup_resolved` katalogisiert; Parent-/District-Bindung sowie Exactly-once-/Replay-Semantik auf bestehendem PersistenceKernel bestätigt
@@ -106,7 +107,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | ID | Status | Feature | Voraussetzung |
 |---|---|---|---|
 | `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
-| `POOL-WORLD-003` | `PULLED` | District-Ereignisketten mit Erinnerung | Read-only-Kausalität PR #200 bestätigt; als nächster Slice drei verbleibende District-Events für Micro-Story 002 vergleichen, keine zweite Kettenengine |
+| `POOL-WORLD-003` | `PULLED` | District-Ereignisketten mit Erinnerung | Audit PR #202 bestätigt `temporary_space_opens` → `temporary_space_afterimage`; nächster Slice implementiert genau diese zweite Micro-Story auf Contract V1, keine zweite Kettenengine |
 | `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
@@ -132,4 +133,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-WORLD-003` bleibt nach PR #200 bewusst `PULLED`: Micro-Story 001 ist persistent, und PR #200 macht ihre bestätigte Kausalität in der bestehenden Timeline read-only verständlich. Die nächste Entnahme ist deshalb `0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT`: `district.word_of_mouth_wave`, `district.patrol_sweep` und `district.temporary_space_opens` werden auf Storywert, Kontrast, technische Anschlussfähigkeit und Wiederholungsrisiko verglichen. Vorläufig stärkster Kandidat ist `district.temporary_space_opens`, weil die mögliche Folge **Chance → kurze Ekstase → Verlust → Mythos** die emotionale Grammatik gegenüber **Störung → Wiederkehr → Erinnerung** erweitert. Erst nach positivem Audit wird genau eine zweite Micro-Story katalogisiert. `POOL-COMPANION-003` bleibt vom echten kanonischen Rundenproduzenten abhängig, `POOL-QA-012` bleibt eine spätere Automationsidee ohne Direktwrite nach `main`.
+`POOL-WORLD-003` bleibt nach PR #202 bewusst `PULLED`: Der Audit hat `district.temporary_space_opens` mit **30/30** als stärksten Parent für Micro-Story 002 ausgewählt. Die nächste Entnahme ist `0.8.8-STORY-DISTRICT-MICRO-STORY-002`: genau `temporary_space_afterimage` / **„Die Tür ist zu – die Adresse lebt weiter.“** auf dem bestehenden `world.district_followup_resolved`-Vertrag umsetzen. Parent und Child bleiben im selben Bezirk, die Folge entsteht erst in einem späteren bestätigten District-Zyklus, bleibt Exactly-once und hat keine Balancewirkung. Danach folgt der echte Runtime→Persistenz→Projection→Browser-E2E-Slice für beide District-Ketten.
