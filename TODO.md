@@ -149,7 +149,7 @@
 
 ## Fortschritt
 
-**0 %** – die Street-Runtime ist bereits deterministisch, replaybar und umfassend an Grenz-/Verteilungsfällen geprüft. Der Audit klärt jetzt ausschließlich, ob seltene Street-Folgeereignisse einen vorhandenen Kausalitäts-/Replayvertrag sicher wiederverwenden können oder einen eigenen kleinen Street-Vertrag brauchen.
+**Audit in Remote-Validierung.** Parent-ID und Entity-Bindung sind stabil/replaybar; eine Review-Regression hat zusätzlich gezeigt, dass das optionale Journalfeld `character_id` heute vom kanonisch validierten `entity_id` abweichen kann. Deshalb ist direkter Storycontent ausdrücklich blockiert.
 
 ## Ziel
 
@@ -157,20 +157,35 @@ Den kleinsten kanonischen Anschluss für **seltene Street-Mini-Ketten** bestimme
 
 ## Abnahme
 
-- [ ] `StreetEncounterService`, bestehende Journal-Records, Replay-Semantik und Timeline-Projection gezielt prüfen
-- [ ] klären, ob ein bestätigtes Street-Encounter-Record als Parent-Evidenz eindeutig genug ist
-- [ ] prüfen, ob vorhandene `causation_id` / `correlation_id` und Persistence-Exactly-once wiederverwendbar sind
-- [ ] District-spezifische Felder/Resolver ausdrücklich **nicht** in Street kopieren
-- [ ] genau einen kanonischen Hook und dessen Grenzen dokumentieren; kein Storycontent auf Verdacht implementieren
-- [ ] passende Regression beweist den Auditbefund bzw. die fehlende Voraussetzung
-- [ ] mindestens eine spätere kreative Mini-Kettenidee dokumentieren, aber nicht implementieren
-- [ ] relevante Runtime-/Presentation-/Repository-/Status-Gates auf finalem Head grün
+- [x] `StreetEncounterService`, bestehende Journal-Records, Replay-Semantik und Timeline-Projection gezielt geprüft
+- [x] `street.encounter_resolved` als stabile Parent-ID mit `entity_type=character` / validierter `entity_id` bestätigt
+- [x] vorhandene `causation_id` / `correlation_id` und Persistence-Exactly-once sind generisch wiederverwendbar
+- [x] District-spezifische Childtypen/Resolver werden ausdrücklich **nicht** in Street kopiert
+- [x] fehlender Street-Childvertrag als Pflicht-Vorstufe benannt: empfohlen `street.followup_resolved`
+- [x] Review-Grenzfall reproduziert: optionales Parent-`character_id` kann aktuell von `entity_id` abweichen und darf deshalb nicht ungeprüft Kettenautorität werden
+- [x] kreative spätere Kandidaten bewertet; `street.cable_tip` → `cable_tip_echo` / „Der Tipp macht die Runde.“ gewinnt, wird aber noch nicht implementiert
+- [x] passende Regressionen für Parent, Replay, fehlenden Childvertrag, generische Kausalität und Character-ID-Grenze ergänzt
+- [ ] relevante Runtime-/Presentation-/Repository-/Status-/Release-Gates auf **finalem** Head grün
 - [ ] 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
-### Danach
+### Verbindlich danach – 0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-V1
 
-- [ ] **STREET-MINI-CHAIN-001** nur bei positivem Vertragsbefund als einzelne kleine Ursache→Folge-Geschichte umsetzen
+**Story 001 bleibt bis dahin gesperrt.** Contract V1 muss mindestens:
+
+- [ ] genau `street.followup_resolved` katalogisieren, ohne `world.district_followup_resolved` wiederzuverwenden
+- [ ] Parent `street.encounter_resolved` und dessen bestätigte `entity_id` als kanonische Character-Autorität festlegen
+- [ ] Parent-`character_id` bei Vorhandensein gegen `entity_id` prüfen; Widerspruch fail-closed ablehnen
+- [ ] Child-`character_id` an dieselbe bestätigte Parent-Identität binden
+- [ ] `parent_event_id` im Child-Payload führen
+- [ ] `causation_id = parent_event_id` und `correlation_id = street-chain:{parent_event_id}` festlegen
+- [ ] deterministische Child-ID und Exactly-once-/Konfliktregression definieren
+- [ ] erst späterer bestätigter Street-Walk darf ein Child auslösen; höchstens ein Follow-up pro Walk
+- [ ] keine Balancewirkung und keine Browserautorität in Contract V1
+
+### Erst danach
+
+- [ ] **STREET-MINI-CHAIN-001**: nur bei grünem Contract V1 genau eine kleine Ursache→Folge-Geschichte umsetzen
 - [ ] **VENUE-BENEFITS-CONTRACT-AUDIT** als alternative nächste Gameplay-Vertiefung
 - [ ] **DISTRICT-STORY-TONE-BALANCE** erst ab mindestens drei District-Micro-Stories
 
@@ -183,4 +198,4 @@ Den kleinsten kanonischen Anschluss für **seltene Street-Mini-Ketten** bestimme
 - kein neues Netzwerk, kein neuer Persistenzkernel, keine Balanceänderung im Audit.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/DISTRICT_CHAIN_CONTRACT_V1.md`](docs/DISTRICT_CHAIN_CONTRACT_V1.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STREET_MINI_CHAIN_CONTRACT_AUDIT.md`](docs/STREET_MINI_CHAIN_CONTRACT_AUDIT.md) · [`AGENTS.md`](AGENTS.md)
