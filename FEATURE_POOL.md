@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e`
+- **Status-Sync-Anker:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a`
 
 ## Statuswerte
 
@@ -41,6 +41,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a` · zwei vorhandene Street-Nachhalle gegen vier reale Parents geprüft; Story 003 bewusst nicht freigegeben; `street.construction_detour` bleibt nur Reservekandidat; keine Runtime-, Balance- oder Persistenzänderung
 - **0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e` · Jobs zeigen Stundenlohn und aktuellen Erschöpfungslohn; Equipment-Handel nutzt den bestehenden Runtime-Vertrag vollständig; aktueller Marktpreis und frei verkaufbarer Bestand kommen read-only aus der kanonischen Projection; responsive KPI-/Marktvisuals und Geldkreislauf-Führung ergänzt
 - **0.8.8-UX-TOOL-HELP-CLARITY:** PR #217 · Merge `12b001a731c0da5a1d98913676da9e48b0afd064` · zentrale Control-Deck-Hilfen in kurze Spielersprache übersetzt; `Bestätigt`, `Nur Anzeige` und `Sofort gespeichert` direkt erklärt
 - **0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de` · beide produktiven Street-Micro-Stories durch echte Runtime → Journal/Persistenz → Reload → `/api/state` → Chromium-DOM bewiesen; Retry Exactly-once
@@ -106,7 +107,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-UX-009` | `DONE` | Crew Identity Micro Polish Audit | kompakte Ranking-Kurzmarke auf gemeinsamen Lesbarkeitsboden bringen | PR #185 sicher gemergt; genau ein reproduzierter Größenbefund, keine Neugestaltung |
 | `POOL-QA-016` | `DONE` | Avatar Context Computed Size E2E | tatsächliche Browser-Kaskade der kompakten Crew-Kurzmarken absichern | PR #188 sicher gemergt; Chromium/Firefox fail-closed unter `0.34rem`, keine zweite Browserarchitektur |
 | `POOL-QA-017` | `DONE` | Avatar Context Text Clip E2E | reale Kurzmarken-Abschneidung in Chromium/Firefox erkennen | PR #192 sicher gemergt; gerenderte Box-Maße fail-closed, kein CSS-Fix nötig |
-| `POOL-STORY-002` | `PULLED` | Street Story Tone Diversity Audit | Story 003 bewusst von den zwei vorhandenen Nachhallen absetzen | Audit-only; keine Story 003, keine neue Engine |
+| `POOL-STORY-002` | `DONE` | Street Story Tone Diversity Audit | PR #222: Story 003 bewusst zurückgestellt; `construction_detour` bleibt Reserve ohne erfundene Persistenz |
 
 ---
 
@@ -126,7 +127,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
 | `POOL-MAP-003` | `DONE` | Map-Viewport-Miniübersicht | PR #190 Audit: `1:1`-Reset reicht als Rückweg; keine Miniübersicht auf Verdacht |
 | `POOL-QA-012` | `IDEA` | Status-Sync-PR-Autoprep | read-only Driftcheck muss sich zuerst im Alltag bewähren; niemals Direktwrite nach `main` |
-| `POOL-UX-010` | `READY` | Globale Spiel-Führung / Next Best Action 2 | auf bestehendem Runtime-Action-Signal aufbauen; keine Browserautorität |
+| `POOL-UX-010` | `PULLED` | Globale Spiel-Führung / Next Best Action 2 | nächster Slice startet als Audit des vorhandenen Runtime-Action-Signals; keine Browserautorität |
 | `POOL-UX-011` | `READY` | Control-Deck Visual Hierarchy 3 | vorhandene Panels, Map und bestätigte FX auf eine gemeinsame visuelle Sprache bringen; Reduced Motion/High Contrast erhalten |
 | `POOL-ECON-010` | `READY` | Equipment-Handelsverlauf | bestätigte Kauf-/Verkaufspreise aus vorhandenem Ledger read-only als Gewinn-/Verlust-Hilfe zeigen; keine zweite Marktengine |
 
@@ -144,4 +145,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-ECON-009` ist nach PR #218 abgeschlossen: Jobs, Erschöpfungslohn, persönliches Geld, Bank und vorhandener Equipment-Handel sind im Control Deck deutlich verständlicher und visuell dichter verbunden. Der bestehende Story-Tone-Audit bleibt weiterhin der gezogene fachliche Owner. Für den nächsten UX-Slice stehen zusätzlich `POOL-UX-010` (globale Next-Best-Action-Führung) und `POOL-UX-011` (gemeinsame visuelle Hierarchie) bereit; `POOL-ECON-010` darf später ausschließlich bestätigte Ledgerpreise read-only auswerten.
+`POOL-STORY-002` ist nach PR #222 abgeschlossen: Der Audit belegt, dass Story 001 sozial-technisch und Story 002 materiell-persönlich bereits klar verschiedene Nachhalle liefern; keiner der geprüften Kandidaten rechtfertigt derzeit Story 003 ohne neue Persistenzannahmen. Als nächster Owner ist `POOL-UX-010` gezogen: zuerst wird ausschließlich geprüft, wie das vorhandene Runtime-Next-Action-Signal zu einer global verständlichen Spielerführung erweitert werden kann, ohne neue Fachautorität im Browser.
