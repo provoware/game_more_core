@@ -37,7 +37,7 @@
     "event_id_pattern": "street-followup:{parent_event_id}:{followup_id}",
     "replay_policy": "same_event_id_same_payload_is_idempotent",
     "trigger_policy": "later_confirmed_street_walk_only",
-    "maximum_open_followups_per_character": 1,
+    "maximum_followups_per_trigger_walk": 1,
     "runtime_authority_only": true,
     "client_can_write": false
   },
