@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand District Chain Micro Story 001 validiert" src="https://img.shields.io/badge/Feature_Stand-DISTRICT--CHAIN--MICRO--STORY--001_validiert-7dff00">
-  <img alt="Aktive Iteration District Chain Readonly Projection" src="https://img.shields.io/badge/Aktiv-DISTRICT--CHAIN--READONLY--PROJECTION-00c2ff">
+  <img alt="Feature Stand District Chain Readonly Projection validiert" src="https://img.shields.io/badge/Feature_Stand-DISTRICT--CHAIN--READONLY--PROJECTION_validiert-7dff00">
+  <img alt="Aktive Iteration District Micro Story 002 Audit" src="https://img.shields.io/badge/Aktiv-DISTRICT--MICRO--STORY--002--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,11 +26,12 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #198 · Merge `030d40e4b22c38a11fd98a2d028b398779955507` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001` |
-| **Aktive Iteration** | 🟡 `0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION` |
-| **Danach** | Erst nach sichtbarer Kausalitätsdarstellung prüfen, ob eine zweite District-Micro-Story fachlich lohnt |
-| **District-Ereigniskette** | ✅ `district.power_flicker` → späterer `power_flicker_afterglow` im selben Bezirk · Exactly-once · keine Balancewirkung · noch nicht kausal in Timeline/Biografie sichtbar |
+| **Status-Sync-Anker** | PR #200 · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION` |
+| **Aktive Iteration** | 🟡 `0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT` |
+| **Danach** | Nur bei positivem Audit genau eine zweite District-Micro-Story auf dem vorhandenen Child-Eventvertrag umsetzen |
+| **District-Ereigniskette** | ✅ `district.power_flicker` → späterer `power_flicker_afterglow` im selben Bezirk · Exactly-once · keine Balancewirkung · bestätigte Ursache in der bestehenden Timeline read-only sichtbar |
+| **Story-002-Audit** | 🟡 `word_of_mouth_wave`, `patrol_sweep`, `temporary_space_opens` werden auf Storywert, Kontrast, Anschlussfähigkeit und Wiederholungsrisiko verglichen |
 | **Avatar-Kette** | ✅ Profil → bestätigtes HUD → runtime-bestätigter eigener Map-Ort → eigener Hall-/Ranking-Eintrag · Chromium + Firefox · High Contrast + kleines Fenster validiert |
 | **Crew-Lesbarkeit** | ✅ HUD-, Map- und Ranking-Kurzmarken werden im echten Chromium-/Firefox-Harness gegen `0.34rem` und zusätzlich gegen reale Textabschneidung geprüft |
 | **Runtime-Owned Evidence** | ✅ derselbe bestätigte `property.purchase` ist in der vorhandenen Browser-Evidence an Location-, Event- und Ledger-Referenzen gebunden |
@@ -45,7 +46,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #198 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #200 wurde ausschließlich über den Repository-Workflow mit grünen Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -79,7 +80,8 @@ PROPERTY / HALL OF TRIBUTE
 - deterministische Street Encounters ohne Reload-Reroll
 - persistente District-Werte und cadence-geführte District World Events
 - bestätigte District-Parent-Evidenz plus katalogisierter Child-Eventvertrag `world.district_followup_resolved`
-- erste echte District-Micro-Story: `district.power_flicker` kann beim späteren bestätigten Zyklus desselben Bezirks genau einen `power_flicker_afterglow`-Nachhall erzeugen; Timeline/Biografie bleiben read-only
+- erste echte District-Micro-Story: `district.power_flicker` kann beim späteren bestätigten Zyklus desselben Bezirks genau einen `power_flicker_afterglow`-Nachhall erzeugen
+- bestätigte Parent→Child-Kausalität derselben District-Kette wird in der vorhandenen Timeline read-only als `Folge von: …` erklärt; fehlende oder bezirksfremde Parents werden nicht erfunden
 - Property Purchase + dreistufige Upgrades
 - Berlin Ops Map mit lokaler read-only Bedienung und validiertem `1:1`-Rückweg aus dem begrenzten Randfokus
 - Competitive Top 10 + Wochen-/Monatszyklen
@@ -225,6 +227,7 @@ Feature-Fortschritt auf `main` ist kein stiller Produktrelease. Eine neue Produk
 | District-Kettenaudit | [`docs/DISTRICT_EVENT_CHAIN_CONTRACT_AUDIT.md`](docs/DISTRICT_EVENT_CHAIN_CONTRACT_AUDIT.md) |
 | District-Chain Contract V1 | [`docs/DISTRICT_CHAIN_CONTRACT_V1.md`](docs/DISTRICT_CHAIN_CONTRACT_V1.md) |
 | District-Micro-Story 001 | [`docs/DISTRICT_CHAIN_MICRO_STORY_001.md`](docs/DISTRICT_CHAIN_MICRO_STORY_001.md) |
+| Ereignis-Timeline | [`docs/EVENT_TIMELINE_LAIENHILFE.md`](docs/EVENT_TIMELINE_LAIENHILFE.md) |
 | Berlin Ops Map | [`manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json`](manifests/BERLIN_OPS_MAP_PRO_MANIFEST.json) |
 | Safe Merge | [`docs/SAFE_MERGE.md`](docs/SAFE_MERGE.md) |
 | Repository-Regeln | [`AGENTS.md`](AGENTS.md) |
