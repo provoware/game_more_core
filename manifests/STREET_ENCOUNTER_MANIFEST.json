@@ -23,6 +23,24 @@
     "system_time_as_authority": false,
     "compatible_replay_versions": ["0.8.5-c1", "0.8.7-b1"]
   },
+  "follow_up_contract": {
+    "journal_event_type": "street.followup_resolved",
+    "parent_event_type": "street.encounter_resolved",
+    "required_payload_fields": ["parent_event_id", "character_id", "followup_id"],
+    "parent_entity_type": "character",
+    "parent_character_id_source": "entity_id",
+    "parent_optional_character_id_must_match_entity_id": true,
+    "child_character_id_source": "parent.entity_id",
+    "character_mismatch_policy": "fail_closed",
+    "causation_id_source": "parent_event_id",
+    "correlation_id_pattern": "street-chain:{parent_event_id}",
+    "event_id_pattern": "street-followup:{parent_event_id}:{followup_id}",
+    "replay_policy": "same_event_id_same_payload_is_idempotent",
+    "trigger_policy": "later_confirmed_street_walk_only",
+    "maximum_followups_per_trigger_walk": 1,
+    "runtime_authority_only": true,
+    "client_can_write": false
+  },
   "approaches": [
     {
       "approach_id": "balanced",
