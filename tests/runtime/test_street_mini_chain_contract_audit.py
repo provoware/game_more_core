@@ -17,7 +17,7 @@ STREET = json.loads((ROOT / "manifests" / "STREET_ENCOUNTER_MANIFEST.json").read
 ALLOWED = set(JOURNAL["event_types"])
 
 
-def context(command_id: str) -> JournalContext:
+def context(command_id: str, *, character_id: str | None = "player-local") -> JournalContext:
     return JournalContext(
         "2026-08-27T05:30:00+02:00",
         "street-chain-audit",
@@ -27,12 +27,12 @@ def context(command_id: str) -> JournalContext:
         command_id,
         "street-mini-chain-contract-audit",
         "0.8.8",
-        "player-local",
+        character_id,
     )
 
 
 class StreetMiniChainContractAuditTests(unittest.TestCase):
-    def test_confirmed_street_encounter_is_stable_replayable_character_bound_parent_evidence(self):
+    def test_confirmed_street_encounter_is_stable_replayable_entity_bound_parent_evidence(self):
         with tempfile.TemporaryDirectory() as root:
             kernel = PersistenceKernel(root, ALLOWED)
             character = CharacterState("player-local", "Street Chain Audit")
@@ -70,6 +70,35 @@ class StreetMiniChainContractAuditTests(unittest.TestCase):
             self.assertTrue(replay.idempotent_replay)
             self.assertEqual(replay.encounter_id, first.encounter_id)
             self.assertEqual(kernel.read_records(), records_after_first)
+
+    def test_optional_journal_character_id_is_not_yet_a_safe_chain_authority(self):
+        """Audit finding: current Street validation trusts entity_id, not context.character_id."""
+        with tempfile.TemporaryDirectory() as root:
+            kernel = PersistenceKernel(root, ALLOWED)
+            character = CharacterState("player-local", "Street Chain Audit")
+            kernel.initialize_state({"character": character.to_dict()})
+            service = StreetEncounterService(kernel, STREET)
+
+            result = service.walk(
+                character,
+                walk_instance_id="street-chain-character-id-gap",
+                world_seed="street-chain-audit-seed",
+                journal_context=context(
+                    "street-chain-character-id-gap",
+                    character_id="different-character",
+                ),
+                approach_id="balanced",
+            )
+            self.assertFalse(result.idempotent_replay)
+            parent = kernel.read_records()[0]
+            self.assertEqual(parent["entity_type"], "character")
+            self.assertEqual(parent["entity_id"], "player-local")
+            self.assertEqual(parent["character_id"], "different-character")
+
+            # Contract V1 must therefore use entity_id as the current canonical
+            # parent identity and fail closed on absent/mismatched character_id
+            # before any Street child can be approved.
+            self.assertNotEqual(parent["character_id"], parent["entity_id"])
 
     def test_production_contract_has_no_street_child_event_or_projection_yet(self):
         self.assertIn("street.encounter_resolved", ALLOWED)
