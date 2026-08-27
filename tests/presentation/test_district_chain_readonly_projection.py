@@ -24,33 +24,40 @@ def project(records):
     )
 
 
-def parent_record(*, district_id="friedrichshain"):
+def parent_record(*, district_id="friedrichshain", catalog_event_id="district.power_flicker", event_id="district-parent-1"):
     return {
         "sequence": 1,
-        "event_id": "district-parent-1",
+        "event_id": event_id,
         "event_type": "world.district_effect_applied",
         "payload": {
             "source_type": "district_event",
-            "source_id": f"district-event:{district_id}:settlement-1:district.power_flicker",
+            "source_id": f"district-event:{district_id}:settlement-1:{catalog_event_id}",
             "district_id": district_id,
             "deltas": {"scene_activity": -1},
         },
     }
 
 
-def child_record(*, district_id="friedrichshain", causation_id="district-parent-1"):
+def child_record(
+    *,
+    district_id="friedrichshain",
+    causation_id="district-parent-1",
+    parent_event_id="district-parent-1",
+    followup_id="power_flicker_afterglow",
+    event_id="district-child-1",
+):
     return {
         "sequence": 2,
-        "event_id": "district-child-1",
+        "event_id": event_id,
         "event_type": "world.district_followup_resolved",
         "causation_id": causation_id,
-        "correlation_id": "district-chain:district-parent-1",
+        "correlation_id": f"district-chain:{parent_event_id}",
         "payload": {
-            "parent_event_id": "district-parent-1",
+            "parent_event_id": parent_event_id,
             "district_id": district_id,
-            "followup_id": "power_flicker_afterglow",
-            "title_key": "district_followup.power_flicker_afterglow.title",
-            "body_key": "district_followup.power_flicker_afterglow.body",
+            "followup_id": followup_id,
+            "title_key": f"district_followup.{followup_id}.title",
+            "body_key": f"district_followup.{followup_id}.body",
         },
     }
 
@@ -68,6 +75,25 @@ class DistrictChainReadonlyProjectionTests(unittest.TestCase):
         )
         self.assertEqual(child["metadata"]["district_id"], "friedrichshain")
         self.assertEqual(child["metadata"]["followup_id"], "power_flicker_afterglow")
+
+    def test_temporary_space_afterimage_uses_the_same_readonly_causality_projection(self):
+        parent = parent_record(catalog_event_id="district.temporary_space_opens", event_id="district-space-parent")
+        child = child_record(
+            causation_id="district-space-parent",
+            parent_event_id="district-space-parent",
+            followup_id="temporary_space_afterimage",
+            event_id="district-space-child",
+        )
+        result = project([child, parent])
+
+        self.assertEqual([entry["event_id"] for entry in result], ["district-space-parent", "district-space-child"])
+        projected_child = result[1]
+        self.assertEqual(projected_child["title"], "Die Tür ist zu – die Adresse lebt weiter.")
+        self.assertEqual(
+            projected_child["caused_by"],
+            {"event_id": "district-space-parent", "title": "Eine Tür steht plötzlich offen"},
+        )
+        self.assertEqual(projected_child["metadata"]["followup_id"], "temporary_space_afterimage")
 
     def test_missing_or_cross_district_parent_never_invents_cause(self):
         missing_parent = project([child_record()])
