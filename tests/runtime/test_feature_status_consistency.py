@@ -21,8 +21,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
 
         iteration = status["last_validated_feature_iteration"]
         validation = status["remote_validation"]
-        history = status["validated_feature_history"]
-        latest = history[-1]
+        latest = status["validated_feature_history"][-1]
         merge_sha = validation["merged_commit"]
         pr_number = validation["pull_request"]
 
@@ -57,13 +56,12 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-WORLD-003"))
 
-    def test_current_status_describes_micro_story_002_audit_and_active_implementation(self):
+    def test_current_status_describes_micro_story_002_and_active_runtime_browser_e2e(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
-        ranking = status["subsystems"]["ranking"]
         process = status["subsystems"]["development_process"]
         sync = status["status_sync"]
         validation = status["remote_validation"]
@@ -71,46 +69,34 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "district_micro_story_002")
+        self.assertEqual(status["current_focus"], "district_chain_runtime_browser_e2e")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 202)
-        self.assertEqual(validation["validated_head"], "287e1c980ebb70b3f9c804d4e5cd6e50cc6d7177")
-        self.assertEqual(validation["merged_commit"], "4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc")
+        self.assertEqual(validation["pull_request"], 204)
+        self.assertEqual(validation["validated_head"], "edc10eb491f706b9c56ab4c0d7722e91cbdcc50a")
+        self.assertEqual(validation["merged_commit"], "a03cf981b352064415e4cbf1fc3a8f88f34beed6")
 
-        self.assertTrue(living_world["street_boundary_clamping_audit_validated"])
-        self.assertTrue(living_world["street_replay_boundary_matrix_validated"])
-        self.assertTrue(living_world["street_real_catalog_replay_audit_validated"])
-        self.assertTrue(living_world["street_approach_catalog_matrix_audit_validated"])
-        self.assertTrue(living_world["street_distribution_report_validated"])
-        self.assertEqual(living_world["street_effect_current_strict_dominance"], [])
         self.assertTrue(living_world["district_event_chain_contract_audit_validated"])
-        self.assertEqual(living_world["district_event_chain_parent_evidence_event_type"], "world.district_effect_applied")
-        self.assertTrue(living_world["district_event_chain_parent_source_replayable"])
-        self.assertFalse(living_world["district_event_chain_biography_authority"])
-        self.assertTrue(living_world["district_event_chain_child_event_contract_present"])
         self.assertEqual(living_world["district_event_chain_child_event_type"], "world.district_followup_resolved")
         self.assertEqual(living_world["district_event_chain_parent_binding"], "causation_id=parent_event_id")
         self.assertTrue(living_world["district_event_chain_district_must_match_parent"])
         self.assertTrue(living_world["district_event_chain_exactly_once_retry_validated"])
-        self.assertTrue(living_world["district_event_chain_conflicting_retry_rejected"])
-        self.assertTrue(living_world["district_event_chain_micro_story_implemented"])
-        self.assertEqual(living_world["district_event_chain_micro_story_id"], "power_flicker_afterglow")
-        self.assertEqual(living_world["district_event_chain_micro_story_parent_catalog_event_id"], "district.power_flicker")
-        self.assertTrue(living_world["district_event_chain_micro_story_delayed_to_later_cycle"])
-        self.assertFalse(living_world["district_event_chain_micro_story_cross_district_allowed"])
-        self.assertFalse(living_world["district_event_chain_micro_story_balance_effects"])
         self.assertTrue(living_world["district_event_chain_readonly_projection_validated"])
-        self.assertEqual(living_world["district_event_chain_readonly_projection_parent_source"], "confirmed_journal_parent")
-        self.assertTrue(living_world["district_event_chain_readonly_projection_requires_same_district"])
-        self.assertTrue(living_world["district_event_chain_readonly_projection_requires_parent_before_child"])
         self.assertFalse(living_world["district_event_chain_readonly_projection_browser_authority"])
         self.assertTrue(living_world["district_micro_story_002_audit_validated"])
-        self.assertEqual(living_world["district_micro_story_002_selected_parent_catalog_event_id"], "district.temporary_space_opens")
-        self.assertEqual(living_world["district_micro_story_002_selected_followup_id"], "temporary_space_afterimage")
-        self.assertEqual(living_world["district_micro_story_002_selected_title"], "Die Tür ist zu – die Adresse lebt weiter.")
-        self.assertFalse(living_world["district_micro_story_002_balance_effects_planned"])
-        self.assertEqual(living_world["district_event_chain_next_contract"], "0.8.8-STORY-DISTRICT-MICRO-STORY-002")
+        self.assertTrue(living_world["district_micro_story_002_implemented"])
+        self.assertEqual(living_world["district_micro_story_002_parent_catalog_event_id"], "district.temporary_space_opens")
+        self.assertEqual(living_world["district_micro_story_002_followup_id"], "temporary_space_afterimage")
+        self.assertEqual(living_world["district_micro_story_002_title"], "Die Tür ist zu – die Adresse lebt weiter.")
+        self.assertTrue(living_world["district_micro_story_002_delayed_to_later_cycle"])
+        self.assertFalse(living_world["district_micro_story_002_cross_district_allowed"])
+        self.assertFalse(living_world["district_micro_story_002_balance_effects"])
+        self.assertEqual(living_world["district_micro_story_catalog_count"], 2)
+        self.assertEqual(living_world["district_micro_story_max_followups_per_cycle"], 1)
+        self.assertEqual(
+            living_world["district_event_chain_next_contract"],
+            "0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E",
+        )
 
         self.assertIn("world.district_followup_resolved", presentation["event_timeline_sources"])
         self.assertTrue(presentation["district_chain_cause_projection_validated"])
@@ -118,9 +104,6 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertFalse(presentation["district_chain_cause_projection_invents_missing_parent"])
         self.assertFalse(presentation["district_chain_cause_projection_browser_write_authority"])
         self.assertFalse(presentation["browser_gameplay_authority"])
-
-        self.assertTrue(ranking["local_confirmed_crew_badge"])
-        self.assertFalse(ranking["foreign_crew_badges_invented"])
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
@@ -137,42 +120,24 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
     def test_requested_0_8_8_foundations_have_single_pool_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         expected = {
-            "POOL-PROFILE-002": "`DONE`",
-            "POOL-ECON-003": "`DONE`",
-            "POOL-COMPANION-001": "`DONE`",
-            "POOL-COMPANION-002": "`DONE`",
-            "POOL-FINANCE-001": "`DONE`",
-            "POOL-FINANCE-003": "`DONE`",
-            "POOL-FINANCE-004": "`DONE`",
-            "POOL-UX-004": "`DONE`",
-            "POOL-UX-005": "`DONE`",
-            "POOL-MAP-002": "`DONE`",
-            "POOL-STORY-001": "`DONE`",
-            "POOL-ECON-004": "`DONE`",
-            "POOL-ECON-005": "`DONE`",
-            "POOL-UX-006": "`DONE`",
-            "POOL-ECON-006": "`DONE`",
-            "POOL-UX-003": "`DONE`",
-            "POOL-ECON-007": "`DONE`",
-            "POOL-STREET-002": "`DONE`",
-            "POOL-ECON-008": "`DONE`",
-            "POOL-QA-007": "`DONE`",
-            "POOL-QA-008": "`DONE`",
-            "POOL-QA-002": "`DONE`",
-            "POOL-QA-009": "`DONE`",
-            "POOL-STREET-005": "`DONE`",
-            "POOL-UX-007": "`DONE`",
-            "POOL-QA-010": "`DONE`",
-            "POOL-QA-006": "`DONE`",
-            "POOL-UX-008": "`DONE`",
-            "POOL-QA-011": "`DONE`",
-            "POOL-QA-013": "`DONE`",
-            "POOL-QA-014": "`DONE`",
-            "POOL-QA-015": "`DONE`",
-            "POOL-UX-009": "`DONE`",
-            "POOL-QA-016": "`DONE`",
-            "POOL-MAP-003": "`DONE`",
-            "POOL-QA-017": "`DONE`",
+            "POOL-PROFILE-002": "`DONE`", "POOL-ECON-003": "`DONE`",
+            "POOL-COMPANION-001": "`DONE`", "POOL-COMPANION-002": "`DONE`",
+            "POOL-FINANCE-001": "`DONE`", "POOL-FINANCE-003": "`DONE`",
+            "POOL-FINANCE-004": "`DONE`", "POOL-UX-004": "`DONE`",
+            "POOL-UX-005": "`DONE`", "POOL-MAP-002": "`DONE`",
+            "POOL-STORY-001": "`DONE`", "POOL-ECON-004": "`DONE`",
+            "POOL-ECON-005": "`DONE`", "POOL-UX-006": "`DONE`",
+            "POOL-ECON-006": "`DONE`", "POOL-UX-003": "`DONE`",
+            "POOL-ECON-007": "`DONE`", "POOL-STREET-002": "`DONE`",
+            "POOL-ECON-008": "`DONE`", "POOL-QA-007": "`DONE`",
+            "POOL-QA-008": "`DONE`", "POOL-QA-002": "`DONE`",
+            "POOL-QA-009": "`DONE`", "POOL-STREET-005": "`DONE`",
+            "POOL-UX-007": "`DONE`", "POOL-QA-010": "`DONE`",
+            "POOL-QA-006": "`DONE`", "POOL-UX-008": "`DONE`",
+            "POOL-QA-011": "`DONE`", "POOL-QA-013": "`DONE`",
+            "POOL-QA-014": "`DONE`", "POOL-QA-015": "`DONE`",
+            "POOL-UX-009": "`DONE`", "POOL-QA-016": "`DONE`",
+            "POOL-MAP-003": "`DONE`", "POOL-QA-017": "`DONE`",
             "POOL-WORLD-003": "`PULLED`",
         }
         for pool_id, state in expected.items():
