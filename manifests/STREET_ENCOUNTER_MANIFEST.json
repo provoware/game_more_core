@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "version": "0.8.8-street-chain-v1",
+  "version": "0.8.8-street-pack",
   "selection": {
     "method": "sha256_stable_weighted",
     "weight_total": 100,
