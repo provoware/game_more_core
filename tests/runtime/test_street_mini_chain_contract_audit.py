@@ -87,12 +87,12 @@ class StreetMiniChainContractAuditTests(unittest.TestCase):
             self.assertEqual(replay.encounter_id, first.encounter_id)
             self.assertEqual(kernel.read_records(), records_after_first)
 
-    def test_contract_v1_catalogs_only_the_child_event_and_keeps_projection_closed(self):
+    def test_contract_v1_catalogs_child_event_and_projection_remains_read_only(self):
         self.assertEqual(CONTRACT["journal_event_type"], "street.followup_resolved")
         self.assertEqual(CONTRACT["parent_event_type"], "street.encounter_resolved")
         self.assertIn("street.followup_resolved", ALLOWED)
         self.assertIn("street.encounter_resolved", SUPPORTED_EVENT_TYPES)
-        self.assertNotIn("street.followup_resolved", SUPPORTED_EVENT_TYPES)
+        self.assertIn("street.followup_resolved", SUPPORTED_EVENT_TYPES)
         self.assertTrue(CONTRACT["runtime_authority_only"])
         self.assertFalse(CONTRACT["client_can_write"])
         self.assertEqual(CONTRACT["trigger_policy"], "later_confirmed_street_walk_only")
