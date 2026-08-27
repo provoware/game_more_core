@@ -234,6 +234,100 @@ class StreetEncounterService:
             self.approaches,
             self.compatible_replay_versions,
         ) = _validate_manifest(manifest)
+        self.micro_stories = self._validate_micro_stories(manifest)
+
+    def _validate_micro_stories(self, manifest: Mapping[str, Any]) -> tuple[dict[str, str], ...]:
+        keys = sorted(key for key in manifest if key.startswith("micro_story_"))
+        if not keys:
+            return ()
+        contract = manifest.get("follow_up_contract")
+        if not isinstance(contract, Mapping):
+            raise ValueError("Street-Micro-Story benötigt follow_up_contract")
+        if contract.get("journal_event_type") != "street.followup_resolved":
+            raise ValueError("Street-Follow-up Eventtyp ist unbekannt")
+        if contract.get("parent_event_type") != "street.encounter_resolved":
+            raise ValueError("Street-Follow-up Parenttyp ist unbekannt")
+        if contract.get("parent_character_id_source") != "entity_id":
+            raise ValueError("Street-Follow-up benötigt entity_id als Charakter-Autorität")
+        if contract.get("parent_optional_character_id_must_match_entity_id") is not True:
+            raise ValueError("Street-Follow-up benötigt fail-closed Charakter-Abgleich")
+        if contract.get("child_character_id_source") != "parent.entity_id":
+            raise ValueError("Street-Follow-up Child muss die Parent-Identität übernehmen")
+        if contract.get("character_mismatch_policy") != "fail_closed":
+            raise ValueError("Street-Follow-up Charakter-Konflikte müssen fail-closed sein")
+        if contract.get("event_id_pattern") != "street-followup:{parent_event_id}:{followup_id}":
+            raise ValueError("Street-Follow-up Event-ID-Vertrag ist unbekannt")
+        if contract.get("correlation_id_pattern") != "street-chain:{parent_event_id}":
+            raise ValueError("Street-Follow-up Correlation-Vertrag ist unbekannt")
+        if contract.get("trigger_policy") != "later_confirmed_street_walk_only":
+            raise ValueError("Street-Follow-up benötigt einen später bestätigten Street-Walk")
+        if contract.get("maximum_followups_per_trigger_walk") != 1:
+            raise ValueError("Street-Follow-up erlaubt höchstens eine Folge pro Trigger-Walk")
+        if contract.get("runtime_authority_only") is not True or contract.get("client_can_write") is not False:
+            raise ValueError("Street-Follow-up benötigt alleinige Runtime-Autorität")
+
+        encounter_ids = {item["encounter_id"] for item in self.encounters}
+        stories: list[dict[str, str]] = []
+        parent_ids: set[str] = set()
+        followup_ids: set[str] = set()
+        for key in keys:
+            raw = manifest.get(key)
+            if not isinstance(raw, Mapping):
+                raise ValueError(f"{key} muss ein Objekt sein")
+            story = {
+                "parent_encounter_id": _require_text(raw.get("parent_encounter_id"), f"{key}.parent_encounter_id"),
+                "followup_id": _require_text(raw.get("followup_id"), f"{key}.followup_id"),
+                "title_key": _require_text(raw.get("title_key"), f"{key}.title_key"),
+                "body_key": _require_text(raw.get("body_key"), f"{key}.body_key"),
+            }
+            if story["parent_encounter_id"] not in encounter_ids:
+                raise ValueError(f"{key} verweist auf unbekannte Street-Begegnung")
+            if story["parent_encounter_id"] in parent_ids:
+                raise ValueError("Street-Micro-Stories dürfen denselben Parent nicht doppelt belegen")
+            if story["followup_id"] in followup_ids:
+                raise ValueError("Street-Micro-Stories benötigen eindeutige followup_id")
+            parent_ids.add(story["parent_encounter_id"])
+            followup_ids.add(story["followup_id"])
+            stories.append(story)
+        return tuple(stories)
+
+    def _next_followup_event(self, character_id: str) -> dict[str, Any] | None:
+        candidates: list[tuple[int, Mapping[str, str], Mapping[str, Any], str]] = []
+        records = self.persistence.read_records()
+        for story in self.micro_stories:
+            for record in records:
+                if record.get("event_type") != "street.encounter_resolved":
+                    continue
+                payload = record.get("payload")
+                if not isinstance(payload, Mapping) or payload.get("encounter_id") != story["parent_encounter_id"]:
+                    continue
+                if record.get("entity_type") != "character" or record.get("entity_id") != character_id:
+                    continue
+                optional_character_id = record.get("character_id")
+                if optional_character_id is not None and optional_character_id != character_id:
+                    raise PersistenceError("Street-Micro-Story Parent besitzt widersprüchliche Charakter-ID")
+                parent_event_id = _require_text(record.get("event_id"), "street.followup.parent_event_id")
+                child_event_id = f"street-followup:{parent_event_id}:{story['followup_id']}"
+                if self.persistence.has_event(child_event_id):
+                    continue
+                candidates.append((int(record.get("sequence", 0)), story, record, child_event_id))
+        if not candidates:
+            return None
+        _, story, parent, child_event_id = max(candidates, key=lambda item: item[0])
+        parent_event_id = _require_text(parent.get("event_id"), "street.followup.parent_event_id")
+        return {
+            "event_id": child_event_id,
+            "event_type": "street.followup_resolved",
+            "causation_id": parent_event_id,
+            "correlation_id": f"street-chain:{parent_event_id}",
+            "payload": {
+                "parent_event_id": parent_event_id,
+                "character_id": character_id,
+                "followup_id": story["followup_id"],
+                "title_key": story["title_key"],
+                "body_key": story["body_key"],
+            },
+        }
 
     def walk(
         self,
@@ -336,6 +430,9 @@ class StreetEncounterService:
             }
             for index, event in enumerate(generated, 1)
         ]
+        followup = self._next_followup_event(character.character_id)
+        if followup is not None:
+            events.append(followup)
         receipt = self.persistence.commit(
             transaction_id=f"tx:street:{walk_instance_id}",
             events=events,
