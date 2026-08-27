@@ -35,6 +35,8 @@
   "street.puddle.body": "Ein falscher Schritt und der Schuh ist nass. Nicht dramatisch, aber maximal nervig.",
   "street.lost_glove.title": "Ein Handschuh weniger",
   "street.lost_glove.body": "Erst an der nächsten Ecke merkst du, dass ein Handschuh fehlt. Zurücklaufen lohnt nicht, ärgern tust du dich trotzdem.",
+  "street.followup.lost_glove_fence_echo.title": "Der Handschuh wartet noch",
+  "street.followup.lost_glove_fence_echo.body": "Bei einem späteren Gang hängt dein verlorener Handschuh sichtbar über einem Bauzaun. Jemand hat ihn aufgehoben und dort abgelegt. Du siehst ihn wieder – das Spiel verbucht daraus aber keinen Gegenstand und keinen Bonus.",
   "street.bike_splash.title": "Fahrradspritzer",
   "street.bike_splash.body": "Ein Rad zieht durch die nasse Kante und verteilt den halben Straßenrand auf deine Hose.",
   "street.sudden_rain.title": "Regen aus dem Nichts",

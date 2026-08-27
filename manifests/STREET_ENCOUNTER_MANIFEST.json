@@ -47,6 +47,12 @@
     "title_key": "street.followup.cable_tip_echo.title",
     "body_key": "street.followup.cable_tip_echo.body"
   },
+  "micro_story_002": {
+    "parent_encounter_id": "street.lost_glove",
+    "followup_id": "lost_glove_fence_echo",
+    "title_key": "street.followup.lost_glove_fence_echo.title",
+    "body_key": "street.followup.lost_glove_fence_echo.body"
+  },
   "approaches": [
     {
       "approach_id": "balanced",
