@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #204 · Merge `a03cf981b352064415e4cbf1fc3a8f88f34beed6`
+- **Status-Sync-Anker:** PR #206 · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973`
 
 ## Statuswerte
 
@@ -40,6 +40,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E:** PR #206 · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973` · beide produktiven District-Micro-Stories durch echte Runtime → Journal/Persistenz → read-only Projection → `/api/state` → Chromium-DOM bewiesen; Retry und Cross-District fail-closed
 - **0.8.8-STORY-DISTRICT-MICRO-STORY-002:** PR #204 · Merge `a03cf981b352064415e4cbf1fc3a8f88f34beed6` · `district.temporary_space_opens` erzeugt im späteren bestätigten Zyklus desselben Bezirks `temporary_space_afterimage`; Exactly-once, balance-neutral und über dieselbe read-only Kausalitätsprojection sichtbar
 - **0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT:** PR #202 · Merge `4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc` · drei verbleibende District-Parents dramaturgisch/technisch verglichen; `district.temporary_space_opens` mit `temporary_space_afterimage` als stärkster zweiter Nachhall ausgewählt
 - **0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION:** PR #200 · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e` · bestätigte District-Folgeevents werden in der bestehenden Timeline projiziert; `Folge von: …` erscheint nur bei bestätigtem Parent, gleichem Bezirk und gültiger Journal-Reihenfolge
@@ -108,13 +109,13 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | ID | Status | Feature | Voraussetzung |
 |---|---|---|---|
 | `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
-| `POOL-WORLD-003` | `PULLED` | District-Ereignisketten mit Erinnerung | Micro-Story 001 und 002 sind produktiv auf Contract V1; aktiver nächster Slice beweist beide Ketten im bestehenden Runtime→Browser-E2E, keine neue Storyengine |
+| `POOL-WORLD-003` | `DONE` | District-Ereignisketten mit Erinnerung | Contract V1, zwei produktive Micro-Stories, read-only Kausalitätsprojection und Runtime→Browser-E2E bis PR #206 vollständig validiert |
 | `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
 | `POOL-NET-002` | `DEPENDENCY` | Crew-Identity-Synchronisation | `POOL-NET-001` |
 | `POOL-RANK-004` | `DEPENDENCY` | echte Netzwerk-Rankingzyklen | `POOL-NET-001` |
-| `POOL-STREET-003` | `IDEA` | seltene Mini-Kettenereignisse | Ketten-/Replayvertrag |
+| `POOL-STREET-003` | `PULLED` | seltene Mini-Kettenereignisse | aktiver Contract-Audit prüft vorhandene Street-Parent-Evidenz, Replay und Kausalitätsfelder; keine District-Resolver-Kopie |
 | `POOL-QA-001` | `READY` | Native GitHub Branch Protection / Ruleset | geeigneter Admin-Schreibweg |
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
 | `POOL-MAP-003` | `DONE` | Map-Viewport-Miniübersicht | PR #190 Audit: `1:1`-Reset reicht als Rückweg; keine Miniübersicht auf Verdacht |
@@ -134,4 +135,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-WORLD-003` bleibt nach PR #204 bewusst `PULLED`: Story 001 und Story 002 sind produktiv und verwenden denselben katalogisierten Follow-up-Vertrag. Die nächste Entnahme ist `0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E`: beide Parent→Child-Ketten in einem isolierten Acceptance-Spielstand real durch Runtime, Journal/Persistenz, bestehende read-only Projection und Browser führen. Dabei müssen die sichtbaren Ursachen **„Folge von: Das Netz flackert“** und **„Folge von: Eine Tür steht plötzlich offen“** aus echter Journal-Evidenz stammen; Retry und Cross-District bleiben fail-closed.
+`POOL-WORLD-003` ist nach PR #206 abgeschlossen: beide District-Ketten sind fachlich und Ende-zu-Ende belegt. Aktiv ist jetzt ausschließlich `POOL-STREET-003` mit `0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT`. Der Audit prüft, ob `street.encounter_resolved` als eindeutige Parent-Evidenz genügt und ob die vorhandenen Journal-/Exactly-once-/Kausalitätsfelder wiederverwendbar sind. District-spezifische Resolver, District-ID-Regeln und Storytexte werden ausdrücklich nicht kopiert. Erst bei positivem Vertragsbefund darf genau eine Street-Micro-Story folgen.
