@@ -103,7 +103,7 @@
     {
       "approach_id": "network",
       "label_key": "street.approach.network.label",
-      "description_key": "Du hältst Ausschau nach bekannten Gesichtern und Crews. Ruf-Chancen werden wahrscheinlicher.",
+      "description_key": "street.approach.network.description",
       "weights": {
         "street.none": 10,
         "street.poster_wall": 5,
@@ -126,7 +126,7 @@
     {
       "approach_id": "scout",
       "label_key": "street.approach.scout.label",
-      "description_key": "Du suchst Wege und nützliche Funde. Mehr Entdeckung, aber auch etwas mehr Ärger möglich.",
+      "description_key": "street.approach.scout.description",
       "weights": {
         "street.none": 10,
         "street.poster_wall": 5,
@@ -148,21 +148,133 @@
     }
   ],
   "encounters": [
-    {"encounter_id":"street.none","polarity":"neutral","weight":15,"title_key":"street.none.title","body_key":"street.none.body","effects":{"energy_delta":0,"stress_delta":0,"reputation_delta":0}},
-    {"encounter_id":"street.poster_wall","polarity":"neutral","weight":10,"title_key":"street.poster_wall.title","body_key":"street.poster_wall.body","effects":{"energy_delta":0,"stress_delta":0,"reputation_delta":0}},
-    {"encounter_id":"street.spaeti_water","polarity":"positive","weight":10,"title_key":"street.spaeti_water.title","body_key":"street.spaeti_water.body","effects":{"energy_delta":4,"stress_delta":-2,"reputation_delta":0}},
-    {"encounter_id":"street.friendly_face","polarity":"positive","weight":5,"title_key":"street.friendly_face.title","body_key":"street.friendly_face.body","effects":{"energy_delta":0,"stress_delta":-1,"reputation_delta":2}},
-    {"encounter_id":"street.open_door","polarity":"positive","weight":5,"title_key":"street.open_door.title","body_key":"street.open_door.body","effects":{"energy_delta":0,"stress_delta":-1,"reputation_delta":1}},
-    {"encounter_id":"street.shortcut","polarity":"positive","weight":10,"title_key":"street.shortcut.title","body_key":"street.shortcut.body","effects":{"energy_delta":3,"stress_delta":-1,"reputation_delta":0}},
-    {"encounter_id":"street.crew_greeting","polarity":"positive","weight":10,"title_key":"street.crew_greeting.title","body_key":"street.crew_greeting.body","effects":{"energy_delta":0,"stress_delta":-2,"reputation_delta":1}},
-    {"encounter_id":"street.coffee_house","polarity":"positive","weight":5,"title_key":"street.coffee_house.title","body_key":"street.coffee_house.body","effects":{"energy_delta":5,"stress_delta":0,"reputation_delta":0}},
-    {"encounter_id":"street.night_bus_seat","polarity":"positive","weight":5,"title_key":"street.night_bus_seat.title","body_key":"street.night_bus_seat.body","effects":{"energy_delta":3,"stress_delta":-2,"reputation_delta":0}},
-    {"encounter_id":"street.useful_find","polarity":"positive","weight":5,"title_key":"street.useful_find.title","body_key":"street.useful_find.body","effects":{"energy_delta":1,"stress_delta":-1,"reputation_delta":1}},
-    {"encounter_id":"street.cable_tip","polarity":"positive","weight":5,"title_key":"street.cable_tip.title","body_key":"street.cable_tip.body","effects":{"energy_delta":1,"stress_delta":0,"reputation_delta":1}},
-    {"encounter_id":"street.puddle","polarity":"negative","weight":3,"title_key":"street.puddle.title","body_key":"street.puddle.body","effects":{"energy_delta":-1,"stress_delta":2,"reputation_delta":0}},
-    {"encounter_id":"street.lost_glove","polarity":"negative","weight":2,"title_key":"street.lost_glove.title","body_key":"street.lost_glove.body","effects":{"energy_delta":0,"stress_delta":2,"reputation_delta":0}},
-    {"encounter_id":"street.bike_splash","polarity":"negative","weight":3,"title_key":"street.bike_splash.title","body_key":"street.bike_splash.body","effects":{"energy_delta":-1,"stress_delta":2,"reputation_delta":0}},
-    {"encounter_id":"street.sudden_rain","polarity":"negative","weight":3,"title_key":"street.sudden_rain.title","body_key":"street.sudden_rain.body","effects":{"energy_delta":-2,"stress_delta":2,"reputation_delta":0}},
-    {"encounter_id":"street.construction_detour","polarity":"negative","weight":4,"title_key":"street.construction_detour.title","body_key":"street.construction_detour.body","effects":{"energy_delta":-2,"stress_delta":1,"reputation_delta":0}}
+    {
+      "encounter_id": "street.none",
+      "polarity": "neutral",
+      "weight": 15,
+      "title_key": "street.none.title",
+      "body_key": "street.none.body",
+      "effects": {"energy_delta": 0, "stress_delta": 0, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.poster_wall",
+      "polarity": "neutral",
+      "weight": 10,
+      "title_key": "street.poster_wall.title",
+      "body_key": "street.poster_wall.body",
+      "effects": {"energy_delta": 0, "stress_delta": 0, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.spaeti_water",
+      "polarity": "positive",
+      "weight": 10,
+      "title_key": "street.spaeti_water.title",
+      "body_key": "street.spaeti_water.body",
+      "effects": {"energy_delta": 4, "stress_delta": -2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.friendly_face",
+      "polarity": "positive",
+      "weight": 5,
+      "title_key": "street.friendly_face.title",
+      "body_key": "street.friendly_face.body",
+      "effects": {"energy_delta": 0, "stress_delta": -1, "reputation_delta": 2}
+    },
+    {
+      "encounter_id": "street.open_door",
+      "polarity": "positive",
+      "weight": 5,
+      "title_key": "street.open_door.title",
+      "body_key": "street.open_door.body",
+      "effects": {"energy_delta": 0, "stress_delta": -1, "reputation_delta": 1}
+    },
+    {
+      "encounter_id": "street.shortcut",
+      "polarity": "positive",
+      "weight": 10,
+      "title_key": "street.shortcut.title",
+      "body_key": "street.shortcut.body",
+      "effects": {"energy_delta": 3, "stress_delta": -1, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.crew_greeting",
+      "polarity": "positive",
+      "weight": 10,
+      "title_key": "street.crew_greeting.title",
+      "body_key": "street.crew_greeting.body",
+      "effects": {"energy_delta": 0, "stress_delta": -2, "reputation_delta": 1}
+    },
+    {
+      "encounter_id": "street.coffee_house",
+      "polarity": "positive",
+      "weight": 5,
+      "title_key": "street.coffee_house.title",
+      "body_key": "street.coffee_house.body",
+      "effects": {"energy_delta": 5, "stress_delta": 0, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.night_bus_seat",
+      "polarity": "positive",
+      "weight": 5,
+      "title_key": "street.night_bus_seat.title",
+      "body_key": "street.night_bus_seat.body",
+      "effects": {"energy_delta": 3, "stress_delta": -2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.useful_find",
+      "polarity": "positive",
+      "weight": 5,
+      "title_key": "street.useful_find.title",
+      "body_key": "street.useful_find.body",
+      "effects": {"energy_delta": 1, "stress_delta": -1, "reputation_delta": 1}
+    },
+    {
+      "encounter_id": "street.cable_tip",
+      "polarity": "positive",
+      "weight": 5,
+      "title_key": "street.cable_tip.title",
+      "body_key": "street.cable_tip.body",
+      "effects": {"energy_delta": 1, "stress_delta": 0, "reputation_delta": 1}
+    },
+    {
+      "encounter_id": "street.puddle",
+      "polarity": "negative",
+      "weight": 3,
+      "title_key": "street.puddle.title",
+      "body_key": "street.puddle.body",
+      "effects": {"energy_delta": -1, "stress_delta": 2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.lost_glove",
+      "polarity": "negative",
+      "weight": 2,
+      "title_key": "street.lost_glove.title",
+      "body_key": "street.lost_glove.body",
+      "effects": {"energy_delta": 0, "stress_delta": 2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.bike_splash",
+      "polarity": "negative",
+      "weight": 3,
+      "title_key": "street.bike_splash.title",
+      "body_key": "street.bike_splash.body",
+      "effects": {"energy_delta": -1, "stress_delta": 2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.sudden_rain",
+      "polarity": "negative",
+      "weight": 3,
+      "title_key": "street.sudden_rain.title",
+      "body_key": "street.sudden_rain.body",
+      "effects": {"energy_delta": -2, "stress_delta": 2, "reputation_delta": 0}
+    },
+    {
+      "encounter_id": "street.construction_detour",
+      "polarity": "negative",
+      "weight": 4,
+      "title_key": "street.construction_detour.title",
+      "body_key": "street.construction_detour.body",
+      "effects": {"energy_delta": -2, "stress_delta": 1, "reputation_delta": 0}
+    }
   ]
 }
