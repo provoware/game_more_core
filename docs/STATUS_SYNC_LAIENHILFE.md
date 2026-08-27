@@ -26,21 +26,27 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #198
+## Praktisches Beispiel nach PR #200
 
-PR #198 hat erstmals eine echte District-Ursache→Folge-Geschichte sicher gemergt. Das bestätigte Ereignis `district.power_flicker` kann bei einem **späteren bestätigten District-Zyklus desselben Bezirks** genau den Nachhall `power_flicker_afterglow` erzeugen.
+PR #200 hat die bereits echte District-Ursache→Folge-Geschichte erstmals auch **verständlich sichtbar** gemacht. Die vorhandene Timeline projiziert bestätigte `world.district_followup_resolved`-Records und zeigt `Folge von: …` nur, wenn Parent, Bezirk und Journal-Reihenfolge wirklich zusammenpassen.
 
-Wichtig: Der Folge-Record verwendet weiterhin den bestehenden Journal-/Persistence-Vertrag. Parent-ID, District-ID, `causation_id`, `correlation_id` und deterministische Child-ID bleiben gebunden; ein Retry erzeugt keinen zweiten Child-Record und ein anderer Bezirk darf die Folge nicht übernehmen.
+Fehlt der Parent, gehört er zu einem anderen Bezirk oder liegt die Reihenfolge falsch, wird keine Ursache erfunden. Der Browser schreibt dabei nichts zurück; er erklärt ausschließlich die bestätigte Projection.
 
-Direkt nach diesem fachlichen Safe Merge standen die drei kanonischen Statusdateien noch auf PR #196 und nannten Micro-Story 001 weiterhin als offene Arbeit. Genau diese Abweichung ist Statusdrift.
+Direkt nach diesem fachlichen Safe Merge standen die drei kanonischen Statusdateien noch auf PR #198 und nannten die Read-only-Projection weiterhin als offene Arbeit. Genau diese Abweichung ist Statusdrift.
 
-Die Statuskorrektur übernimmt deshalb PR #198 als gemeinsamen Anker und setzt die nächste aktive Phase desselben `POOL-WORLD-003` auf **`0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION`**. Dabei wird keine zweite Storyengine gebaut. Die bereits persistierte Ursache→Folge-Kette soll nur in der vorhandenen Timeline/Biografie verständlich sichtbar werden.
+Die Statuskorrektur übernimmt deshalb PR #200 als gemeinsamen Anker und setzt die nächste aktive Phase desselben `POOL-WORLD-003` auf **`0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT`**.
+
+Dieser Audit baut noch **keine** zweite Story. Er vergleicht zuerst die drei übrigen District-Ereignisse:
+
+- `district.word_of_mouth_wave` – soziale Dynamik und Gerüchte,
+- `district.patrol_sweep` – Druck, Erinnerung und kollektive Vorsicht,
+- `district.temporary_space_opens` – kurze Gelegenheit, Verlust und möglicher Mythos.
+
+Vorläufig ist `district.temporary_space_opens` dramaturgisch besonders interessant: Die erste Geschichte folgt dem Muster **Störung → Wiederkehr → Erinnerung**. Ein temporärer Raum kann dagegen **Chance → kurze Ekstase → Verlust → Mythos** erzählen. Das erweitert die emotionale Bandbreite, ohne die bestehende Kettenarchitektur zu verändern.
 
 ### Merksatz für Laien
 
-**Das Spiel schreibt die Ursache und die Folge. Die Oberfläche darf anschließend nur zeigen, wie beides zusammenhängt.**
-
-So bleibt klar getrennt, wer Spielzustand erzeugt und wer ihn lediglich erklärt.
+**Erst muss das Spiel beweisen, was passiert ist. Dann darf die Oberfläche erklären, wie es zusammenhängt. Und erst danach lohnt sich die nächste Geschichte.**
 
 ## Für Entwickler
 
