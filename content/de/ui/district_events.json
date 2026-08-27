@@ -8,5 +8,7 @@
   "district_event.temporary_space_opens.title": "Eine Tür steht plötzlich offen",
   "district_event.temporary_space_opens.body": "Ein leerer Raum, ein brauchbarer Hof, ein Schlüssel zur richtigen Zeit. Niemand weiß, wie lange das Fenster bleibt, aber die Szene merkt es sofort.",
   "district_followup.power_flicker_afterglow.title": "Das Licht ist zurück – die Erinnerung bleibt",
-  "district_followup.power_flicker_afterglow.body": "Die Sicherungen halten wieder. Trotzdem stehen plötzlich Taschenlampen neben den Anlagen, Verlängerungskabel liegen bereit und jeder im Viertel weiß jetzt, welcher Keller beim nächsten Flackern zuerst dunkel wird."
+  "district_followup.power_flicker_afterglow.body": "Die Sicherungen halten wieder. Trotzdem stehen plötzlich Taschenlampen neben den Anlagen, Verlängerungskabel liegen bereit und jeder im Viertel weiß jetzt, welcher Keller beim nächsten Flackern zuerst dunkel wird.",
+  "district_followup.temporary_space_afterimage.title": "Die Tür ist zu – die Adresse lebt weiter.",
+  "district_followup.temporary_space_afterimage.body": "Der Schlüssel ist weg, das Tor wieder verriegelt. Trotzdem tauchen an der Ecke neue Kreidestriche auf. Leute beschreiben anderen, wo damals der Eingang war. Für ein paar Nächte war es nur ein leerer Raum – jetzt ist es eine Adresse, von der jeder eine andere Version kennt."
 }
