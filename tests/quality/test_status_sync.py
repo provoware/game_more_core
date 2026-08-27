@@ -132,6 +132,9 @@ class StatusSyncTests(unittest.TestCase):
         runtime_test = self.root / "tests" / "runtime" / "test_feature_status_consistency.py"
         runtime_test.parent.mkdir(parents=True, exist_ok=True)
         runtime_test.write_text("# status consistency\n", encoding="utf-8")
+        status_help = self.root / "docs" / "STATUS_SYNC_AFTER_PR173_LAIENHILFE.md"
+        status_help.parent.mkdir(parents=True, exist_ok=True)
+        status_help.write_text("# Status-Sync Hilfe\n", encoding="utf-8")
         changelog = self.root / "CHANGELOG.d" / "0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE.md"
         changelog.parent.mkdir(parents=True, exist_ok=True)
         changelog.write_text("status sync\n", encoding="utf-8")
