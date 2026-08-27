@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).parents[2]
@@ -14,14 +15,15 @@ if str(TOOLS) not in sys.path:
 
 import start_a4_acceptance as acceptance  # noqa: E402
 import start_a4_game_client as game_client  # noqa: E402
+from bunkerfrequenz.application import street_encounter_service as street_module  # noqa: E402
 
 
 class StreetChainRuntimeBrowserE2ETests(unittest.TestCase):
-    def _force_encounter(self, runtime, encounter_id: str) -> None:
+    def _force_encounter(self, runtime, encounter_id: str):
         service = runtime.session.street
         self.assertIsNotNone(service)
         selected = next(item for item in service.encounters if item["encounter_id"] == encounter_id)
-        service._select = lambda _eligible, **_kwargs: selected
+        return patch.object(street_module, "_select", return_value=selected)
 
     def test_confirmed_street_chain_survives_retry_reopen_api_and_real_browser(self):
         with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-street-chain-browser-") as root:
@@ -30,12 +32,12 @@ class StreetChainRuntimeBrowserE2ETests(unittest.TestCase):
             bootstrap = runtime.bootstrap({"command_id": "acceptance-street-chain-bootstrap"})
             self.assertEqual(bootstrap.get("status"), "confirmed")
 
-            self._force_encounter(runtime, "street.cable_tip")
-            first = runtime.command({
-                "type": "street.walk",
-                "command_id": "street-chain-e2e-parent",
-                "approach_id": "balanced",
-            })
+            with self._force_encounter(runtime, "street.cable_tip"):
+                first = runtime.command({
+                    "type": "street.walk",
+                    "command_id": "street-chain-e2e-parent",
+                    "approach_id": "balanced",
+                })
             self.assertEqual(first.get("status"), "confirmed")
             self.assertEqual(first["metadata"]["street_encounter"]["encounter_id"], "street.cable_tip")
 
@@ -43,12 +45,12 @@ class StreetChainRuntimeBrowserE2ETests(unittest.TestCase):
             child_event_id = f"street-followup:{parent_event_id}:cable_tip_echo"
             self.assertFalse(runtime.kernel.has_event(child_event_id))
 
-            self._force_encounter(runtime, "street.cable_tip")
-            second = runtime.command({
-                "type": "street.walk",
-                "command_id": "street-chain-e2e-child",
-                "approach_id": "balanced",
-            })
+            with self._force_encounter(runtime, "street.cable_tip"):
+                second = runtime.command({
+                    "type": "street.walk",
+                    "command_id": "street-chain-e2e-child",
+                    "approach_id": "balanced",
+                })
             self.assertEqual(second.get("status"), "confirmed")
             self.assertIn(child_event_id, second.get("committed_event_ids", []))
 
