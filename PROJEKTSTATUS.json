@@ -2,33 +2,33 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT",
-  "status": "0_8_8_story_district_chain_readonly_projection_remote_validated_micro_story_002_audit_active",
-  "current_focus": "district_micro_story_002_audit",
-  "last_validated_feature_iteration": "0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION",
+  "active_iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002",
+  "status": "0_8_8_story_district_micro_story_002_audit_remote_validated_micro_story_002_active",
+  "current_focus": "district_micro_story_002",
+  "last_validated_feature_iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT",
   "last_validated_release": "0.8.4-alpha.1",
-  "validation_reference": "PR #200 / head 10b00a872f9a986404800323401883590d0ba6dd / merge 5f403defcf3773c3c44fefa3b282b0015ad9d68e",
+  "validation_reference": "PR #202 / head 287e1c980ebb70b3f9c804d4e5cd6e50cc6d7177 / merge 4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc",
   "remote_validation": {
-    "status": "success_for_0.8.8_story_district_chain_readonly_projection",
-    "pull_request": 200,
-    "validated_head": "10b00a872f9a986404800323401883590d0ba6dd",
-    "runtime_core_workflow_run": 32921192838,
-    "presentation_core_workflow_run": 32921192842,
-    "repository_health_workflow_run": 32921192830,
-    "release_acceptance_workflow_run": 32921192839,
-    "release_package_workflow_run": 32921192864,
-    "status_sync_workflow_run": 32921192850,
+    "status": "success_for_0.8.8_story_district_micro_story_002_audit",
+    "pull_request": 202,
+    "validated_head": "287e1c980ebb70b3f9c804d4e5cd6e50cc6d7177",
+    "runtime_core_workflow_run": 33030632525,
+    "presentation_core_workflow_run": 33030632527,
+    "repository_health_workflow_run": 33030632522,
+    "release_acceptance_workflow_run": 33030632524,
+    "release_package_workflow_run": 33030632551,
+    "status_sync_workflow_run": 33030632542,
     "review_threads_resolved": true,
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "5f403defcf3773c3c44fefa3b282b0015ad9d68e"
+    "merged_commit": "4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc"
   },
   "status_sync": {
     "mode": "read_only_latest_relevant_safe_merge_anchor",
-    "anchor_pull_request": 200,
-    "anchor_merge_commit": "5f403defcf3773c3c44fefa3b282b0015ad9d68e",
-    "anchor_iteration": "0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION",
+    "anchor_pull_request": 202,
+    "anchor_merge_commit": "4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc",
+    "anchor_iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT",
     "canonical_documents": ["TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json"],
     "checker": "tools/status_sync.py",
     "workflow": ".github/workflows/status-sync.yml",
@@ -119,7 +119,8 @@
     {"iteration": "0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT", "pull_request": 194, "merged_commit": "60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e", "feature": "district_event_chain_contract_audit"},
     {"iteration": "0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1", "pull_request": 196, "merged_commit": "ca5af40fb6bee1e90b1325bea8f6026fef8bc577", "feature": "district_chain_child_event_contract_v1"},
     {"iteration": "0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001", "pull_request": 198, "merged_commit": "030d40e4b22c38a11fd98a2d028b398779955507", "feature": "district_chain_power_flicker_afterglow_micro_story"},
-    {"iteration": "0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION", "pull_request": 200, "merged_commit": "5f403defcf3773c3c44fefa3b282b0015ad9d68e", "feature": "district_chain_readonly_causality_projection"}
+    {"iteration": "0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION", "pull_request": 200, "merged_commit": "5f403defcf3773c3c44fefa3b282b0015ad9d68e", "feature": "district_chain_readonly_causality_projection"},
+    {"iteration": "0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT", "pull_request": 202, "merged_commit": "4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc", "feature": "district_micro_story_002_candidate_audit"}
   ],
   "subsystems": {
     "character_forge": {"status": "validated", "skills": 16, "trait_names": 165, "level_cap_before_resonance": 50, "profile_personalization": true, "crew_identity_logo_flag": true},
@@ -204,7 +205,7 @@
       "recovery_balance_audit_gameplay_changes": false
     },
     "living_world": {
-      "status": "district_chain_readonly_projection_remote_validated",
+      "status": "district_micro_story_002_audit_remote_validated",
       "district_state_persistent": true,
       "district_metrics": ["heat", "prestige", "police_pressure", "scene_activity"],
       "street_encounters_replayable": true,
@@ -287,7 +288,12 @@
       "district_event_chain_readonly_projection_requires_same_district": true,
       "district_event_chain_readonly_projection_requires_parent_before_child": true,
       "district_event_chain_readonly_projection_browser_authority": false,
-      "district_event_chain_next_contract": "0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT"
+      "district_micro_story_002_audit_validated": true,
+      "district_micro_story_002_selected_parent_catalog_event_id": "district.temporary_space_opens",
+      "district_micro_story_002_selected_followup_id": "temporary_space_afterimage",
+      "district_micro_story_002_selected_title": "Die Tür ist zu – die Adresse lebt weiter.",
+      "district_micro_story_002_balance_effects_planned": false,
+      "district_event_chain_next_contract": "0.8.8-STORY-DISTRICT-MICRO-STORY-002"
     },
     "properties": {"status": "remote_validated_and_safe_merged", "purchase_iteration": "0.8.6-A", "upgrade_iteration": "0.8.6-B", "purchasable_locations": 7, "upgrade_types": 10, "max_upgrade_level": 3, "client_price_authority": false, "combined_recovery": true, "resale_supported": false, "rent_supported": false, "yield_supported": false},
     "ranking": {"status": "crew_identity_micro_polish_remote_validated", "seasonal_hall_iteration": "0.8.7-A", "seasonal_hall_pull_request": 87, "seasonal_hall_merge": "841258a37915e05d7f87eed7841c8e4b8d79bf46", "weekly_monthly_cycles": true, "system_time_sole_authority": false, "fake_local_champion_titles": false, "local_confirmed_crew_badge": true, "crew_badge_match": "entry.character_id_equals_hall.local_character_id", "foreign_crew_badges_invented": false},
@@ -429,10 +435,10 @@
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
   "next_iteration": null,
-  "next_goal": "0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT vergleicht die drei verbleibenden District-Events und empfiehlt höchstens einen zweiten Nachhall; keine zweite Kettenengine und keine Implementation ohne positiven Audit.",
+  "next_goal": "0.8.8-STORY-DISTRICT-MICRO-STORY-002 implementiert temporary_space_afterimage auf Contract V1: späterer bestätigter Zyklus, gleicher Bezirk, Exactly-once und keine Balancewirkung.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-27T01:25:00Z"
+  "updated_at": "2026-08-27T01:40:00Z"
 }
