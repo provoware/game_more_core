@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de`
+- **Status-Sync-Anker:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e`
 
 ## Statuswerte
 
@@ -40,6 +40,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e` · Job-/Einkommensführung, kanonischer Equipment-Handel und responsive Economy-Visuals auf bestehender Runtime-/Marktautorität verbessert; neue Laienhilfe, keine zweite Economy-Engine
+- **0.8.8-UX-TOOL-HELP-CLARITY:** PR #217 · Merge `12b001a731c0da5a1d98913676da9e48b0afd064` · zentrale Control-Deck-Hilfen laienverständlich und handlungsorientiert überarbeitet; Kurzhilfe, ausführliche A4-Hilfe und gezielte Presentation-Regression; keine Gameplay- oder Runtimeänderung
 - **0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de` · beide produktiven Street-Micro-Stories durch echte Runtime → Journal/Persistenz → Reload → `/api/state` → Chromium-DOM bewiesen; Retry Exactly-once
 - **0.8.8-STORY-STREET-MICRO-STORY-002:** PR #214 · Merge `3e863e5d54d058f1542a2d9754e5cf98056e814f` · `street.lost_glove` erzeugt später `lost_glove_fence_echo` über denselben Street-Follow-up-Contract; keine Inventar- oder Balancewirkung
 - **0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E:** PR #206 · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973` · beide produktiven District-Micro-Stories durch echte Runtime → Journal/Persistenz → read-only Projection → `/api/state` → Chromium-DOM bewiesen; Retry und Cross-District fail-closed
