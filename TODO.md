@@ -3,9 +3,9 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E` · PR #215 · Head `ab15032ecf1b67aa2724ce6c461c613674a63c26` · Merge `1acceec43514caf7e2e945535896bce9472a19de`
-- **Start-/Release-Qualität:** beide produktiven Street-Micro-Stories sind durch Runtime → Journal/Persistenz → Reload → `/api/state` → echtes Chromium-DOM belegt; Retry bleibt Exactly-once
+- **Status-Sync-Anker:** PR #217 · Merge `12b001a731c0da5a1d98913676da9e48b0afd064`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-TOOL-HELP-CLARITY` · PR #217 · Head `98754c70ae82a041fee63c5a3a2cb1f8e0172a46` · Merge `12b001a731c0da5a1d98913676da9e48b0afd064`
+- **Start-/Release-Qualität:** Control-Deck-Kernhilfen sind laienverständlich und handlungsorientiert; die beiden produktiven Street-Micro-Stories bleiben zusätzlich Runtime → Journal/Persistenz → Reload → `/api/state` → Chromium-DOM belegt
 - **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
@@ -145,6 +145,12 @@
 - [x] beide Folgen read-only in der bestehenden Timeline mit belegtem `Folge von: …` sichtbar
 - [x] beide Stories Runtime→Persistenz→Reload→API→Chromium-E2E und Exactly-once regressionsgesichert
 - [x] PRs #208–#215 sicher gemergt; zuletzt PR #215 · Head `ab15032ecf1b67aa2724ce6c461c613674a63c26` · Merge `1acceec43514caf7e2e945535896bce9472a19de`
+
+## 0.8.8-UX-TOOL-HELP-CLARITY
+- [x] sichtbare Control-Deck-Hilfen beantworten direkt: Was sehe ich? Was kann ich tun? Was verändert das Spiel?
+- [x] Kurzhilfe erklärt `Bestätigt`, `Nur Anzeige` und `Sofort gespeichert`; technische Entwicklerbegriffe wurden aus den Kernhilfen entfernt
+- [x] ausführliche Laienhilfe und gezielte Presentation-Regression ergänzt
+- [x] PR #217 · Head `98754c70ae82a041fee63c5a3a2cb1f8e0172a46` · Merge `12b001a731c0da5a1d98913676da9e48b0afd064`
 
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
