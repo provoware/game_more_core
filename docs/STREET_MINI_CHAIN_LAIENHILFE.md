@@ -2,24 +2,35 @@
 
 ## Worum geht es?
 
-Auf der Straße können einzelne Begegnungen passieren: jemand grüßt dich, du bekommst einen Tipp, findest eine Abkürzung oder gerätst in Regen. Einige seltene Begegnungen dürfen später noch einmal **erzählerisch nachhallen**.
+Auf der Straße können einzelne Begegnungen passieren: jemand grüßt dich, du bekommst einen Tipp, findest eine Abkürzung oder verlierst etwas. Einige seltene Begegnungen dürfen später noch einmal **erzählerisch nachhallen**.
 
-Die erste spielbare Mini-Kette ist:
+Aktuell gibt es zwei spielbare Mini-Ketten:
 
-**Kabeltipp am Bauzaun → später hörst du denselben Tipp aus einem anderen Mund → „Der Tipp macht die Runde.“**
+1. **Kabeltipp am Bauzaun → „Der Tipp macht die Runde.“**
+2. **Ein Handschuh weniger → „Der Handschuh wartet noch.“**
 
-So wirkt Berlin etwas erinnerungsfähiger, ohne dir heimlich Geld, Ruf, Energie oder andere Vorteile zu schenken.
+Beide Geschichten machen Berlin erinnerungsfähiger, ohne dir heimlich Geld, Ruf, Energie, Inventar oder andere Vorteile zu schenken.
 
-## Wie funktioniert die erste Geschichte?
+## Wie funktionieren die Geschichten?
 
-1. Ein bestätigter Street-Walk ergibt **Kabeltipp am Bauzaun**.
-2. Der Tipp wird als normale, bestätigte Street-Begegnung gespeichert.
+1. Ein bestätigter Street-Walk erzeugt eine passende seltene Begegnung.
+2. Diese Begegnung wird als normales, bestätigtes Street-Ereignis gespeichert.
 3. Erst bei einem **späteren bestätigten Street-Walk desselben Charakters** darf der Nachhall entstehen.
-4. Die Folge heißt **Der Tipp macht die Runde**.
-5. Ursache und Folge werden fest miteinander verknüpft. Ein Neuladen erzeugt keine zweite Kopie.
-6. Die vorhandene Timeline kann die bestätigte Folge read-only anzeigen und – nur bei eindeutig passendem Parent – **„Folge von: Kabeltipp am Bauzaun“** ableiten.
+4. Ursache und Folge werden fest miteinander verknüpft.
+5. Ein Retry oder Neuladen erzeugt keine zweite Kopie.
+6. Die vorhandene Timeline zeigt die bestätigte Folge read-only und – nur bei eindeutig passendem Parent – **„Folge von: …“**.
 
-Der spätere Street-Walk bleibt dabei eine ganz normale Straßenrunde. Die Folgegeschichte verändert dessen Auswahl, Balance oder Effekte nicht.
+Der spätere Street-Walk bleibt dabei eine normale Straßenrunde. Die Folgegeschichte verändert weder Auswahl noch Balance noch Effekte.
+
+## Beispiel 1 – der Kabeltipp
+
+Du erhältst zuerst **Kabeltipp am Bauzaun**. Bei einem späteren Street-Walk kann daraus **Der Tipp macht die Runde** entstehen. Die Timeline zeigt dann zusätzlich **„Folge von: Kabeltipp am Bauzaun“**.
+
+## Beispiel 2 – der verlorene Handschuh
+
+Du bemerkst zuerst **Ein Handschuh weniger**. Bei einem späteren Street-Walk kann daraus **Der Handschuh wartet noch** entstehen: Der Handschuh hängt sichtbar über einem Bauzaun, weil ihn offenbar jemand aufgehoben hat.
+
+Wichtig: Das Spiel verbucht daraus **keinen Gegenstand und keinen Bonus**. Der Moment ist reine Erinnerung und Atmosphäre. Die Timeline zeigt bei belegter Ursache **„Folge von: Ein Handschuh weniger“**.
 
 ## Was schützt vor Doppelungen und falschen Zuordnungen?
 
@@ -43,18 +54,14 @@ Außerdem gilt:
 - die vorhandene Persistenz- und Journal-Architektur,
 - die vorhandene Timeline als einzige Presentation-Projection für diese Ereignisse.
 
-Die neue Folge besitzt bewusst **keine Gameplay-Effekte**. Sie ist Erinnerung und Atmosphäre, keine versteckte Belohnung.
-
-## Was ist jetzt sichtbar?
-
-Ein bestätigtes `street.followup_resolved` kann in derselben bestehenden Story-Timeline wie normale Street-Ereignisse erscheinen. Ist der bestätigte Parent vorhanden, älter und demselben Charakter zugeordnet, liefert die Projection zusätzlich die belegte Ursache. Fehlt einer dieser Nachweise, bleibt die Folge höchstens als bestätigtes Einzelereignis sichtbar – ohne erfundene Kausalität.
+Die Folgen besitzen bewusst **keine Gameplay-Effekte**. Sie sind Erinnerung und Atmosphäre, keine versteckte Belohnung.
 
 ## Wie wird das technisch wirklich geprüft?
 
-Die Qualitätsprüfung baut die Geschichte nicht künstlich im Browser nach. Sie erzeugt zuerst den Kabeltipp und den späteren Nachhall über den normalen A4-Spielpfad, speichert beide Ereignisse im echten Test-Spielstand und wiederholt denselben zweiten Street-Walk als Retry. Dabei muss genau **eine** Folge erhalten bleiben.
+Die Qualitätsprüfung baut die Geschichten nicht künstlich im Browser nach. Sie erzeugt die Parent-Ereignisse und ihre späteren Nachhalle über den normalen A4-Spielpfad, speichert alles im echten Test-Spielstand und wiederholt die auslösenden Street-Walks als Retry. Dabei muss jede Folge genau **einmal** erhalten bleiben.
 
-Danach wird dieser bereits gespeicherte Spielstand geschlossen und über den normalen lokalen A4-Server neu geöffnet. Erst dann wird geprüft, ob sowohl `/api/state` als auch ein echter Chromium-Browser **„Der Tipp macht die Runde“** und **„Folge von: Kabeltipp am Bauzaun“** anzeigen. Damit wird dieselbe Kette von Runtime über Speichern und Neuladen bis zur sichtbaren Oberfläche geprüft.
+Danach wird derselbe gespeicherte Spielstand geschlossen und über den normalen lokalen A4-Server neu geöffnet. Erst dann wird geprüft, ob `/api/state` und ein echter Chromium-Browser beide Geschichten samt **„Folge von: …“** korrekt anzeigen. Damit ist die Kette Runtime → Journal/Persistenz → Reload → API → echtes Browser-DOM abgedeckt.
 
 ## Sinnvolle nächste Erweiterung
 
-Als nächster Story-Ausbau eignet sich eine **zweite, anders gefärbte Street-Mini-Kette**. Vor der Umsetzung sollten die übrigen Street-Begegnungen kurz nach erzählerischer Stärke, Seltenheit und technischer Eignung bewertet werden. Der Gewinner sollte wieder balance-neutral bleiben und denselben Vertrag verwenden. So wächst die Stadtgeschichte in kleinen, prüfbaren Schritten statt durch ein neues Storysystem.
+Vor einer dritten Street-Micro-Story sollte zuerst geprüft werden, ob die vorhandenen Nachhalle dramaturgisch zu ähnlich wirken. Sinnvoll wäre als nächster Content-Schritt ein anderer Ton – zum Beispiel sozial, räumlich oder leicht unheimlich – aber weiterhin selten, balance-neutral und auf demselben Vertrag. So wächst die Stadtgeschichte ohne neues Storysystem.
