@@ -29,11 +29,10 @@ class A4ToolHelpClarityTests(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertIn(text, INDEX)
 
-    def test_visible_help_avoids_internal_architecture_terms(self):
+    def test_replaced_help_sentences_do_not_fall_back_to_internal_jargon(self):
         for technical_text in (
-            "Application-Services",
-            "katalogisierten Slots",
-            "District-, Property- und Ausbau-Projections",
+            "Der erste Alpha-Start legt einen lokalen GENESIS-Character",
+            "Übernommene Berlin-Ops-Orte können über ihre katalogisierten Slots",
             "Browser sendet nur Location- und Ausbau-ID",
             "Jeder bestätigte Command wird sofort journalisiert",
         ):
