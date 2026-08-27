@@ -9,19 +9,17 @@ TEXTS = json.loads((ROOT / "content/de/ui/district_events.json").read_text(encod
 
 
 class DistrictMicroStory002AuditTests(unittest.TestCase):
-    def test_audit_candidates_are_exactly_the_three_unused_catalog_events(self):
+    def test_audit_selection_is_now_the_second_catalogued_micro_story(self):
         events = {entry["event_id"]: entry for entry in MANIFEST["events"]}
-        self.assertEqual(
-            set(events) - {MANIFEST["micro_story_001"]["parent_catalog_event_id"]},
-            {
-                "district.word_of_mouth_wave",
-                "district.patrol_sweep",
-                "district.temporary_space_opens",
-            },
-        )
-        self.assertNotIn("micro_story_002", MANIFEST)
+        story = MANIFEST["micro_story_002"]
 
-    def test_candidate_story_assumptions_match_the_current_manifest(self):
+        self.assertIn(story["parent_catalog_event_id"], events)
+        self.assertEqual(story["parent_catalog_event_id"], "district.temporary_space_opens")
+        self.assertEqual(story["followup_id"], "temporary_space_afterimage")
+        self.assertEqual(story["title_key"], "district_followup.temporary_space_afterimage.title")
+        self.assertEqual(story["body_key"], "district_followup.temporary_space_afterimage.body")
+
+    def test_audit_candidate_assumptions_still_match_the_current_manifest(self):
         events = {entry["event_id"]: entry for entry in MANIFEST["events"]}
 
         word = events["district.word_of_mouth_wave"]
@@ -36,9 +34,14 @@ class DistrictMicroStory002AuditTests(unittest.TestCase):
         self.assertEqual(space["requirements"], {"maximum_police_pressure": 60})
         self.assertEqual(space["effects"], {"heat": 1, "prestige": 2, "police_pressure": 0, "scene_activity": 5})
 
-    def test_temporary_space_wording_and_contract_support_a_later_read_only_afterimage(self):
+    def test_temporary_space_story_text_and_contract_remain_read_only_and_balance_neutral(self):
         self.assertEqual(TEXTS["district_event.temporary_space_opens.title"], "Eine Tür steht plötzlich offen")
         self.assertIn("Niemand weiß, wie lange das Fenster bleibt", TEXTS["district_event.temporary_space_opens.body"])
+        self.assertEqual(
+            TEXTS["district_followup.temporary_space_afterimage.title"],
+            "Die Tür ist zu – die Adresse lebt weiter.",
+        )
+        self.assertIn("Kreidestriche", TEXTS["district_followup.temporary_space_afterimage.body"])
 
         contract = MANIFEST["follow_up_contract"]
         self.assertEqual(contract["journal_event_type"], "world.district_followup_resolved")
@@ -47,13 +50,19 @@ class DistrictMicroStory002AuditTests(unittest.TestCase):
         self.assertTrue(contract["runtime_authority_only"])
         self.assertFalse(contract["client_can_write"])
         self.assertEqual(contract["replay_policy"], "same_event_id_same_payload_is_idempotent")
+        self.assertNotIn("effects", MANIFEST["micro_story_002"])
+        self.assertNotIn("deltas", MANIFEST["micro_story_002"])
 
-    def test_micro_story_001_remains_the_only_implemented_followup(self):
-        story = MANIFEST["micro_story_001"]
-        self.assertEqual(story["parent_catalog_event_id"], "district.power_flicker")
-        self.assertEqual(story["followup_id"], "power_flicker_afterglow")
-        followup_keys = [key for key in MANIFEST if key.startswith("micro_story_")]
-        self.assertEqual(followup_keys, ["micro_story_001"])
+    def test_two_micro_stories_use_distinct_parents_and_followup_ids(self):
+        stories = [MANIFEST["micro_story_001"], MANIFEST["micro_story_002"]]
+        self.assertEqual(
+            {story["parent_catalog_event_id"] for story in stories},
+            {"district.power_flicker", "district.temporary_space_opens"},
+        )
+        self.assertEqual(
+            {story["followup_id"] for story in stories},
+            {"power_flicker_afterglow", "temporary_space_afterimage"},
+        )
 
 
 if __name__ == "__main__":

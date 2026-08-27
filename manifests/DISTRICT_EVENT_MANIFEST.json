@@ -47,6 +47,12 @@
     "title_key": "district_followup.power_flicker_afterglow.title",
     "body_key": "district_followup.power_flicker_afterglow.body"
   },
+  "micro_story_002": {
+    "parent_catalog_event_id": "district.temporary_space_opens",
+    "followup_id": "temporary_space_afterimage",
+    "title_key": "district_followup.temporary_space_afterimage.title",
+    "body_key": "district_followup.temporary_space_afterimage.body"
+  },
   "events": [
     {
       "event_id": "district.power_flicker",
