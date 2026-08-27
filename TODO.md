@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #200 · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION` · PR #200 · Head `10b00a872f9a986404800323401883590d0ba6dd` · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-/Story-Linie bis PR #200; die erste District-Folgegeschichte ist persistent und ihre bestätigte Parent→Child-Kausalität wird read-only in der bestehenden Timeline erklärt
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT`
+- **Status-Sync-Anker:** PR #202 · Merge `4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT` · PR #202 · Head `287e1c980ebb70b3f9c804d4e5cd6e50cc6d7177` · Merge `4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-/Story-Linie bis PR #202; Micro-Story 002 wurde vor Implementierung fachlich auditiert und `district.temporary_space_opens` als stärkster Parent für `temporary_space_afterimage` ausgewählt
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-DISTRICT-MICRO-STORY-002`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -146,6 +146,13 @@
 - [x] Browser bleibt strikt read-only; keine zweite Story-, Timeline-, Save- oder Projection-Architektur
 - [x] PR #200 · Head `10b00a872f9a986404800323401883590d0ba6dd` · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e`
 
+## 0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT
+- [x] `word_of_mouth_wave`, `patrol_sweep` und `temporary_space_opens` dramaturgisch und technisch auf demselben Contract V1 verglichen
+- [x] `temporary_space_opens` mit 30/30 als stärkster Kandidat ausgewählt; `patrol_sweep` bleibt Reserve für einen späteren dunkleren Storybogen
+- [x] Folgeidee `temporary_space_afterimage` / „Die Tür ist zu – die Adresse lebt weiter.“ ohne Runtime- oder Manifeständerung festgelegt
+- [x] Regression beweist, dass bis zum Audit weiterhin nur Micro-Story 001 implementiert ist
+- [x] PR #202 · Head `287e1c980ebb70b3f9c804d4e5cd6e50cc6d7177` · Merge `4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
 - [x] `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` verwenden denselben maschinenprüfbaren Safe-Merge-Anker
@@ -156,36 +163,35 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-STORY-DISTRICT-MICRO-STORY-002
 
 ## Fortschritt
 
-**0 %** – die erste District-Kette ist technisch und visuell vollständig geschlossen. Vor einer zweiten Folgegeschichte werden die drei verbleibenden District-Events gegeneinander auf dramaturgischen Mehrwert, technische Anschlussfähigkeit und Wiederholungsrisiko geprüft.
+**0 %** – der Audit ist sicher gemergt. Der zweite District-Nachhall wird jetzt ausschließlich auf dem bestehenden Contract V1 umgesetzt.
 
 ## Ziel
 
-Den stärksten Kandidaten für Micro-Story 002 auswählen, ohne bereits eine zweite Story zu implementieren oder die bestehende Kettenarchitektur zu erweitern.
+`district.temporary_space_opens` soll in einem späteren bestätigten District-Zyklus desselben Bezirks genau einen `temporary_space_afterimage`-Child erzeugen: **„Die Tür ist zu – die Adresse lebt weiter.“**
 
 ## Abnahme
 
-- [ ] `district.word_of_mouth_wave`, `district.patrol_sweep` und `district.temporary_space_opens` anhand desselben bestätigten Parent-/Child-Vertrags vergleichen
-- [ ] Storywert nach Konsequenz, Kontrast zu Micro-Story 001, Berlin-/Subkultur-Glaubwürdigkeit und Wiedererkennungswert bewerten
-- [ ] technische Eignung anhand vorhandener Requirements/Effekte prüfen; keine neue Trigger- oder Persistenzlogik erfinden
-- [ ] genau einen Kandidaten mit klarer Begründung empfehlen oder bei zu schwachem Nutzen bewusst keinen zweiten Nachhall bauen
-- [ ] Folgeidee und Nicht-Ziele in der Laien-/Storydokumentation festhalten
-- [ ] direkte Regression nur ergänzen, wenn ein konkreter Vertragsbefund dauerhaft abgesichert werden muss
-- [ ] relevante Runtime-/Presentation-/Repository-Gates auf finalem Head grün
+- [ ] `micro_story_002` im bestehenden District-Manifest katalogisieren; kein neuer Eventtyp
+- [ ] Parent bleibt ausschließlich ein bestätigtes `district.temporary_space_opens` / `world.district_effect_applied`
+- [ ] Child entsteht frühestens in einem späteren bestätigten District-Zyklus desselben Bezirks
+- [ ] Child verwendet `world.district_followup_resolved`, `causation_id = parent_event_id` und `correlation_id = district-chain:{parent_event_id}`
+- [ ] deterministische Child-ID; identischer Retry bleibt Exactly-once
+- [ ] keine District-Deltas, kein Geld, kein Property-Besitz und keine neue Ressource
+- [ ] deutsche Texte im vorhandenen UI-Textkatalog; Runtime bleibt textfrei
+- [ ] bestehende read-only Timeline-Projection zeigt beim bestätigten Child automatisch `Folge von: Eine Tür steht plötzlich offen`
+- [ ] direkte Runtime-/Projection-Regressionen für Story 001 und Story 002 grün
+- [ ] relevante Runtime-/Presentation-/Repository-/Release-Gates auf finalem Head grün
 - [ ] 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
-### Kreative Leitthese
-
-Der stärkste vorläufige Kandidat ist `district.temporary_space_opens`: Micro-Story 001 erzählt **Störung → Wiederkehr → Erinnerung**. Ein verschwundener temporärer Raum kann dagegen **Chance → kurze Ekstase → Verlust → Mythos** erzählen. Dadurch erweitert die zweite Kette die emotionale Grammatik des Spiels statt nur das erste Muster mit anderem Text zu kopieren.
-
 ### Danach
 
-- [ ] **DISTRICT-MICRO-STORY-002:** nur bei positivem Audit genau eine zweite Folgegeschichte katalogisieren und auf dem bestehenden `world.district_followup_resolved`-Vertrag umsetzen
-- [ ] **DISTRICT-CHAIN-RUNTIME-BROWSER-E2E:** die reale Kette `power_flicker → power_flicker_afterglow` in einem isolierten Spielstand erzeugen und den sichtbaren `Folge von:`-Hinweis browserseitig absichern
+- [ ] **DISTRICT-CHAIN-RUNTIME-BROWSER-E2E:** beide echten Parent→Child-Ketten in isoliertem Spielstand über Persistenz, Projection und Browser durchtesten
+- [ ] **DISTRICT-STORY-TONE-BALANCE:** erst ab mindestens drei Micro-Stories prüfen, ob positive, bedrohliche, melancholische und soziale Nachhalltypen ausreichend unterschiedlich verteilt sind
 - [ ] **STATUS-SYNC-DRIFT-AGE:** bei späterer Drift zusätzlich rein diagnostisch die Anzahl fachlicher Safe Merges Rückstand anzeigen; kein automatischer Write
 
 ---
@@ -196,4 +202,4 @@ Der stärkste vorläufige Kandidat ist `district.temporary_space_opens`: Micro-S
 - District-Ketten verwenden ausschließlich den katalogisierten Child-Eventvertrag; Timeline, Biography und Browser bleiben read-only.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`docs/DISTRICT_CHAIN_MICRO_STORY_001.md`](docs/DISTRICT_CHAIN_MICRO_STORY_001.md) · [`docs/EVENT_TIMELINE_LAIENHILFE.md`](docs/EVENT_TIMELINE_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`docs/DISTRICT_MICRO_STORY_002_AUDIT.md`](docs/DISTRICT_MICRO_STORY_002_AUDIT.md) · [`docs/EVENT_TIMELINE_LAIENHILFE.md`](docs/EVENT_TIMELINE_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
