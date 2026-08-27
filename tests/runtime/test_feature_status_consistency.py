@@ -57,7 +57,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-WORLD-003"))
 
-    def test_current_status_describes_micro_story_001_and_next_readonly_projection(self):
+    def test_current_status_describes_readonly_projection_and_next_micro_story_002_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -71,12 +71,12 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "district_chain_readonly_projection")
+        self.assertEqual(status["current_focus"], "district_micro_story_002_audit")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 198)
-        self.assertEqual(validation["validated_head"], "231ecc47ee43e1bf81907cc6e66ab58951888daf")
-        self.assertEqual(validation["merged_commit"], "030d40e4b22c38a11fd98a2d028b398779955507")
+        self.assertEqual(validation["pull_request"], 200)
+        self.assertEqual(validation["validated_head"], "10b00a872f9a986404800323401883590d0ba6dd")
+        self.assertEqual(validation["merged_commit"], "5f403defcf3773c3c44fefa3b282b0015ad9d68e")
 
         self.assertTrue(living_world["street_boundary_clamping_audit_validated"])
         self.assertTrue(living_world["street_replay_boundary_matrix_validated"])
@@ -103,9 +103,17 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(living_world["district_event_chain_micro_story_delayed_to_later_cycle"])
         self.assertFalse(living_world["district_event_chain_micro_story_cross_district_allowed"])
         self.assertFalse(living_world["district_event_chain_micro_story_balance_effects"])
+        self.assertTrue(living_world["district_event_chain_readonly_projection_validated"])
+        self.assertEqual(
+            living_world["district_event_chain_readonly_projection_parent_source"],
+            "confirmed_journal_parent",
+        )
+        self.assertTrue(living_world["district_event_chain_readonly_projection_requires_same_district"])
+        self.assertTrue(living_world["district_event_chain_readonly_projection_requires_parent_before_child"])
+        self.assertFalse(living_world["district_event_chain_readonly_projection_browser_authority"])
         self.assertEqual(
             living_world["district_event_chain_next_contract"],
-            "0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION",
+            "0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT",
         )
 
         self.assertTrue(presentation["crew_identity_visual_consistency_validated"])
@@ -123,6 +131,11 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(presentation["map_viewport_mini_overview_audit_validated"])
         self.assertEqual(presentation["map_viewport_orientation_fallback"], "accessible_1_to_1_reset")
         self.assertFalse(presentation["map_viewport_second_overview_created"])
+        self.assertIn("world.district_followup_resolved", presentation["event_timeline_sources"])
+        self.assertTrue(presentation["district_chain_cause_projection_validated"])
+        self.assertEqual(presentation["district_chain_cause_projection_label"], "Folge von:")
+        self.assertFalse(presentation["district_chain_cause_projection_invents_missing_parent"])
+        self.assertFalse(presentation["district_chain_cause_projection_browser_write_authority"])
         self.assertEqual(
             presentation["crew_identity_browser_e2e_map_fixture"],
             "runtime_property_purchase_projection",

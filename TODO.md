@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #198 · Merge `030d40e4b22c38a11fd98a2d028b398779955507`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001` · PR #198 · Head `231ecc47ee43e1bf81907cc6e66ab58951888daf` · Merge `030d40e4b22c38a11fd98a2d028b398779955507`
-- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-/Story-Linie bis PR #198; genau eine verzögerte `power_flicker_afterglow`-Folge nutzt den bestehenden District-/Journalvertrag, bleibt Exactly-once und überschreitet keine District-Grenze
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION`
+- **Status-Sync-Anker:** PR #200 · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION` · PR #200 · Head `10b00a872f9a986404800323401883590d0ba6dd` · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e`
+- **Start-/Release-Qualität:** `main` enthält die sicher gemergte Feature-/QA-/UX-/Story-Linie bis PR #200; die erste District-Folgegeschichte ist persistent und ihre bestätigte Parent→Child-Kausalität wird read-only in der bestehenden Timeline erklärt
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -139,6 +139,13 @@
 - [x] keine neuen Balanceeffekte, keine zweite Eventengine, Texte außerhalb der Runtime
 - [x] PR #198 · Head `231ecc47ee43e1bf81907cc6e66ab58951888daf` · Merge `030d40e4b22c38a11fd98a2d028b398779955507`
 
+## 0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION
+- [x] bestätigte `world.district_followup_resolved`-Records werden in der bestehenden Event-Timeline projiziert
+- [x] `Folge von: …` erscheint nur bei bestätigtem Parent, identischem Bezirk und gültiger Journal-Reihenfolge
+- [x] fehlende, bezirksfremde oder inkonsistente Parent-Referenzen erzeugen keine erfundene Kausalität
+- [x] Browser bleibt strikt read-only; keine zweite Story-, Timeline-, Save- oder Projection-Architektur
+- [x] PR #200 · Head `10b00a872f9a986404800323401883590d0ba6dd` · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] Statusdrift seit PR #156 systematisch auf den bestätigten Stand zurückgeführt
 - [x] `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` verwenden denselben maschinenprüfbaren Safe-Merge-Anker
@@ -149,33 +156,37 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION
+# Aktiv / nächste Iteration – 0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT
 
 ## Fortschritt
 
-**0 %** – Micro-Story 001 ist sicher gemergt. Die nächste kleine Story-/UX-Iteration soll die bereits persistierte Ursache→Folge-Kette ausschließlich read-only sichtbar machen; keine neue Storyautorität im Browser.
+**0 %** – die erste District-Kette ist technisch und visuell vollständig geschlossen. Vor einer zweiten Folgegeschichte werden die drei verbleibenden District-Events gegeneinander auf dramaturgischen Mehrwert, technische Anschlussfähigkeit und Wiederholungsrisiko geprüft.
 
 ## Ziel
 
-Parent `world.district_effect_applied` und Child `world.district_followup_resolved` in der bestehenden Timeline kausal zusammenhängend darstellen, ausschließlich aus bestätigter Journal-Evidenz.
+Den stärksten Kandidaten für Micro-Story 002 auswählen, ohne bereits eine zweite Story zu implementieren oder die bestehende Kettenarchitektur zu erweitern.
 
 ## Abnahme
 
-- [ ] vorhandene Timeline-Projection als einzige Presentation-Quelle wiederverwenden
-- [ ] Child anhand `causation_id` seinem bestätigten Parent zuordnen; kein Browser-State als Autorität
-- [ ] klaren Hinweis wie `Folge von: …` aus bestehenden Textschlüsseln ableiten
-- [ ] unverknüpfte oder unbekannte Parent-Referenzen fail-safe ohne erfundene Ursache darstellen
-- [ ] bestehende Sortierung, Filter und Entry-Limits unverändert lassen
-- [ ] direkte Presentation-/Projection-Regressionen für verknüpfte und fehlende Parents grün
-- [ ] relevante Runtime-/Presentation-/Repository-/Release-Gates auf finalem Head grün
+- [ ] `district.word_of_mouth_wave`, `district.patrol_sweep` und `district.temporary_space_opens` anhand desselben bestätigten Parent-/Child-Vertrags vergleichen
+- [ ] Storywert nach Konsequenz, Kontrast zu Micro-Story 001, Berlin-/Subkultur-Glaubwürdigkeit und Wiedererkennungswert bewerten
+- [ ] technische Eignung anhand vorhandener Requirements/Effekte prüfen; keine neue Trigger- oder Persistenzlogik erfinden
+- [ ] genau einen Kandidaten mit klarer Begründung empfehlen oder bei zu schwachem Nutzen bewusst keinen zweiten Nachhall bauen
+- [ ] Folgeidee und Nicht-Ziele in der Laien-/Storydokumentation festhalten
+- [ ] direkte Regression nur ergänzen, wenn ein konkreter Vertragsbefund dauerhaft abgesichert werden muss
+- [ ] relevante Runtime-/Presentation-/Repository-Gates auf finalem Head grün
 - [ ] 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
+### Kreative Leitthese
+
+Der stärkste vorläufige Kandidat ist `district.temporary_space_opens`: Micro-Story 001 erzählt **Störung → Wiederkehr → Erinnerung**. Ein verschwundener temporärer Raum kann dagegen **Chance → kurze Ekstase → Verlust → Mythos** erzählen. Dadurch erweitert die zweite Kette die emotionale Grammatik des Spiels statt nur das erste Muster mit anderem Text zu kopieren.
+
 ### Danach
 
-- [ ] **DISTRICT-MICRO-STORY-002-AUDIT:** erst nach sichtbarer Kausalitätsdarstellung prüfen, welches weitere District-Ereignis einen sinnvollen Nachhall trägt
+- [ ] **DISTRICT-MICRO-STORY-002:** nur bei positivem Audit genau eine zweite Folgegeschichte katalogisieren und auf dem bestehenden `world.district_followup_resolved`-Vertrag umsetzen
+- [ ] **DISTRICT-CHAIN-RUNTIME-BROWSER-E2E:** die reale Kette `power_flicker → power_flicker_afterglow` in einem isolierten Spielstand erzeugen und den sichtbaren `Folge von:`-Hinweis browserseitig absichern
 - [ ] **STATUS-SYNC-DRIFT-AGE:** bei späterer Drift zusätzlich rein diagnostisch die Anzahl fachlicher Safe Merges Rückstand anzeigen; kein automatischer Write
-- [ ] **0.8.8-C6 / POOL-COMPANION-003:** Round-Authority Integration Harness erst bei echtem kanonischem Rundenproduzenten
 
 ---
 
@@ -185,4 +196,4 @@ Parent `world.district_effect_applied` und Child `world.district_followup_resolv
 - District-Ketten verwenden ausschließlich den katalogisierten Child-Eventvertrag; Timeline, Biography und Browser bleiben read-only.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`docs/DISTRICT_CHAIN_MICRO_STORY_001.md`](docs/DISTRICT_CHAIN_MICRO_STORY_001.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`docs/DISTRICT_CHAIN_MICRO_STORY_001.md`](docs/DISTRICT_CHAIN_MICRO_STORY_001.md) · [`docs/EVENT_TIMELINE_LAIENHILFE.md`](docs/EVENT_TIMELINE_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
