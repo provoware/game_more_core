@@ -2,18 +2,19 @@
 
 ## Kurzfassung
 
-Der Audit ist **positiv mit klarer Architekturgrenze**:
+Der Audit ist **positiv für einen kleinen Contract V1 – aber nicht für direkten Storycontent**:
 
-- `street.encounter_resolved` eignet sich als bestätigte Parent-Evidenz.
+- `street.encounter_resolved` besitzt eine stabile, replaybare Parent-ID und einen bestätigten `character`-Entity-Kontext.
 - Der bestehende `PersistenceKernel` kann Kausalität und Exactly-once ohne Änderung tragen.
 - Der District-Childtyp `world.district_followup_resolved` und der District-Resolver dürfen **nicht** wiederverwendet oder kopiert werden.
-- Vor einer ersten Street-Micro-Story fehlt genau ein kleiner Street-eigener Vertrag: ein katalogisierter Child-Eventtyp, empfohlen `street.followup_resolved`.
+- Vor einer ersten Street-Micro-Story fehlt ein Street-eigener Child-Vertrag, empfohlen `street.followup_resolved`.
+- Zusätzlich muss Contract V1 eine heute noch offene Identitätsgrenze schließen: `entity_id` ist beim Street-Walk validiert, das optionale Journalfeld `character_id` kann derzeit jedoch davon abweichen.
 
 Es wurde in diesem Audit **keine** Storyruntime implementiert.
 
 ---
 
-## 1. Warum `street.encounter_resolved` ein guter Parent ist
+## 1. Was die Street-Parent-Evidenz bereits sicher kann
 
 Jeder bestätigte Street-Walk schreibt zuerst genau einen stabilen Record:
 
@@ -29,9 +30,22 @@ Der Record enthält bereits:
 - tatsächlich angewendete Effekte
 - Street-Vertragsversion
 
-Zusätzlich kommt der Record aus einem bestätigten `character`-Kontext mit `entity_id` und `character_id`. Ein Retry desselben Walks liest genau diesen Record wieder ein und würfelt nicht neu.
+Der Service verlangt außerdem `entity_type = character` und `entity_id = character.character_id`. Ein Retry desselben Walks liest genau den persistierten Parent wieder ein und würfelt nicht neu.
 
-**Auditurteil:** Die Parent-Identität ist stabil, replaybar und für eine spätere Folge ausreichend eindeutig.
+**Sicherer heutiger Bindungspunkt:** `entity_type=character` + `entity_id`.
+
+### Neu gefundene Grenze: `character_id` ist noch keine eigene Autorität
+
+Die Review-Regression zeigt bewusst einen realen Vertragsrand: `JournalContext.character_id` wird beim Street-Walk nicht gegen `entity_id` geprüft. Ein technisch widersprüchlicher Kontext kann daher aktuell einen Record mit
+
+- `entity_id = player-local`
+- aber `character_id = different-character`
+
+schreiben.
+
+Das ist kein Fehler der bestehenden Street-Begegnung, weil ihre Runtime auf `entity_id` autorisiert. Für eine **neue Kettenfunktion** wäre es aber falsch, das optionale `character_id` ungeprüft als Parent-Bindung zu verwenden.
+
+**Auditurteil:** Parent-ID und Entity-Bindung sind stark genug für Contract V1. Eine Street-Micro-Story bleibt jedoch NO-GO, bis Contract V1 die Character-Identität fail-closed festlegt.
 
 ---
 
@@ -70,7 +84,7 @@ Street ist character-/walk-gebunden. District-Ketten sind district-/cadence-gebu
 
 ### Keine District-ID-Regel
 
-Die Street-Kette braucht keinen künstlichen Bezirksschlüssel. Der naheliegende Bindungspunkt ist der bestätigte lokale Character-Kontext des Parents.
+Die Street-Kette braucht keinen künstlichen Bezirksschlüssel. Der kanonische Parent ist der bestätigte Street-Record; dessen `entity_id` liefert die heutige Character-Autorität.
 
 ### Keine Browserautorität
 
@@ -78,27 +92,31 @@ Die vorhandene Timeline darf später nur einen bestätigten Child-Record darstel
 
 ---
 
-## 4. Die eine noch fehlende Vertragsbrücke
+## 4. Die noch fehlende Vertragsbrücke
 
 Im aktuellen `JOURNAL_MANIFEST.json` existiert **kein** `street.followup_resolved`. Auch die Timeline kennt keinen Street-Childtyp.
 
 Deshalb wäre eine Storyimplementation in diesem Audit verfrüht.
 
-### Empfehlung für Contract V1
+### Verbindliche Empfehlung für Contract V1
 
-Ein späterer `STREET-MINI-CHAIN-CONTRACT-V1` sollte genau festlegen:
+Der nächste Slice `0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-V1` soll genau festlegen und regressionssichern:
 
 1. neuer Eventtyp `street.followup_resolved`,
 2. Pflichtfelder `parent_event_id`, `character_id`, `followup_id`, `title_key`, `body_key`,
-3. `causation_id = parent_event_id`,
-4. `correlation_id = street-chain:{parent_event_id}`,
-5. Child und Parent müssen zum selben bestätigten Character gehören,
-6. Child entsteht erst bei einem **späteren bestätigten Street-Walk**,
-7. pro bestätigtem Walk höchstens ein Follow-up,
-8. Retry bleibt Exactly-once,
-9. keine Balancewirkung im ersten Story-Slice.
+3. Parent muss `street.encounter_resolved` sein,
+4. Parent muss `entity_type = character` besitzen,
+5. kanonische Character-ID des Parents ist `entity_id`,
+6. wenn Parent-`character_id` vorhanden ist, muss es exakt `entity_id` entsprechen; fehlt es oder widerspricht es dem für die Kette verlangten Vertrag, wird fail-closed nicht verknüpft,
+7. Child-`character_id` muss derselben kanonischen Parent-Identität entsprechen,
+8. `causation_id = parent_event_id`,
+9. `correlation_id = street-chain:{parent_event_id}`,
+10. Child entsteht erst bei einem **späteren bestätigten Street-Walk**,
+11. pro bestätigtem Walk höchstens ein Follow-up,
+12. Retry bleibt Exactly-once,
+13. keine Balancewirkung im ersten Story-Slice.
 
-Damit wird der technische Lerneffekt der District-Ketten genutzt, ohne ihre Fachlogik zu kopieren.
+Damit wird der technische Lerneffekt der District-Ketten genutzt, ohne ihre Fachlogik zu kopieren und ohne die neu gefundene Character-Grenze zu verschleiern.
 
 ---
 
@@ -130,16 +148,17 @@ Storyidee: Bei einem späteren Street-Walk hörst du denselben kleinen Techniktr
 Der Audit sichert maschinell ab:
 
 - echter Street-Walk erzeugt `street.encounter_resolved` als erstes stabiles Parent-Event,
-- Parent ist an den bestätigten Character gebunden,
+- Parent besitzt den bestätigten Character-Entity-Kontext,
 - Retry würfelt nicht neu und schreibt nichts zusätzlich,
+- eine direkte Regression reproduziert, dass das optionale `character_id` heute vom kanonischen `entity_id` abweichen kann – genau deshalb ist Contract V1 Pflicht,
 - Produktion besitzt aktuell bewusst keinen `street.followup_resolved`-Vertrag,
 - ein solcher nicht katalogisierter Eventtyp wird vom PersistenceKernel fail-closed abgewiesen,
 - der unveränderte PersistenceKernel kann in einem isolierten Audit-Probe `causation_id`, `correlation_id`, Exactly-once und Konfliktsemantik generisch tragen.
 
 ## Ergebnis
 
-**GO für einen kleinen Street-Chain Contract V1.**
+**BEDINGTES GO für `0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-V1`.**
 
-**NO-GO für eine direkte Micro-Story ohne vorherigen Child-Vertrag.**
+**NO-GO für eine direkte Street-Micro-Story.**
 
-Der nächste fachliche Slice sollte deshalb zuerst `0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-V1` sein und noch keine zweite Street-Storyengine bauen.
+Contract V1 muss zuerst den Child-Eventvertrag **und** die Character-Identitätsgrenze eindeutig fail-closed machen. Erst danach darf `STREET-MINI-CHAIN-001` als separater Story-Slice folgen.
