@@ -56,7 +56,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-STORY-002"))
 
-    def test_current_status_describes_street_story_002_e2e_and_active_tone_audit(self):
+    def test_current_status_preserves_street_story_002_e2e_and_active_tone_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -72,10 +72,17 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertEqual(status["current_focus"], "street_story_tone_diversity_audit")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 215)
-        self.assertEqual(validation["validated_head"], "ab15032ecf1b67aa2724ce6c461c613674a63c26")
-        self.assertEqual(validation["merged_commit"], "1acceec43514caf7e2e945535896bce9472a19de")
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E")
+        story_e2e = next(
+            item
+            for item in status["validated_feature_history"]
+            if item["iteration"] == "0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E"
+        )
+        self.assertEqual(story_e2e["pull_request"], 215)
+        self.assertEqual(story_e2e["merged_commit"], "1acceec43514caf7e2e945535896bce9472a19de")
+        latest = status["validated_feature_history"][-1]
+        self.assertEqual(validation["pull_request"], latest["pull_request"])
+        self.assertEqual(validation["merged_commit"], latest["merged_commit"])
+        self.assertEqual(status["last_validated_feature_iteration"], latest["iteration"])
 
         self.assertTrue(living_world["street_chain_contract_audit_validated"])
         self.assertEqual(living_world["street_chain_child_event_type"], "street.followup_resolved")
