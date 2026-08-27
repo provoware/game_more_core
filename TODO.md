@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #204 · Merge `a03cf981b352064415e4cbf1fc3a8f88f34beed6`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-DISTRICT-MICRO-STORY-002` · PR #204 · Head `edc10eb491f706b9c56ab4c0d7722e91cbdcc50a` · Merge `a03cf981b352064415e4cbf1fc3a8f88f34beed6`
-- **Start-/Release-Qualität:** `main` enthält zwei echte District-Micro-Stories auf demselben Contract V1; beide bleiben später, same-district, Exactly-once und ohne eigene Balancewirkung
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E`
+- **Status-Sync-Anker:** PR #206 · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E` · PR #206 · Head `14a1c2914c6b366bda1ca71198340f00f58cef3a` · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973`
+- **Start-/Release-Qualität:** beide District-Micro-Stories sind durch Runtime → Journal/Persistenz → read-only Projection → `/api/state` → echtes Chromium-DOM belegt; Retry und Cross-District bleiben fail-closed
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -131,50 +131,56 @@
 - [x] vorhandene read-only Projection zeigt Story 002 als `Folge von: Eine Tür steht plötzlich offen`
 - [x] PR #204 · Head `edc10eb491f706b9c56ab4c0d7722e91cbdcc50a` · Merge `a03cf981b352064415e4cbf1fc3a8f88f34beed6`
 
+## 0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E
+- [x] Story 001 und Story 002 über echte Runtime-/Persistence-Pfade in einem isolierten Save erzeugt
+- [x] Parent-ID, Child-ID, `causation_id`, `correlation_id`, `district_id`, Reihenfolge, Retry und Cross-District fail-closed geprüft
+- [x] derselbe persistierte Save über normalen A4-Server neu geöffnet
+- [x] `/api/state` und echtes Chromium-DOM zeigen `Folge von: Das Netz flackert` und `Folge von: Eine Tür steht plötzlich offen`
+- [x] keine Gameplay-, Balance-, Journal-, Projection-, Browser- oder CSS-Produktlogik geändert
+- [x] PR #206 · Head `14a1c2914c6b366bda1ca71198340f00f58cef3a` · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E
+# Aktiv / nächste Iteration – 0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT
 
 ## Fortschritt
 
-**0 %** – beide Storyketten sind produktiv vorhanden. Jetzt wird erstmals die vollständige reale Kette von Runtime-Erzeugung bis Browserdarstellung gemeinsam bewiesen.
+**0 %** – die Street-Runtime ist bereits deterministisch, replaybar und umfassend an Grenz-/Verteilungsfällen geprüft. Der Audit klärt jetzt ausschließlich, ob seltene Street-Folgeereignisse einen vorhandenen Kausalitäts-/Replayvertrag sicher wiederverwenden können oder einen eigenen kleinen Street-Vertrag brauchen.
 
 ## Ziel
 
-In einem isolierten Acceptance-Spielstand Story 001 und Story 002 real über Runtime → Journal/Persistenz → read-only Projection → Browser erzeugen und die sichtbare Parent→Child-Kausalität einschließlich Replay- und District-Grenzen beweisen.
+Den kleinsten kanonischen Anschluss für **seltene Street-Mini-Ketten** bestimmen, ohne District-Storyengine, Browserzustand oder zweite Persistenzarchitektur zu übernehmen.
 
 ## Abnahme
 
-- [ ] vorhandenen Desktop-Browser-E2E-Harness wiederverwenden; kein zweites Browserframework
-- [ ] Story 001 real erzeugen: `district.power_flicker` → später `power_flicker_afterglow`
-- [ ] Story 002 real erzeugen: `district.temporary_space_opens` → später `temporary_space_afterimage`
-- [ ] Journal-Evidenz für Parent-ID, Child-ID, `causation_id`, `correlation_id`, `district_id` und Reihenfolge prüfen
-- [ ] Browser zeigt Story 001 mit `Folge von: Das Netz flackert`
-- [ ] Browser zeigt Story 002 mit `Folge von: Eine Tür steht plötzlich offen`
-- [ ] identischer Retry erzeugt keine zusätzlichen Child-Records und keine zusätzliche sichtbare Storyzeile
-- [ ] Cross-District-Fall erzeugt keinen Child und keine erfundene Browser-Kausalität
-- [ ] Chromium im bestehenden Desktop-E2E-Pfad; Firefox nur, wenn der vorhandene Harness denselben Szenariovertrag ohne Parallelframework unterstützt
-- [ ] relevante Runtime-/Presentation-/Repository-/Release-Gates auf finalem Head grün
+- [ ] `StreetEncounterService`, bestehende Journal-Records, Replay-Semantik und Timeline-Projection gezielt prüfen
+- [ ] klären, ob ein bestätigtes Street-Encounter-Record als Parent-Evidenz eindeutig genug ist
+- [ ] prüfen, ob vorhandene `causation_id` / `correlation_id` und Persistence-Exactly-once wiederverwendbar sind
+- [ ] District-spezifische Felder/Resolver ausdrücklich **nicht** in Street kopieren
+- [ ] genau einen kanonischen Hook und dessen Grenzen dokumentieren; kein Storycontent auf Verdacht implementieren
+- [ ] passende Regression beweist den Auditbefund bzw. die fehlende Voraussetzung
+- [ ] mindestens eine spätere kreative Mini-Kettenidee dokumentieren, aber nicht implementieren
+- [ ] relevante Runtime-/Presentation-/Repository-/Status-Gates auf finalem Head grün
 - [ ] 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ### Danach
 
-- [ ] **DISTRICT-STORY-TONE-BALANCE:** erst ab mindestens drei Micro-Stories prüfen, ob die Nachhalltypen dramaturgisch ausreichend verschieden bleiben
-- [ ] **PATROL-SWEEP-FOLLOWUP-AUDIT:** dunkleren dritten Storybogen erst nach E2E-Beweis der ersten beiden Ketten prüfen
-- [ ] **STATUS-SYNC-DRIFT-AGE:** rein diagnostische Rückstandsanzeige als spätere Prozessverbesserung
+- [ ] **STREET-MINI-CHAIN-001** nur bei positivem Vertragsbefund als einzelne kleine Ursache→Folge-Geschichte umsetzen
+- [ ] **VENUE-BENEFITS-CONTRACT-AUDIT** als alternative nächste Gameplay-Vertiefung
+- [ ] **DISTRICT-STORY-TONE-BALANCE** erst ab mindestens drei District-Micro-Stories
 
 ---
 
 ## Architektur- und Sicherheitsgrenzen
 
-- E2E erzeugt Zustand ausschließlich über bestehende Runtime-/Persistence-Pfade; kein künstlicher Child-DOM-Marker.
-- Browser und Timeline bleiben read-only.
-- keine neuen Gameplaywerte oder Storyengine im QA-Slice.
+- keine District-spezifische Storylogik in Street duplizieren.
+- keine Browser-/Timeline-Autorität; Presentation bleibt read-only.
+- kein neues Netzwerk, kein neuer Persistenzkernel, keine Balanceänderung im Audit.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/DISTRICT_CHAIN_MICRO_STORY_001.md`](docs/DISTRICT_CHAIN_MICRO_STORY_001.md) · [`docs/DISTRICT_CHAIN_MICRO_STORY_002.md`](docs/DISTRICT_CHAIN_MICRO_STORY_002.md) · [`docs/EVENT_TIMELINE_LAIENHILFE.md`](docs/EVENT_TIMELINE_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/DISTRICT_CHAIN_CONTRACT_V1.md`](docs/DISTRICT_CHAIN_CONTRACT_V1.md) · [`AGENTS.md`](AGENTS.md)

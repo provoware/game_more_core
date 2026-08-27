@@ -50,13 +50,13 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-002", "POOL-QA-009", "POOL-STREET-005", "POOL-UX-007",
             "POOL-QA-010", "POOL-QA-006", "POOL-UX-008", "POOL-QA-011", "POOL-QA-013",
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
-            "POOL-QA-017",
+            "POOL-QA-017", "POOL-WORLD-003",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-WORLD-003"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-STREET-003"))
 
-    def test_current_status_describes_micro_story_002_and_active_runtime_browser_e2e(self):
+    def test_current_status_describes_district_chain_e2e_and_active_street_chain_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -69,12 +69,12 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "district_chain_runtime_browser_e2e")
+        self.assertEqual(status["current_focus"], "street_mini_chain_contract_audit")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 204)
-        self.assertEqual(validation["validated_head"], "edc10eb491f706b9c56ab4c0d7722e91cbdcc50a")
-        self.assertEqual(validation["merged_commit"], "a03cf981b352064415e4cbf1fc3a8f88f34beed6")
+        self.assertEqual(validation["pull_request"], 206)
+        self.assertEqual(validation["validated_head"], "14a1c2914c6b366bda1ca71198340f00f58cef3a")
+        self.assertEqual(validation["merged_commit"], "75aea005dcbf95abf80159b0ed96b0149bec0973")
 
         self.assertTrue(living_world["district_event_chain_contract_audit_validated"])
         self.assertEqual(living_world["district_event_chain_child_event_type"], "world.district_followup_resolved")
@@ -93,9 +93,13 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertFalse(living_world["district_micro_story_002_balance_effects"])
         self.assertEqual(living_world["district_micro_story_catalog_count"], 2)
         self.assertEqual(living_world["district_micro_story_max_followups_per_cycle"], 1)
+        self.assertTrue(living_world["district_chain_runtime_browser_e2e_validated"])
+        self.assertEqual(living_world["district_chain_runtime_browser_e2e_browser"], "chromium")
+        self.assertTrue(living_world["district_chain_runtime_browser_e2e_retry_validated"])
+        self.assertTrue(living_world["district_chain_runtime_browser_e2e_cross_district_fail_closed"])
         self.assertEqual(
             living_world["district_event_chain_next_contract"],
-            "0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E",
+            "0.8.8-STORY-STREET-MINI-CHAIN-CONTRACT-AUDIT",
         )
 
         self.assertIn("world.district_followup_resolved", presentation["event_timeline_sources"])
@@ -138,7 +142,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-014": "`DONE`", "POOL-QA-015": "`DONE`",
             "POOL-UX-009": "`DONE`", "POOL-QA-016": "`DONE`",
             "POOL-MAP-003": "`DONE`", "POOL-QA-017": "`DONE`",
-            "POOL-WORLD-003": "`PULLED`",
+            "POOL-WORLD-003": "`DONE`", "POOL-STREET-003": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
