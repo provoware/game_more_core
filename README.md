@@ -8,12 +8,12 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Street Story 002 Runtime Browser E2E validiert" src="https://img.shields.io/badge/Feature_Stand-STREET--STORY--002--E2E_validiert-7dff00">
+  <img alt="Feature Stand Jobs Trade Guidance Visual validiert" src="https://img.shields.io/badge/Feature_Stand-JOBS--TRADE--GUIDANCE_validiert-7dff00">
   <img alt="Aktive Iteration Street Tone Diversity Audit" src="https://img.shields.io/badge/Aktiv-STREET--TONE--DIVERSITY--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
-> **Entdecken → arbeiten → ansparen → nachvollziehen → entscheiden → planen → handeln → eskalieren → abrechnen → Stadt verändern → erinnern → ausbauen → aufsteigen.**
+> **Entdecken → arbeiten → ansparen → handeln → investieren → entscheiden → planen → eskalieren → abrechnen → Stadt verändern → erinnern → ausbauen → aufsteigen.**
 
 </div>
 
@@ -26,10 +26,13 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E` |
+| **Status-Sync-Anker** | PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL` |
 | **Aktive Iteration** | 🟡 `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT` |
-| **Danach** | Story 003 nur bei klar anders gefärbtem, seltenem und balance-neutralem Gewinner auf demselben Street-Follow-up-Contract |
+| **Danach** | Story 003 nur bei klar anders gefärbtem, seltenem und balance-neutralem Gewinner; parallel stehen globale Spiel-Führung und visuelle Hierarchie als nächste UX-Slices bereit |
+| **Arbeit & Einkommen** | ✅ fünf Jobs · Stundenlohn · bestätigter Erschöpfungslohn · Energie-/Stresskosten direkt vergleichbar |
+| **Equipment-Handel** | ✅ kanonischer Marktpreis · Kaufen · Verkaufen · Reservieren · Freigeben · reservierter Bestand bleibt geschützt |
+| **Geld-Führung** | ✅ 5-Schritte-Pfad Job → Bargeld → Bank → Equipment-Handel → Investition direkt im Control Deck |
 | **District-Ereigniskette 001** | ✅ `district.power_flicker` → späterer `power_flicker_afterglow` · Exactly-once · keine Balancewirkung · Ursache read-only sichtbar |
 | **District-Ereigniskette 002** | ✅ `district.temporary_space_opens` → späterer `temporary_space_afterimage` · **„Die Tür ist zu – die Adresse lebt weiter.“** · gleicher Contract V1 |
 | **District-Chain-E2E** | ✅ beide Ketten durch Runtime → Journal/Persistenz → Projection → `/api/state` → echtes Chromium-DOM belegt; Retry/Cross-District fail-closed |
@@ -41,14 +44,14 @@
 | **Ranking** | ✅ Competitive Top 10 · bestätigte Wochen-/Monatszyklen · lokale Crew-Marke nur am eigenen Eintrag |
 | **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 · Runtime-Owned-Map-E2E bestätigt |
 | **Berlin Ops Map** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan · Randfall geprüft · `1:1` stellt Gesamtansicht wieder her |
-| **Scene Jobs** | ✅ persönliches Bargeld · Anti-Grind · Lohnvorschau · zwei Recovery-Wahlen |
+| **Scene Jobs** | ✅ persönliches Bargeld · Anti-Grind · Lohnvorschau · Stundenlohnvergleich · zwei Recovery-Wahlen |
 | **Assistent** | ✅ sichere Steuerung · bestätigte Rundenausführung · Freundschafts-Nachhall |
 | **Bank & Kontoauszug** | ✅ Wallet↔Bank · Sparzins · read-only TXT/CSV-Export |
 | **Event-Feedback** | ✅ Street-, Recovery- und Krisen-FX nur nach bestätigter Runtime-Antwort |
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #215 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #218 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -59,19 +62,22 @@ Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Hist
 BUNKERFREQUENZ ist ein lokales Techno-/FreeTekno-Crew-RPG. Bestätigte Aktionen, Ereignisse und ihre Folgen formen Charakter, Crew und Stadt.
 
 ```text
-SCENE JOBS → PERSÖNLICHES BARGELD → BANK / SPAREN → KONTOAUSZUG
-      ↓
-STRASSE / SPIELERANSATZ
-      ↓
-CHARAKTER & CREW
-      ↓
+SCENE JOBS → PERSÖNLICHES BARGELD → BANK / SPAREN
+      ↓                         ↓
+STUNDENLOHN / ERSCHÖPFUNG      EQUIPMENT-MARKT: KAUFEN ↔ VERKAUFEN
+      ↓                         ↓
+RECOVERY                  RESERVIEREN ↔ FREIGEBEN
+      └──────────────┬──────────┘
+                     ↓
+              EVENT / PROPERTY
+                     ↓
+STRASSE / SPIELERANSATZ → CHARAKTER & CREW
+                     ↓
 EVENT PLANEN → STARTEN → KRISE? → ENTSCHEIDEN → SETTLEMENT
-      ↓
+                     ↓
 DISTRICT WORLD EVENTS · TIMELINE · BERLIN-ERINNERUNGEN
-      ↓
-LIVING DISTRICTS / BERLIN OPS MAP
-      ↓
-PROPERTY / HALL OF TRIBUTE
+                     ↓
+LIVING DISTRICTS / BERLIN OPS MAP → HALL OF TRIBUTE
 ```
 
 ### Validierte Kernbereiche
@@ -79,6 +85,10 @@ PROPERTY / HALL OF TRIBUTE
 - Character Forge mit 16 Skills, 165 Trait-Namen, Level 1–50 + Resonanz
 - Event-State, Equipment/Economy, Krisen und Settlement
 - append-only Journal, Save, Snapshot, Restart und Recovery
+- fünf Scene Jobs mit persönlichem Bargeld, Anti-Grind, bestätigtem Erschöpfungslohn und sichtbarem Stundenlohnvergleich
+- kanonischer Equipment-Marktpreis aus derselben Domain-Regel wie Kauf und Verkauf; Browser besitzt keine Preisautorität
+- Equipment-Handel mit Kaufen, Verkaufen, Reservieren und Freigeben; reservierter Bestand kann nicht verkauft werden
+- Bank, Sparzins, Kontoauszug und 5-Schritte-Geldführung von Arbeit bis Investition
 - deterministische Street Encounters ohne Reload-Reroll
 - eigener Street-Follow-up-Eventvertrag `street.followup_resolved` mit bestätigter Character-Bindung, Kausalität und Exactly-once
 - Street-Micro-Story 001: `street.cable_tip` → späterer `cable_tip_echo` / „Der Tipp macht die Runde“
@@ -102,7 +112,6 @@ PROPERTY / HALL OF TRIBUTE
 - echter Chromium- und nativer Firefox-Acceptance-Pfad für Profil → HUD → runtime-bestätigten Map-Besitz → eigenen Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
 - kompakte HUD-, Map- und Ranking-Kurzmarken mit browserberechnet geprüftem `0.34rem`-Lesbarkeitsboden und realer Clipping-Prüfung
 - bestehende Desktop-Browser-Evidence bindet denselben runtime-bestätigten Property-Kauf read-only an Location-, Event- und Ledger-Referenzen
-- Scene Jobs, persönliches Bargeld, Bank, Sparzins und Kontoauszug
 - Secret Best Friend Assistant auf bestehenden Scene-Job-/Rundenverträgen
 - lokale Presentation-FX ausschließlich nach bestätigten Runtime-Ergebnissen
 
@@ -131,6 +140,8 @@ python3 tools/start_a4_game_client.py
 Der Server bindet ausschließlich an `127.0.0.1`.
 
 Ausführliche Erklärung: [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md)
+
+Für Arbeit, Einkommen, Bank und Equipment-Handel: [`docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md`](docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md)
 
 ---
 
@@ -228,6 +239,8 @@ Feature-Fortschritt auf `main` ist kein stiller Produktrelease. Eine neue Produk
 | Projektmanifest | [`PROJEKTMANIFEST.json`](PROJEKTMANIFEST.json) |
 | Status-Sync erklärt | [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) |
 | Anfängerstart | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
+| Arbeit, Geld & Handel | [`docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md`](docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md) |
+| Control-Deck-Hilfe | [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) |
 | Crew-Logo/Fahne | [`docs/LAIENHILFE_CREW_LOGO_FAHNE.md`](docs/LAIENHILFE_CREW_LOGO_FAHNE.md) |
 | Avatar im Ranking | [`docs/LAIENHILFE_CREW_AVATAR_RANKING.md`](docs/LAIENHILFE_CREW_AVATAR_RANKING.md) |
 | Avatar auf der Karte | [`docs/LAIENHILFE_CREW_AVATAR_KARTE.md`](docs/LAIENHILFE_CREW_AVATAR_KARTE.md) |

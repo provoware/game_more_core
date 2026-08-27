@@ -3,9 +3,9 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E` · PR #215 · Head `ab15032ecf1b67aa2724ce6c461c613674a63c26` · Merge `1acceec43514caf7e2e945535896bce9472a19de`
-- **Start-/Release-Qualität:** beide produktiven Street-Micro-Stories sind durch Runtime → Journal/Persistenz → Reload → `/api/state` → echtes Chromium-DOM belegt; Retry bleibt Exactly-once
+- **Status-Sync-Anker:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL` · PR #218 · Head `39a3a4343657231872de08b7fed5376b9ff99c6e` · Merge `eb97181f80678110ca12063165d446273cfcff5e`
+- **Start-/Release-Qualität:** Jobs zeigen Stundenlohn und bestätigten Erschöpfungslohn; vorhandener Equipment-Handel ist mit Kaufen/Verkaufen/Reservieren/Freigeben vollständig bedienbar; Marktpreise bleiben Runtime-Autorität
 - **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
@@ -146,6 +146,19 @@
 - [x] beide Stories Runtime→Persistenz→Reload→API→Chromium-E2E und Exactly-once regressionsgesichert
 - [x] PRs #208–#215 sicher gemergt; zuletzt PR #215 · Head `ab15032ecf1b67aa2724ce6c461c613674a63c26` · Merge `1acceec43514caf7e2e945535896bce9472a19de`
 
+## 0.8.8-UX-TOOL-HELP-CLARITY
+- [x] zentrale Control-Deck-Hilfetexte in handlungsorientierte Spielersprache übersetzt
+- [x] Kurzhilfe für `Bestätigt`, `Nur Anzeige` und `Sofort gespeichert`; technische ID verständlich erklärt
+- [x] PR #217 · Merge `12b001a731c0da5a1d98913676da9e48b0afd064`
+
+## 0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL
+- [x] Jobkarten zeigen Stundenlohn, aktuellen Erschöpfungslohn, Energie- und Stresskosten
+- [x] bestehender Equipment-Vertrag ist im Control Deck mit Kaufen, Verkaufen, Reservieren und Freigeben vollständig bedienbar
+- [x] aktueller Marktpreis und frei verkaufbarer Bestand kommen read-only aus der kanonischen Runtime-Projection
+- [x] 5-Schritte-Geldkreislauf führt Job → Bargeld → Bank → Equipment-Handel → Investition
+- [x] responsive KPI-/Marktkarten und Reduced-Motion-Fallback heben Jobs und Handel visuell an
+- [x] PR #218 · Head `39a3a4343657231872de08b7fed5376b9ff99c6e` · Merge `eb97181f80678110ca12063165d446273cfcff5e`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
@@ -182,4 +195,4 @@ Die zwei vorhandenen Street-Nachhalle gegen soziale, räumliche, materielle und 
 - Presentation bleibt read-only.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STREET_MINI_CHAIN_LAIENHILFE.md`](docs/STREET_MINI_CHAIN_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STREET_MINI_CHAIN_LAIENHILFE.md`](docs/STREET_MINI_CHAIN_LAIENHILFE.md) · [`docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md`](docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
