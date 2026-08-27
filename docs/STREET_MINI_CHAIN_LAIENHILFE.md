@@ -17,7 +17,7 @@ So wirkt Berlin etwas erinnerungsfähiger, ohne dir heimlich Geld, Ruf, Energie 
 3. Erst bei einem **späteren bestätigten Street-Walk desselben Charakters** darf der Nachhall entstehen.
 4. Die Folge heißt **Der Tipp macht die Runde**.
 5. Ursache und Folge werden fest miteinander verknüpft. Ein Neuladen erzeugt keine zweite Kopie.
-6. Die vorhandene Timeline kann die bestätigte Folge nun read-only anzeigen und – nur bei eindeutig passendem Parent – **„Folge von: Kabeltipp am Bauzaun“** ableiten.
+6. Die vorhandene Timeline kann die bestätigte Folge read-only anzeigen und – nur bei eindeutig passendem Parent – **„Folge von: Kabeltipp am Bauzaun“** ableiten.
 
 Der spätere Street-Walk bleibt dabei eine ganz normale Straßenrunde. Die Folgegeschichte verändert dessen Auswahl, Balance oder Effekte nicht.
 
@@ -49,6 +49,12 @@ Die neue Folge besitzt bewusst **keine Gameplay-Effekte**. Sie ist Erinnerung un
 
 Ein bestätigtes `street.followup_resolved` kann in derselben bestehenden Story-Timeline wie normale Street-Ereignisse erscheinen. Ist der bestätigte Parent vorhanden, älter und demselben Charakter zugeordnet, liefert die Projection zusätzlich die belegte Ursache. Fehlt einer dieser Nachweise, bleibt die Folge höchstens als bestätigtes Einzelereignis sichtbar – ohne erfundene Kausalität.
 
+## Wie wird das technisch wirklich geprüft?
+
+Die Qualitätsprüfung baut die Geschichte nicht künstlich im Browser nach. Sie erzeugt zuerst den Kabeltipp und den späteren Nachhall über den normalen A4-Spielpfad, speichert beide Ereignisse im echten Test-Spielstand und wiederholt denselben zweiten Street-Walk als Retry. Dabei muss genau **eine** Folge erhalten bleiben.
+
+Danach wird dieser bereits gespeicherte Spielstand geschlossen und über den normalen lokalen A4-Server neu geöffnet. Erst dann wird geprüft, ob sowohl `/api/state` als auch ein echter Chromium-Browser **„Der Tipp macht die Runde“** und **„Folge von: Kabeltipp am Bauzaun“** anzeigen. Damit wird dieselbe Kette von Runtime über Speichern und Neuladen bis zur sichtbaren Oberfläche geprüft.
+
 ## Sinnvolle nächste Erweiterung
 
-Als nächster Story-Ausbau eignet sich eine **zweite, anders gefärbte Street-Mini-Kette**. Sie sollte wieder einen vorhandenen Parent nutzen, balance-neutral bleiben und denselben Vertrag verwenden. So wächst die Stadtgeschichte in kleinen, prüfbaren Schritten statt durch ein neues Storysystem.
+Als nächster Story-Ausbau eignet sich eine **zweite, anders gefärbte Street-Mini-Kette**. Vor der Umsetzung sollten die übrigen Street-Begegnungen kurz nach erzählerischer Stärke, Seltenheit und technischer Eignung bewertet werden. Der Gewinner sollte wieder balance-neutral bleiben und denselben Vertrag verwenden. So wächst die Stadtgeschichte in kleinen, prüfbaren Schritten statt durch ein neues Storysystem.
