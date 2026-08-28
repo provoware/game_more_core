@@ -1,4 +1,4 @@
-/* Visual Hierarchy 3: genau eine stärkere Ebene für den zentralen Event-Fortschritt. */
+/* Visual Hierarchy 3: kleine, belegte Hierarchieverbesserungen ohne zweite UI-Architektur. */
 #event-panel {
   grid-column: 1 / -1;
   isolation: isolate;
@@ -69,14 +69,59 @@
   background: #090e13;
 }
 
+/* Property: bei vielen Orten bekommt die vorhandene Liste mehr Raum, ohne Renderer- oder Commandlogik zu duplizieren. */
+#property-panel {
+  grid-column: 1 / -1;
+}
+
+#property-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+#property-list > .equipment-row {
+  align-items: stretch;
+  flex-direction: column;
+  min-width: 0;
+  background: linear-gradient(155deg, #111820, #0c1117);
+}
+
+#property-list > .equipment-row > div:first-child {
+  min-width: 0;
+}
+
+#property-list > .equipment-row > div:first-child strong,
+#property-list > .equipment-row > div:first-child span {
+  overflow-wrap: anywhere;
+}
+
+#property-list > .equipment-row > .inline-actions {
+  margin-top: auto;
+  padding-top: .65rem;
+  border-top: 1px solid #303b46;
+}
+
+#property-list > .equipment-row > .inline-actions button {
+  flex: 1 1 12rem;
+}
+
 body.ui-high-contrast #event-panel {
   background: #0d1014;
 }
 
 body.ui-high-contrast #event-actions,
 body.ui-high-contrast #event-panel > #blockers,
-body.ui-high-contrast #event-panel > .summary-grid > div {
+body.ui-high-contrast #event-panel > .summary-grid > div,
+body.ui-high-contrast #property-list > .equipment-row {
   border-color: var(--line-strong);
+}
+
+body.ui-high-contrast #property-list > .equipment-row > .inline-actions {
+  border-top-color: var(--line-strong);
+}
+
+@media (max-width: 980px) {
+  #property-list { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 860px) {
@@ -87,10 +132,13 @@ body.ui-high-contrast #event-panel > .summary-grid > div {
   #event-panel > .summary-grid { grid-template-columns: 1fr; }
   #event-actions { padding: .6rem; }
   #event-actions button { width: 100%; }
+  #property-list > .equipment-row > .inline-actions button { flex-basis: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   #event-panel,
   #event-actions,
-  #event-actions button { transition: none !important; animation: none !important; }
+  #event-actions button,
+  #property-panel,
+  #property-list > .equipment-row { transition: none !important; animation: none !important; }
 }
