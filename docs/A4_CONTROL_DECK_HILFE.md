@@ -10,6 +10,17 @@ Das Control Deck soll dir beim Spielen sagen, **was du gerade siehst, was du als
 - **Nur Anzeige:** Du kannst hier Informationen ansehen oder filtern. Dadurch ändern sich keine Spielwerte.
 - **Sofort gespeichert:** Eine bestätigte Aktion landet direkt im Spielverlauf. Ein zusätzlicher Checkpoint ist nur ein weiterer Wiederherstellungspunkt.
 
+## „Nächster Schritt“ oben in der Leiste
+
+Die kleine Anzeige oben hilft dir nur mit bereits sicheren Informationen:
+
+- Beim ersten Start zeigt sie **„Neues Spiel anlegen“**.
+- Gibt die Runtime eine Event-Aktion frei, zeigt und markiert sie genau diese Aktion.
+- Ist das Event blockiert, zeigt sie den bereits vom Spiel bestätigten Blockiergrund in Klartext.
+- Gibt es gerade keine freigegebene normale Event-Aktion, erfindet die Oberfläche keine Empfehlung.
+
+Wichtig: Die Anzeige berechnet **keine eigene Strategie** aus Energie, Geld, Marktpreisen oder anderen Werten. Sie entscheidet auch nichts automatisch für dich.
+
 ## Die wichtigsten Bereiche
 
 **Straße:** Wähle einen Stil für deine Runde. Er verschiebt Chancen, verspricht aber kein bestimmtes Ereignis.
@@ -24,7 +35,7 @@ Das Control Deck soll dir beim Spielen sagen, **was du gerade siehst, was du als
 
 **Hall of Tribute:** Zeigt bestätigte Ranglistenwerte. Ohne echte bestätigte Konkurrenz erfindet das Spiel keine Gegner.
 
-**Event-Steuerung:** Zeigt dir die nächste erlaubte Aktion für dein vorbereitetes Event. Ist etwas blockiert, steht der Grund direkt darunter.
+**Event-Steuerung:** Zeigt dir die nächste erlaubte Aktion für dein vorbereitetes Event. Ist etwas blockiert, steht der Grund direkt darunter und jetzt zusätzlich kompakt oben in der Leiste.
 
 **Krise:** Bekannte Folgen stehen vor der Entscheidung sichtbar da. Erst dein Klick löst die gewählte Antwort aus.
 
@@ -42,4 +53,4 @@ Die technische ID ist die eindeutige interne Kennung deines Charakters. Sie ist 
 
 ## Spätere Verbesserungsidee
 
-Falls Nutzertests zeigen, dass einzelne Bereiche trotzdem Fragen auslösen, kann später pro Bereich eine kleine aufklappbare „Was bedeutet das?“-Hilfe ergänzt werden. Das sollte erst nach einem echten Bedarf passieren, damit die Oberfläche nicht unnötig voller wird.
+Eine echte Empfehlung wie „erst erholen“ oder „jetzt handeln“ sollte erst dann ergänzt werden, wenn die Runtime dafür einen eigenen bestätigten Empfehlungshinweis liefert. Solange dieser Vertrag fehlt, bleibt die Oberfläche absichtlich bei sicheren Status- und Blockerinformationen und erfindet keine Strategie im Browser.
