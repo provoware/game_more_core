@@ -2,7 +2,7 @@
 
 ## Was wird hier geprüft?
 
-BUNKERFREQUENZ besitzt drei wichtige Projektübersichten: `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json`. Sie sollen denselben zuletzt bestätigten fachlichen `/safe-merge` nennen.
+BUNKERFREQUENZ besitzt drei wichtige Projektübersichten: `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json`. Sie sollen denselben zuletzt bestätigten fachlich relevanten `/safe-merge` nennen.
 
 Der Status-Sync-Check liest dafür **nur** die Git-Historie und diese drei vorhandenen Dateien. Er ändert kein Spiel, keinen Spielstand und keine Gameplaywerte.
 
@@ -11,6 +11,19 @@ Der Status-Sync-Check liest dafür **nur** die Git-Historie und diese drei vorha
 - alle drei Statusdateien nennen denselben Safe-Merge-Anker,
 - dieser Anker entspricht dem letzten fachlich relevanten `Safe merge PR #…` in der First-Parent-Historie,
 - `PROJEKTSTATUS.json` bestätigt dazu weiterhin `SAFE MERGE PASS` und Main-Provenienz.
+
+## Wichtig: Safe-Merge-Anker ist nicht immer eine neue Spielfunktion
+
+Ein späterer QA-, Test- oder Robustheits-PR kann der neueste fachlich relevante Safe Merge sein, obwohl er **keine neue Spielfunktion** eingeführt hat.
+
+Beispiel: Der Job-Lohn-Kontexthinweis wurde mit PR #231 als Spielfunktion abgeschlossen. PR #232 hat denselben bereits vorhandenen Hinweis im echten Chromium-Browser geprüft. PR #234 hat anschließend nur die Lade-Reihenfolge dieses Browsertests stabilisiert.
+
+Darum dürfen zwei Aussagen gleichzeitig richtig sein:
+
+- **letzte validierte Spielfunktion:** `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY` aus PR #231,
+- **aktueller Status-Sync-Anker:** PR #234, weil dies der neueste relevante und sicher gemergte QA-Stand ist.
+
+Diese Trennung verhindert, dass eine reine Testhärtung fälschlich als neue Gameplayfunktion bezeichnet wird. Gleichzeitig bleibt die Projektübersicht technisch auf dem neuesten bestätigten Repository-Stand.
 
 ## Was bedeutet `STATUS SYNC FAIL`?
 
@@ -26,30 +39,21 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #215
+## Praktisches Beispiel nach PR #234
 
-PR #215 hat die zweite Street-Micro-Story **„Der Handschuh wartet noch“** durch den vollständigen Pfad Runtime → Journal/Persistenz → Reload → `/api/state` → echtes Chromium-DOM bewiesen. Gleichzeitig bleibt Story 001 **„Der Tipp macht die Runde“** im selben E2E-Test abgesichert.
+PR #231 führte den verständlichen Hinweis für reduzierten Joblohn ein. PR #232 bewies ihn im echten Chromium-Pfad mit Voll- und Teillohnfällen, `aria-label`, Hohem Kontrast und kleinem Fenster. PR #234 beseitigte anschließend eine konkrete Race-Condition im Acceptance-Harness, indem erst nach vollständiger `payoutReducedByEnergy`-Dekoration klassifiziert wird.
 
-Direkt danach standen `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` noch auf dem alten Anker PR #206. Das Spiel war also weiter als seine drei kanonischen Projektübersichten. Genau diese Abweichung meldet `Status Sync` als Drift.
-
-Die Statuskorrektur übernimmt deshalb PR #215 / `1acceec43514caf7e2e945535896bce9472a19de` als gemeinsamen fachlichen Anker. Der Status-only Safe Merge dieser Korrektur wird anschließend bewusst übersprungen, damit er sich nicht selbst zum neuen Spielstand erklärt.
+Die drei Statusdateien standen danach noch auf PR #229. Das Spiel und seine QA-Evidenz waren also weiter als die Projektübersichten. Der Status-Sync zieht deshalb den technischen Anker auf PR #234, lässt den letzten Feature-Stand aber korrekt auf PR #231.
 
 ### Was ist danach der echte nächste Inhaltsschritt?
 
-Nicht sofort Story 003. Zuerst wird mit `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT` geprüft, ob die zwei vorhandenen Nachhalle dramaturgisch zu ähnlich sind.
+`POOL-ECON-010` wird zunächst nur als **Equipment-Handelsverlauf-Audit** gezogen. Dabei wird geprüft, ob das vorhandene Ledger historische Kauf-/Verkaufspreise und Item-Identitäten bereits zuverlässig genug speichert.
 
-Dabei werden Kandidaten nach vier einfachen Fragen verglichen:
-
-- **sozial:** verändert sich etwas zwischen Menschen oder Gerüchten?
-- **räumlich:** erinnert ein Ort sichtbar an eine frühere Begegnung?
-- **materiell:** taucht eine Spur oder ein Gegenstand wieder auf, ohne Inventarbonus zu werden?
-- **leicht unheimlich:** wirkt die Stadt, als hätte sie sich etwas gemerkt, ohne eine neue Mystery-Engine zu erfinden?
-
-Story 003 darf erst folgen, wenn ein Kandidat deutlich anders wirkt, selten genug ist, eine klare Ursache besitzt, keine Balancewirkung erzeugt und denselben `street.followup_resolved`-Vertrag verwenden kann.
+Erst wenn diese Evidenz ausreicht, darf ein späterer Presentation-Slice Gewinn oder Verlust read-only erklären. Es werden keine alten Preise aus dem aktuellen Marktpreis zurückgerechnet und keine zweite Marktengine erfunden.
 
 ### Merksatz für Laien
 
-**Der Status-Sync sorgt dafür, dass die Projektanzeige nicht hinter dem Spiel herläuft. Er erfindet nichts und repariert nichts heimlich – er zwingt die Dokumentation, die bereits geprüfte Realität korrekt zu nennen.**
+**Der Status-Sync sagt, bis wohin das Repository sicher geprüft ist. Der Feature-Stand sagt, welche Spielfunktion zuletzt wirklich hinzugekommen ist. Beides kann auf unterschiedliche PRs zeigen und trotzdem korrekt sein.**
 
 ## Für Entwickler
 
@@ -65,7 +69,7 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass letzter validierter Feature-Stand, Feature-Pool und nächste aktive Arbeit zusammenpassen.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass Feature-Stand, Safe-Merge-Anker, Feature-Pool und nächste aktive Arbeit konsistent bleiben, ohne QA-Härtungen fälschlich als neue Spielfunktion zu klassifizieren.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
