@@ -28,7 +28,7 @@
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
 | **Status-Sync-Anker** | PR #224 · Merge `9777fb10d1339ba69d672e7520946b08af915a8b` |
 | **Validierter Feature-Stand** | ✅ `0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE` |
-| **Aktive Iteration** | 🟡 `0.8.8-UX-VISUAL-HIERARCHY-3-AUDIT` |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT` |
 | **Danach** | genau einen reproduzierbaren Hierarchiebruch beheben; kein neues Dashboard und kein zweites Designsystem |
 | **Spiel-Führung** | ✅ Erststart · freigegebene Runtime-Event-Aktion · bestätigte Blocker; keine Energie-/Geld-/Markt-Heuristik im Browser |
 | **Street Story Audit** | ✅ Story 001 sozial-technisch · Story 002 materiell-persönlich · Story 003 bewusst zurückgestellt · `construction_detour` nur Reservekandidat |
