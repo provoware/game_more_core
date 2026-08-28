@@ -31,25 +31,25 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn("52934e08dfc5c24e6b9c2933f6c53d8374018079", todo)
         self.assertIn(f"**{iteration}:** PR #238", pool)
 
-    def test_latest_safe_merge_anchor_tracks_trade_history_density_audit(self):
+    def test_latest_safe_merge_anchor_tracks_venue_profile_contract(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         validation = status["remote_validation"]
         sync = status["status_sync"]
 
-        self.assertEqual(validation["pull_request"], 242)
-        self.assertEqual(validation["validated_head"], "bc7ebccd34f3ef2b63b7e73c87dc945a2b20a11a")
-        self.assertEqual(validation["merged_commit"], "5e112a6c6d9655d2f76dde464b24a01a86147815")
+        self.assertEqual(validation["pull_request"], 245)
+        self.assertEqual(validation["validated_head"], "099058d543149176f1870e821fa1cd75a69f3095")
+        self.assertEqual(validation["merged_commit"], "f9357d16690675e282bffedd0baa78958079606e")
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
-        self.assertEqual(sync["anchor_pull_request"], 242)
+        self.assertEqual(sync["anchor_pull_request"], 245)
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
-        self.assertEqual(sync["anchor_iteration"], "0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT")
-        self.assertIn("Status-Sync-Anker:** PR #242", todo)
-        self.assertIn("Status-Sync-Anker:** PR #242", pool)
-        self.assertIn("**0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT:** PR #242", pool)
+        self.assertEqual(sync["anchor_iteration"], "0.8.8-UX-VENUE-OPERATING-PROFILE-PRESENTATION-CONTRACT")
+        self.assertIn("Status-Sync-Anker:** PR #245", todo)
+        self.assertIn("Status-Sync-Anker:** PR #245", pool)
+        self.assertIn("**0.8.8-UX-VENUE-OPERATING-PROFILE-PRESENTATION-CONTRACT:** PR #245", pool)
 
     def test_validated_and_next_pool_items_have_single_current_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -72,7 +72,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-PROPERTY-003"))
 
-    def test_current_status_describes_density_proof_and_venue_contract_audit(self):
+    def test_current_status_describes_venue_contract_and_readonly_ui_slice(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         economy = status["subsystems"]["economy"]
@@ -82,8 +82,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
-        self.assertEqual(status["active_iteration"], "0.8.8-GAMEPLAY-VENUE-BENEFITS-CONTRACT-AUDIT")
-        self.assertEqual(status["current_focus"], "venue_benefits_contract_audit")
+        self.assertEqual(status["active_iteration"], "0.8.8-UX-VENUE-OPERATING-PROFILE-READONLY")
+        self.assertEqual(status["current_focus"], "venue_operating_profile_readonly")
         self.assertIsNone(status["next_iteration"])
         self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
 
@@ -92,22 +92,19 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(economy["equipment_trade_history_compensated_pairs_filtered"])
         self.assertFalse(economy["equipment_trade_history_realized_profit_supported"])
 
-        self.assertTrue(presentation["equipment_trade_history_visible"])
-        self.assertTrue(presentation["equipment_trade_history_browser_e2e_validated"])
-        self.assertTrue(presentation["equipment_trade_history_density_audit_validated"])
-        self.assertEqual(presentation["equipment_trade_history_density_limit"], 8)
-        self.assertTrue(presentation["equipment_trade_history_density_long_display_name"])
-        self.assertTrue(presentation["equipment_trade_history_density_large_text"])
-        self.assertTrue(presentation["equipment_trade_history_density_high_contrast"])
-        self.assertTrue(presentation["equipment_trade_history_density_small_window"])
-        self.assertFalse(presentation["equipment_trade_history_density_css_fix_required"])
-        self.assertFalse(presentation["equipment_trade_history_browser_commands"])
-        self.assertFalse(presentation["equipment_trade_history_profit_calculation"])
+        self.assertTrue(presentation["venue_operating_profile_contract_validated"])
+        self.assertEqual(
+            presentation["venue_operating_profile_value_keys"],
+            ["prestige", "audience_pull", "risk", "underground_factor", "utility"],
+        )
+        self.assertEqual(presentation["venue_operating_profile_source"], "property_upgrades.entries[*].effective_values")
+        self.assertFalse(presentation["venue_operating_profile_mechanical_bonuses"])
+        self.assertFalse(presentation["venue_operating_profile_new_persistence"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
-        self.assertIn("Property-, Event-, Availability-", todo)
-        self.assertIn("keine zweite Property-State-Engine", todo)
-        self.assertIn("keine Systemzeit-Autorität", todo)
+        self.assertIn("fünf bestätigten Ortswerte", todo)
+        self.assertIn("keine zweite Berechnung", todo)
+        self.assertIn("nicht besessene Locations", todo)
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
