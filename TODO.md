@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #226 · Merge `aa4fb893efd01e7060ee82b8e326e597975e495a`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-VISUAL-HIERARCHY-3` · PR #226 · Head `829169c87d3e1ebfeca0d7758fecc8c7606a5b74` · Merge `aa4fb893efd01e7060ee82b8e326e597975e495a`
-- **Start-/Release-Qualität:** Event-Steuerung trennt bestätigte Eckdaten, nächste Runtime-Aktion und Blocker jetzt klar; High Contrast, Reduced Motion und kleine Fenster bleiben abgesichert
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT`
+- **Status-Sync-Anker:** PR #229 · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT` · PR #229 · Head `40ec4d980d77dc1b801ece77fe65e4018a1eda37` · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
+- **Start-/Release-Qualität:** strategische Hinweise bleiben an bestätigte Runtime-/Projection-Fakten gebunden; kein globaler Recommendation-Aggregator und keine Browserpriorisierung eingeführt
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -181,41 +181,49 @@
 - [x] High Contrast, Reduced Motion und kleine Fenster regressionsgesichert
 - [x] PR #226 · Head `829169c87d3e1ebfeca0d7758fecc8c7606a5b74` · Merge `aa4fb893efd01e7060ee82b8e326e597975e495a`
 
+## 0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT
+- [x] Job-Lohnreduktion als kanonisch berechneten Projection-Fakt bestätigt
+- [x] Event-Blocker als Ergebnis von `EventExecutionService.available_actions()` bestätigt
+- [x] gemeinsamen globalen `strategic_guidance`-Aggregator bewusst verworfen, solange keine Runtime-Priorität existiert
+- [x] keine Browser-Heuristik, keine Auto-Aktion und keine Produktionslogik ergänzt
+- [x] Audit, Laienhilfe, Changelog und Autoritätsregression aktualisiert
+- [x] PR #229 · Head `40ec4d980d77dc1b801ece77fe65e4018a1eda37` · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY
 
 ## Fortschritt
 
-**Bereit für fokussierten Contract-Audit.** Die Oberfläche darf bereits sichere nächste Event-Aktionen und bestätigte Blocker erklären. Jetzt wird geprüft, ob die Runtime bzw. bestehende Projections zusätzlich kleine strategische Hinweise explizit tragen können, ohne dass der Browser Energie-, Geld-, Markt- oder Eventregeln selbst herleitet.
+**Bereit für einen kleinen Presentation-Slice.** Die Runtime-/Projection-Autorität ist bereits geklärt: `payout_reduced_by_energy` und `effective_payout_cents` sind bestätigte read-only Daten. Jetzt wird nur deren Bedeutung direkt an der bestehenden Jobkarte laienklarer erklärt.
 
 ## Ziel
 
-Den kleinsten read-only Vertrag für strategische Spielerhinweise bestimmen. Beispiele sind „Energie reicht nicht für vollen Joblohn“ oder ein bestätigter Event-Blocker. Ein Hinweis darf nur erscheinen, wenn seine fachliche Aussage aus Runtime-/Projection-Daten eindeutig belegt ist.
+Bei reduziertem Joblohn einen kurzen, eindeutigen Kontext wie **„Aktueller Lohn reduziert – deine Energie reicht nicht für die volle Auszahlung“** an der bestehenden Jobkarte anzeigen, ohne daraus automatisch „Erholen“ oder eine andere Strategie zu empfehlen.
 
 ## Abnahme
 
-- [ ] vorhandene Quellen für Job-Energie/Lohnvorschau, Event-Blocker und weitere bereits bestätigte Handlungssignale gezielt dokumentieren
-- [ ] unterscheiden zwischen Runtime-Fakt, abgeleiteter Runtime-Empfehlung und bloßer Browser-Heuristik
-- [ ] mindestens Job-Energie/Lohn und Event-Blocker auf einen sicheren gemeinsamen Hinweisvertrag prüfen
-- [ ] genau einen kleinsten Vertrag auswählen oder Umsetzung begründet zurückstellen
-- [ ] keine Energie-, Geld-, Marktpreis- oder Storystrategie im Browser berechnen
-- [ ] keine automatische Aktion, Priorisierung mehrerer Ziele oder zweite Recommendation-Engine einführen
-- [ ] fokussierte Regression für Quelle, Autoritätsgrenze und Fail-closed-Verhalten definieren
-- [ ] Laienhilfe und Changelog nur für den tatsächlichen Auditbefund aktualisieren
+- [ ] ausschließlich `payout_reduced_by_energy` bzw. den bereits projizierten effektiven Lohn als Quelle verwenden
+- [ ] reduzierte Auszahlung direkt und verständlich an der vorhandenen Jobkarte erklären
+- [ ] bei vollem Lohn keinen falschen Warnhinweis anzeigen
+- [ ] keine Energiegrenze, Auszahlung oder Recovery-Empfehlung im Browser neu berechnen
+- [ ] keine globale Next-Best-Action-Priorisierung und keinen neuen Recommendation-Aggregator einführen
+- [ ] vorhandene Jobkartenstruktur und Command-Payload unverändert lassen
+- [ ] fokussierte Presentation-Regression für reduzierten und vollen Lohn ergänzen
+- [ ] Laienhilfe nur dort erweitern, wo der neue Hinweis tatsächlich sichtbar wird
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Runtime/Application/Projection bleiben einzige Fachquelle.
-- Browser rendert nur explizit gelieferte oder bereits kanonisch projizierte Hinweise.
-- Keine automatische Entscheidung und keine versteckte Optimierungsfunktion.
-- Vorhandene Job-Lohnvorschau und Event-Blocker zuerst wiederverwenden.
+- `SceneJobService` und `scene_jobs_projection` bleiben einzige Lohn-/Energieautorität.
+- Browser rendert den bereits gelieferten Zustand und berechnet keine Fachgrenze neu.
+- Kein automatisches Recovery, kein Auto-Job und keine versteckte Optimierungsfunktion.
+- Multi-Hinweis-Priorisierung bleibt zurückgestellt, bis mehrere gleichzeitig gültige Hinweise einen belegten Konflikt erzeugen.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) · [`docs/NEXT_BEST_ACTION_GUIDANCE_AUDIT.md`](docs/NEXT_BEST_ACTION_GUIDANCE_AUDIT.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) · [`docs/RUNTIME_OWNED_STRATEGIC_GUIDANCE_AUDIT.md`](docs/RUNTIME_OWNED_STRATEGIC_GUIDANCE_AUDIT.md) · [`AGENTS.md`](AGENTS.md)

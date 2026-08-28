@@ -55,13 +55,13 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-010", "POOL-QA-006", "POOL-UX-008", "POOL-QA-011", "POOL-QA-013",
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
             "POOL-QA-017", "POOL-WORLD-003", "POOL-STREET-003", "POOL-ECON-009",
-            "POOL-STORY-002", "POOL-UX-010", "POOL-UX-011",
+            "POOL-STORY-002", "POOL-UX-010", "POOL-UX-011", "POOL-UX-012",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-012"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-013"))
 
-    def test_current_status_describes_visual_hierarchy_and_next_runtime_owned_guidance_audit(self):
+    def test_current_status_describes_guidance_audit_and_next_job_payout_context(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
@@ -73,13 +73,28 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "runtime_owned_strategic_guidance_audit")
+        self.assertEqual(status["current_focus"], "job_payout_context_clarity")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 226)
-        self.assertEqual(validation["validated_head"], "829169c87d3e1ebfeca0d7758fecc8c7606a5b74")
-        self.assertEqual(validation["merged_commit"], "aa4fb893efd01e7060ee82b8e326e597975e495a")
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-VISUAL-HIERARCHY-3")
+        self.assertEqual(validation["pull_request"], 229)
+        self.assertEqual(validation["validated_head"], "40ec4d980d77dc1b801ece77fe65e4018a1eda37")
+        self.assertEqual(validation["merged_commit"], "d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27")
+        self.assertEqual(
+            status["last_validated_feature_iteration"],
+            "0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT",
+        )
+
+        self.assertTrue(presentation["runtime_owned_strategic_guidance_audit_validated"])
+        self.assertFalse(presentation["runtime_owned_strategic_guidance_global_aggregator_created"])
+        self.assertEqual(
+            presentation["runtime_owned_strategic_guidance_job_signal_source"],
+            "scene_jobs_projection.payout_reduced_by_energy",
+        )
+        self.assertEqual(
+            presentation["runtime_owned_strategic_guidance_event_blocker_source"],
+            "EventExecutionService.available_actions.blockers",
+        )
+        self.assertFalse(presentation["runtime_owned_strategic_guidance_browser_priority_engine"])
 
         self.assertTrue(presentation["visual_hierarchy_3_validated"])
         self.assertEqual(presentation["visual_hierarchy_3_surface"], "event_panel")
@@ -134,7 +149,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-WORLD-003": "`DONE`", "POOL-STREET-003": "`DONE`",
             "POOL-ECON-009": "`DONE`", "POOL-STORY-002": "`DONE`",
             "POOL-UX-010": "`DONE`", "POOL-UX-011": "`DONE`",
-            "POOL-UX-012": "`PULLED`",
+            "POOL-UX-012": "`DONE`", "POOL-UX-013": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
