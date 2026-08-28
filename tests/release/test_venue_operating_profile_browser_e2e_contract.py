@@ -35,6 +35,12 @@ class VenueOperatingProfileBrowserE2EContractTests(unittest.TestCase):
         self.assertIn("Fremder Ort zeigt ein Besitz-Betriebsprofil", self.harness)
         self.assertIn("horizontale Überbreite", self.harness)
 
+    def test_harness_requires_a_numeric_value_after_each_visible_profile_label(self):
+        self.assertIn("new RegExp(`${label}\\\\s+([+-]?\\\\d+(?:[.,]\\\\d+)?)`)", self.harness)
+        self.assertIn("Number.isFinite(numericValue)", self.harness)
+        self.assertIn("Eigenes Betriebsprofil hat keinen numerischen Wert für:", self.harness)
+        self.assertIn("fünf numerischen Werten", self.harness)
+
     def test_release_acceptance_executes_the_browser_proof(self):
         self.assertIn("tools/venue_operating_profile_browser_e2e.py", self.workflow)
         self.assertIn("Real browser Venue operating profile acceptance", self.workflow)
