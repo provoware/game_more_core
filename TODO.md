@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #224 · Merge `9777fb10d1339ba69d672e7520946b08af915a8b`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE` · PR #224 · Head `4a6134ae7d56c8ef3ca2da65997d2201e541f051` · Merge `9777fb10d1339ba69d672e7520946b08af915a8b`
-- **Start-/Release-Qualität:** Erststart, freigegebene Event-Aktion und bestätigte Runtime-Blocker werden verständlich geführt; Browser-Heuristiken für Energie, Geld oder Markt bleiben bewusst ausgeschlossen
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-VISUAL-HIERARCHY-3-AUDIT`
+- **Status-Sync-Anker:** PR #226 · Merge `aa4fb893efd01e7060ee82b8e326e597975e495a`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-VISUAL-HIERARCHY-3` · PR #226 · Head `829169c87d3e1ebfeca0d7758fecc8c7606a5b74` · Merge `aa4fb893efd01e7060ee82b8e326e597975e495a`
+- **Start-/Release-Qualität:** Event-Steuerung trennt bestätigte Eckdaten, nächste Runtime-Aktion und Blocker jetzt klar; High Contrast, Reduced Motion und kleine Fenster bleiben abgesichert
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -174,40 +174,48 @@
 - [x] Audit, Laienhilfe und MutationObserver-Regressionsvertrag aktualisiert
 - [x] PR #224 · Head `4a6134ae7d56c8ef3ca2da65997d2201e541f051` · Merge `9777fb10d1339ba69d672e7520946b08af915a8b`
 
+## 0.8.8-UX-VISUAL-HIERARCHY-3
+- [x] genau einen belegten Hierarchiebruch in der Event-Steuerung behoben
+- [x] Event-Panel nutzt volle Arbeitsbreite; bestätigte Eckdaten, nächste Runtime-Aktion und Blocker sind klar gestaffelt
+- [x] bestehende IDs, Commands, Panels und Runtime-Autorität unverändert gelassen
+- [x] High Contrast, Reduced Motion und kleine Fenster regressionsgesichert
+- [x] PR #226 · Head `829169c87d3e1ebfeca0d7758fecc8c7606a5b74` · Merge `aa4fb893efd01e7060ee82b8e326e597975e495a`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-UX-VISUAL-HIERARCHY-3-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT
 
 ## Fortschritt
 
-**Bereit für fokussierten Presentation-Audit.** Jobs und Economy besitzen bereits eine stärkere Karten- und KPI-Hierarchie. Als Nächstes werden nur konkrete Inkonsistenzen zwischen Event, Straße, Krise, Orte, Map und Ranking geprüft; keine flächige Neugestaltung auf Verdacht.
+**Bereit für fokussierten Contract-Audit.** Die Oberfläche darf bereits sichere nächste Event-Aktionen und bestätigte Blocker erklären. Jetzt wird geprüft, ob die Runtime bzw. bestehende Projections zusätzlich kleine strategische Hinweise explizit tragen können, ohne dass der Browser Energie-, Geld-, Markt- oder Eventregeln selbst herleitet.
 
 ## Ziel
 
-Die sichtbar wichtigsten Control-Deck-Bereiche gegen die bereits bewährte Economy-Hierarchie vergleichen und genau den kleinsten gemeinsamen Visual-Fix auswählen.
+Den kleinsten read-only Vertrag für strategische Spielerhinweise bestimmen. Beispiele sind „Energie reicht nicht für vollen Joblohn“ oder ein bestätigter Event-Blocker. Ein Hinweis darf nur erscheinen, wenn seine fachliche Aussage aus Runtime-/Projection-Daten eindeutig belegt ist.
 
 ## Abnahme
 
-- [ ] vorhandene Panel-/Card-/Status-Stile von Economy gegen Event, Straße, Krise, Property, Map und Ranking gezielt vergleichen
-- [ ] höchstens einen reproduzierbaren Hierarchiebruch auswählen, der Orientierung oder Lesbarkeit messbar schwächt
-- [ ] bestehende Klassen, Panels und Renderingpfade wiederverwenden; kein zweites Designsystem
-- [ ] High Contrast, Reduced Motion, kleine Fenster und Fokusmodus erhalten
-- [ ] keine Gameplay-, Runtime-, Save-, Journal-, Economy- oder Projection-Autorität verändern
-- [ ] fokussierte Presentation-Regression für den gewählten visuellen Vertrag ergänzen
-- [ ] Laienhilfe und Changelog nur für die tatsächlich sichtbare Änderung aktualisieren
+- [ ] vorhandene Quellen für Job-Energie/Lohnvorschau, Event-Blocker und weitere bereits bestätigte Handlungssignale gezielt dokumentieren
+- [ ] unterscheiden zwischen Runtime-Fakt, abgeleiteter Runtime-Empfehlung und bloßer Browser-Heuristik
+- [ ] mindestens Job-Energie/Lohn und Event-Blocker auf einen sicheren gemeinsamen Hinweisvertrag prüfen
+- [ ] genau einen kleinsten Vertrag auswählen oder Umsetzung begründet zurückstellen
+- [ ] keine Energie-, Geld-, Marktpreis- oder Storystrategie im Browser berechnen
+- [ ] keine automatische Aktion, Priorisierung mehrerer Ziele oder zweite Recommendation-Engine einführen
+- [ ] fokussierte Regression für Quelle, Autoritätsgrenze und Fail-closed-Verhalten definieren
+- [ ] Laienhilfe und Changelog nur für den tatsächlichen Auditbefund aktualisieren
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ## Architektur- und Sicherheitsgrenzen
 
-- visuelle Hierarchie erklärt vorhandene Zustände; sie erzeugt keine neuen Fachzustände.
-- bestätigte FX bleiben bestätigungsgebunden und nicht blockierend.
-- vorhandene CSS-/Panel-Architektur zuerst wiederverwenden.
-- kein neues Dashboard, keine parallele Map oder zweite Kartenkomponenten-Familie.
+- Runtime/Application/Projection bleiben einzige Fachquelle.
+- Browser rendert nur explizit gelieferte oder bereits kanonisch projizierte Hinweise.
+- Keine automatische Entscheidung und keine versteckte Optimierungsfunktion.
+- Vorhandene Job-Lohnvorschau und Event-Blocker zuerst wiederverwenden.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) · [`docs/NEXT_BEST_ACTION_GUIDANCE_AUDIT.md`](docs/NEXT_BEST_ACTION_GUIDANCE_AUDIT.md) · [`AGENTS.md`](AGENTS.md)

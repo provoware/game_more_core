@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #224 · Merge `9777fb10d1339ba69d672e7520946b08af915a8b`
+- **Status-Sync-Anker:** PR #226 · Merge `aa4fb893efd01e7060ee82b8e326e597975e495a`
 
 ## Statuswerte
 
@@ -41,6 +41,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-UX-VISUAL-HIERARCHY-3:** PR #226 · Merge `aa4fb893efd01e7060ee82b8e326e597975e495a` · Event-Steuerung nutzt die volle Arbeitsbreite und trennt bestätigte Eckdaten, nächste Runtime-Aktion und Blocker klar; High Contrast, Reduced Motion und kleine Fenster bleiben erhalten; keine Gameplay- oder Browser-Fachautorität
 - **0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE:** PR #224 · Merge `9777fb10d1339ba69d672e7520946b08af915a8b` · Erststart, freigegebene Runtime-Event-Aktion und bestätigte Blocker werden in der bestehenden Schnellleiste verständlich geführt; keine Energie-, Geld- oder Marktpreisheuristik im Browser
 - **0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a` · zwei vorhandene Street-Nachhalle gegen vier reale Parents geprüft; Story 003 bewusst nicht freigegeben; `street.construction_detour` bleibt nur Reservekandidat; keine Runtime-, Balance- oder Persistenzänderung
 - **0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e` · Jobs zeigen Stundenlohn und aktuellen Erschöpfungslohn; Equipment-Handel nutzt den bestehenden Runtime-Vertrag vollständig; aktueller Marktpreis und frei verkaufbarer Bestand kommen read-only aus der kanonischen Projection; responsive KPI-/Marktvisuals und Geldkreislauf-Führung ergänzt
@@ -129,7 +130,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-MAP-003` | `DONE` | Map-Viewport-Miniübersicht | PR #190 Audit: `1:1`-Reset reicht als Rückweg; keine Miniübersicht auf Verdacht |
 | `POOL-QA-012` | `IDEA` | Status-Sync-PR-Autoprep | read-only Driftcheck muss sich zuerst im Alltag bewähren; niemals Direktwrite nach `main` |
 | `POOL-UX-010` | `DONE` | Globale Spiel-Führung / Next Best Action 2 | PR #224: Erststart, Runtime-Event-Aktion und bestätigte Blocker klar geführt; keine Browserstrategie |
-| `POOL-UX-011` | `PULLED` | Control-Deck Visual Hierarchy 3 | fokussierter Audit gegen bestehende Economy-Hierarchie; High Contrast/Reduced Motion erhalten |
+| `POOL-UX-011` | `DONE` | Control-Deck Visual Hierarchy 3 | PR #226: Event-Steuerung über volle Arbeitsbreite; Status, nächste Runtime-Aktion und Blocker klar getrennt; High Contrast/Reduced Motion erhalten |
+| `POOL-UX-012` | `PULLED` | Runtime-owned strategische Führung | Audit eines kleinen read-only Runtime-/Projection-Vertrags für strategische Hinweise; keine Browser-Heuristiken und keine Auto-Aktion |
 | `POOL-ECON-010` | `READY` | Equipment-Handelsverlauf | bestätigte Kauf-/Verkaufspreise aus vorhandenem Ledger read-only als Gewinn-/Verlust-Hilfe zeigen; keine zweite Marktengine |
 
 ---
@@ -146,4 +148,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-UX-010` ist nach PR #224 abgeschlossen: Die globale Führung nutzt nur Erststart, freigegebene Runtime-Event-Aktion und bestätigte Blocker; strategische Browser-Heuristiken wurden bewusst verworfen. Als nächster Owner ist `POOL-UX-011` gezogen: zuerst wird die vorhandene Economy-Hierarchie gegen Event, Straße, Krise, Property, Map und Ranking verglichen und höchstens ein konkreter visueller Hierarchiebruch behoben.
+`POOL-UX-011` ist nach PR #226 abgeschlossen: Visual Hierarchy 3 behebt genau den belegten Hierarchiebruch der Event-Steuerung, ohne neue Runtime- oder Browserautorität. Als nächster Owner ist `POOL-UX-012` gezogen: Der Audit prüft, ob vorhandene Runtime-/Projection-Daten einen kleinen expliziten strategischen Hinweisvertrag tragen können, etwa für reduzierten Joblohn durch Energie oder bestätigte Event-Blocker. Der Browser darf solche Regeln nicht selbst berechnen.
