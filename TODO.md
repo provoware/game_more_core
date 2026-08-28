@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #242 · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815`
+- **Status-Sync-Anker:** PR #245 · Merge `f9357d16690675e282bffedd0baa78958079606e`
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 · Head `20b0ed21b97d16babd2108e76cecc25aaa32a889` · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
-- **Start-/Release-Qualität:** der maximale read-only Equipment-Handelsverlauf ist nach PR #242 im echten Chromium mit acht wirksamen Trades, langem Anzeigenamen, Großer Schrift, Hohem Kontrast und 760×680-Fenster ohne reproduzierbaren Clipping-/Überbreitenbefund bestätigt; kein CSS-Fix war nötig
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-GAMEPLAY-VENUE-BENEFITS-CONTRACT-AUDIT`
+- **Start-/Release-Qualität:** PR #244 hat mechanische Venue-Boni ohne eigenen Fachvertrag gesperrt; PR #245 hat das read-only Betriebsprofil auf genau fünf bestätigte Ortswerte aus der bestehenden Property-Upgrade-Projection begrenzt
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-VENUE-OPERATING-PROFILE-READONLY`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -240,40 +240,54 @@
 - [x] kein reproduzierbarer Darstellungsbefund; deshalb kein CSS-/Layout-Fix und keine Produktlogikänderung
 - [x] PR #242 · Head `bc7ebccd34f3ef2b63b7e73c87dc945a2b20a11a` · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815`
 
+## 0.8.8-GAMEPLAY-VENUE-BENEFITS-CONTRACT-AUDIT
+- [x] drei Nutzenmodelle gegen bestehende Property-/Upgrade-/Event-/Projection-Autoritäten geprüft
+- [x] mechanische Event-, Kosten-, Kapazitäts- und Ertragsboni ohne neuen katalogisierten Fachvertrag auf NO-GO gesetzt
+- [x] read-only Betriebsprofil aus bestätigten Besitz-/Ausbauwerten als kleinster sicherer Produkt-Slice freigegeben
+- [x] keine Runtime-, Balance-, Save-, Journal-, Browser- oder Gameplay-Produktlogik geändert
+- [x] PR #244 · Head `4f45e28c760451d662b2eb576d96e868c106f8b6` · Merge `bcd3fb30b91cfdf638a60163c9c33d6c9ba176a4`
+
+## 0.8.8-UX-VENUE-OPERATING-PROFILE-PRESENTATION-CONTRACT
+- [x] Anzeigequelle auf exakt `property_upgrades.entries[*].effective_values` begrenzt
+- [x] erlaubte Werte: Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen
+- [x] keine zweite Browserberechnung, keine neue Persistenz und keine Ableitung mechanischer Boni
+- [x] nicht besessene Locations dürfen kein eigenes Betriebsprofil vortäuschen
+- [x] PR #245 · Head `099058d543149176f1870e821fa1cd75a69f3095` · Merge `f9357d16690675e282bffedd0baa78958079606e`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-GAMEPLAY-VENUE-BENEFITS-CONTRACT-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-UX-VENUE-OPERATING-PROFILE-READONLY
 
 ## Fortschritt
 
-**Neuer Gameplay-Owner gezogen; Implementierung noch 0 %.** Nach der langen Economy-/QA-Kette ist `POOL-UX-014` abgeschlossen. `POOL-PROPERTY-003` wird zunächst ausschließlich als Contract-Audit geöffnet, damit ein sichtbarer Venue-/Betriebsnutzen nicht als zweite Property- oder Bonusengine entsteht.
+**Vertrag und Datenquelle remote validiert; sichtbare Implementierung noch 0 %.** `POOL-PROPERTY-003` bleibt bewusst `PULLED`, bis das freigegebene read-only Betriebsprofil tatsächlich in der bestehenden Property-/Location-Ansicht sichtbar ist.
 
 ## Ziel
 
-Prüfen, ob die vorhandenen Property-, Event-, Availability- und Projection-Verträge einen kleinen, nachvollziehbaren Venue-Benefit/Betriebsprofil-Vertrag tragen können, ohne Bonuswerte im Browser zu erfinden oder bestehende Ownership-/Upgrade-Regeln zu duplizieren.
+Für besessene Orte die fünf bestätigten Ortswerte **Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen** aus der bestehenden Property-Upgrade-Projection verständlich gruppiert anzeigen, ohne neue Fachwerte oder Wirkungen zu erzeugen.
 
 ## Abnahme
 
-- [ ] bestehende Property-/Upgrade-/Event-/Availability-Verträge gezielt lesen; kein Repository-Breitenscan
-- [ ] mindestens drei mögliche Nutzenarten gegen vorhandene Autoritäten vergleichen, z. B. Event-Verfügbarkeit, bestätigte Kosten-/Kapazitätswirkung oder rein narrative Venue-Identität
-- [ ] nur Nutzen zulassen, dessen Quelle und Zuständigkeit bereits kanonisch belegbar oder mit einem einzigen kleinen Domain-Vertrag sauber ergänzbar ist
-- [ ] keine versteckten Browserboni, keine zweite Property-State-Engine und keine Systemzeit-Autorität einführen
-- [ ] Save-/Journal-/Replay-Folgen ausdrücklich dokumentieren, bevor produktive Werte entstehen
-- [ ] Ergebnis als Contract-Audit mit klarer GO/NO-GO-Entscheidung und fokussierter Regression absichern
-- [ ] Laienhilfe erklären, was ein Venue Benefit später bedeuten darf und was nicht
+- [ ] bestehende Property-/Location-Zielstelle und ihren Renderer gezielt lesen; kein zweites Property-Panel und kein Repository-Breitenscan
+- [ ] ausschließlich `property_upgrades.entries[*].effective_values` bzw. dieselbe vorhandene Projection als Quelle nutzen
+- [ ] genau die fünf bestätigten Ortswerte darstellen; keine zweite Berechnung im Browser
+- [ ] nicht besessene Locations zeigen kein eigenes Betriebsprofil
+- [ ] keine Event-Verfügbarkeit, Kosten, Kapazität, Ertrag oder andere mechanische Boni aus den Werten ableiten
+- [ ] keine neue Persistenz, Journal-/Replay-Daten oder Browserautorität einführen
+- [ ] passende Presentation-Regression ergänzen und Laienhilfe um die sichtbare Bedeutung der fünf Werte erweitern
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ## Architektur- und Sicherheitsgrenzen
 
 - Property Ownership und Upgrades bleiben in ihren vorhandenen Domain-/Application-Verträgen.
-- Event-Verfügbarkeit darf nicht durch reine Browserdarstellung verändert werden.
-- Neue Gameplaywerte benötigen einen katalogisierten, replaybaren Fachvertrag; kein lokaler UI-Bonus.
-- Keine Miete, kein Verkauf und keine laufende Betriebsökonomie in diesem Audit.
+- Das Betriebsprofil ist ausschließlich read-only Presentation.
+- Texte und verständliche Bezeichnungen bleiben in der Presentation-/Textschicht.
+- Mechanische Venue Benefits benötigen später einen eigenen katalogisierten Domain-/Application-Vertrag.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md`](docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
