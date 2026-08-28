@@ -10,7 +10,7 @@ Bei jedem bestätigten Kauf oder Verkauf merkt sich das Spiel bereits:
 - ob Geld abgegangen oder hinzugekommen ist,
 - welche bestätigte Transaktion dazu gehört.
 
-Darum kann später eine einfache Liste wie „gekauft / verkauft / Menge / Preis“ angezeigt werden, ohne etwas neu auszurechnen oder zu erfinden.
+Darum kann eine einfache Liste wie „gekauft / verkauft / Menge / Preis“ angezeigt werden, ohne etwas neu auszurechnen oder zu erfinden.
 
 ## Warum zeigt das Spiel noch keinen Gewinn oder Verlust?
 
@@ -24,8 +24,14 @@ Beispiel:
 
 Je nachdem, welcher Kauf zum Verkauf gehört, wären 50,00 € oder 25,00 € Gewinn möglich. Das Spiel darf hier nicht raten.
 
+## Was ist als Nächstes sicher möglich?
+
+Der Audit aus PR #236 bestätigt: Der nächste kleine Ausbau darf ausschließlich die bereits bestätigten Käufe und Verkäufe **read-only** im bestehenden Economy-Bereich anzeigen. Sinnvoll sind Aktion, Equipment, Menge und tatsächlicher Stückpreis.
+
+Die Liste darf nichts am Markt verändern und keinen Gewinn ausdenken. Eine spätere Gewinnanzeige braucht zuerst eine eindeutige Kostenbasisregel in der Fachlogik.
+
 ## Was bedeutet das für dich?
 
-Ein späterer Handelsverlauf kann deine bestätigten Käufe und Verkäufe zuverlässig anzeigen. Eine Gewinnanzeige kommt erst dann, wenn dafür eine eindeutige Spielregel existiert.
+Du bekommst damit als nächsten sinnvollen Ausbau mehr Überblick über deine echten Handelsaktionen, ohne dass die Oberfläche aus alten Preisen neue Spielregeln erfindet.
 
 **Merksatz:** Historie anzeigen = sicher. Kostenbasis raten = verboten.
