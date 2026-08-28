@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #238 · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
+- **Status-Sync-Anker:** PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0`
 
 ## Statuswerte
 
@@ -41,6 +41,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E:** PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0` · echter Chromium-Pfad beweist leere wirksame Historie, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster; keine neue Economylogik
 - **0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY:** PR #238 · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079` · bestehender Equipment-Bereich zeigt höchstens die letzten acht wirksamen bestätigten Käufe/Verkäufe mit Aktion, Equipment, Menge und tatsächlichem Stückpreis; kompensierte Paare werden ausgeblendet; keine Kostenbasis oder Gewinnberechnung
 - **0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT:** PR #236 · Merge `08b1bccba3704722143c4669629d021d9cce8598` · bestehender Ledger trägt bestätigte Kauf-/Verkaufshistorie mit tatsächlichem Stückpreis; Kostenbasis und Gewinn/Verlust bleiben mangels Lot-Regel gesperrt; keine Produktlogik geändert
 - **0.8.8-QA-JOB-PAYOUT-CONTEXT-DECORATION-WAIT:** PR #234 · Merge `57a78efecb5aa312fdad595dcae5a8352bef63ec` · echter Chromium-Nachweis wartet deterministisch auf vollständig dekorierte Jobkarten; keine Produkt- oder Gameplaylogik geändert
@@ -140,7 +141,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-UX-012` | `DONE` | Runtime-owned strategische Führung | PR #229: Job-Lohnreduktion und Event-Blocker als getrennte sichere Fakten bestätigt; kein globaler Aggregator ohne Runtime-Priorität |
 | `POOL-UX-013` | `DONE` | Job-Lohn-Kontexthinweis | PR #231 produktiv; PRs #232/#234 realer Chromium-Nachweis und Lade-Reihenfolge-Härtung; keine Recovery-Empfehlung oder Browserberechnung |
 | `POOL-ECON-010` | `DONE` | Equipment-Handelsverlauf | PR #238: letzte acht wirksamen bestätigten `buy`/`sell`-Buchungen read-only im bestehenden Economy-Bereich; kompensierte Paare ausgeblendet; keine Gewinn-/Kostenbasislogik |
-| `POOL-QA-018` | `PULLED` | Equipment-Handelsverlauf Browser E2E | echten Chromium-Pfad für leere Historie, Kauf, Verkauf, Compensation-Filter, kleines Fenster und Hohen Kontrast absichern; keine zweite Browser- oder Economyengine |
+| `POOL-QA-018` | `DONE` | Equipment-Handelsverlauf Browser E2E | PR #240: echter Chromium-Nachweis für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, kleines Fenster und Hohen Kontrast; keine neue Economylogik |
+| `POOL-UX-014` | `PULLED` | Equipment-Handelsverlauf Dichte-/Lesbarkeitsaudit | acht sichtbare Einträge, lange Equipment-Namen, große Schrift, Hohen Kontrast und kleines Fenster prüfen; nur bei reproduzierbarem Befund Darstellung ändern |
 
 ---
 
@@ -156,4 +158,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-ECON-010` ist nach PR #238 vollständig abgeschlossen: Die read-only Equipment-Handelshistorie ist produktiv sichtbar und bleibt strikt an bestätigte Ledgerdaten gebunden. Als nächster Owner wird `POOL-QA-018` gezogen: Ein kleiner echter Chromium-E2E soll leere Historie, realen Kauf, realen Verkauf, korrekt ausgeblendete Kompensationspaare sowie kleines Fenster und Hohen Kontrast beweisen. Kostenbasis und Gewinn-/Verlustlogik bleiben weiterhin außerhalb dieses QA-Slices.
+`POOL-QA-018` ist nach PR #240 vollständig abgeschlossen: Der vorhandene Equipment-Handelsverlauf ist im echten Chromium für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster belegt. Als nächster Owner wird `POOL-UX-014` gezogen: Ein kleiner Dichte-/Lesbarkeitsaudit prüft acht sichtbare Einträge, lange Equipment-Namen und große Schrift im vorhandenen Layout. Erst ein reproduzierbarer Befund darf einen Presentation-Patch auslösen; Kostenbasis und Gewinn-/Verlustlogik bleiben außerhalb dieses Slices.
