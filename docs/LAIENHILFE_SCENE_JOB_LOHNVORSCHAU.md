@@ -22,6 +22,21 @@ Der Browser kann weiterhin nur den `job_id` wählen. Er kann weder Energie, Lohn
 
 Der Hinweis ist **nur eine Erklärung des aktuellen Lohns**. Er empfiehlt nicht automatisch eine Regenerationsaktion, startet nichts selbst und entscheidet nicht, was du als Nächstes tun sollst.
 
+## Wie wird die Anzeige automatisch geprüft?
+
+Die Release-Prüfung startet einen echten Chromium-Browser mit einem isolierten Testspielstand. Der Testcharakter besitzt dabei **8 Energie**. Dadurch gibt es im selben echten Jobkatalog sowohl Jobs mit vollem Lohn als auch Jobs mit reduziertem Lohn.
+
+Der Browser muss dabei gleichzeitig beweisen:
+
+- reduzierte Jobkarten zeigen den Erklärungstext und den aktuellen Lohn;
+- Volllohn-Jobkarten zeigen den Reduktionshinweis nicht;
+- der Erklärungstext bleibt auch im zugänglichen Button-Text (`aria-label`) erhalten;
+- die Jobkarten passen in ein kleines Fenster;
+- der Test läuft mit eingeschaltetem **Hohen Kontrast**;
+- aus dem Hinweis wird weder eine Recovery-Empfehlung noch eine automatische Aktion.
+
+Der Test liest dabei dieselbe `/api/state`-Projektion wie die echte Oberfläche. Es gibt keine zweite Lohnberechnung im Browser-Test.
+
 ## Gilt das auch für den geheimen Freund?
 
 Ja. Manuelle Scene Jobs und der Assistent benutzen denselben `SceneJobService`. Deshalb gilt für beide dieselbe Erschöpfungs- und Lohnregel.
