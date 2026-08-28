@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0`
+- **Status-Sync-Anker:** PR #242 · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815`
 
 ## Statuswerte
 
@@ -41,6 +41,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT:** PR #242 · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815` · acht reale wirksame Trades mit langem Anzeigenamen, großer Schrift, Hohem Kontrast und 760×680-Fenster im echten Chromium geprüft; kein CSS-/Layout-Fix nötig, keine Produktlogik geändert
 - **0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E:** PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0` · echter Chromium-Pfad beweist leere wirksame Historie, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster; keine neue Economylogik
 - **0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY:** PR #238 · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079` · bestehender Equipment-Bereich zeigt höchstens die letzten acht wirksamen bestätigten Käufe/Verkäufe mit Aktion, Equipment, Menge und tatsächlichem Stückpreis; kompensierte Paare werden ausgeblendet; keine Kostenbasis oder Gewinnberechnung
 - **0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT:** PR #236 · Merge `08b1bccba3704722143c4669629d021d9cce8598` · bestehender Ledger trägt bestätigte Kauf-/Verkaufshistorie mit tatsächlichem Stückpreis; Kostenbasis und Gewinn/Verlust bleiben mangels Lot-Regel gesperrt; keine Produktlogik geändert
@@ -126,7 +127,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 |---|---|---|---|
 | `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
 | `POOL-WORLD-003` | `DONE` | District-Ereignisketten mit Erinnerung | Contract V1, zwei produktive Micro-Stories, read-only Kausalitätsprojection und Runtime→Browser-E2E bis PR #206 vollständig validiert |
-| `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
+| `POOL-PROPERTY-003` | `PULLED` | Venue Benefits / Betriebsprofil | zunächst Contract-Audit auf bestehenden Property-/Event-/Availability-Verträgen; keine Bonuswerte oder zweite Betriebsengine ohne belegte Zuständigkeit |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
 | `POOL-NET-002` | `DEPENDENCY` | Crew-Identity-Synchronisation | `POOL-NET-001` |
@@ -142,7 +143,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-UX-013` | `DONE` | Job-Lohn-Kontexthinweis | PR #231 produktiv; PRs #232/#234 realer Chromium-Nachweis und Lade-Reihenfolge-Härtung; keine Recovery-Empfehlung oder Browserberechnung |
 | `POOL-ECON-010` | `DONE` | Equipment-Handelsverlauf | PR #238: letzte acht wirksamen bestätigten `buy`/`sell`-Buchungen read-only im bestehenden Economy-Bereich; kompensierte Paare ausgeblendet; keine Gewinn-/Kostenbasislogik |
 | `POOL-QA-018` | `DONE` | Equipment-Handelsverlauf Browser E2E | PR #240: echter Chromium-Nachweis für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, kleines Fenster und Hohen Kontrast; keine neue Economylogik |
-| `POOL-UX-014` | `PULLED` | Equipment-Handelsverlauf Dichte-/Lesbarkeitsaudit | acht sichtbare Einträge, lange Equipment-Namen, große Schrift, Hohen Kontrast und kleines Fenster prüfen; nur bei reproduzierbarem Befund Darstellung ändern |
+| `POOL-UX-014` | `DONE` | Equipment-Handelsverlauf Dichte-/Lesbarkeitsaudit | PR #242: acht reale wirksame Trades, langer Anzeigename, große Schrift, Hoher Kontrast und 760×680-Fenster ohne Clipping/Überbreite; kein CSS-Fix nötig |
 
 ---
 
@@ -158,4 +159,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-QA-018` ist nach PR #240 vollständig abgeschlossen: Der vorhandene Equipment-Handelsverlauf ist im echten Chromium für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster belegt. Als nächster Owner wird `POOL-UX-014` gezogen: Ein kleiner Dichte-/Lesbarkeitsaudit prüft acht sichtbare Einträge, lange Equipment-Namen und große Schrift im vorhandenen Layout. Erst ein reproduzierbarer Befund darf einen Presentation-Patch auslösen; Kostenbasis und Gewinn-/Verlustlogik bleiben außerhalb dieses Slices.
+`POOL-UX-014` ist nach PR #242 vollständig abgeschlossen: Der maximale Handelsverlauf bleibt selbst mit acht realen wirksamen Trades, langem Anzeigenamen, Großer Schrift, Hohem Kontrast und kleinem Fenster ohne reproduzierbaren Clipping-/Überbreitenbefund; deshalb war kein CSS-Fix nötig. Als nächster Owner wird `POOL-PROPERTY-003` ausschließlich als Contract-Audit gezogen: Zuerst wird geprüft, ob vorhandene Property-, Event- und Availability-Verträge einen kleinen Venue-Benefit/Betriebsprofil-Vertrag tragen können. Ohne eindeutige Zuständigkeit entstehen keine Bonuswerte, keine zweite Betriebsengine und keine versteckte Browserautorität.

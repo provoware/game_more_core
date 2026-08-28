@@ -16,14 +16,14 @@ Der Status-Sync-Check liest dafür **nur** die Git-Historie und diese drei vorha
 
 Ein späterer QA-, Test- oder Robustheits-PR kann der neueste fachlich relevante Safe Merge sein, obwohl er **keine neue Spielfunktion** eingeführt hat.
 
-Beispiel: Die read-only Equipment-Handelshistorie wurde mit PR #238 als Spielfunktion abgeschlossen. PR #240 hat dieselbe bereits vorhandene Historie anschließend im echten Chromium für leeren Zustand, realen Kauf und Verkauf, Compensation-Filter, Hohen Kontrast und kleines Fenster geprüft.
+Die read-only Equipment-Handelshistorie wurde mit PR #238 als Spielfunktion abgeschlossen. PR #240 hat dieselbe Funktion anschließend im echten Chromium für leeren Zustand, realen Kauf und Verkauf, Compensation-Filter, Hohen Kontrast und kleines Fenster geprüft. PR #242 ging noch einen Schritt weiter und hat den **Maximalfall mit acht wirksamen Trades**, langem Anzeigenamen, Großer Schrift, Hohem Kontrast und kleinem Fenster geprüft.
 
-Darum sind jetzt zwei unterschiedliche Aussagen gleichzeitig richtig:
+Darum sind zwei unterschiedliche Aussagen gleichzeitig richtig:
 
 - **letzte validierte Spielfunktion:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` aus PR #238,
-- **aktueller Status-Sync-Anker:** PR #240, weil dies der neueste relevante und sicher gemergte QA-Stand ist.
+- **aktueller Status-Sync-Anker:** PR #242, weil dies der neueste relevante und sicher gemergte UX-/QA-Stand ist.
 
-Diese Trennung verhindert, dass eine reine Testhärtung fälschlich als neue Gameplayfunktion bezeichnet wird. Gleichzeitig bleibt die Projektübersicht technisch auf dem neuesten bestätigten Repository-Stand.
+Diese Trennung verhindert, dass ein reiner Dichte-/Browser-Audit fälschlich als neue Gameplayfunktion bezeichnet wird. Gleichzeitig bleibt die Projektübersicht technisch auf dem neuesten bestätigten Repository-Stand.
 
 ## Was bedeutet `STATUS SYNC FAIL`?
 
@@ -39,28 +39,28 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #240
+## Praktisches Beispiel nach PR #242
 
-PR #238 hat die read-only Equipment-Handelshistorie produktiv umgesetzt. PR #240 hat danach **keine neue Economy- oder Gameplayfunktion** eingeführt, sondern die vorhandene Anzeige im echten Chromium bewiesen. Geprüft wurden eine wirksam leere Historie, ein echter Kauf und Verkauf, der gespeicherte Ausführungspreis, korrekt ausgeblendete Rückbuchungspaare sowie Hoher Kontrast und ein kleines Fenster.
+PR #242 hat keine neue Economy- oder Gameplayfunktion eingeführt. Der vorhandene Chromium-Harness wurde nur auf den maximalen Dichtefall erweitert. Acht reale wirksame Trades wurden gemeinsam mit einem langen Anzeigenamen, Großer Schrift, Hohem Kontrast und einem 760×680-Fenster geprüft.
 
-Damit gilt nach der Statuskorrektur:
+Der Befund war grün: **kein reproduzierbares Clipping, keine horizontale Überbreite und kein CSS-Fix nötig.**
+
+Damit gilt nach dieser Statuskorrektur:
 
 - letzter validierter Feature-Stand bleibt `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` aus PR #238,
-- aktueller fachlich relevanter Status-Sync-Anker ist `PR #240 / 3d256f40…`.
-
-Der Status-Sync unterscheidet also bewusst zwischen **„Was wurde zuletzt als Spielfunktion gebaut?“** und **„Bis zu welchem relevanten Safe Merge ist das Repository bestätigt?“**.
+- aktueller fachlich relevanter Status-Sync-Anker ist `PR #242 / 5e112a6c…`.
 
 ### Was ist danach der echte nächste Inhaltsschritt?
 
-Als nächster kleiner UX-Slice wird zunächst nur ein **Dichte-/Lesbarkeitsaudit der Equipment-Historie** gezogen. Der vorhandene Renderer soll mit dem Maximalfall von acht sichtbaren Einträgen, langen Equipment-Namen, großer Schrift, Hohem Kontrast und kleinem Fenster geprüft werden.
+Nach der langen Economy-/QA-Kette wird mit `POOL-PROPERTY-003` wieder ein sichtbarer Gameplay-Bereich geöffnet – aber zuerst nur als **Venue-Benefits-/Betriebsprofil-Contract-Audit**.
 
-Wichtig: Das Audit darf nicht automatisch ein neues Layout erfinden. Nur wenn ein reproduzierbarer Clipping-, Überbreiten- oder Lesbarkeitsfehler nachgewiesen wird, folgt der kleinste passende Presentation-Fix. Ohne Befund wird sauber dokumentiert: **kein Fix nötig**.
+Das bedeutet in einfacher Sprache: Bevor ein eigener Ort später einen echten Vorteil bekommt, wird zuerst geprüft, **welcher bestehende Spielvertrag dafür zuständig sein darf**. Ein Vorteil darf nicht einfach im Browser erfunden werden. Event-Verfügbarkeit, Kosten-/Kapazitätswirkung oder eine rein narrative Venue-Identität müssen auf vorhandene Property-, Event-, Availability- und Projection-Verträge zurückgeführt werden können oder einen einzelnen klaren neuen Fachvertrag erhalten.
 
-Kostenbasis, FIFO/LIFO und Gewinn-/Verlustlogik bleiben weiterhin getrennt und sind kein Bestandteil dieses UX-Audits.
+Noch nicht Teil dieses Audits sind Miete, Verkauf, laufende Betriebsökonomie oder frei erfundene Bonuswerte.
 
 ### Merksatz für Laien
 
-**Der Feature-Stand sagt, welche Spielfunktion zuletzt hinzugekommen ist. Der Status-Sync-Anker sagt, bis zu welchem relevanten Safe Merge das Repository geprüft ist. Nach PR #240 ist deshalb PR #238 die letzte Spielfunktion und PR #240 der aktuelle QA-Anker.**
+**PR #238 ist weiterhin die letzte neue Spielfunktion. PR #242 ist der aktuelle geprüfte Repository-Anker. Der nächste Schritt prüft erst den Vertrag für Venue Benefits – gebaut wird erst danach, wenn klar ist, wer im Spiel dafür zuständig ist.**
 
 ## Für Entwickler
 
@@ -76,7 +76,7 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass Feature-Stand, Safe-Merge-Anker, Feature-Pool und nächste aktive Arbeit konsistent bleiben, ohne reine QA-Härtungen fälschlich als neue Spielfunktion zu klassifizieren.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass Feature-Stand, Safe-Merge-Anker, Feature-Pool und nächste aktive Arbeit konsistent bleiben, ohne reine QA-/UX-Härtungen fälschlich als neue Spielfunktion zu klassifizieren.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
