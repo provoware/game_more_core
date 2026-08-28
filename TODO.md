@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #229 · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT` · PR #229 · Head `40ec4d980d77dc1b801ece77fe65e4018a1eda37` · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
-- **Start-/Release-Qualität:** strategische Hinweise bleiben an bestätigte Runtime-/Projection-Fakten gebunden; kein globaler Recommendation-Aggregator und keine Browserpriorisierung eingeführt
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY`
+- **Status-Sync-Anker:** PR #231 · Merge `ffef7b170ee162651ccd5da239648445f1f93479`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY` · PR #231 · Head `79adca9dd77cb37f8bc31b861f8cc43e5dda2b66` · Merge `ffef7b170ee162651ccd5da239648445f1f93479`
+- **Start-/Release-Qualität:** reduzierter Joblohn wird ausschließlich aus bestätigtem Projection-Fakt direkt an der Jobkarte erklärt; keine Recovery-Empfehlung, Browserberechnung oder globale Priorisierung
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -189,41 +189,46 @@
 - [x] Audit, Laienhilfe, Changelog und Autoritätsregression aktualisiert
 - [x] PR #229 · Head `40ec4d980d77dc1b801ece77fe65e4018a1eda37` · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
 
+## 0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY
+- [x] reduzierter Joblohn wird direkt an der vorhandenen Jobkarte verständlich erklärt
+- [x] ausschließlich `payout_reduced_by_energy` und `effective_payout_cents` aus der bestehenden Projection verwendet
+- [x] bei vollem Lohn bleibt die bisherige Darstellung ohne Warnhinweis
+- [x] keine Recovery-Empfehlung, Browserberechnung, Auto-Aktion oder globale Priorisierung eingeführt
+- [x] bestehende Runtime-Owned-Guidance-Regression und Laienhilfe aktualisiert
+- [x] PR #231 · Head `79adca9dd77cb37f8bc31b861f8cc43e5dda2b66` · Merge `ffef7b170ee162651ccd5da239648445f1f93479`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY
+# Aktiv / nächste Iteration – 0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT
 
 ## Fortschritt
 
-**Bereit für einen kleinen Presentation-Slice.** Die Runtime-/Projection-Autorität ist bereits geklärt: `payout_reduced_by_energy` und `effective_payout_cents` sind bestätigte read-only Daten. Jetzt wird nur deren Bedeutung direkt an der bestehenden Jobkarte laienklarer erklärt.
+**Bereit für einen kleinen read-only Economy-Audit.** `POOL-ECON-010` prüft zuerst, ob vorhandene Ledger-Buchungen Kauf- und Verkaufspreise bereits eindeutig genug für eine verständliche Gewinn-/Verlust-Hilfe belegen.
 
 ## Ziel
 
-Bei reduziertem Joblohn einen kurzen, eindeutigen Kontext wie **„Aktueller Lohn reduziert – deine Energie reicht nicht für die volle Auszahlung“** an der bestehenden Jobkarte anzeigen, ohne daraus automatisch „Erholen“ oder eine andere Strategie zu empfehlen.
+Den bestehenden Equipment-Handelsverlauf auf eine kleinste read-only Darstellung prüfen, ohne zweite Marktengine, neue Preisautorität oder rückwirkend erfundene Anschaffungskosten.
 
 ## Abnahme
 
-- [ ] ausschließlich `payout_reduced_by_energy` bzw. den bereits projizierten effektiven Lohn als Quelle verwenden
-- [ ] reduzierte Auszahlung direkt und verständlich an der vorhandenen Jobkarte erklären
-- [ ] bei vollem Lohn keinen falschen Warnhinweis anzeigen
-- [ ] keine Energiegrenze, Auszahlung oder Recovery-Empfehlung im Browser neu berechnen
-- [ ] keine globale Next-Best-Action-Priorisierung und keinen neuen Recommendation-Aggregator einführen
-- [ ] vorhandene Jobkartenstruktur und Command-Payload unverändert lassen
-- [ ] fokussierte Presentation-Regression für reduzierten und vollen Lohn ergänzen
-- [ ] Laienhilfe nur dort erweitern, wo der neue Hinweis tatsächlich sichtbar wird
+- [ ] vorhandene Equipment-Kauf-/Verkaufs-Ledgerdaten und deren Identitäten zuerst prüfen
+- [ ] nur bestätigte Buchungen als Quelle zulassen
+- [ ] keine historischen Preise aus aktuellem Marktpreis zurückrechnen
+- [ ] keine zweite Kostenbasis-, Portfolio- oder Marktengine einführen
+- [ ] bei unzureichender Ledger-Evidenz den Feature-Slice ausdrücklich nicht freigeben
+- [ ] nur bei tragfähigem Vertrag einen getrennten kleinen Presentation-Slice planen
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ## Architektur- und Sicherheitsgrenzen
 
-- `SceneJobService` und `scene_jobs_projection` bleiben einzige Lohn-/Energieautorität.
-- Browser rendert den bereits gelieferten Zustand und berechnet keine Fachgrenze neu.
-- Kein automatisches Recovery, kein Auto-Job und keine versteckte Optimierungsfunktion.
-- Multi-Hinweis-Priorisierung bleibt zurückgestellt, bis mehrere gleichzeitig gültige Hinweise einen belegten Konflikt erzeugen.
+- Ledger und Economy-Service bleiben alleinige Finanzautorität.
+- Browser darf bestätigte Historie erklären, aber keine Anschaffungskosten oder Gewinne erfinden.
+- Marktpreis bleibt Runtime-/Domain-Autorität.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) · [`docs/RUNTIME_OWNED_STRATEGIC_GUIDANCE_AUDIT.md`](docs/RUNTIME_OWNED_STRATEGIC_GUIDANCE_AUDIT.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
