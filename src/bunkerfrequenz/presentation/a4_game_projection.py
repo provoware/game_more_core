@@ -86,6 +86,39 @@ def _street_approaches_projection(
     return result
 
 
+def _equipment_trade_history_projection(
+    economy: EconomyState,
+    *,
+    limit: int = 8,
+) -> list[dict[str, Any]]:
+    """Project recent effective buy/sell entries without inventing cost basis."""
+    compensated_ids = {
+        entry.get("compensates")
+        for entry in economy.ledger
+        if isinstance(entry.get("compensates"), str) and entry.get("compensates")
+    }
+    result: list[dict[str, Any]] = []
+    for sequence, entry in reversed(list(enumerate(economy.ledger, start=1))):
+        if entry.get("kind") not in {"buy", "sell"}:
+            continue
+        transaction_id = entry.get("transaction_id")
+        if entry.get("compensates") or transaction_id in compensated_ids:
+            continue
+        item_id = entry["item_id"]
+        result.append({
+            "sequence": sequence,
+            "transaction_id": transaction_id,
+            "kind": entry["kind"],
+            "item_id": item_id,
+            "label": economy.catalog[item_id]["label"],
+            "quantity": entry["quantity"],
+            "unit_price_cents": entry["unit_price_cents"],
+        })
+        if len(result) >= limit:
+            break
+    return result
+
+
 def build_a4_game_projection(
     state: Mapping[str, Any] | None,
     *,
@@ -225,6 +258,7 @@ def build_a4_game_projection(
                 for item_id, spec in economy.catalog.items()
             ],
             "ledger_entries": len(economy.ledger),
+            "trade_history": _equipment_trade_history_projection(economy),
         }
 
     if "incidents" in raw:
