@@ -9,7 +9,7 @@
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
   <img alt="Feature Stand Equipment Trade History Readonly validiert" src="https://img.shields.io/badge/Feature_Stand-EQUIPMENT--TRADE--HISTORY--READONLY_validiert-7dff00">
-  <img alt="Aktive Iteration Venue Operating Profile Readonly" src="https://img.shields.io/badge/Aktiv-VENUE--OPERATING--PROFILE--READONLY-00c2ff">
+  <img alt="Aktive Iteration Venue Benefit Mechanic Audit" src="https://img.shields.io/badge/Aktiv-VENUE--BENEFIT--MECHANIC--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,12 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #245 · Merge `f9357d16690675e282bffedd0baa78958079606e` |
+| **Status-Sync-Anker** | PR #252 · Merge `923d748f139f80b60d06c6b8922cff98c0d6d88e` |
 | **Validierter Feature-Stand** | ✅ `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 |
-| **Aktive Iteration** | 🟡 `0.8.8-UX-VENUE-OPERATING-PROFILE-READONLY` |
-| **Danach** | die fünf bestätigten Ortswerte nur für besessene Locations in der bestehenden Property-/Location-Ansicht sichtbar machen; keine mechanischen Boni oder zweite Berechnung |
+| **Aktive Iteration** | 🟡 `0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT` |
+| **Danach** | nur bei Audit-GO genau einen vorhandenen Venue-Wert über einen eindeutigen Domain-/Application-, Journal-/Replay- und Balancevertrag mechanisch wirksam machen; keine generische Bonusengine |
+| **Venue Profil Browser-Nachweis** | ✅ PR #251/#252: owned-only Profil im echten Chromium bei 760×680, Großer Schrift und Hohem Kontrast; alle fünf Bezeichnungen besitzen sichtbare numerische Werte, keine horizontale Überbreite |
+| **Venue Profil Sicherheit** | ✅ PR #247–#250: nur besessene Locations, verständliche Bezeichnungen, `textContent`, exakt fünf Felder, kein Browser-Fallback auf interne Ortswert-Map |
 | **Venue Presentation Contract** | ✅ PR #245: ausschließlich Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen aus `property_upgrades.entries[*].effective_values`; keine neue Persistenz oder Browserautorität |
 | **Venue Benefits Audit** | ✅ PR #244: read-only Betriebsprofil GO; Event-, Kosten-, Kapazitäts- und Ertragsboni ohne eigenen katalogisierten Fachvertrag NO-GO |
 | **Equipment-Historie Dichte** | ✅ PR #242: acht reale wirksame Trades, langer Anzeigename, Große Schrift, Hoher Kontrast und 760×680-Fenster ohne reproduzierbaren Clipping-/Überbreitenbefund; kein CSS-Fix nötig |
@@ -54,7 +56,7 @@
 | **Runtime-Owned Evidence** | ✅ derselbe bestätigte `property.purchase` ist in der vorhandenen Browser-Evidence an Location-, Event- und Ledger-Referenzen gebunden |
 | **Living World** | ✅ 16 Street-Begegnungen · vier Ansatzprofile · zwei E2E-belegte Street-Micro-Stories · zwei E2E-belegte District-Micro-Stories |
 | **Ranking** | ✅ Competitive Top 10 · bestätigte Wochen-/Monatszyklen · lokale Crew-Marke nur am eigenen Eintrag |
-| **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 · Runtime-Owned-Map-E2E bestätigt |
+| **Property** | ✅ 7 kaufbare Orte + 10 Ausbauarten, Level 1–3 · Runtime-Owned-Map-E2E · owned-only Fünf-Werte-Betriebsprofil im echten Chromium bestätigt |
 | **Berlin Ops Map** | ✅ 8 Districts · 12 Locations · read-only · lokaler Zoom/Pan · Randfall geprüft · `1:1` stellt Gesamtansicht wieder her |
 | **Scene Jobs** | ✅ persönliches Bargeld · Anti-Grind · Lohnvorschau · Stundenlohnvergleich · zwei Recovery-Wahlen |
 | **Assistent** | ✅ sichere Steuerung · bestätigte Rundenausführung · Freundschafts-Nachhall |
@@ -63,7 +65,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die letzte validierte **Spielfunktion** bleibt PR #238 mit der read-only Equipment-Handelshistorie. Der neueste fachlich relevante **Safe-Merge-Anker** ist PR #245. PR #244 hat mechanische Venue-Boni ohne eigenen Fachvertrag gesperrt; PR #245 begrenzt den freigegebenen read-only Betriebsprofil-Slice auf fünf bestätigte Werte der bestehenden Property-Upgrade-Projection. `POOL-PROPERTY-003` bleibt `PULLED`, bis diese Werte tatsächlich nur für besessene Locations sichtbar sind. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync geprüft.
+> Die letzte als vollständig abgeschlossene neue **Spielfunktion** geführte Stufe bleibt PR #238 mit der read-only Equipment-Handelshistorie. Der neueste fachlich relevante **Safe-Merge-Anker** ist PR #252. PRs #247–#252 haben das zuvor freigegebene Venue-Betriebsprofil sichtbar gemacht und bis zum echten Chromium-DOM gehärtet: ausschließlich eigene Locations, genau fünf bestätigte Werte, verständliche Bezeichnungen und sichtbare Zahlen. `POOL-PROPERTY-003` bleibt `PULLED`, weil eine mechanische Venue-Wirkung weiterhin einen eigenen geprüften Vertrag benötigt. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -117,6 +119,7 @@ LIVING DISTRICTS / BERLIN OPS MAP → HALL OF TRIBUTE
 - bestätigte District-Parent→Child-Kausalität wird in der vorhandenen Timeline read-only als `Folge von: …` erklärt; fehlende oder bezirksfremde Parents werden nicht erfunden
 - beide District-Micro-Stories sind zusätzlich gegen echten Runtime-/Persistenz-/Browserfluss validiert
 - Property Purchase + dreistufige Upgrades
+- read-only Venue-Betriebsprofil mit Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen nur für eigene Locations; echter Chromium-Nachweis inklusive numerischer Werte, Großer Schrift, Hohem Kontrast und engem Fenster
 - Berlin Ops Map mit lokaler read-only Bedienung und validiertem `1:1`-Rückweg aus dem begrenzten Randfokus
 - Competitive Top 10 + Wochen-/Monatszyklen
 - sichtbare read-only Ereignis-Timeline und Berlin-Erinnerungen
