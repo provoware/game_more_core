@@ -14,7 +14,7 @@ def _pool_row(pool: str, pool_id: str) -> str:
 
 
 class FeatureStatusConsistencyTests(unittest.TestCase):
-    def test_last_validated_feature_is_consistent_without_conflating_qa_anchor(self):
+    def test_last_validated_feature_is_consistent_without_conflating_audit_anchor(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -31,25 +31,25 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(f"**{iteration}:** PR #231", pool)
         self.assertIn("ffef7b170ee162651ccd5da239648445f1f93479", pool)
 
-    def test_latest_safe_merge_anchor_may_be_qa_without_relabeling_feature(self):
+    def test_latest_safe_merge_anchor_tracks_trade_history_audit_without_relabeling_feature(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         validation = status["remote_validation"]
         sync = status["status_sync"]
 
-        self.assertEqual(validation["pull_request"], 234)
-        self.assertEqual(validation["validated_head"], "80baa7ec9307a596dc4a6cd92098cfee6c8d5f2c")
-        self.assertEqual(validation["merged_commit"], "57a78efecb5aa312fdad595dcae5a8352bef63ec")
+        self.assertEqual(validation["pull_request"], 236)
+        self.assertEqual(validation["validated_head"], "df8e343f394f15737d166e61a91ec05dc70b4046")
+        self.assertEqual(validation["merged_commit"], "08b1bccba3704722143c4669629d021d9cce8598")
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
-        self.assertEqual(sync["anchor_pull_request"], 234)
+        self.assertEqual(sync["anchor_pull_request"], 236)
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
-        self.assertEqual(sync["anchor_iteration"], "0.8.8-QA-JOB-PAYOUT-CONTEXT-DECORATION-WAIT")
-        self.assertIn("Status-Sync-Anker:** PR #234", todo)
-        self.assertIn("Status-Sync-Anker:** PR #234", pool)
-        self.assertIn("**0.8.8-QA-JOB-PAYOUT-CONTEXT-DECORATION-WAIT:** PR #234", pool)
+        self.assertEqual(sync["anchor_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT")
+        self.assertIn("Status-Sync-Anker:** PR #236", todo)
+        self.assertIn("Status-Sync-Anker:** PR #236", pool)
+        self.assertIn("**0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT:** PR #236", pool)
         self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY")
 
     def test_validated_and_next_pool_items_have_single_current_owners(self):
@@ -72,29 +72,35 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-ECON-010"))
 
-    def test_current_status_describes_job_payout_context_and_next_trade_history_audit(self):
+    def test_current_status_describes_trade_history_audit_and_next_readonly_slice(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
+        economy = status["subsystems"]["economy"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
         sync = status["status_sync"]
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
-        self.assertEqual(status["current_focus"], "equipment_trade_history_audit")
+        self.assertEqual(status["active_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
+        self.assertEqual(status["current_focus"], "equipment_trade_history_readonly")
         self.assertIsNone(status["next_iteration"])
         self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY")
 
+        self.assertTrue(economy["equipment_trade_history_audit_validated"])
+        self.assertTrue(economy["equipment_trade_history_readonly_supported_by_ledger"])
+        self.assertEqual(economy["equipment_trade_history_source_kinds"], ["buy", "sell"])
+        self.assertIn("unit_price_cents", economy["equipment_trade_history_fields"])
+        self.assertFalse(economy["equipment_trade_history_realized_profit_supported"])
+        self.assertFalse(economy["equipment_trade_history_cost_basis_contract"])
+        self.assertFalse(economy["equipment_trade_history_compensates_is_cost_basis"])
+        self.assertFalse(economy["equipment_trade_history_product_ui_visible"])
+
+        self.assertIn("Rückbuchungen über `compensates` erkennen", todo)
+        self.assertIn("Original und Gegenbuchung", todo)
+        self.assertIn("kompensierte Historie", todo)
+
         self.assertTrue(presentation["scene_job_reduced_payout_context_clarity_validated"])
-        self.assertEqual(
-            presentation["scene_job_reduced_payout_context_source"],
-            "scene_jobs_projection.payout_reduced_by_energy",
-        )
-        self.assertFalse(presentation["scene_job_reduced_payout_context_recommends_recovery"])
-        self.assertFalse(presentation["scene_job_reduced_payout_context_browser_recalculation"])
-        self.assertTrue(presentation["runtime_owned_strategic_guidance_audit_validated"])
-        self.assertFalse(presentation["runtime_owned_strategic_guidance_global_aggregator_created"])
-        self.assertFalse(presentation["runtime_owned_strategic_guidance_browser_priority_engine"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
