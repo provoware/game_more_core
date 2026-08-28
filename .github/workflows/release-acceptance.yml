@@ -22,7 +22,7 @@ jobs:
           test ! -e state/current.json
           test ! -e journal/events.jsonl
       - name: Compile launcher and runtime
-        run: PYTHONPATH=src python3 -m compileall -q src tools/start_a4_game_client.py tools/start_a4_acceptance.py tools/job_payout_context_browser_e2e.py tools/equipment_trade_history_browser_e2e.py tests/release
+        run: PYTHONPATH=src python3 -m compileall -q src tools/start_a4_game_client.py tools/start_a4_acceptance.py tools/job_payout_context_browser_e2e.py tools/equipment_trade_history_browser_e2e.py tools/venue_operating_profile_browser_e2e.py tests/release
       - name: Fresh-checkout launcher acceptance
         run: PYTHONPATH=src python3 -m unittest discover -s tests/release -v
       - name: Real browser HTTP and UI responsiveness acceptance
@@ -31,5 +31,7 @@ jobs:
         run: PYTHONPATH=src python3 tools/job_payout_context_browser_e2e.py
       - name: Real browser Equipment trade history acceptance
         run: PYTHONPATH=src python3 tools/equipment_trade_history_browser_e2e.py
+      - name: Real browser Venue operating profile acceptance
+        run: PYTHONPATH=src python3 tools/venue_operating_profile_browser_e2e.py
       - name: Full gameplay restart recovery smoke
         run: PYTHONPATH=src python3 -m unittest tests.runtime.test_a4_first_run_smoke -v
