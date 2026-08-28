@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #234 · Merge `57a78efecb5aa312fdad595dcae5a8352bef63ec`
+- **Status-Sync-Anker:** PR #236 · Merge `08b1bccba3704722143c4669629d021d9cce8598`
 
 ## Statuswerte
 
@@ -41,6 +41,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT:** PR #236 · Merge `08b1bccba3704722143c4669629d021d9cce8598` · bestehender Ledger trägt bestätigte Kauf-/Verkaufshistorie mit tatsächlichem Stückpreis; Kostenbasis und Gewinn/Verlust bleiben mangels Lot-Regel gesperrt; keine Produktlogik geändert
 - **0.8.8-QA-JOB-PAYOUT-CONTEXT-DECORATION-WAIT:** PR #234 · Merge `57a78efecb5aa312fdad595dcae5a8352bef63ec` · echter Chromium-Nachweis wartet deterministisch auf vollständig dekorierte Jobkarten; keine Produkt- oder Gameplaylogik geändert
 - **0.8.8-QA-JOB-PAYOUT-CONTEXT-BROWSER-E2E:** PR #232 · Merge `17fa658362b98396e91b0d6a580971a7bc9bc275` · realer Chromium-Pfad belegt reduzierten und vollen Joblohn, aria-label, Hohen Kontrast und kleines Fenster
 - **0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY:** PR #231 · Merge `ffef7b170ee162651ccd5da239648445f1f93479` · reduzierter bestätigter Joblohn wird direkt an der vorhandenen Jobkarte erklärt; voller Lohn bleibt ohne Warnhinweis; keine Recovery-Empfehlung oder Browserberechnung
@@ -137,7 +138,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-UX-011` | `DONE` | Control-Deck Visual Hierarchy 3 | PR #226: Event-Steuerung über volle Arbeitsbreite; Status, nächste Runtime-Aktion und Blocker klar getrennt; High Contrast/Reduced Motion erhalten |
 | `POOL-UX-012` | `DONE` | Runtime-owned strategische Führung | PR #229: Job-Lohnreduktion und Event-Blocker als getrennte sichere Fakten bestätigt; kein globaler Aggregator ohne Runtime-Priorität |
 | `POOL-UX-013` | `DONE` | Job-Lohn-Kontexthinweis | PR #231 produktiv; PRs #232/#234 realer Chromium-Nachweis und Lade-Reihenfolge-Härtung; keine Recovery-Empfehlung oder Browserberechnung |
-| `POOL-ECON-010` | `PULLED` | Equipment-Handelsverlauf | zuerst vorhandenes Ledger auf belastbare Kauf-/Verkaufspreise und Identitäten auditieren; keine zweite Marktengine |
+| `POOL-ECON-010` | `PULLED` | Equipment-Handelsverlauf | Audit PR #236 bestätigt sichere read-only Historie aus `buy`/`sell`; nächster Slice zeigt Aktion, Equipment, Menge und tatsächlichen Stückpreis; Gewinn/Verlust bleibt ohne Kostenbasisvertrag gesperrt |
 
 ---
 
@@ -153,4 +154,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-UX-013` ist fachlich nach PR #231 abgeschlossen und durch PR #232 sowie PR #234 im echten Chromium-Pfad zusätzlich abgesichert. Der neueste relevante Safe-Merge-Anker ist deshalb PR #234, ohne dass daraus eine neue Spielfunktion entsteht. Als nächster Owner ist `POOL-ECON-010` gezogen: Zuerst wird ausschließlich geprüft, welche Kauf-/Verkaufspreise und Item-Identitäten das vorhandene Ledger bereits belastbar trägt. Erst danach darf über eine read-only Gewinn-/Verlust-Hilfe entschieden werden.
+`POOL-ECON-010` bleibt nach dem sicher gemergten Audit PR #236 bewusst `PULLED`: Der bestehende Ledger ist ausreichend für eine read-only Kauf-/Verkaufshistorie, aber nicht für eine eindeutige Gewinn-/Verlustberechnung. Der nächste produktive Slice ist deshalb `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY`: bestehende Economy-Fläche wiederverwenden, nur bestätigte `buy`/`sell`-Buchungen anzeigen und keine Kostenbasis erfinden.
