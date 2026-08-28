@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #234 · Merge `57a78efecb5aa312fdad595dcae5a8352bef63ec`
+- **Status-Sync-Anker:** PR #236 · Merge `08b1bccba3704722143c4669629d021d9cce8598`
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY` · PR #231 · Head `79adca9dd77cb37f8bc31b861f8cc43e5dda2b66` · Merge `ffef7b170ee162651ccd5da239648445f1f93479`
-- **Start-/Release-Qualität:** Job-Lohn-Kontext ist produktiv und zusätzlich über echten Chromium-Pfad abgesichert; PR #234 härtet die Lade-Reihenfolge des Acceptance-Tests, ohne Produktlogik zu verändern
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT`
+- **Start-/Release-Qualität:** Job-Lohn-Kontext bleibt produktiv; PR #236 bestätigt zusätzlich, dass der bestehende Equipment-Ledger eine read-only Kauf-/Verkaufshistorie mit tatsächlichen Ausführungspreisen trägt, aber noch keine eindeutige Gewinn-/Verlust-Kostenbasis
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -209,38 +209,48 @@
 - [x] direkte Presentation-Regression und Laienhilfe nachgezogen; keine Produktlogik geändert
 - [x] PR #234 · Head `80baa7ec9307a596dc4a6cd92098cfee6c8d5f2c` · Merge `57a78efecb5aa312fdad595dcae5a8352bef63ec`
 
+## 0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT
+- [x] bestätigte Kauf-/Verkaufsbuchungen tragen Item-ID, Menge, tatsächlichen Stückpreis, Budgetdelta und Transaktions-ID
+- [x] read-only Transaktionshistorie fachlich freigegeben
+- [x] realisierter Gewinn/Verlust wegen fehlender Kostenbasis-/Lot-Regel ausdrücklich nicht freigegeben
+- [x] `compensates` bleibt Rückbuchungsbezug und keine allgemeine Sell→Buy-Zuordnung
+- [x] fokussierte Runtime-Regression, Audit, Laienhilfe und Changelog dokumentieren die Grenze
+- [x] PR #236 · Head `df8e343f394f15737d166e61a91ec05dc70b4046` · Merge `08b1bccba3704722143c4669629d021d9cce8598`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY
 
 ## Fortschritt
 
-**Bereit für einen kleinen read-only Economy-Audit.** `POOL-ECON-010` prüft zuerst, ob vorhandene Ledger-Buchungen Kauf- und Verkaufspreise bereits eindeutig genug für eine verständliche Gewinn-/Verlust-Hilfe belegen.
+**Audit abgeschlossen, kleiner Presentation-Slice freigegeben.** `POOL-ECON-010` bleibt bis zur sichtbaren Umsetzung `PULLED`; der nächste Slice darf ausschließlich bereits bestätigte `buy`-/`sell`-Buchungen read-only erklären.
 
 ## Ziel
 
-Den bestehenden Equipment-Handelsverlauf auf eine kleinste read-only Darstellung prüfen, ohne zweite Marktengine, neue Preisautorität oder rückwirkend erfundene Anschaffungskosten.
+Die letzten bestätigten Equipment-Käufe und -Verkäufe im bestehenden Economy-Bereich mit Aktion, Equipment, Menge und tatsächlichem Stückpreis sichtbar machen, ohne Gewinnberechnung oder zweite Marktlogik.
 
 ## Abnahme
 
-- [ ] vorhandene Equipment-Kauf-/Verkaufs-Ledgerdaten und deren Identitäten zuerst prüfen
-- [ ] nur bestätigte Buchungen als Quelle zulassen
-- [ ] keine historischen Preise aus aktuellem Marktpreis zurückrechnen
-- [ ] keine zweite Kostenbasis-, Portfolio- oder Marktengine einführen
-- [ ] bei unzureichender Ledger-Evidenz den Feature-Slice ausdrücklich nicht freigeben
-- [ ] nur bei tragfähigem Vertrag einen getrennten kleinen Presentation-Slice planen
+- [ ] ausschließlich bestätigte Ledger-Buchungen der Typen `buy` und `sell` als Quelle verwenden
+- [ ] Item-ID über bestehenden Katalog in sichtbaren Namen auflösen, keine neuen Identitäten erfinden
+- [ ] Menge und `unit_price_cents` unverändert read-only darstellen
+- [ ] keine Kostenbasis, keinen Gewinn/Verlust und keinen historischen Preis aus aktuellem Marktpreis ableiten
+- [ ] vorhandenen Economy-Bereich wiederverwenden; kein zweites Handelsdashboard
+- [ ] fokussierte Presentation-Regression für leere und befüllte Historie ergänzen
+- [ ] Laienspielanleitung an der sichtbaren Funktion ergänzen
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ## Architektur- und Sicherheitsgrenzen
 
 - Ledger und Economy-Service bleiben alleinige Finanzautorität.
-- Browser darf bestätigte Historie erklären, aber keine Anschaffungskosten oder Gewinne erfinden.
+- Browser darf bestätigte Historie darstellen, aber keine Kostenbasis oder Gewinne erfinden.
 - Marktpreis bleibt Runtime-/Domain-Autorität.
+- Keine neue Portfolio-, Ledger- oder Marktengine.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/EQUIPMENT_TRADE_HISTORY_AUDIT.md`](docs/EQUIPMENT_TRADE_HISTORY_AUDIT.md) · [`docs/EQUIPMENT_TRADE_HISTORY_LAIENHILFE.md`](docs/EQUIPMENT_TRADE_HISTORY_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
