@@ -51,17 +51,16 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-010", "POOL-QA-006", "POOL-UX-008", "POOL-QA-011", "POOL-QA-013",
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
             "POOL-QA-017", "POOL-WORLD-003", "POOL-STREET-003", "POOL-ECON-009",
-            "POOL-STORY-002",
+            "POOL-STORY-002", "POOL-UX-010",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-010"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-011"))
 
-    def test_current_status_describes_story_audit_and_next_guidance_audit(self):
+    def test_current_status_describes_guidance_and_next_visual_hierarchy_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        living_world = status["subsystems"]["living_world"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
         sync = status["status_sync"]
@@ -70,25 +69,24 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(status["active_iteration"], todo)
         self.assertIn(status["active_iteration"], readme)
         self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "global_next_best_action_guidance_audit")
+        self.assertEqual(status["current_focus"], "control_deck_visual_hierarchy_3_audit")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 222)
-        self.assertEqual(validation["validated_head"], "719c86f8a68db5355625bfebaffa36c2a368c87f")
-        self.assertEqual(validation["merged_commit"], "008326acc726e9be513c97682293c4a26e932c3a")
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT")
-
-        self.assertTrue(living_world["street_tone_diversity_audit_validated"])
-        self.assertFalse(living_world["street_tone_diversity_story_003_released"])
-        self.assertEqual(living_world["street_tone_diversity_reserve_candidate"], "street.construction_detour")
-        self.assertEqual(living_world["street_tone_diversity_candidate_count"], 4)
-        self.assertFalse(living_world["street_tone_diversity_requires_new_persistence"])
-        self.assertIsNone(living_world["street_chain_next_audit"])
-        self.assertEqual(living_world["street_chain_micro_story_count"], 2)
-        self.assertEqual(living_world["street_chain_child_event_type"], "street.followup_resolved")
+        self.assertEqual(validation["pull_request"], 224)
+        self.assertEqual(validation["validated_head"], "4a6134ae7d56c8ef3ca2da65997d2201e541f051")
+        self.assertEqual(validation["merged_commit"], "9777fb10d1339ba69d672e7520946b08af915a8b")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE")
 
         self.assertTrue(presentation["next_action_attention_signal"])
-        self.assertEqual(presentation["next_action_source"], "enabled_runtime_event_action_dom")
+        self.assertEqual(
+            presentation["next_action_source"],
+            "first_run_or_enabled_runtime_event_action_dom_with_confirmed_blocker_copy",
+        )
+        self.assertTrue(presentation["next_action_guidance_validated"])
+        self.assertTrue(presentation["next_action_first_run_visible"])
+        self.assertTrue(presentation["next_action_confirmed_blocker_visible"])
+        self.assertFalse(presentation["next_action_browser_strategy_heuristics"])
+        self.assertFalse(presentation["next_action_auto_executes"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
@@ -126,7 +124,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-MAP-003": "`DONE`", "POOL-QA-017": "`DONE`",
             "POOL-WORLD-003": "`DONE`", "POOL-STREET-003": "`DONE`",
             "POOL-ECON-009": "`DONE`", "POOL-STORY-002": "`DONE`",
-            "POOL-UX-010": "`PULLED`",
+            "POOL-UX-010": "`DONE`", "POOL-UX-011": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
