@@ -126,7 +126,7 @@ reduziert=${{reducedRows.length}} · voll=${{fullRows.length}} · Energie={FIXTU
 
 
 def _passed(dom: str) -> bool:
-    return re.search(r"<body(?:\\s[^>]*)?>\\s*JOB_PAYOUT_CONTEXT_E2E: PASS(?:\\s|<)", dom, flags=re.IGNORECASE) is not None
+    return re.search(r"<body(?:\s[^>]*)?>\s*JOB_PAYOUT_CONTEXT_E2E: PASS(?:\s|<)", dom, flags=re.IGNORECASE) is not None
 
 
 def run() -> None:
