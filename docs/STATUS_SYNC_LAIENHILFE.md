@@ -16,12 +16,12 @@ Der Status-Sync-Check liest dafür **nur** die Git-Historie und diese drei vorha
 
 Ein späterer QA-, Test- oder Robustheits-PR kann der neueste fachlich relevante Safe Merge sein, obwohl er **keine neue Spielfunktion** eingeführt hat.
 
-Beispiel: Der Job-Lohn-Kontexthinweis wurde mit PR #231 als Spielfunktion abgeschlossen. PR #232 hat denselben bereits vorhandenen Hinweis im echten Chromium-Browser geprüft. PR #234 hat anschließend nur die Lade-Reihenfolge dieses Browsertests stabilisiert.
+Beispiel: Die read-only Equipment-Handelshistorie wurde mit PR #238 als Spielfunktion abgeschlossen. PR #240 hat dieselbe bereits vorhandene Historie anschließend im echten Chromium für leeren Zustand, realen Kauf und Verkauf, Compensation-Filter, Hohen Kontrast und kleines Fenster geprüft.
 
-Darum dürfen zwei Aussagen gleichzeitig richtig sein:
+Darum sind jetzt zwei unterschiedliche Aussagen gleichzeitig richtig:
 
-- **letzte validierte Spielfunktion:** `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY` aus PR #231,
-- **damaliger Status-Sync-Anker:** PR #234, weil dies zu diesem Zeitpunkt der neueste relevante und sicher gemergte QA-Stand war.
+- **letzte validierte Spielfunktion:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` aus PR #238,
+- **aktueller Status-Sync-Anker:** PR #240, weil dies der neueste relevante und sicher gemergte QA-Stand ist.
 
 Diese Trennung verhindert, dass eine reine Testhärtung fälschlich als neue Gameplayfunktion bezeichnet wird. Gleichzeitig bleibt die Projektübersicht technisch auf dem neuesten bestätigten Repository-Stand.
 
@@ -39,26 +39,28 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #238
+## Praktisches Beispiel nach PR #240
 
-PR #236 bestätigte zunächst nur, dass das vorhandene Economy-Ledger eine sichere read-only Handelshistorie tragen kann. PR #238 hat diese Funktion anschließend wirklich umgesetzt: Im bestehenden Equipment-Bereich werden jetzt die letzten acht wirksamen bestätigten Käufe und Verkäufe mit Aktion, Equipment, Menge und tatsächlichem Stückpreis angezeigt. Kompensierte Original-/Gegenbuchungspaare werden aus der normalen Historie ausgeblendet, Gewinn oder Kostenbasis werden nicht erfunden.
+PR #238 hat die read-only Equipment-Handelshistorie produktiv umgesetzt. PR #240 hat danach **keine neue Economy- oder Gameplayfunktion** eingeführt, sondern die vorhandene Anzeige im echten Chromium bewiesen. Geprüft wurden eine wirksam leere Historie, ein echter Kauf und Verkauf, der gespeicherte Ausführungspreis, korrekt ausgeblendete Rückbuchungspaare sowie Hoher Kontrast und ein kleines Fenster.
 
-Damit ist PR #238 wieder **beides zugleich**:
+Damit gilt nach der Statuskorrektur:
 
-- letzter validierter Feature-Stand `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY`,
-- aktueller fachlich relevanter Status-Sync-Anker `PR #238 / 52934e08…`.
+- letzter validierter Feature-Stand bleibt `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` aus PR #238,
+- aktueller fachlich relevanter Status-Sync-Anker ist `PR #240 / 3d256f40…`.
 
-Der vor dieser Statuskorrektur rote Status-Sync bedeutet deshalb nicht, dass die Handelsfunktion fehlerhaft ist. Er bedeutet nur: Die drei Projektübersichten standen noch auf dem früheren Audit PR #236 und müssen auf den bereits sicher gemergten Produktstand nachgezogen werden.
+Der Status-Sync unterscheidet also bewusst zwischen **„Was wurde zuletzt als Spielfunktion gebaut?“** und **„Bis zu welchem relevanten Safe Merge ist das Repository bestätigt?“**.
 
 ### Was ist danach der echte nächste Inhaltsschritt?
 
-Als nächster kleiner Qualitäts-Slice wird ein **echter Browser-E2E für die Handelshistorie** gezogen. Er soll im vorhandenen Chromium-Acceptance-Pfad vier Dinge beweisen: leere Historie, bestätigten Kauf, bestätigten Verkauf und korrekt ausgeblendete Kompensationspaare. Kleines Fenster und Hoher Kontrast sollen dabei mitgeprüft werden.
+Als nächster kleiner UX-Slice wird zunächst nur ein **Dichte-/Lesbarkeitsaudit der Equipment-Historie** gezogen. Der vorhandene Renderer soll mit dem Maximalfall von acht sichtbaren Einträgen, langen Equipment-Namen, großer Schrift, Hohem Kontrast und kleinem Fenster geprüft werden.
 
-Dieser nächste Test darf keine neue Markt-, Ledger- oder Gewinnlogik einführen. Eine spätere Gewinn-/Verlustanzeige bleibt weiterhin getrennt und braucht zuerst einen eindeutigen Kostenbasisvertrag.
+Wichtig: Das Audit darf nicht automatisch ein neues Layout erfinden. Nur wenn ein reproduzierbarer Clipping-, Überbreiten- oder Lesbarkeitsfehler nachgewiesen wird, folgt der kleinste passende Presentation-Fix. Ohne Befund wird sauber dokumentiert: **kein Fix nötig**.
+
+Kostenbasis, FIFO/LIFO und Gewinn-/Verlustlogik bleiben weiterhin getrennt und sind kein Bestandteil dieses UX-Audits.
 
 ### Merksatz für Laien
 
-**Der Status-Sync sagt, bis wohin das Repository sicher geprüft ist. Der Feature-Stand sagt, welche Spielfunktion zuletzt wirklich hinzugekommen ist. Nach PR #238 zeigen beide wieder auf denselben produktiven Stand.**
+**Der Feature-Stand sagt, welche Spielfunktion zuletzt hinzugekommen ist. Der Status-Sync-Anker sagt, bis zu welchem relevanten Safe Merge das Repository geprüft ist. Nach PR #240 ist deshalb PR #238 die letzte Spielfunktion und PR #240 der aktuelle QA-Anker.**
 
 ## Für Entwickler
 
