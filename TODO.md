@@ -231,16 +231,17 @@
 
 ## Ziel
 
-Die letzten bestätigten Equipment-Käufe und -Verkäufe im bestehenden Economy-Bereich mit Aktion, Equipment, Menge und tatsächlichem Stückpreis sichtbar machen, ohne Gewinnberechnung oder zweite Marktlogik.
+Die letzten bestätigten Equipment-Käufe und -Verkäufe im bestehenden Economy-Bereich mit Aktion, Equipment, Menge und tatsächlichem Stückpreis sichtbar machen, ohne Gewinnberechnung oder zweite Marktlogik. Rückbuchungen werden über `compensates` als solche erkannt und dürfen nicht wie zwei normale Handelsaktionen erscheinen.
 
 ## Abnahme
 
 - [ ] ausschließlich bestätigte Ledger-Buchungen der Typen `buy` und `sell` als Quelle verwenden
+- [ ] Rückbuchungen über `compensates` erkennen; Original und Gegenbuchung entweder gemeinsam klar als rückgängig markieren oder beide aus der normalen Handelsliste herausfiltern
 - [ ] Item-ID über bestehenden Katalog in sichtbaren Namen auflösen, keine neuen Identitäten erfinden
 - [ ] Menge und `unit_price_cents` unverändert read-only darstellen
 - [ ] keine Kostenbasis, keinen Gewinn/Verlust und keinen historischen Preis aus aktuellem Marktpreis ableiten
 - [ ] vorhandenen Economy-Bereich wiederverwenden; kein zweites Handelsdashboard
-- [ ] fokussierte Presentation-Regression für leere und befüllte Historie ergänzen
+- [ ] fokussierte Presentation-Regression für leere, befüllte und kompensierte Historie ergänzen
 - [ ] Laienspielanleitung an der sichtbaren Funktion ergänzen
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
@@ -248,6 +249,7 @@ Die letzten bestätigten Equipment-Käufe und -Verkäufe im bestehenden Economy-
 ## Architektur- und Sicherheitsgrenzen
 
 - Ledger und Economy-Service bleiben alleinige Finanzautorität.
+- `compensates` bleibt ausschließlich Rückbuchungsbezug; es wird weder als Kostenbasis noch als normale Sell→Buy-Zuordnung interpretiert.
 - Browser darf bestätigte Historie darstellen, aber keine Kostenbasis oder Gewinne erfinden.
 - Marktpreis bleibt Runtime-/Domain-Autorität.
 - Keine neue Portfolio-, Ledger- oder Marktengine.
