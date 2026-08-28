@@ -35,7 +35,7 @@ Wichtig: Die Anzeige berechnet **keine eigene Strategie** aus Energie, Geld, Mar
 
 **Hall of Tribute:** Zeigt bestätigte Ranglistenwerte. Ohne echte bestätigte Konkurrenz erfindet das Spiel keine Gegner.
 
-**Event-Steuerung:** Zeigt dir die nächste erlaubte Aktion für dein vorbereitetes Event. Ist etwas blockiert, steht der Grund direkt darunter und jetzt zusätzlich kompakt oben in der Leiste.
+**Event-Steuerung:** Dieser Bereich ist jetzt bewusst über die volle Arbeitsbreite hervorgehoben. Oben stehen die vier bestätigten Eckdaten des Events, darunter liegt die nächste freigegebene Aktion in einer deutlich getrennten Aktionsfläche. Ein Blocker bleibt direkt darunter sichtbar. Die stärkere Darstellung ändert keine Regel – sie macht nur den zentralen Fortschrittspfad schneller erfassbar.
 
 **Krise:** Bekannte Folgen stehen vor der Entscheidung sichtbar da. Erst dein Klick löst die gewählte Antwort aus.
 
@@ -53,4 +53,4 @@ Die technische ID ist die eindeutige interne Kennung deines Charakters. Sie ist 
 
 ## Spätere Verbesserungsidee
 
-Eine echte Empfehlung wie „erst erholen“ oder „jetzt handeln“ sollte erst dann ergänzt werden, wenn die Runtime dafür einen eigenen bestätigten Empfehlungshinweis liefert. Solange dieser Vertrag fehlt, bleibt die Oberfläche absichtlich bei sicheren Status- und Blockerinformationen und erfindet keine Strategie im Browser.
+Nach dem Event-Bereich sollte erst durch denselben gezielten Vergleich entschieden werden, ob ein zweiter Bereich wirklich einen ähnlich deutlichen Hierarchiebruch besitzt. Eine flächige Neugestaltung wäre schlechter als kleine, belegte Verbesserungen. Eine echte strategische Empfehlung wie „erst erholen“ bleibt außerdem weiterhin an einen späteren Runtime-owned Empfehlungshinweis gebunden.

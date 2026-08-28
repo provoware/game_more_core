@@ -85,6 +85,15 @@
     document.head.append(link);
   }
 
+  function ensureVisualHierarchy3Stylesheet() {
+    if (document.querySelector('link[data-visual-hierarchy-3="true"]')) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = assetUrl("visual_hierarchy_3.css");
+    link.dataset.visualHierarchy3 = "true";
+    document.head.append(link);
+  }
+
   function ensureFocusModule() {
     appendModule("control_deck_focus.js", "control-deck-focus");
   }
@@ -176,6 +185,7 @@
     load();
     apply();
     ensureMotionDepthStylesheet();
+    ensureVisualHierarchy3Stylesheet();
     ensureFocusModule();
     ensureDistrictBiographyModule();
     ensureFinanceStatementExportModule();
