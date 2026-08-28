@@ -2,6 +2,7 @@
 
 (function installSceneJobPayoutPreview() {
   const baseRenderSceneJobs = renderSceneJobs;
+  const reducedPayoutContext = "Aktueller Lohn reduziert – deine Energie reicht nicht für die volle Auszahlung.";
 
   function renderProjectedPayouts(sceneJobs, hasCharacter) {
     baseRenderSceneJobs(sceneJobs, hasCharacter);
@@ -21,7 +22,7 @@
 
       if (detail) {
         detail.textContent = reduced
-          ? `${job.duration_hours} h · Lohn bis zu ${money(job.payout_cents)} · aktuell ${money(effective)} · Energie ${signed(job.energy_delta)} · Stress ${signed(job.stress_delta)}`
+          ? `${job.duration_hours} h · Lohn bis zu ${money(job.payout_cents)} · aktuell ${money(effective)} · Energie ${signed(job.energy_delta)} · Stress ${signed(job.stress_delta)} · ${reducedPayoutContext}`
           : `${job.duration_hours} h · Lohn ${money(effective)} · Energie ${signed(job.energy_delta)} · Stress ${signed(job.stress_delta)}`;
       }
       if (run) {
@@ -31,7 +32,7 @@
         run.setAttribute(
           "aria-label",
           reduced
-            ? `${job.label}: aktuell ${money(effective)}, maximal ${money(job.payout_cents)}`
+            ? `${job.label}: aktuell ${money(effective)}, maximal ${money(job.payout_cents)}. ${reducedPayoutContext}`
             : `${job.label}: ${money(effective)}`
         );
       }
