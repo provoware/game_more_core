@@ -4,10 +4,12 @@ Ein eigener Ort darf später einen echten Nutzen haben. Wichtig ist aber: Das Sp
 
 Aktuell sind zwei Dinge sicher bestätigt: **Du besitzt den Ort** und **deine Ausbauten verändern bereits fünf Ortswerte**. Diese Werte dürfen deshalb in einem Betriebsprofil verständlich angezeigt werden.
 
+Das Betriebsprofil darf dabei nur diese bereits bestätigten Werte zeigen: **Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen**. Es berechnet nichts neu und verändert nichts am Spielstand.
+
 Noch nicht erlaubt sind automatische Vorteile wie „mehr Events“, „billigerer Betrieb“, „mehr Kapazität“ oder „laufender Gewinn“. Für solche Wirkungen fehlt noch eine eigene Spielregel, die Speichern, Wiederholen und Fehlerfälle eindeutig regelt.
 
 ## Merksatz
 
 **Anzeigen, was bestätigt ist: ja. Neue Wirkung erfinden: nein.**
 
-Der nächste sichere Schritt ist deshalb ein kleines, nur lesendes Betriebsprofil mit den vorhandenen Ortswerten. Erst danach sollte entschieden werden, ob einer dieser Werte tatsächlich eine neue Spielwirkung bekommen soll.
+Der nächste sichere Schritt ist deshalb eine kleine Anzeige dieser fünf Ortswerte an der bestehenden Property-/Location-Ansicht. Erst danach sollte entschieden werden, ob einer dieser Werte tatsächlich eine neue Spielwirkung bekommen soll.
