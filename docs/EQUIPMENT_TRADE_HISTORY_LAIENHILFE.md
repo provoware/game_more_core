@@ -1,26 +1,32 @@
 # Equipment-Handelsverlauf – einfache Erklärung
 
-## Was ist sicher gespeichert?
+## Was ist jetzt sichtbar?
 
-Bei jedem bestätigten Kauf oder Verkauf merkt sich das Spiel bereits:
+Im bestehenden Bereich **Equipment & Economy** erscheint unter dem Markt eine kleine Liste **„Letzte Käufe & Verkäufe“**.
 
-- welches Equipment betroffen war,
-- wie viele Stücke gehandelt wurden,
-- zu welchem tatsächlichen Stückpreis gehandelt wurde,
-- ob Geld abgegangen oder hinzugekommen ist,
-- welche bestätigte Transaktion dazu gehört.
+Sie zeigt höchstens die letzten acht wirksamen bestätigten Handelsbuchungen. Pro Eintrag siehst du:
 
-Darum kann eine einfache Liste wie „gekauft / verkauft / Menge / Preis“ angezeigt werden, ohne etwas neu auszurechnen oder zu erfinden.
+- **GEKAUFT** oder **VERKAUFT**,
+- das betroffene Equipment,
+- die gehandelte Menge,
+- den tatsächlichen Stückpreis dieser bestätigten Buchung,
+- die Buchungsnummer als einfache Reihenfolge im vorhandenen Ledger.
+
+Die Liste ist **nur Anzeige**. Sie startet keinen Kauf, keinen Verkauf und verändert weder Markt noch Inventar.
+
+## Woher kommen die Angaben?
+
+Das Spiel verwendet ausschließlich Daten, die der vorhandene Economy-Ledger bereits nach einer bestätigten Transaktion speichert: Equipment-ID, Menge und tatsächlichen Ausführungspreis. Die Anzeige berechnet keinen historischen Preis nach und verwendet nicht den heutigen Marktpreis als Ersatz.
 
 ## Was ist mit rückgängig gemachten Geschäften?
 
 Eine technische Rückbuchung kann ebenfalls wie ein Kauf oder Verkauf im Ledger stehen. Das Feld `compensates` zeigt, dass diese Buchung eine frühere Transaktion rückgängig macht.
 
-Darum darf die spätere Historie Original und Gegenbuchung **nicht wie zwei normale Geschäfte** darstellen. Beide müssen entweder klar als rückgängig markiert oder aus der normalen Handelsliste herausgehalten werden.
+Damit ein rückgängig gemachter Vorgang nicht wie zwei echte Handelsentscheidungen aussieht, blendet die normale Handelsliste **beide Seiten dieses Paares** aus: die ursprüngliche Buchung und ihre bestätigte Gegenbuchung.
 
 `compensates` sagt dabei nur: **Diese Buchung macht eine frühere Buchung rückgängig.** Es sagt nicht, welcher Einkauf später die Kostenbasis eines echten Verkaufs sein soll.
 
-## Warum zeigt das Spiel noch keinen Gewinn oder Verlust?
+## Warum zeigt das Spiel keinen Gewinn oder Verlust?
 
 Wenn du dasselbe Equipment mehrmals zu unterschiedlichen Preisen kaufst, ist noch nicht festgelegt, **welches gekaufte Stück** bei einem späteren Verkauf als Grundlage zählt.
 
@@ -30,16 +36,14 @@ Beispiel:
 - Kauf 2: 475,00 €
 - Verkauf: 500,00 €
 
-Je nachdem, welcher Kauf zum Verkauf gehört, wären 50,00 € oder 25,00 € Gewinn möglich. Das Spiel darf hier nicht raten.
+Je nach Zuordnung wären 50,00 € oder 25,00 € Gewinn möglich. Das Spiel darf hier nicht raten. Deshalb zeigt dieser Ausbau bewusst nur bestätigte Handelsfakten und **keine erfundene Rendite**.
 
-## Was ist als Nächstes sicher möglich?
+## Warum nur acht Einträge?
 
-Der Audit aus PR #236 bestätigt: Der nächste kleine Ausbau darf ausschließlich die bereits bestätigten Käufe und Verkäufe **read-only** im bestehenden Economy-Bereich anzeigen. Sinnvoll sind Aktion, Equipment, Menge und tatsächlicher Stückpreis.
+Die Liste soll im Control Deck schnell lesbar bleiben und keine zweite Kontoauszugs- oder Portfoliooberfläche werden. Die vollständigen Ledgerdaten bleiben unverändert im bestehenden Spielstand; die Projection wählt nur die jüngsten acht wirksamen Käufe/Verkäufe zur Anzeige aus.
 
-Rückgängig gemachte Geschäfte müssen dabei anhand von `compensates` korrekt behandelt werden. Die Liste darf nichts am Markt verändern und keinen Gewinn ausdenken. Eine spätere Gewinnanzeige braucht zuerst eine eindeutige Kostenbasisregel in der Fachlogik.
+## Später sinnvoll prüfen
 
-## Was bedeutet das für dich?
+Als nächster Qualitätsausbau kann ein echter Browser-E2E beweisen, dass leere Historie, reale Käufe/Verkäufe und kompensierte Paare auch im gerenderten Control Deck korrekt erscheinen. Eine Gewinn-/Verlustanzeige bleibt davon getrennt und braucht zuerst einen eigenen Kostenbasisvertrag in der Fachlogik.
 
-Du bekommst damit als nächsten sinnvollen Ausbau mehr Überblick über deine echten Handelsaktionen, ohne dass die Oberfläche aus alten Preisen oder Rückbuchungen neue Spielregeln erfindet.
-
-**Merksatz:** Historie anzeigen = sicher. Rückbuchungen als echte Trades ausgeben oder Kostenbasis raten = verboten.
+**Merksatz:** Historie anzeigen = bestätigte Fakten sichtbar machen. Gewinn raten oder Rückbuchungen als echte Trades zählen = verboten.

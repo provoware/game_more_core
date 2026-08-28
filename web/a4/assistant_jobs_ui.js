@@ -449,6 +449,48 @@
     });
   }
 
+  function renderEquipmentTradeHistory(economy, host) {
+    const section = document.createElement("section");
+    section.id = "equipment-trade-history";
+    section.className = "notice";
+    section.setAttribute("aria-labelledby", "equipment-trade-history-title");
+
+    const eyebrow = document.createElement("p");
+    eyebrow.className = "eyebrow";
+    eyebrow.textContent = "HANDELSVERLAUF // BESTÄTIGT";
+    const title = document.createElement("h3");
+    title.id = "equipment-trade-history-title";
+    title.textContent = "Letzte Käufe & Verkäufe";
+    const explanation = document.createElement("p");
+    explanation.textContent = "Nur wirksame bestätigte Käufe und Verkäufe. Rückgängig gemachte Paare werden ausgeblendet; Gewinn oder Verlust wird nicht geraten.";
+    const list = document.createElement("div");
+    list.className = "equipment-list";
+    list.setAttribute("aria-live", "polite");
+
+    const entries = Array.isArray(economy.trade_history) ? economy.trade_history : [];
+    if (entries.length === 0) {
+      const empty = document.createElement("p");
+      empty.textContent = "Noch kein wirksamer bestätigter Kauf oder Verkauf.";
+      list.append(empty);
+    } else {
+      for (const entry of entries) {
+        const row = document.createElement("article");
+        row.className = "equipment-row";
+        const info = document.createElement("div");
+        const heading = document.createElement("strong");
+        heading.textContent = `${entry.kind === "buy" ? "GEKAUFT" : "VERKAUFT"} · ${entry.label}`;
+        const detail = document.createElement("span");
+        detail.textContent = `Menge ${entry.quantity} · Stückpreis ${money(entry.unit_price_cents)} · Buchung #${entry.sequence}`;
+        info.append(heading, detail);
+        row.append(info);
+        list.append(row);
+      }
+    }
+
+    section.append(eyebrow, title, explanation, list);
+    host.append(section);
+  }
+
   function renderEconomyMarket(economy) {
     const host = document.getElementById("equipment-list");
     if (!host || !economy) {
@@ -498,6 +540,7 @@
       row.append(info, actions);
       host.append(row);
     }
+    renderEquipmentTradeHistory(economy, host);
   }
 
   renderSceneJobs = function renderSceneJobsWithAssistant(sceneJobs, hasCharacter) {
