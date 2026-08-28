@@ -51,31 +51,35 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-010", "POOL-QA-006", "POOL-UX-008", "POOL-QA-011", "POOL-QA-013",
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
             "POOL-QA-017", "POOL-WORLD-003", "POOL-STREET-003", "POOL-ECON-009",
-            "POOL-STORY-002", "POOL-UX-010",
+            "POOL-STORY-002", "POOL-UX-010", "POOL-UX-011",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-011"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-012"))
 
-    def test_current_status_describes_guidance_and_next_visual_hierarchy_audit(self):
+    def test_current_status_describes_visual_hierarchy_and_next_runtime_owned_guidance_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
         sync = status["status_sync"]
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
-        self.assertIn(status["active_iteration"], readme)
-        self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "control_deck_visual_hierarchy_3_audit")
+        self.assertEqual(status["current_focus"], "runtime_owned_strategic_guidance_audit")
         self.assertIsNone(status["next_iteration"])
 
-        self.assertEqual(validation["pull_request"], 224)
-        self.assertEqual(validation["validated_head"], "4a6134ae7d56c8ef3ca2da65997d2201e541f051")
-        self.assertEqual(validation["merged_commit"], "9777fb10d1339ba69d672e7520946b08af915a8b")
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE")
+        self.assertEqual(validation["pull_request"], 226)
+        self.assertEqual(validation["validated_head"], "829169c87d3e1ebfeca0d7758fecc8c7606a5b74")
+        self.assertEqual(validation["merged_commit"], "aa4fb893efd01e7060ee82b8e326e597975e495a")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-VISUAL-HIERARCHY-3")
+
+        self.assertTrue(presentation["visual_hierarchy_3_validated"])
+        self.assertEqual(presentation["visual_hierarchy_3_surface"], "event_panel")
+        self.assertTrue(presentation["visual_hierarchy_3_event_full_width"])
+        self.assertTrue(presentation["visual_hierarchy_3_separates_summary_action_blockers"])
+        self.assertTrue(presentation["visual_hierarchy_3_high_contrast_preserved"])
+        self.assertTrue(presentation["visual_hierarchy_3_reduced_motion_preserved"])
 
         self.assertTrue(presentation["next_action_attention_signal"])
         self.assertEqual(
@@ -83,8 +87,6 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "first_run_or_enabled_runtime_event_action_dom_with_confirmed_blocker_copy",
         )
         self.assertTrue(presentation["next_action_guidance_validated"])
-        self.assertTrue(presentation["next_action_first_run_visible"])
-        self.assertTrue(presentation["next_action_confirmed_blocker_visible"])
         self.assertFalse(presentation["next_action_browser_strategy_heuristics"])
         self.assertFalse(presentation["next_action_auto_executes"])
         self.assertFalse(presentation["browser_gameplay_authority"])
@@ -124,7 +126,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-MAP-003": "`DONE`", "POOL-QA-017": "`DONE`",
             "POOL-WORLD-003": "`DONE`", "POOL-STREET-003": "`DONE`",
             "POOL-ECON-009": "`DONE`", "POOL-STORY-002": "`DONE`",
-            "POOL-UX-010": "`DONE`", "POOL-UX-011": "`PULLED`",
+            "POOL-UX-010": "`DONE`", "POOL-UX-011": "`DONE`",
+            "POOL-UX-012": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
