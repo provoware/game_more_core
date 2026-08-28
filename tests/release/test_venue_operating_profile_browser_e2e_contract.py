@@ -30,6 +30,8 @@ class VenueOperatingProfileBrowserE2EContractTests(unittest.TestCase):
         self.assertIn('w.BunkerUIPrefs.set("largeText", true)', self.harness)
         self.assertIn('w.BunkerUIPrefs.set("highContrast", true)', self.harness)
         self.assertIn("owned.length !== 1", self.harness)
+        self.assertIn('owned[0].querySelector(":scope > div > span")', self.harness)
+        self.assertIn('style.visibility === "hidden"', self.harness)
         self.assertIn("Fremder Ort zeigt ein Besitz-Betriebsprofil", self.harness)
         self.assertIn("horizontale Überbreite", self.harness)
 
