@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a`
+- **Status-Sync-Anker:** PR #224 · Merge `9777fb10d1339ba69d672e7520946b08af915a8b`
 
 ## Statuswerte
 
@@ -41,6 +41,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE:** PR #224 · Merge `9777fb10d1339ba69d672e7520946b08af915a8b` · Erststart, freigegebene Runtime-Event-Aktion und bestätigte Blocker werden in der bestehenden Schnellleiste verständlich geführt; keine Energie-, Geld- oder Marktpreisheuristik im Browser
 - **0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a` · zwei vorhandene Street-Nachhalle gegen vier reale Parents geprüft; Story 003 bewusst nicht freigegeben; `street.construction_detour` bleibt nur Reservekandidat; keine Runtime-, Balance- oder Persistenzänderung
 - **0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e` · Jobs zeigen Stundenlohn und aktuellen Erschöpfungslohn; Equipment-Handel nutzt den bestehenden Runtime-Vertrag vollständig; aktueller Marktpreis und frei verkaufbarer Bestand kommen read-only aus der kanonischen Projection; responsive KPI-/Marktvisuals und Geldkreislauf-Führung ergänzt
 - **0.8.8-UX-TOOL-HELP-CLARITY:** PR #217 · Merge `12b001a731c0da5a1d98913676da9e48b0afd064` · zentrale Control-Deck-Hilfen in kurze Spielersprache übersetzt; `Bestätigt`, `Nur Anzeige` und `Sofort gespeichert` direkt erklärt
@@ -127,8 +128,8 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-QA-004` | `IDEA` | Main-Evidenz-Freshness-Gate | Main-Integrity-Provenienz wiederverwenden |
 | `POOL-MAP-003` | `DONE` | Map-Viewport-Miniübersicht | PR #190 Audit: `1:1`-Reset reicht als Rückweg; keine Miniübersicht auf Verdacht |
 | `POOL-QA-012` | `IDEA` | Status-Sync-PR-Autoprep | read-only Driftcheck muss sich zuerst im Alltag bewähren; niemals Direktwrite nach `main` |
-| `POOL-UX-010` | `PULLED` | Globale Spiel-Führung / Next Best Action 2 | nächster Slice startet als Audit des vorhandenen Runtime-Action-Signals; keine Browserautorität |
-| `POOL-UX-011` | `READY` | Control-Deck Visual Hierarchy 3 | vorhandene Panels, Map und bestätigte FX auf eine gemeinsame visuelle Sprache bringen; Reduced Motion/High Contrast erhalten |
+| `POOL-UX-010` | `DONE` | Globale Spiel-Führung / Next Best Action 2 | PR #224: Erststart, Runtime-Event-Aktion und bestätigte Blocker klar geführt; keine Browserstrategie |
+| `POOL-UX-011` | `PULLED` | Control-Deck Visual Hierarchy 3 | fokussierter Audit gegen bestehende Economy-Hierarchie; High Contrast/Reduced Motion erhalten |
 | `POOL-ECON-010` | `READY` | Equipment-Handelsverlauf | bestätigte Kauf-/Verkaufspreise aus vorhandenem Ledger read-only als Gewinn-/Verlust-Hilfe zeigen; keine zweite Marktengine |
 
 ---
@@ -145,4 +146,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-STORY-002` ist nach PR #222 abgeschlossen: Der Audit belegt, dass Story 001 sozial-technisch und Story 002 materiell-persönlich bereits klar verschiedene Nachhalle liefern; keiner der geprüften Kandidaten rechtfertigt derzeit Story 003 ohne neue Persistenzannahmen. Als nächster Owner ist `POOL-UX-010` gezogen: zuerst wird ausschließlich geprüft, wie das vorhandene Runtime-Next-Action-Signal zu einer global verständlichen Spielerführung erweitert werden kann, ohne neue Fachautorität im Browser.
+`POOL-UX-010` ist nach PR #224 abgeschlossen: Die globale Führung nutzt nur Erststart, freigegebene Runtime-Event-Aktion und bestätigte Blocker; strategische Browser-Heuristiken wurden bewusst verworfen. Als nächster Owner ist `POOL-UX-011` gezogen: zuerst wird die vorhandene Economy-Hierarchie gegen Event, Straße, Krise, Property, Map und Ranking verglichen und höchstens ein konkreter visueller Hierarchiebruch behoben.
