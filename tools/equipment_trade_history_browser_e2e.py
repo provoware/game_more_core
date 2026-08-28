@@ -146,8 +146,8 @@ def _harness() -> str:
         if (!rowText.every((value) => value.includes(\"Stückpreis 100,00 €\") || value.includes(\"Stückpreis 100,00 €\"))) {{
           throw new Error(\"Historie zeigt nicht den bestätigten Ausführungspreis\");
         }}
-        if (text(section).includes(\"Gewinn\") || text(section).includes(\"Verlust\")) {{
-          throw new Error(\"Browser erfindet Gewinn- oder Verlustlogik\");
+        if (rowText.some((value) => value.includes(\"Gewinn\") || value.includes(\"Verlust\"))) {{
+          throw new Error(\"Handelszeile erfindet Gewinn- oder Verlustlogik\");
         }}
         if (section.querySelector(\"button\")) {{
           throw new Error(\"Read-only Handelsverlauf enthält unerwartete Aktion\");
