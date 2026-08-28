@@ -1,0 +1,96 @@
+/* Visual Hierarchy 3: genau eine stärkere Ebene für den zentralen Event-Fortschritt. */
+#event-panel {
+  grid-column: 1 / -1;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(138deg, #17212a, #10161d 58%, #171b14);
+}
+
+#event-panel::after {
+  content: "";
+  position: absolute;
+  inset: -7rem -5rem auto auto;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-2) 22%, transparent), transparent 68%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+#event-panel > .summary-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .55rem;
+}
+
+#event-panel > .summary-grid > div {
+  min-width: 0;
+  border-color: #394654;
+  background: linear-gradient(160deg, #0d141b, #090d12);
+}
+
+#event-panel > .summary-grid strong {
+  overflow-wrap: anywhere;
+  color: #fff;
+}
+
+#event-panel > h3 {
+  margin: 1rem 0 .45rem;
+  padding-top: .9rem;
+  border-top: 1px solid #3a4652;
+  color: var(--accent-2);
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+#event-actions {
+  padding: .75rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, var(--line));
+  border-radius: .65rem;
+  background: linear-gradient(145deg, #0b1117, #10160d);
+  box-shadow: inset 0 1px #ffffff08, 0 .7rem 1.8rem #0004;
+}
+
+#event-actions button {
+  min-height: 56px;
+}
+
+#event-actions button.primary {
+  box-shadow: inset 0 -3px #0003;
+}
+
+#event-panel > #blockers {
+  margin-top: .5rem;
+  border: 1px solid #34414d;
+  border-left: 3px solid var(--accent-2);
+  border-radius: .45rem;
+  background: #090e13;
+}
+
+body.ui-high-contrast #event-panel {
+  background: #0d1014;
+}
+
+body.ui-high-contrast #event-actions,
+body.ui-high-contrast #event-panel > #blockers,
+body.ui-high-contrast #event-panel > .summary-grid > div {
+  border-color: var(--line-strong);
+}
+
+@media (max-width: 860px) {
+  #event-panel > .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  #event-panel > .summary-grid { grid-template-columns: 1fr; }
+  #event-actions { padding: .6rem; }
+  #event-actions button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #event-panel,
+  #event-actions,
+  #event-actions button { transition: none !important; animation: none !important; }
+}
