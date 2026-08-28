@@ -143,7 +143,7 @@ def build_property_upgrade_projection(
         entries.append({
             "location_id": location_id,
             "owned": owned,
-            "effective_values": deepcopy(effective),
+            "effective_values": deepcopy(effective) if owned else None,
             "upgrades": upgrades_out,
         })
 

@@ -6,10 +6,12 @@ Aktuell sind zwei Dinge sicher bestätigt: **Du besitzt den Ort** und **deine Au
 
 Das Betriebsprofil darf dabei nur diese bereits bestätigten Werte zeigen: **Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen**. Es berechnet nichts neu und verändert nichts am Spielstand.
 
+Neu abgesichert ist außerdem die Eigentumsgrenze: Bei **nicht besessenen Orten** werden diese fünf Werte nicht mehr als eigenes Betriebsprofil an die Property-Anzeige ausgegeben. Die vorhandenen Basiswerte bleiben intern für Karte und Bezirksdarstellung erhalten; daraus entsteht aber kein Besitz- oder Bonusversprechen.
+
 Noch nicht erlaubt sind automatische Vorteile wie „mehr Events“, „billigerer Betrieb“, „mehr Kapazität“ oder „laufender Gewinn“. Für solche Wirkungen fehlt noch eine eigene Spielregel, die Speichern, Wiederholen und Fehlerfälle eindeutig regelt.
 
 ## Merksatz
 
-**Anzeigen, was bestätigt ist: ja. Neue Wirkung erfinden: nein.**
+**Anzeigen, was bei deinem Ort bestätigt ist: ja. Bei fremden Orten Besitznutzen vortäuschen oder neue Wirkung erfinden: nein.**
 
-Der nächste sichere Schritt ist deshalb eine kleine Anzeige dieser fünf Ortswerte an der bestehenden Property-/Location-Ansicht. Erst danach sollte entschieden werden, ob einer dieser Werte tatsächlich eine neue Spielwirkung bekommen soll.
+Der nächste sichere UI-Schritt ist, die fünf Werte bei besessenen Orten mit verständlichen deutschen Bezeichnungen als klar getrenntes Betriebsprofil darzustellen. Erst danach sollte entschieden werden, ob einer dieser Werte tatsächlich eine neue Spielwirkung bekommen soll.

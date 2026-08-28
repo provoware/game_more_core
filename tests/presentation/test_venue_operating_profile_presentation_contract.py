@@ -15,7 +15,7 @@ class VenueOperatingProfilePresentationContractTests(unittest.TestCase):
             '_VALUE_KEYS = ("prestige", "audience_pull", "risk", "underground_factor", "utility")',
             self.projection,
         )
-        self.assertIn('"effective_values": deepcopy(effective)', self.projection)
+        self.assertIn('"effective_values": deepcopy(effective) if owned else None', self.projection)
         self.assertIn('"effective_values_by_location": effective_values_by_location', self.projection)
 
     def test_contract_reuses_projection_without_mechanical_bonus_authority(self):
@@ -25,6 +25,7 @@ class VenueOperatingProfilePresentationContractTests(unittest.TestCase):
         self.assertIn("keine Ableitung von Event-Verfügbarkeit, Kosten, Kapazität oder laufendem Ertrag", self.contract)
 
     def test_contract_is_owned_location_and_text_layer_safe(self):
+        self.assertIn("per Eintrag sichtbaren `effective_values` werden nur für besessene Locations ausgegeben", self.contract)
         self.assertIn("nicht besessene Locations dürfen kein eigenes Betriebsprofil vortäuschen", self.contract)
         self.assertIn("Text-/Presentation-Schicht", self.contract)
         self.assertIn("nicht in Domain- oder Runtime-Code", self.contract)
