@@ -25,6 +25,8 @@ Jede Jobkarte zeigt dir bereits vor der Entscheidung:
 
 Diese Werte kommen aus dem Spielvertrag auf der Runtime-Seite. Der Browser berechnet sie nicht selbst.
 
+Wenn deine bestätigte Energie für den vollen Lohn nicht reicht, zeigt die Karte zusätzlich **„Aktueller Lohn reduziert – deine Energie reicht nicht für die volle Auszahlung.“** Bei vollem Lohn erscheint dieser Hinweis nicht. So erkennst du direkt, ob der angezeigte Betrag bereits reduziert ist.
+
 ## Was passiert beim Klick auf „ARBEITEN“?
 
 Der Browser sendet nur die ID des ausgewählten Jobs. Lohn, Energie und Stress kann die Oberfläche nicht frei vorgeben.
