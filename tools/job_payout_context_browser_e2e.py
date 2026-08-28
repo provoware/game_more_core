@@ -68,8 +68,11 @@ def _harness() -> str:
       await waitFor(() => !text(d.getElementById(\"event-timeline-status\")).includes(\"Timeline wird \" + \"geladen\"), \"Timeline\");
       const rows = await waitFor(() => {{
         const found = Array.from(d.querySelectorAll(\"#jobs-list .equipment-row\"));
-        return found.length >= 5 ? found : null;
-      }}, \"Jobkarten\");
+        const decorated = found.length >= 5 && found.every((row) =>
+          row.dataset.payoutReducedByEnergy === \"true\" || row.dataset.payoutReducedByEnergy === \"false\"
+        );
+        return decorated ? found : null;
+      }}, \"dekorierte Jobkarten\");
 
       if (!w.BunkerUIPrefs || typeof w.BunkerUIPrefs.set !== \"function\") {{
         throw new Error(\"BunkerUIPrefs fehlt\");
