@@ -55,6 +55,12 @@ Es gibt weder Formel noch Cap noch Skalierung für einen mechanischen `audience_
 
 Der Scene-Job-Vertrag verbietet clientseitig eingespeiste Payout-/Effektmodifikatoren. `audience_pull` dort als schnellen Ersatz einzubauen würde ebenfalls den bestehenden Autoritätsvertrag umgehen.
 
+## Audit-Freshness-Guard
+
+Der NO-GO-Befund hängt bewusst von der **heutigen** Settlement-Oberfläche ab. Deshalb pinnt die fokussierte Regression jetzt nicht nur einzelne verbotene Namen, sondern die komplette für diese Entscheidung relevante Autoritätsfläche: erforderliche State-Blöcke, erlaubte Source Effects, Application-Ziele und Receipt-Invarianten.
+
+Ändert sich später einer dieser Vertragsbereiche, muss der Audit erneut bewertet werden. So kann eine neue Property-/Venue-Autorität nicht unbemerkt entstehen, während diese Dokumentation fälschlich weiter einen alten Zustand behauptet.
+
 ## Voraussetzungen für ein späteres GO
 
 Ein späterer mechanischer Einsatz von `audience_pull` darf erst GO werden, wenn **ein einzelner kanonischer Zielpfad** folgende Punkte gemeinsam definiert:
