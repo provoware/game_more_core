@@ -42,8 +42,17 @@ Je nach Zuordnung wären 50,00 € oder 25,00 € Gewinn möglich. Das Spiel dar
 
 Die Liste soll im Control Deck schnell lesbar bleiben und keine zweite Kontoauszugs- oder Portfoliooberfläche werden. Die vollständigen Ledgerdaten bleiben unverändert im bestehenden Spielstand; die Projection wählt nur die jüngsten acht wirksamen Käufe/Verkäufe zur Anzeige aus.
 
+## Wie wird das jetzt automatisch im echten Browser geprüft?
+
+Die Release-Prüfung startet denselben lokalen A4-Server und einen echten Chromium-Browser in zwei klar getrennten Zuständen:
+
+1. Zuerst enthält der bestätigte Testspielstand nur ein rückgängig gemachtes Kauf-/Gegenbuchungspaar. Die sichtbare Historie muss deshalb eindeutig **leer** bleiben.
+2. Danach werden über die echte Runtime ein Kauf und ein Verkauf bestätigt. Im Browser müssen genau diese wirksamen Trades als **GEKAUFT** und **VERKAUFT** mit dem gespeicherten Ausführungspreis erscheinen.
+
+Im selben Lauf werden **Hoher Kontrast** und ein kleines Fenster geprüft. Die Historienzeilen dürfen horizontal nicht über den sichtbaren Bereich hinausragen. Der Browser-Test selbst sendet keine Handelsbefehle und berechnet weder Kostenbasis noch Gewinn oder Verlust.
+
 ## Später sinnvoll prüfen
 
-Als nächster Qualitätsausbau kann ein echter Browser-E2E beweisen, dass leere Historie, reale Käufe/Verkäufe und kompensierte Paare auch im gerenderten Control Deck korrekt erscheinen. Eine Gewinn-/Verlustanzeige bleibt davon getrennt und braucht zuerst einen eigenen Kostenbasisvertrag in der Fachlogik.
+Nach dem echten Browser-Nachweis ist ein gezielter Lesbarkeitscheck mit acht Einträgen und langen Equipment-Namen sinnvoll. Eine Gewinn-/Verlustanzeige bleibt davon getrennt und braucht zuerst einen eigenen Kostenbasisvertrag in der Fachlogik.
 
 **Merksatz:** Historie anzeigen = bestätigte Fakten sichtbar machen. Gewinn raten oder Rückbuchungen als echte Trades zählen = verboten.
