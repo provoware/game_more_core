@@ -14,7 +14,7 @@ def _pool_row(pool: str, pool_id: str) -> str:
 
 
 class FeatureStatusConsistencyTests(unittest.TestCase):
-    def test_last_validated_feature_is_consistent_without_conflating_audit_anchor(self):
+    def test_last_validated_feature_tracks_productive_trade_history(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -22,35 +22,35 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         iteration = status["last_validated_feature_iteration"]
         latest_feature = status["validated_feature_history"][-1]
 
+        self.assertEqual(iteration, "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
         self.assertEqual(latest_feature["iteration"], iteration)
-        self.assertEqual(latest_feature["pull_request"], 231)
-        self.assertEqual(latest_feature["merged_commit"], "ffef7b170ee162651ccd5da239648445f1f93479")
+        self.assertEqual(latest_feature["pull_request"], 238)
+        self.assertEqual(latest_feature["merged_commit"], "52934e08dfc5c24e6b9c2933f6c53d8374018079")
         self.assertIn(f"Zuletzt remote validierte Feature-Stufe:** `{iteration}`", todo)
-        self.assertIn("PR #231", todo)
-        self.assertIn("ffef7b170ee162651ccd5da239648445f1f93479", todo)
-        self.assertIn(f"**{iteration}:** PR #231", pool)
-        self.assertIn("ffef7b170ee162651ccd5da239648445f1f93479", pool)
+        self.assertIn("PR #238", todo)
+        self.assertIn("52934e08dfc5c24e6b9c2933f6c53d8374018079", todo)
+        self.assertIn(f"**{iteration}:** PR #238", pool)
+        self.assertIn("52934e08dfc5c24e6b9c2933f6c53d8374018079", pool)
 
-    def test_latest_safe_merge_anchor_tracks_trade_history_audit_without_relabeling_feature(self):
+    def test_latest_safe_merge_anchor_tracks_productive_trade_history(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         validation = status["remote_validation"]
         sync = status["status_sync"]
 
-        self.assertEqual(validation["pull_request"], 236)
-        self.assertEqual(validation["validated_head"], "df8e343f394f15737d166e61a91ec05dc70b4046")
-        self.assertEqual(validation["merged_commit"], "08b1bccba3704722143c4669629d021d9cce8598")
+        self.assertEqual(validation["pull_request"], 238)
+        self.assertEqual(validation["validated_head"], "20b0ed21b97d16babd2108e76cecc25aaa32a889")
+        self.assertEqual(validation["merged_commit"], "52934e08dfc5c24e6b9c2933f6c53d8374018079")
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
-        self.assertEqual(sync["anchor_pull_request"], 236)
+        self.assertEqual(sync["anchor_pull_request"], 238)
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
-        self.assertEqual(sync["anchor_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT")
-        self.assertIn("Status-Sync-Anker:** PR #236", todo)
-        self.assertIn("Status-Sync-Anker:** PR #236", pool)
-        self.assertIn("**0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT:** PR #236", pool)
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY")
+        self.assertEqual(sync["anchor_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
+        self.assertIn("Status-Sync-Anker:** PR #238", todo)
+        self.assertIn("Status-Sync-Anker:** PR #238", pool)
+        self.assertIn("**0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY:** PR #238", pool)
 
     def test_validated_and_next_pool_items_have_single_current_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -67,12 +67,13 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
             "POOL-QA-017", "POOL-WORLD-003", "POOL-STREET-003", "POOL-ECON-009",
             "POOL-STORY-002", "POOL-UX-010", "POOL-UX-011", "POOL-UX-012", "POOL-UX-013",
+            "POOL-ECON-010",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-ECON-010"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-018"))
 
-    def test_current_status_describes_trade_history_audit_and_next_readonly_slice(self):
+    def test_current_status_describes_trade_history_and_next_browser_e2e(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         economy = status["subsystems"]["economy"]
@@ -82,10 +83,10 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
-        self.assertEqual(status["active_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
-        self.assertEqual(status["current_focus"], "equipment_trade_history_readonly")
+        self.assertEqual(status["active_iteration"], "0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E")
+        self.assertEqual(status["current_focus"], "equipment_trade_history_browser_e2e")
         self.assertIsNone(status["next_iteration"])
-        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY")
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
 
         self.assertTrue(economy["equipment_trade_history_audit_validated"])
         self.assertTrue(economy["equipment_trade_history_readonly_supported_by_ledger"])
@@ -94,14 +95,19 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertFalse(economy["equipment_trade_history_realized_profit_supported"])
         self.assertFalse(economy["equipment_trade_history_cost_basis_contract"])
         self.assertFalse(economy["equipment_trade_history_compensates_is_cost_basis"])
-        self.assertFalse(economy["equipment_trade_history_product_ui_visible"])
+        self.assertTrue(economy["equipment_trade_history_product_ui_visible"])
+        self.assertEqual(economy["equipment_trade_history_visible_limit"], 8)
+        self.assertTrue(economy["equipment_trade_history_compensated_pairs_filtered"])
 
-        self.assertIn("Rückbuchungen über `compensates` erkennen", todo)
-        self.assertIn("Original und Gegenbuchung", todo)
-        self.assertIn("kompensierte Historie", todo)
-
-        self.assertTrue(presentation["scene_job_reduced_payout_context_clarity_validated"])
+        self.assertTrue(presentation["equipment_trade_history_visible"])
+        self.assertEqual(presentation["equipment_trade_history_location"], "existing_equipment_economy_panel")
+        self.assertFalse(presentation["equipment_trade_history_browser_commands"])
+        self.assertFalse(presentation["equipment_trade_history_profit_calculation"])
         self.assertFalse(presentation["browser_gameplay_authority"])
+
+        self.assertIn("leere Handelshistorie", todo)
+        self.assertIn("kompensierte", todo)
+        self.assertIn("Hoher Kontrast", todo)
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
@@ -140,7 +146,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-ECON-009": "`DONE`", "POOL-STORY-002": "`DONE`",
             "POOL-UX-010": "`DONE`", "POOL-UX-011": "`DONE`",
             "POOL-UX-012": "`DONE`", "POOL-UX-013": "`DONE`",
-            "POOL-ECON-010": "`PULLED`",
+            "POOL-ECON-010": "`DONE`", "POOL-QA-018": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
