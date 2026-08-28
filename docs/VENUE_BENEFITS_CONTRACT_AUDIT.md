@@ -22,7 +22,7 @@ Prüfen, welcher kleine Venue-Nutzen auf bestehenden Autoritäten aufbauen kann,
 
 ## Save / Journal / Replay
 
-Für den freigegebenen read-only Betriebsprofil-Slice ist **keine** neue Persistenz nötig: Die Anzeige muss ausschließlich aus dem bereits bestätigten `properties`-/`property_upgrades`-State und deren vorhandenen Projections entstehen. Keine neuen Journaltypen, keine Systemzeit, keine Browserautorität.
+Für den freigegebenen read-only Betriebsprofil-Slice ist keine neue Persistenz nötig: Die Anzeige muss ausschließlich aus dem bereits bestätigten `properties`-/`property_upgrades`-State und deren vorhandenen Projections entstehen. Keine neuen Journaltypen, keine Systemzeit, keine Browserautorität.
 
 Ein späterer mechanischer Venue-Bonus benötigt dagegen vor Implementierung einen eigenen katalogisierten Domain-/Application-Vertrag einschließlich Zuständigkeit, Journal-/Replay-Semantik und gezielter Regression.
 
