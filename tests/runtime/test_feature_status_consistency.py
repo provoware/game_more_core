@@ -31,25 +31,25 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn("52934e08dfc5c24e6b9c2933f6c53d8374018079", todo)
         self.assertIn(f"**{iteration}:** PR #238", pool)
 
-    def test_latest_safe_merge_anchor_tracks_venue_profile_contract(self):
+    def test_latest_safe_merge_anchor_tracks_venue_profile_browser_proof(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         validation = status["remote_validation"]
         sync = status["status_sync"]
 
-        self.assertEqual(validation["pull_request"], 245)
-        self.assertEqual(validation["validated_head"], "099058d543149176f1870e821fa1cd75a69f3095")
-        self.assertEqual(validation["merged_commit"], "f9357d16690675e282bffedd0baa78958079606e")
+        self.assertEqual(validation["pull_request"], 252)
+        self.assertEqual(validation["validated_head"], "cf0727c81df0d6381f3a2db26f0e766f9cebe7d0")
+        self.assertEqual(validation["merged_commit"], "923d748f139f80b60d06c6b8922cff98c0d6d88e")
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
-        self.assertEqual(sync["anchor_pull_request"], 245)
+        self.assertEqual(sync["anchor_pull_request"], 252)
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
-        self.assertEqual(sync["anchor_iteration"], "0.8.8-UX-VENUE-OPERATING-PROFILE-PRESENTATION-CONTRACT")
-        self.assertIn("Status-Sync-Anker:** PR #245", todo)
-        self.assertIn("Status-Sync-Anker:** PR #245", pool)
-        self.assertIn("**0.8.8-UX-VENUE-OPERATING-PROFILE-PRESENTATION-CONTRACT:** PR #245", pool)
+        self.assertEqual(sync["anchor_iteration"], "0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES")
+        self.assertIn("Status-Sync-Anker:** PR #252", todo)
+        self.assertIn("Status-Sync-Anker:** PR #252", pool)
+        self.assertIn("**0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES:** PR #252", pool)
 
     def test_validated_and_next_pool_items_have_single_current_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -72,18 +72,19 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-PROPERTY-003"))
 
-    def test_current_status_describes_venue_contract_and_readonly_ui_slice(self):
+    def test_current_status_describes_browser_proven_profile_and_mechanic_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         economy = status["subsystems"]["economy"]
+        properties = status["subsystems"]["properties"]
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
         sync = status["status_sync"]
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
-        self.assertEqual(status["active_iteration"], "0.8.8-UX-VENUE-OPERATING-PROFILE-READONLY")
-        self.assertEqual(status["current_focus"], "venue_operating_profile_readonly")
+        self.assertEqual(status["active_iteration"], "0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT")
+        self.assertEqual(status["current_focus"], "venue_benefit_mechanic_audit")
         self.assertIsNone(status["next_iteration"])
         self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
 
@@ -92,19 +93,37 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertTrue(economy["equipment_trade_history_compensated_pairs_filtered"])
         self.assertFalse(economy["equipment_trade_history_realized_profit_supported"])
 
+        self.assertTrue(properties["venue_readonly_operating_profile_visible"])
+        self.assertTrue(properties["venue_readonly_operating_profile_browser_e2e_validated"])
+        self.assertTrue(properties["venue_readonly_operating_profile_numeric_values_validated"])
+        self.assertFalse(properties["mechanical_venue_bonuses_allowed"])
+
         self.assertTrue(presentation["venue_operating_profile_contract_validated"])
         self.assertEqual(
             presentation["venue_operating_profile_value_keys"],
             ["prestige", "audience_pull", "risk", "underground_factor", "utility"],
         )
         self.assertEqual(presentation["venue_operating_profile_source"], "property_upgrades.entries[*].effective_values")
+        self.assertTrue(presentation["venue_operating_profile_visible"])
+        self.assertTrue(presentation["venue_operating_profile_owned_locations_only"])
+        self.assertTrue(presentation["venue_operating_profile_labels_expanded"])
+        self.assertTrue(presentation["venue_operating_profile_text_content_only"])
+        self.assertFalse(presentation["venue_operating_profile_internal_map_fallback"])
+        self.assertTrue(presentation["venue_operating_profile_browser_e2e_validated"])
+        self.assertEqual(presentation["venue_operating_profile_browser_e2e_browser"], "chromium")
+        self.assertTrue(presentation["venue_operating_profile_browser_e2e_large_text"])
+        self.assertTrue(presentation["venue_operating_profile_browser_e2e_high_contrast"])
+        self.assertEqual(presentation["venue_operating_profile_browser_e2e_viewport"], "760x680")
+        self.assertTrue(presentation["venue_operating_profile_browser_e2e_horizontal_overflow_checked"])
+        self.assertTrue(presentation["venue_operating_profile_numeric_values_validated"])
         self.assertFalse(presentation["venue_operating_profile_mechanical_bonuses"])
         self.assertFalse(presentation["venue_operating_profile_new_persistence"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
-        self.assertIn("fünf bestätigten Ortswerte", todo)
-        self.assertIn("keine zweite Berechnung", todo)
-        self.assertIn("nicht besessene Locations", todo)
+        self.assertIn("mechanische Venue-Wirkung 0 %", todo)
+        self.assertIn("keine zweite Venue-Engine", todo)
+        self.assertIn("audience_pull", todo)
+        self.assertIn("utility", todo)
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
