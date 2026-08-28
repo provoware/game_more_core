@@ -22,6 +22,11 @@ ITEM_ID = "equipment.pa"
 UNIT_PRICE_CENTS = 10_000
 COMPENSATED_BUY_ID = "acceptance-trade-history-compensated-buy"
 COMPENSATION_ID = "acceptance-trade-history-compensation"
+DENSITY_LIMIT = 8
+LONG_DISPLAY_LABEL = (
+    "Mobiles Vierkanal-Hochleistungs-Soundsystem mit wetterfester "
+    "Verstärker- und Kabelverteilung"
+)
 MODE = "empty"
 
 
@@ -84,6 +89,32 @@ def _add_effective_buy_and_sell(save_dir: str | Path) -> list[dict]:
     return history
 
 
+def _extend_to_density_limit(save_dir: str | Path) -> list[dict]:
+    runtime = game_client.A4ClientRuntime(Path(save_dir))
+    for pair_index in range(3):
+        for kind in ("buy", "sell"):
+            result = runtime.command({
+                "type": "economy.transact",
+                "command_id": f"acceptance-trade-history-density-{pair_index}-{kind}",
+                "kind": kind,
+                "item_id": ITEM_ID,
+                "quantity": 1,
+            })
+            if result.get("status") != "confirmed":
+                raise RuntimeError(
+                    f"Trade-History-Dichte-Audit konnte {kind} in Paar {pair_index} nicht bestätigen: {result}"
+                )
+    history = runtime.projection().get("economy", {}).get("trade_history")
+    if not isinstance(history, list) or len(history) != DENSITY_LIMIT:
+        raise RuntimeError(
+            f"Dichte-Audit braucht exakt {DENSITY_LIMIT} wirksame Trades, erhalten: {history}"
+        )
+    ids = {entry.get("transaction_id") for entry in history}
+    if COMPENSATED_BUY_ID in ids or COMPENSATION_ID in ids:
+        raise RuntimeError("Kompensiertes Paar ist im Dichte-Maximalfall fälschlich sichtbar")
+    return history
+
+
 def _harness() -> str:
     expected_mode = MODE
     return f"""<!doctype html>
@@ -101,6 +132,8 @@ def _harness() -> str:
 (() => {{
   const frame = document.getElementById(\"app\");
   const expectedMode = {expected_mode!r};
+  const densityLimit = {DENSITY_LIMIT};
+  const longDisplayLabel = {LONG_DISPLAY_LABEL!r};
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const waitFor = async (probe, label, timeout = 9000) => {{
     const deadline = performance.now() + timeout;
@@ -127,6 +160,10 @@ def _harness() -> str:
       }}
       w.BunkerUIPrefs.set(\"highContrast\", true);
       await waitFor(() => d.body.classList.contains(\"ui-high-contrast\"), \"Hoher Kontrast\");
+      if (expectedMode === \"density\") {{
+        w.BunkerUIPrefs.set(\"largeText\", true);
+        await waitFor(() => d.body.classList.contains(\"ui-large-text\"), \"Große Schrift\");
+      }}
 
       const rows = Array.from(section.querySelectorAll(\".equipment-row\"));
       if (expectedMode === \"empty\") {{
@@ -134,17 +171,23 @@ def _harness() -> str:
           throw new Error(\"Leere Handelshistorie wird nicht eindeutig dargestellt\");
         }}
       }} else {{
-        await waitFor(() => section.querySelectorAll(\".equipment-row\").length === 2, \"zwei wirksame Trades\");
+        const expectedRows = expectedMode === \"density\" ? densityLimit : 2;
+        await waitFor(
+          () => section.querySelectorAll(\".equipment-row\").length === expectedRows,
+          expectedMode === \"density\" ? \"acht wirksame Trades\" : \"zwei wirksame Trades\"
+        );
         const effectiveRows = Array.from(section.querySelectorAll(\".equipment-row\"));
         const rowText = effectiveRows.map(text);
-        if (rowText.filter((value) => value.includes(\"GEKAUFT · PA\")).length !== 1) {{
-          throw new Error(\"Bestätigter Kauf fehlt oder ist doppelt\");
-        }}
-        if (rowText.filter((value) => value.includes(\"VERKAUFT · PA\")).length !== 1) {{
-          throw new Error(\"Bestätigter Verkauf fehlt oder ist doppelt\");
-        }}
-        if (!rowText.every((value) => value.includes(\"Stückpreis 100,00 €\") || value.includes(\"Stückpreis 100,00 €\"))) {{
-          throw new Error(\"Historie zeigt nicht den bestätigten Ausführungspreis\");
+        if (expectedMode === \"filled\") {{
+          if (rowText.filter((value) => value.includes(\"GEKAUFT · PA\")).length !== 1) {{
+            throw new Error(\"Bestätigter Kauf fehlt oder ist doppelt\");
+          }}
+          if (rowText.filter((value) => value.includes(\"VERKAUFT · PA\")).length !== 1) {{
+            throw new Error(\"Bestätigter Verkauf fehlt oder ist doppelt\");
+          }}
+          if (!rowText.every((value) => value.includes(\"Stückpreis 100,00 €\") || value.includes(\"Stückpreis 100,00 €\"))) {{
+            throw new Error(\"Historie zeigt nicht den bestätigten Ausführungspreis\");
+          }}
         }}
         if (rowText.some((value) => value.includes(\"Gewinn\") || value.includes(\"Verlust\"))) {{
           throw new Error(\"Handelszeile erfindet Gewinn- oder Verlustlogik\");
@@ -152,10 +195,21 @@ def _harness() -> str:
         if (section.querySelector(\"button\")) {{
           throw new Error(\"Read-only Handelsverlauf enthält unerwartete Aktion\");
         }}
+
+        if (expectedMode === \"density\") {{
+          const stressHeading = effectiveRows[0]?.querySelector(\"strong\");
+          if (!stressHeading) throw new Error(\"Dichte-Audit findet keine erste Handelsüberschrift\");
+          const action = text(stressHeading).startsWith(\"VERKAUFT\") ? \"VERKAUFT\" : \"GEKAUFT\";
+          stressHeading.textContent = `${{action}} · ${{longDisplayLabel}}`;
+          if (!text(stressHeading).includes(longDisplayLabel)) {{
+            throw new Error(\"Langer Test-Anzeigename wurde nicht sicher gesetzt\");
+          }}
+        }}
       }}
 
       const viewportWidth = d.documentElement.clientWidth;
-      const measured = [section, ...section.querySelectorAll(\".equipment-row\")];
+      const effectiveRows = Array.from(section.querySelectorAll(\".equipment-row\"));
+      const measured = [section, ...effectiveRows];
       for (const node of measured) {{
         const rect = node.getBoundingClientRect();
         if (rect.width <= 0 || rect.height <= 0 || rect.left < -1 || rect.right > viewportWidth + 1) {{
@@ -165,11 +219,28 @@ def _harness() -> str:
           throw new Error(`Handelsverlauf besitzt horizontale Überbreite: ${{node.scrollWidth}}>${{node.clientWidth}}`);
         }}
       }}
+      if (expectedMode === \"density\") {{
+        for (const row of effectiveRows) {{
+          const info = row.firstElementChild;
+          const heading = info?.querySelector(\"strong\");
+          const detail = info?.querySelector(\"span\");
+          if (!info || !heading || !detail || !text(heading) || !text(detail)) {{
+            throw new Error(\"Dichte-Audit verliert Aktions-/Mengen-/Preisstruktur\");
+          }}
+          const rowRect = row.getBoundingClientRect();
+          for (const node of [info, heading, detail]) {{
+            const rect = node.getBoundingClientRect();
+            if (rect.left < rowRect.left - 1 || rect.right > rowRect.right + 1) {{
+              throw new Error(\"Textinhalt ragt aus der Handelszeile heraus\");
+            }}
+          }}
+        }}
+      }}
 
       document.body.textContent = `EQUIPMENT_TRADE_HISTORY_E2E: PASS
 ● BEREIT
 BUNKERFREQUENZ – Control Deck
-Modus=${{expectedMode}} · Hoher Kontrast · kleines Fenster · read-only`;
+Modus=${{expectedMode}} · Hoher Kontrast · ${{expectedMode === \"density\" ? \"Große Schrift · 8 Trades · langer Anzeigename · \" : \"\"}}kleines Fenster · read-only`;
     }} catch (error) {{
       document.body.textContent = `EQUIPMENT_TRADE_HISTORY_E2E: FAIL · ${{String(error?.message || error)}}
 AVATAR_CONTEXT_E2E: FAIL · ${{String(error?.message || error)}}`;
@@ -224,10 +295,13 @@ def run() -> None:
             _browser_phase(save_dir, "empty")
             history = _add_effective_buy_and_sell(save_dir)
             _browser_phase(save_dir, "filled")
+            density_history = _extend_to_density_limit(save_dir)
+            _browser_phase(save_dir, "density")
             print(
                 "EQUIPMENT-TRADE-HISTORY-E2E: PASS · "
-                f"wirksame Trades={len(history)} · Ausführungspreis={UNIT_PRICE_CENTS} Cent · "
-                "Compensation ausgeblendet · Chromium · Hoher Kontrast · kleines Fenster"
+                f"wirksame Trades={len(history)} · Dichte-Maximum={len(density_history)} · "
+                f"Ausführungspreis={UNIT_PRICE_CENTS} Cent · Compensation ausgeblendet · "
+                "Chromium · Hoher Kontrast · große Schrift · kleines Fenster"
             )
     finally:
         acceptance.AVATAR_CONTEXT_HARNESS = original_name
