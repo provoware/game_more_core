@@ -54,7 +54,7 @@ class VenueOperatingProfileTextSafetyTests(unittest.TestCase):
 
         self.assertRegex(
             body,
-            r"const values\s*=\s*upgradeEntry\?\.effective_values\s*\|\|\s*null;",
+            r"const values\s*=\s*upgradeEntry\?\.effective_values\s*;",
         )
         self.assertNotIn("effective_values_by_location", body)
         self.assertNotRegex(
