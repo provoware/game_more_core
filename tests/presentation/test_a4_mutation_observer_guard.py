@@ -28,9 +28,12 @@ class A4MutationObserverGuardTests(unittest.TestCase):
         self.assertIn("if (element.textContent !== text) element.textContent = text;", source)
         self.assertIn("setTextIfChanged(button, active ?", source)
         self.assertIn("setTextIfChanged(status, `NÄCHSTER SCHRITT:", source)
-        self.assertIn("setTextIfChanged(status, \"NÄCHSTER SCHRITT: Runtime-Gate abwarten\")", source)
+        self.assertIn(
+            'setTextIfChanged(status, "NÄCHSTER SCHRITT: Noch keine freigegebene Event-Aktion")',
+            source,
+        )
         self.assertIn("const currentSignal = document.querySelector(`.${SIGNAL_CLASS}`);", source)
-        self.assertIn("if (currentSignal !== enabledEventAction)", source)
+        self.assertIn("if (currentSignal !== nextAction?.button)", source)
         self.assertIn("currentSignal?.classList.remove(SIGNAL_CLASS)", source)
         self.assertIn("new MutationObserver(scheduleReconcile)", source)
         self.assertIn("window.requestAnimationFrame(() =>", source)
