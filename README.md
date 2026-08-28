@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Job Payout Context Clarity validiert" src="https://img.shields.io/badge/Feature_Stand-JOB--PAYOUT--CONTEXT--CLARITY_validiert-7dff00">
-  <img alt="Aktive Iteration Equipment Trade History Readonly" src="https://img.shields.io/badge/Aktiv-EQUIPMENT--TRADE--HISTORY--READONLY-00c2ff">
+  <img alt="Feature Stand Equipment Trade History Readonly validiert" src="https://img.shields.io/badge/Feature_Stand-EQUIPMENT--TRADE--HISTORY--READONLY_validiert-7dff00">
+  <img alt="Aktive Iteration Equipment Trade History Browser E2E" src="https://img.shields.io/badge/Aktiv-TRADE--HISTORY--BROWSER--E2E-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,11 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #236 · Merge `08b1bccba3704722143c4669629d021d9cce8598` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY` · PR #231 |
-| **Aktive Iteration** | 🟡 `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` |
-| **Danach** | bestätigte `buy`/`sell`-Buchungen im bestehenden Economy-Bereich read-only sichtbar machen; keine Kostenbasis oder Gewinnberechnung |
+| **Status-Sync-Anker** | PR #238 · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 |
+| **Aktive Iteration** | 🟡 `0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E` |
+| **Danach** | vorhandene read-only Handelshistorie im echten Chromium-Pfad für leeren Zustand, Kauf, Verkauf, Compensation-Filter, kleines Fenster und Hohen Kontrast beweisen; keine neue Economylogik |
+| **Equipment-Historie** | ✅ PR #238: letzte acht wirksamen bestätigten Käufe/Verkäufe mit Aktion, Equipment, Menge und tatsächlichem Stückpreis · kompensierte Paare ausgeblendet · keine Kostenbasis/Gewinnrechnung |
 | **Equipment-History-Audit** | ✅ PR #236 bestätigt Item, Menge, tatsächlichen Stückpreis und Transaktionsidentität · Gewinn/Verlust bleibt ohne Kostenbasisvertrag gesperrt |
 | **Job-Lohn-Kontext** | ✅ reduzierter bestätigter Lohn wird direkt an der Jobkarte erklärt · voller Lohn ohne Warnhinweis · keine Recovery-Empfehlung oder Browserberechnung |
 | **Job-Lohn-QA** | ✅ realer Chromium-Nachweis PR #232 · deterministische Lade-Reihenfolge PR #234 · keine neue Spielfunktion |
@@ -58,7 +59,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die letzte validierte Spielfunktion ist PR #231. Der neueste fachlich relevante Safe-Merge-Anker ist PR #236: Dort wurde der Equipment-Handelsverlauf ausschließlich als Ledger-/Vertragsaudit bestätigt, ohne neue Spielfunktion. Diese Trennung ist beabsichtigt. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync geprüft.
+> Die letzte validierte Spielfunktion und der neueste fachlich relevante Safe-Merge-Anker sind jetzt beide PR #238: Dort wurde die read-only Equipment-Handelshistorie produktiv umgesetzt und über die Repository-Gates sicher gemergt. Der nächste Owner ist ausschließlich ein Browser-E2E für diese bereits vorhandene Funktion. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -95,6 +96,7 @@ LIVING DISTRICTS / BERLIN OPS MAP → HALL OF TRIBUTE
 - fünf Scene Jobs mit persönlichem Bargeld, Anti-Grind, bestätigtem Erschöpfungslohn und sichtbarem Stundenlohnvergleich
 - kanonischer Equipment-Marktpreis aus derselben Domain-Regel wie Kauf und Verkauf; Browser besitzt keine Preisautorität
 - Equipment-Handel mit Kaufen, Verkaufen, Reservieren und Freigeben; reservierter Bestand kann nicht verkauft werden
+- read-only Equipment-Handelshistorie mit höchstens acht wirksamen bestätigten Käufen/Verkäufen, tatsächlichen Ausführungspreisen und Compensation-Filter; keine Gewinn-/Kostenbasislogik
 - Bank, Sparzins, Kontoauszug und 5-Schritte-Geldführung von Arbeit bis Investition
 - deterministische Street Encounters ohne Reload-Reroll
 - eigener Street-Follow-up-Eventvertrag `street.followup_resolved` mit bestätigter Character-Bindung, Kausalität und Exactly-once
