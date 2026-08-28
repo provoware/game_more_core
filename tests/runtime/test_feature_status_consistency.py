@@ -18,6 +18,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
         iteration = status["last_validated_feature_iteration"]
         validation = status["remote_validation"]
@@ -33,6 +34,9 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn(merge_sha, todo)
         self.assertIn(f"**{iteration}:** PR #{pr_number}", pool)
         self.assertIn(merge_sha, pool)
+        self.assertIn(iteration, readme)
+        self.assertIn(f"PR #{pr_number}", readme)
+        self.assertIn(merge_sha, readme)
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
@@ -60,12 +64,15 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
     def test_current_status_describes_visual_hierarchy_and_next_runtime_owned_guidance_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
         sync = status["status_sync"]
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
+        self.assertIn(status["active_iteration"], readme)
+        self.assertIn(status["last_validated_feature_iteration"], readme)
         self.assertEqual(status["current_focus"], "runtime_owned_strategic_guidance_audit")
         self.assertIsNone(status["next_iteration"])
 
