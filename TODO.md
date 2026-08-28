@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL` · PR #218 · Head `39a3a4343657231872de08b7fed5376b9ff99c6e` · Merge `eb97181f80678110ca12063165d446273cfcff5e`
-- **Start-/Release-Qualität:** Jobs zeigen Stundenlohn und bestätigten Erschöpfungslohn; vorhandener Equipment-Handel ist mit Kaufen/Verkaufen/Reservieren/Freigeben vollständig bedienbar; Marktpreise bleiben Runtime-Autorität
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT`
+- **Status-Sync-Anker:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT` · PR #222 · Head `719c86f8a68db5355625bfebaffa36c2a368c87f` · Merge `008326acc726e9be513c97682293c4a26e932c3a`
+- **Start-/Release-Qualität:** Story 001/002 sind tonal klassifiziert; Story 003 bleibt bewusst gesperrt, weil kein geprüfter Kandidat alle Qualitäts- und No-Persistence-Grenzen gleichzeitig erfüllt
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -159,40 +159,47 @@
 - [x] responsive KPI-/Marktkarten und Reduced-Motion-Fallback heben Jobs und Handel visuell an
 - [x] PR #218 · Head `39a3a4343657231872de08b7fed5376b9ff99c6e` · Merge `eb97181f80678110ca12063165d446273cfcff5e`
 
+## 0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT
+- [x] Story 001 als sozial-technisch und Story 002 als materiell-persönlich klassifiziert
+- [x] vier reale Street-Parents gegen Tonvielfalt, Kausalität, Seltenheit, Balance-Neutralität und No-Persistence geprüft
+- [x] Story 003 bewusst nicht freigegeben; `street.construction_detour` bleibt nur Reservekandidat
+- [x] Auditannahmen sind gegen den echten Street-Katalog regressionsgesichert
+- [x] PR #222 · Head `719c86f8a68db5355625bfebaffa36c2a368c87f` · Merge `008326acc726e9be513c97682293c4a26e932c3a`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE-AUDIT
 
 ## Fortschritt
 
-**Bereit für fokussierten Audit.** Zwei Street-Nachhalle sind produktiv und vollständig E2E-belegt. Vor Story 003 wird bewusst kein weiterer Content ergänzt, bis Tonalität und Wiederholungsmuster geprüft sind.
+**Bereit für fokussierten UX-Audit.** Das Control Deck besitzt bereits ein Runtime-basiertes Nächste-Aktion-Signal. Vor einer globalen Führung wird geprüft, welche bestätigten Zustände sicher erklärt werden können, ohne neue Entscheidungshoheit im Browser zu erzeugen.
 
 ## Ziel
 
-Die zwei vorhandenen Street-Nachhalle gegen soziale, räumliche, materielle und leicht unheimliche Kandidaten vergleichen und genau einen dramaturgisch deutlich anderen Story-003-Kandidaten auswählen.
+Den vorhandenen Next-Action-Pfad auf Reichweite, Verständlichkeit und Autoritätsgrenzen prüfen und den kleinsten sicheren Ausbau für eine globale „Was mache ich jetzt?“-Führung festlegen.
 
 ## Abnahme
 
-- [ ] Story 001 und 002 nach Ton, Motiv, Raumbezug und Pointe klassifizieren
-- [ ] mindestens drei vorhandene Street-Parents als Story-003-Kandidaten prüfen
-- [ ] Seltenheit, Kausalität, Balance-Neutralität und Contract-Eignung bewerten
-- [ ] einen Gewinner begründet auswählen oder Story 003 ausdrücklich zurückstellen
-- [ ] keine Runtime-, Manifest-, Balance-, Journal-, Projection- oder Browseränderung im Audit
-- [ ] fokussierte Regression sichert Auditannahmen gegen den echten Street-Katalog
+- [ ] vorhandene Quelle des Nächste-Aktion-Signals und alle direkten DOM-/Projection-Verträge dokumentieren
+- [ ] mindestens die Zustände Event bereit, Aktion blockiert, Energie niedrig und kein bestätigter nächster Event-Schritt auf sichere Erklärbarkeit prüfen
+- [ ] klar trennen zwischen Runtime-Freigabe, reiner Empfehlung und lokalem UI-Fokus
+- [ ] genau einen kleinsten UX-Ausbau auswählen oder Implementierung begründet zurückstellen
+- [ ] keine neue Browser-Fachlogik, keine automatischen Gameplayentscheidungen und keine zweite Recommendation-Engine
+- [ ] fokussierte Regression für die gewählte Signalquelle definieren
 - [ ] Laienhilfe und Changelog aktualisieren
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ## Architektur- und Sicherheitsgrenzen
 
-- derselbe `street.followup_resolved`-Contract bleibt einzige Street-Kettenarchitektur.
-- keine Story 003 im Audit implementieren.
-- keine Inventar-, NPC-, Location-, Economy- oder Progressionspersistenz aus erzählerischen Motiven ableiten.
-- Presentation bleibt read-only.
+- Runtime-/Projection-Daten bleiben Fachquelle; Browser erklärt und fokussiert nur.
+- keine automatische Ausführung einer empfohlenen Aktion.
+- keine erfundenen Blocker, Ressourcenwerte oder Storyzustände.
+- bestehendes `next_action_attention_signal` zuerst wiederverwenden.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STREET_MINI_CHAIN_LAIENHILFE.md`](docs/STREET_MINI_CHAIN_LAIENHILFE.md) · [`docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md`](docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) · [`docs/STATUS_SYNC_AFTER_PR222_LAIENHILFE.md`](docs/STATUS_SYNC_AFTER_PR222_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)

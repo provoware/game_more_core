@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Jobs Trade Guidance Visual validiert" src="https://img.shields.io/badge/Feature_Stand-JOBS--TRADE--GUIDANCE_validiert-7dff00">
-  <img alt="Aktive Iteration Street Tone Diversity Audit" src="https://img.shields.io/badge/Aktiv-STREET--TONE--DIVERSITY--AUDIT-00c2ff">
+  <img alt="Feature Stand Street Tone Diversity Audit validiert" src="https://img.shields.io/badge/Feature_Stand-STREET--TONE--AUDIT_validiert-7dff00">
+  <img alt="Aktive Iteration Next Best Action Guidance Audit" src="https://img.shields.io/badge/Aktiv-NEXT--BEST--ACTION--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,11 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL` |
-| **Aktive Iteration** | 🟡 `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT` |
-| **Danach** | Story 003 nur bei klar anders gefärbtem, seltenem und balance-neutralem Gewinner; parallel stehen globale Spiel-Führung und visuelle Hierarchie als nächste UX-Slices bereit |
+| **Status-Sync-Anker** | PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT` |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE-AUDIT` |
+| **Danach** | nur bei sauberer Signalquelle den kleinsten globalen „Was mache ich jetzt?“-Ausbau umsetzen; keine automatische Aktion und keine Browser-Fachautorität |
+| **Street Story Audit** | ✅ Story 001 sozial-technisch · Story 002 materiell-persönlich · Story 003 bewusst zurückgestellt · `construction_detour` nur Reservekandidat |
 | **Arbeit & Einkommen** | ✅ fünf Jobs · Stundenlohn · bestätigter Erschöpfungslohn · Energie-/Stresskosten direkt vergleichbar |
 | **Equipment-Handel** | ✅ kanonischer Marktpreis · Kaufen · Verkaufen · Reservieren · Freigeben · reservierter Bestand bleibt geschützt |
 | **Geld-Führung** | ✅ 5-Schritte-Pfad Job → Bargeld → Bank → Equipment-Handel → Investition direkt im Control Deck |
@@ -51,7 +52,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #218 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #222 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
@@ -93,6 +94,7 @@ LIVING DISTRICTS / BERLIN OPS MAP → HALL OF TRIBUTE
 - eigener Street-Follow-up-Eventvertrag `street.followup_resolved` mit bestätigter Character-Bindung, Kausalität und Exactly-once
 - Street-Micro-Story 001: `street.cable_tip` → späterer `cable_tip_echo` / „Der Tipp macht die Runde“
 - Street-Micro-Story 002: `street.lost_glove` → späterer `lost_glove_fence_echo` / „Der Handschuh wartet noch“
+- Street-Tone-Diversity-Audit: beide Storys sind klar verschieden; vier reale Parents geprüft; Story 003 bleibt bis zu einem wirklich passenden, nicht-persistenzfälschenden Kandidaten gesperrt
 - beide Street-Stories bleiben balance-neutral, verwenden denselben Resolver und sind durch Persistenz, Reload, `/api/state` und echtes Chromium-DOM belegt
 - bestätigte Street-Parent→Child-Kausalität wird in der vorhandenen Timeline read-only als `Folge von: …` erklärt; falsche Character-Zuordnung erzeugt keine erfundene Ursache
 - persistente District-Werte und cadence-geführte District World Events
@@ -238,6 +240,7 @@ Feature-Fortschritt auf `main` ist kein stiller Produktrelease. Eine neue Produk
 | Ausbauvorrat | [`FEATURE_POOL.md`](FEATURE_POOL.md) |
 | Projektmanifest | [`PROJEKTMANIFEST.json`](PROJEKTMANIFEST.json) |
 | Status-Sync erklärt | [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) |
+| Status-Sync nach Story-Audit | [`docs/STATUS_SYNC_AFTER_PR222_LAIENHILFE.md`](docs/STATUS_SYNC_AFTER_PR222_LAIENHILFE.md) |
 | Anfängerstart | [`docs/A4_FIRST_RUN_ANLEITUNG.md`](docs/A4_FIRST_RUN_ANLEITUNG.md) |
 | Arbeit, Geld & Handel | [`docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md`](docs/ARBEIT_GELD_HANDEL_LAIENHILFE.md) |
 | Control-Deck-Hilfe | [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) |
