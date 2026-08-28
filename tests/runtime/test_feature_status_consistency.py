@@ -96,6 +96,10 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertFalse(economy["equipment_trade_history_compensates_is_cost_basis"])
         self.assertFalse(economy["equipment_trade_history_product_ui_visible"])
 
+        self.assertIn("Rückbuchungen über `compensates` erkennen", todo)
+        self.assertIn("Original und Gegenbuchung", todo)
+        self.assertIn("kompensierte Historie", todo)
+
         self.assertTrue(presentation["scene_job_reduced_payout_context_clarity_validated"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
