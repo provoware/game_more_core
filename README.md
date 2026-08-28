@@ -9,7 +9,7 @@
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
   <img alt="Feature Stand Job Payout Context Clarity validiert" src="https://img.shields.io/badge/Feature_Stand-JOB--PAYOUT--CONTEXT--CLARITY_validiert-7dff00">
-  <img alt="Aktive Iteration Equipment Trade History Audit" src="https://img.shields.io/badge/Aktiv-EQUIPMENT--TRADE--HISTORY--AUDIT-00c2ff">
+  <img alt="Aktive Iteration Equipment Trade History Readonly" src="https://img.shields.io/badge/Aktiv-EQUIPMENT--TRADE--HISTORY--READONLY-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,11 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #234 · Merge `57a78efecb5aa312fdad595dcae5a8352bef63ec` |
+| **Status-Sync-Anker** | PR #236 · Merge `08b1bccba3704722143c4669629d021d9cce8598` |
 | **Validierter Feature-Stand** | ✅ `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY` · PR #231 |
-| **Aktive Iteration** | 🟡 `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT` |
-| **Danach** | vorhandene Kauf-/Verkaufs-Ledgerdaten auf belastbare historische Preise und Identitäten prüfen; keine rückwirkend erfundenen Anschaffungskosten oder Gewinne |
+| **Aktive Iteration** | 🟡 `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` |
+| **Danach** | bestätigte `buy`/`sell`-Buchungen im bestehenden Economy-Bereich read-only sichtbar machen; keine Kostenbasis oder Gewinnberechnung |
+| **Equipment-History-Audit** | ✅ PR #236 bestätigt Item, Menge, tatsächlichen Stückpreis und Transaktionsidentität · Gewinn/Verlust bleibt ohne Kostenbasisvertrag gesperrt |
 | **Job-Lohn-Kontext** | ✅ reduzierter bestätigter Lohn wird direkt an der Jobkarte erklärt · voller Lohn ohne Warnhinweis · keine Recovery-Empfehlung oder Browserberechnung |
 | **Job-Lohn-QA** | ✅ realer Chromium-Nachweis PR #232 · deterministische Lade-Reihenfolge PR #234 · keine neue Spielfunktion |
 | **Runtime-Owned Guidance Audit** | ✅ Job-Lohnreduktion und Event-Blocker bleiben getrennte bestätigte Fakten · kein globaler Recommendation-Aggregator · keine Browser-Prioritätsengine |
@@ -57,7 +58,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die letzte validierte Spielfunktion ist PR #231. Der technische Safe-Merge-/QA-Stand reicht bis PR #234. Diese Trennung ist beabsichtigt: QA-Härtung wird nicht als neue Spielfunktion etikettiert. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die letzte validierte Spielfunktion ist PR #231. Der neueste fachlich relevante Safe-Merge-Anker ist PR #236: Dort wurde der Equipment-Handelsverlauf ausschließlich als Ledger-/Vertragsaudit bestätigt, ohne neue Spielfunktion. Diese Trennung ist beabsichtigt. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
