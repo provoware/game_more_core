@@ -171,7 +171,8 @@ def _harness() -> str:
 BUNKERFREQUENZ – Control Deck
 Modus=${{expectedMode}} · Hoher Kontrast · kleines Fenster · read-only`;
     }} catch (error) {{
-      document.body.textContent = `EQUIPMENT_TRADE_HISTORY_E2E: FAIL · ${{String(error?.message || error)}}`;
+      document.body.textContent = `EQUIPMENT_TRADE_HISTORY_E2E: FAIL · ${{String(error?.message || error)}}
+AVATAR_CONTEXT_E2E: FAIL · ${{String(error?.message || error)}}`;
     }}
   }}, {{ once: true }});
   frame.src = \"/\";
