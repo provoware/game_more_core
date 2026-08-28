@@ -9,7 +9,7 @@
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
   <img alt="Feature Stand Equipment Trade History Readonly validiert" src="https://img.shields.io/badge/Feature_Stand-EQUIPMENT--TRADE--HISTORY--READONLY_validiert-7dff00">
-  <img alt="Aktive Iteration Equipment Trade History Browser E2E" src="https://img.shields.io/badge/Aktiv-TRADE--HISTORY--BROWSER--E2E-00c2ff">
+  <img alt="Aktive Iteration Equipment Trade History Density Audit" src="https://img.shields.io/badge/Aktiv-TRADE--HISTORY--DENSITY--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,11 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #238 · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079` |
+| **Status-Sync-Anker** | PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0` |
 | **Validierter Feature-Stand** | ✅ `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 |
-| **Aktive Iteration** | 🟡 `0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E` |
-| **Danach** | vorhandene read-only Handelshistorie im echten Chromium-Pfad für leeren Zustand, Kauf, Verkauf, Compensation-Filter, kleines Fenster und Hohen Kontrast beweisen; keine neue Economylogik |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT` |
+| **Danach** | acht sichtbare Trades, lange Equipment-Namen, große Schrift, Hohen Kontrast und kleines Fenster prüfen; nur bei reproduzierbarem Darstellungsbefund den kleinsten Presentation-Fix zulassen |
+| **Equipment-Historie QA** | ✅ PR #240: echter Chromium-Pfad für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster; keine neue Economylogik |
 | **Equipment-Historie** | ✅ PR #238: letzte acht wirksamen bestätigten Käufe/Verkäufe mit Aktion, Equipment, Menge und tatsächlichem Stückpreis · kompensierte Paare ausgeblendet · keine Kostenbasis/Gewinnrechnung |
 | **Equipment-History-Audit** | ✅ PR #236 bestätigt Item, Menge, tatsächlichen Stückpreis und Transaktionsidentität · Gewinn/Verlust bleibt ohne Kostenbasisvertrag gesperrt |
 | **Job-Lohn-Kontext** | ✅ reduzierter bestätigter Lohn wird direkt an der Jobkarte erklärt · voller Lohn ohne Warnhinweis · keine Recovery-Empfehlung oder Browserberechnung |
@@ -59,7 +60,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die letzte validierte Spielfunktion und der neueste fachlich relevante Safe-Merge-Anker sind jetzt beide PR #238: Dort wurde die read-only Equipment-Handelshistorie produktiv umgesetzt und über die Repository-Gates sicher gemergt. Der nächste Owner ist ausschließlich ein Browser-E2E für diese bereits vorhandene Funktion. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync geprüft.
+> Die letzte validierte **Spielfunktion** bleibt PR #238 mit der read-only Equipment-Handelshistorie. Der neueste fachlich relevante **Safe-Merge-Anker** ist PR #240, weil dort diese bereits vorhandene Funktion im echten Chromium abgesichert wurde. Als nächster Owner ist ausschließlich ein Dichte-/Lesbarkeitsaudit gezogen; ohne reproduzierbaren Darstellungsfehler entsteht kein Layout-Patch. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
