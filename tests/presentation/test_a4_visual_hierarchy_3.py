@@ -10,10 +10,11 @@ INDEX = (A4 / "index.html").read_text(encoding="utf-8")
 
 
 class A4VisualHierarchy3Tests(unittest.TestCase):
-    def test_existing_loader_adds_one_visual_stylesheet_without_second_dashboard(self):
-        self.assertIn('appendStylesheet("visual_hierarchy_3.css", "visual-hierarchy-3")', PREFS)
+    def test_existing_loader_adds_one_local_visual_stylesheet_without_second_dashboard(self):
+        self.assertIn('assetUrl("visual_hierarchy_3.css")', PREFS)
+        self.assertIn('link.dataset.visualHierarchy3 = "true"', PREFS)
         self.assertIn("ensureVisualHierarchy3Stylesheet();", PREFS)
-        self.assertEqual(PREFS.count('appendStylesheet("visual_hierarchy_3.css"'), 1)
+        self.assertEqual(PREFS.count('assetUrl("visual_hierarchy_3.css")'), 1)
         self.assertNotIn("dashboard", CSS.lower())
 
     def test_only_existing_event_surface_is_promoted_to_full_width_action_hierarchy(self):
