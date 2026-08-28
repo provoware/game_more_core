@@ -34,6 +34,40 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
         self.assertNotIn("audience_pull", self.settlement_manifest["source_effects"])
         self.assertNotIn("venue_audience_pull", self.settlement_manifest["application"])
 
+    def test_audit_freshness_guard_pins_exact_settlement_authority_surface(self):
+        self.assertEqual(
+            self.settlement_manifest["required_state_blocks"],
+            ["event", "economy", "character"],
+        )
+        self.assertEqual(
+            self.settlement_manifest["source_effects"],
+            [
+                "budget_delta_cents",
+                "reputation_delta",
+                "crew_stress_delta",
+                "stability_delta",
+                "heat_delta",
+            ],
+        )
+        self.assertEqual(
+            set(self.settlement_manifest["application"]),
+            {
+                "budget_delta_cents",
+                "reputation_delta",
+                "crew_stress_delta",
+                "stability_delta",
+                "heat_delta",
+            },
+        )
+        self.assertEqual(
+            set(self.settlement_manifest["receipt_invariants"]),
+            {
+                "budget_delta_matches_effect",
+                "stress_delta_matches_effect",
+                "reputation_delta_matches_effect",
+            },
+        )
+
     def test_scene_jobs_do_not_offer_modifier_shortcut(self):
         availability = self.scene_job_manifest["availability"]
         exhaustion = self.scene_job_manifest["exhaustion_policy"]
@@ -46,6 +80,7 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
         self.assertIn("Keine generische Venue-Bonusengine", self.audit)
         self.assertIn("kein stiller Settlement-Multiplikator", self.audit)
         self.assertIn("Replay/Recovery mit demselben Ergebnis", self.audit)
+        self.assertIn("Audit-Freshness-Guard", self.audit)
 
 
 if __name__ == "__main__":
