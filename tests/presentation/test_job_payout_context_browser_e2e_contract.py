@@ -13,6 +13,12 @@ class JobPayoutContextBrowserE2EContractTests(unittest.TestCase):
         self.assertIn('job.get("payout_reduced_by_energy") is False', HARNESS)
         self.assertIn("Projection-Fixture braucht volle und reduzierte Jobs", HARNESS)
 
+    def test_real_browser_waits_for_payout_decoration_before_classification(self):
+        self.assertIn("found.length >= 5 && found.every", HARNESS)
+        self.assertIn('row.dataset.payoutReducedByEnergy === \\"true\\" ||', HARNESS)
+        self.assertIn('row.dataset.payoutReducedByEnergy === \\"false\\"', HARNESS)
+        self.assertIn('}, \\"dekorierte Jobkarten\\");', HARNESS)
+
     def test_real_browser_checks_visible_copy_accessibility_and_small_window(self):
         self.assertIn(
             "Aktueller Lohn reduziert – deine Energie reicht nicht für die volle Auszahlung.",
