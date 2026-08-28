@@ -49,6 +49,19 @@ class VenueOperatingProfileTextSafetyTests(unittest.TestCase):
             ["prestige", "audience_pull", "risk", "underground_factor", "utility"],
         )
 
+    def test_browser_does_not_recover_unowned_profile_from_internal_location_map(self) -> None:
+        body = self._render_properties_body()
+
+        self.assertRegex(
+            body,
+            r"const values\s*=\s*upgradeEntry\?\.effective_values\s*;",
+        )
+        self.assertNotIn("effective_values_by_location", body)
+        self.assertNotRegex(
+            body,
+            r"propertyUpgrades(?:\?|\.)[^\n;]*effective_values_by_location",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
