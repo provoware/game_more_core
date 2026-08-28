@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Runtime Owned Strategic Guidance Audit validiert" src="https://img.shields.io/badge/Feature_Stand-RUNTIME--OWNED--GUIDANCE--AUDIT_validiert-7dff00">
-  <img alt="Aktive Iteration Job Payout Context Clarity" src="https://img.shields.io/badge/Aktiv-JOB--PAYOUT--CONTEXT--CLARITY-00c2ff">
+  <img alt="Feature Stand Job Payout Context Clarity validiert" src="https://img.shields.io/badge/Feature_Stand-JOB--PAYOUT--CONTEXT--CLARITY_validiert-7dff00">
+  <img alt="Aktive Iteration Equipment Trade History Audit" src="https://img.shields.io/badge/Aktiv-EQUIPMENT--TRADE--HISTORY--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,11 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #229 · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT` |
-| **Aktive Iteration** | 🟡 `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY` |
-| **Danach** | reduzierten bestätigten Joblohn direkt an der vorhandenen Jobkarte laienklar erklären; keine Recovery-Empfehlung und keine globale Priorisierung |
+| **Status-Sync-Anker** | PR #231 · Merge `ffef7b170ee162651ccd5da239648445f1f93479` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY` |
+| **Aktive Iteration** | 🟡 `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT` |
+| **Danach** | vorhandene Kauf-/Verkaufs-Ledgerdaten auf belastbare historische Preise und Identitäten prüfen; keine rückwirkend erfundenen Anschaffungskosten oder Gewinne |
+| **Job-Lohn-Kontext** | ✅ reduzierter bestätigter Lohn wird direkt an der Jobkarte erklärt · voller Lohn ohne Warnhinweis · keine Recovery-Empfehlung oder Browserberechnung |
 | **Runtime-Owned Guidance Audit** | ✅ Job-Lohnreduktion und Event-Blocker bleiben getrennte bestätigte Fakten · kein globaler Recommendation-Aggregator · keine Browser-Prioritätsengine |
 | **Visual Hierarchy 3** | ✅ Event-Steuerung über volle Arbeitsbreite · Eckdaten, nächste Runtime-Aktion und Blocker klar getrennt · High Contrast/Reduced Motion erhalten |
 | **Spiel-Führung** | ✅ Erststart · freigegebene Runtime-Event-Aktion · bestätigte Blocker; keine Energie-/Geld-/Markt-Heuristik im Browser |
@@ -55,7 +56,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #229 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #231 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
