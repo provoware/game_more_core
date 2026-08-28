@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0`
+- **Status-Sync-Anker:** PR #242 · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815`
 
 ## Statuswerte
 
@@ -41,6 +41,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
+- **0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT:** PR #242 · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815` · acht reale wirksame Trades mit langem Anzeigenamen, großer Schrift, Hohem Kontrast und 760×680-Fenster im echten Chromium geprüft; kein CSS-/Layout-Fix nötig, keine Produktlogik geändert
 - **0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E:** PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0` · echter Chromium-Pfad beweist leere wirksame Historie, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster; keine neue Economylogik
 - **0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY:** PR #238 · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079` · bestehender Equipment-Bereich zeigt höchstens die letzten acht wirksamen bestätigten Käufe/Verkäufe mit Aktion, Equipment, Menge und tatsächlichem Stückpreis; kompensierte Paare werden ausgeblendet; keine Kostenbasis oder Gewinnberechnung
 - **0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-AUDIT:** PR #236 · Merge `08b1bccba3704722143c4669629d021d9cce8598` · bestehender Ledger trägt bestätigte Kauf-/Verkaufshistorie mit tatsächlichem Stückpreis; Kostenbasis und Gewinn/Verlust bleiben mangels Lot-Regel gesperrt; keine Produktlogik geändert
@@ -53,28 +54,6 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a` · zwei vorhandene Street-Nachhalle gegen vier reale Parents geprüft; Story 003 bewusst nicht freigegeben; `street.construction_detour` bleibt nur Reservekandidat; keine Runtime-, Balance- oder Persistenzänderung
 - **0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e` · Jobs zeigen Stundenlohn und aktuellen Erschöpfungslohn; Equipment-Handel nutzt den bestehenden Runtime-Vertrag vollständig; aktueller Marktpreis und frei verkaufbarer Bestand kommen read-only aus der kanonischen Projection; responsive KPI-/Marktvisuals und Geldkreislauf-Führung ergänzt
 - **0.8.8-UX-TOOL-HELP-CLARITY:** PR #217 · Merge `12b001a731c0da5a1d98913676da9e48b0afd064` · zentrale Control-Deck-Hilfen in kurze Spielersprache übersetzt; `Bestätigt`, `Nur Anzeige` und `Sofort gespeichert` direkt erklärt
-- **0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de` · beide produktiven Street-Micro-Stories durch echte Runtime → Journal/Persistenz → Reload → `/api/state` → Chromium-DOM bewiesen; Retry Exactly-once
-- **0.8.8-STORY-STREET-MICRO-STORY-002:** PR #214 · Merge `3e863e5d54d058f1542a2d9754e5cf98056e814f` · `street.lost_glove` erzeugt später `lost_glove_fence_echo` über denselben Street-Follow-up-Contract; keine Inventar- oder Balancewirkung
-- **0.8.8-QA-DISTRICT-CHAIN-RUNTIME-BROWSER-E2E:** PR #206 · Merge `75aea005dcbf95abf80159b0ed96b0149bec0973` · beide produktiven District-Micro-Stories durch echte Runtime → Journal/Persistenz → read-only Projection → `/api/state` → Chromium-DOM bewiesen; Retry und Cross-District fail-closed
-- **0.8.8-STORY-DISTRICT-MICRO-STORY-002:** PR #204 · Merge `a03cf981b352064415e4cbf1fc3a8f88f34beed6` · `district.temporary_space_opens` erzeugt im späteren bestätigten Zyklus desselben Bezirks `temporary_space_afterimage`; Exactly-once, balance-neutral und über dieselbe read-only Kausalitätsprojection sichtbar
-- **0.8.8-STORY-DISTRICT-MICRO-STORY-002-AUDIT:** PR #202 · Merge `4265002c0ccbbfd9ceaa91ae79fe4f3e9cdfbfdc` · drei verbleibende District-Parents dramaturgisch/technisch verglichen; `district.temporary_space_opens` mit `temporary_space_afterimage` als stärkster zweiter Nachhall ausgewählt
-- **0.8.8-STORY-DISTRICT-CHAIN-READONLY-PROJECTION:** PR #200 · Merge `5f403defcf3773c3c44fefa3b282b0015ad9d68e` · bestätigte District-Folgeevents werden in der bestehenden Timeline projiziert; `Folge von: …` erscheint nur bei bestätigtem Parent, gleichem Bezirk und gültiger Journal-Reihenfolge
-- **0.8.8-STORY-DISTRICT-CHAIN-MICRO-STORY-001:** PR #198 · Merge `030d40e4b22c38a11fd98a2d028b398779955507` · verzögerter `power_flicker_afterglow` nutzt denselben District-/Journalvertrag; Exactly-once, gleiche District-Bindung und keine zweite Eventengine bestätigt
-- **0.8.8-STORY-DISTRICT-CHAIN-CONTRACT-V1:** PR #196 · Merge `ca5af40fb6bee1e90b1325bea8f6026fef8bc577` · genau `world.district_followup_resolved` katalogisiert; Parent-/District-Bindung sowie Exactly-once-/Replay-Semantik auf bestehendem PersistenceKernel bestätigt
-- **0.8.8-STORY-DISTRICT-EVENT-CHAIN-CONTRACT-AUDIT:** PR #194 · Merge `60328eb48ac7dfdd1b1aef4166bdafeb0d30a28e` · Parent-Evidenz und read-only Biography-Grenze bestätigt
-- **0.8.8-QA-AVATAR-CONTEXT-TEXT-CLIP-E2E:** PR #192 · Merge `f5132827d8d80522f952eb220db63047a091c77d` · Chromium und Firefox messen gerenderte Kurzmarken-Boxen in HUD, Map und Ranking fail-closed; kein Clipping reproduziert, kein CSS-Fix nötig
-- **0.8.8-UX-MAP-VIEWPORT-MINIUEBERSICHT-AUDIT:** PR #190 · Merge `3f4ac78912d8d7a3c79bda2d2e3d6aa6d5aea9db` · realer Randort bleibt bei begrenztem Fokus off-center, vorhandener `1:1`-Reset stellt die Gesamtansicht wieder her; bewusst keine zweite Mini-Map
-- **0.8.8-QA-AVATAR-CONTEXT-COMPUTED-SIZE-E2E:** PR #188 · Merge `2d4a608e765a47990030ec839407a1d80346f883` · Chromium und Firefox prüfen die tatsächlich berechnete `font-size` der bestätigten Kurzmarken in HUD, Map und Ranking fail-closed gegen den gemeinsamen `0.34rem`-Boden
-- **0.8.8-UX-CREW-IDENTITY-MICRO-POLISH-AUDIT:** PR #185 · Merge `22d2774a8a0f55c645d5eb97141099b8f0ae7433` · kompakte Ranking-Kurzmarke auf denselben `0.34rem`-Lesbarkeitsboden wie das kleine HUD angehoben; keine andere Crew-Geometrie verändert
-- **0.8.8-QA-RUNTIME-OWNED-EVIDENCE-RECEIPT:** PR #183 · Merge `9803d68a2d7ce71aa38db8c909fd68257bef1d9c` · vorhandene Chromium-/Firefox-Evidence bindet denselben runtime-bestätigten Property-Kauf an `location_id`, Command-, Event- und Ledger-Referenzen; keine zweite Evidence-Architektur
-- **0.8.8-QA-RUNTIME-OWNED-MAP-E2E-FIXTURE:** PR #181 · Merge `48f16864c319123e8ae4bcd04ba446aaa6ff153d` · Chromium und Firefox prüfen die Crew-Marke jetzt an runtime-bestätigtem Eigentum aus dem kanonischen `property.purchase`-/Projection-Pfad; kein künstlicher `.owned`-DOM-Marker
-- **0.8.8-UX-AVATAR-CONTEXT-FIREFOX:** PR #179 · Merge `8988e2883b842d29acc12e7e40140cfc4b46e304` · derselbe bestätigte Profil→HUD→Map→Ranking-Harness läuft nativ in Firefox/Geckodriver inklusive Hohem Kontrast und kleinem Fenster
-- **0.8.8-UX-AVATAR-CONTEXT-E2E:** PR #177 · Merge `bb8d083061fb83453547d0ba4238c6eaeea8afc7` · echter Chromium-Pfad Profil → HUD → Map → eigener Ranking-Eintrag inklusive kleinem Fenster und Hohem Kontrast
-- **0.8.8-UX-AVATAR-VISUAL-CONSISTENCY-AUDIT:** PR #175 · Merge `d9e53a6e820cc79a3081b42c6a95f02c914bad15` · High-Contrast-Grenzen und Kurzmarken über Profil, HUD/Map-Klon und eigenen Ranking-Eintrag vereinheitlicht
-- **0.8.8-UX-AVATAR-RANKING-PRESENCE:** PR #173 · Merge `a96fa7c34cd17ff169712963e019380748e158a1` · bestätigte Crew-Marke ausschließlich am eigenen `local_character_id`-Ranking-Eintrag
-- **0.8.8-UX-AVATAR-MAP-PRESENCE:** PR #172 · Merge `d2a1452b4ee6094584d0c63a94a85773c2821890` · bestätigte Crew-Marke read-only an eigenen Orten und im Map-Detail
-- **0.8.8-CONFIRMED-EVENT-FX:** PR #169 · Merge `6259237050454526366cdf83c4ed4b19e6818b3b` · bestätigte Street-/Recovery-/Krisenergebnisse erhalten lokale visuelle Rückmeldung
-- **0.8.8-STREET-BOUNDARY-DISTRIBUTION-REPORT:** PR #168 · Merge `d00ac7675a5a6a125cd0713789d51386ccd10205` · alle 100 Auswahl-Buckets entsprechen exakt den deklarierten Gewichten
 
 ---
 
@@ -126,7 +105,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 |---|---|---|---|
 | `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
 | `POOL-WORLD-003` | `DONE` | District-Ereignisketten mit Erinnerung | Contract V1, zwei produktive Micro-Stories, read-only Kausalitätsprojection und Runtime→Browser-E2E bis PR #206 vollständig validiert |
-| `POOL-PROPERTY-003` | `IDEA` | Venue Benefits / Betriebsprofil | Bonus-/Availability-Vertrag |
+| `POOL-PROPERTY-003` | `PULLED` | Venue Benefits / Betriebsprofil | zunächst Contract-Audit auf bestehenden Property-/Event-/Availability-Verträgen; keine Bonuswerte oder zweite Betriebsengine ohne belegte Zuständigkeit |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
 | `POOL-NET-002` | `DEPENDENCY` | Crew-Identity-Synchronisation | `POOL-NET-001` |
@@ -142,7 +121,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 | `POOL-UX-013` | `DONE` | Job-Lohn-Kontexthinweis | PR #231 produktiv; PRs #232/#234 realer Chromium-Nachweis und Lade-Reihenfolge-Härtung; keine Recovery-Empfehlung oder Browserberechnung |
 | `POOL-ECON-010` | `DONE` | Equipment-Handelsverlauf | PR #238: letzte acht wirksamen bestätigten `buy`/`sell`-Buchungen read-only im bestehenden Economy-Bereich; kompensierte Paare ausgeblendet; keine Gewinn-/Kostenbasislogik |
 | `POOL-QA-018` | `DONE` | Equipment-Handelsverlauf Browser E2E | PR #240: echter Chromium-Nachweis für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, kleines Fenster und Hohen Kontrast; keine neue Economylogik |
-| `POOL-UX-014` | `PULLED` | Equipment-Handelsverlauf Dichte-/Lesbarkeitsaudit | acht sichtbare Einträge, lange Equipment-Namen, große Schrift, Hohen Kontrast und kleines Fenster prüfen; nur bei reproduzierbarem Befund Darstellung ändern |
+| `POOL-UX-014` | `DONE` | Equipment-Handelsverlauf Dichte-/Lesbarkeitsaudit | PR #242: acht reale wirksame Trades, langer Anzeigename, große Schrift, Hoher Kontrast und 760×680-Fenster ohne Clipping/Überbreite; kein CSS-Fix nötig |
 
 ---
 
@@ -158,4 +137,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-QA-018` ist nach PR #240 vollständig abgeschlossen: Der vorhandene Equipment-Handelsverlauf ist im echten Chromium für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster belegt. Als nächster Owner wird `POOL-UX-014` gezogen: Ein kleiner Dichte-/Lesbarkeitsaudit prüft acht sichtbare Einträge, lange Equipment-Namen und große Schrift im vorhandenen Layout. Erst ein reproduzierbarer Befund darf einen Presentation-Patch auslösen; Kostenbasis und Gewinn-/Verlustlogik bleiben außerhalb dieses Slices.
+`POOL-UX-014` ist nach PR #242 vollständig abgeschlossen: Der maximale Handelsverlauf bleibt selbst mit acht realen wirksamen Trades, langem Anzeigenamen, Großer Schrift, Hohem Kontrast und kleinem Fenster ohne reproduzierbaren Clipping-/Überbreitenbefund; deshalb war kein CSS-Fix nötig. Als nächster Owner wird `POOL-PROPERTY-003` ausschließlich als Contract-Audit gezogen: Zuerst wird geprüft, ob vorhandene Property-, Event- und Availability-Verträge einen kleinen Venue-Benefit/Betriebsprofil-Vertrag tragen können. Ohne eindeutige Zuständigkeit entstehen keine Bonuswerte, keine zweite Betriebsengine und keine versteckte Browserautorität.
