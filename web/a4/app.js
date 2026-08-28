@@ -476,7 +476,7 @@ function renderProperties(properties, propertyUpgrades) {
     const upgradeEntry = upgradeByLocation.get(property.location_id);
     const values = upgradeEntry?.effective_values;
     const valueText = values
-      ? ` · P ${values.prestige} · Pull ${values.audience_pull} · Risiko ${values.risk} · UG ${values.underground_factor} · Nutzen ${values.utility}`
+      ? ` · Prestige ${values.prestige} · Publikumskraft ${values.audience_pull} · Risiko ${values.risk} · Underground-Faktor ${values.underground_factor} · Nutzen ${values.utility}`
       : "";
     detail.textContent = `${displayId(property.district_id)} · ${money(property.purchase_price_cents)}${valueText}`;
     info.append(title, detail);
