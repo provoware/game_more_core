@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #238 · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
+- **Status-Sync-Anker:** PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0`
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 · Head `20b0ed21b97d16babd2108e76cecc25aaa32a889` · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
-- **Start-/Release-Qualität:** bestätigte Equipment-Käufe und -Verkäufe sind jetzt read-only im bestehenden Economy-Bereich sichtbar; tatsächlicher Stückpreis, Reihenfolge und Compensation-Filter bleiben Runtime-/Projection-owned, Gewinn/Kostenbasis werden nicht erfunden
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E`
+- **Start-/Release-Qualität:** die read-only Equipment-Handelshistorie ist zusätzlich im echten Chromium für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster belegt; PR #240 änderte keine Gameplay- oder Economylogik
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -225,42 +225,49 @@
 - [x] fokussierte Presentation-Regression und Laienhilfe sichern Ausführungspreise, Limit, Reihenfolge, Compensation-Filter und Browser-Autoritätsgrenze
 - [x] PR #238 · Head `20b0ed21b97d16babd2108e76cecc25aaa32a889` · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
 
+## 0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E
+- [x] echter Chromium-Pfad beweist leere wirksame Historie, realen Kauf und realen Verkauf über bestätigte Runtime-/Projection-Daten
+- [x] gespeicherter Ausführungspreis bleibt sichtbar; kompensierte Original-/Gegenbuchungspaare bleiben ausgeblendet
+- [x] Hoher Kontrast, 760×680-Fenster, Bounds und `scrollWidth` sind im selben Acceptance-Lauf geprüft
+- [x] Browser-Harness sendet keine Economy-Commands und berechnet keine Kostenbasis oder Gewinnlogik
+- [x] Release Acceptance, fokussierte Presentation-Regression, Laienhilfe und Changelog sichern den Vertrag
+- [x] PR #240 · Head `d919b33ce1c752a99fee933993a4f9d9021d5e67` · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E
+# Aktiv / nächste Iteration – 0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT
 
 ## Fortschritt
 
-**Produktiver Slice abgeschlossen, nächster Beweis klar abgegrenzt.** `POOL-ECON-010` ist nach PR #238 `DONE`; `POOL-QA-018` ist ausschließlich für einen echten Chromium-Nachweis der bereits vorhandenen read-only Historie gezogen.
+**Browser-Beweis abgeschlossen; nächster Schritt bleibt bewusst ein Audit.** `POOL-QA-018` ist nach PR #240 `DONE`. `POOL-UX-014` prüft jetzt ausschließlich, ob die maximale read-only Historie unter anspruchsvollen Anzeigeeinstellungen tatsächlich einen reproduzierbaren Dichte- oder Lesbarkeitsfehler besitzt.
 
 ## Ziel
 
-Im vorhandenen A4-/Chromium-Acceptance-Pfad beweisen, dass die sichtbare Equipment-Handelshistorie leeren Zustand, bestätigten Kauf, bestätigten Verkauf und kompensierte Paare korrekt rendert und auch bei kleinem Fenster sowie Hohem Kontrast stabil bleibt.
+Mit den vorhandenen acht Handelszeilen im bestehenden Economy-Bereich prüfen, ob lange Equipment-Namen, große Schrift, Hoher Kontrast und kleines Fenster ohne Clipping, unlesbare Verdichtung oder horizontale Überbreite funktionieren. Ohne reproduzierbaren Befund wird **kein** CSS-/Layout-Patch erzeugt.
 
 ## Abnahme
 
-- [ ] bestehenden A4-Server und vorhandenen Chromium-Acceptance-Pfad wiederverwenden; kein zweites Browserframework
-- [ ] leere Handelshistorie im echten DOM eindeutig erkennen
-- [ ] bestätigten Kauf und bestätigten Verkauf über reale Runtime-/Projection-Daten im sichtbaren DOM nachweisen
-- [ ] kompensierte Original-/Gegenbuchungspaare dürfen in der normalen Historie nicht sichtbar sein
-- [ ] tatsächlichen `unit_price_cents` aus der Projection anzeigen; keinen aktuellen Marktpreis rückwirkend einsetzen
-- [ ] kleines Fenster und **Hoher Kontrast** im selben Lauf prüfen; keine horizontale Überbreite der Historienzeilen
-- [ ] keine Browser-Commands, Kostenbasis- oder Gewinnlogik im Harness erzeugen
-- [ ] fokussierte statische Regression für den Harness-Vertrag ergänzen
-- [ ] Laienhilfe nur um den tatsächlich geprüften Browser-Nachweis erweitern
+- [ ] bestehenden Trade-History-Renderer und vorhandenen Chromium-Acceptance-Pfad wiederverwenden; keine zweite Oberfläche
+- [ ] genau acht sichtbare wirksame Trades als Maximalfall prüfen
+- [ ] mindestens einen langen realen oder testseitig sicher dargestellten Equipment-Namen auf Zeilenumbruch/Clipping prüfen
+- [ ] große Schrift, Hohen Kontrast und kleines Fenster gemeinsam prüfen
+- [ ] `scrollWidth`, sichtbare Bounds und lesbare Aktions-/Mengen-/Preisstruktur fail-closed messen
+- [ ] keine Preis-, Kostenbasis-, Gewinn-/Verlust- oder Gameplaylogik verändern
+- [ ] nur bei reproduzierbarem Darstellungsbefund den kleinsten Presentation-Fix erlauben; sonst Audit als „kein Fix nötig“ abschließen
+- [ ] fokussierte Regression und Laienhilfe für den tatsächlichen Befund ergänzen
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Ledger, Economy-Service und bestehende Projection bleiben alleinige Finanzautorität.
-- Browser-E2E liest und prüft nur bestätigte Daten; er darf keine zweite Handels- oder Preisberechnung besitzen.
-- `compensates` bleibt Rückbuchungsbezug und wird nicht als Kostenbasis interpretiert.
-- Keine neue Portfolio-, Ledger-, Markt- oder Gewinnengine.
+- Ledger, Economy-Service und Projection bleiben alleinige Finanzautorität.
+- Der Audit darf Daten nur darstellen oder messen; keine zweite Historien-, Markt- oder Portfolioengine.
+- Sichtbare Namen bleiben Anzeige und werden nicht zu Identifikatoren.
+- Keine Kostenbasis- oder Gewinnlogik im Browser.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/EQUIPMENT_TRADE_HISTORY_LAIENHILFE.md`](docs/EQUIPMENT_TRADE_HISTORY_LAIENHILFE.md) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
