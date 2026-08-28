@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a`
-- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT` · PR #222 · Head `719c86f8a68db5355625bfebaffa36c2a368c87f` · Merge `008326acc726e9be513c97682293c4a26e932c3a`
-- **Start-/Release-Qualität:** Story 001/002 sind tonal klassifiziert; Story 003 bleibt bewusst gesperrt, weil kein geprüfter Kandidat alle Qualitäts- und No-Persistence-Grenzen gleichzeitig erfüllt
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE-AUDIT`
+- **Status-Sync-Anker:** PR #224 · Merge `9777fb10d1339ba69d672e7520946b08af915a8b`
+- **Zuletzt remote validierte Feature-Stufe:** `0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE` · PR #224 · Head `4a6134ae7d56c8ef3ca2da65997d2201e541f051` · Merge `9777fb10d1339ba69d672e7520946b08af915a8b`
+- **Start-/Release-Qualität:** Erststart, freigegebene Event-Aktion und bestätigte Runtime-Blocker werden verständlich geführt; Browser-Heuristiken für Energie, Geld oder Markt bleiben bewusst ausgeschlossen
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-VISUAL-HIERARCHY-3-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -166,40 +166,48 @@
 - [x] Auditannahmen sind gegen den echten Street-Katalog regressionsgesichert
 - [x] PR #222 · Head `719c86f8a68db5355625bfebaffa36c2a368c87f` · Merge `008326acc726e9be513c97682293c4a26e932c3a`
 
+## 0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE
+- [x] Erststart hebt `NEUES SPIEL ANLEGEN` als sicheren nächsten Schritt hervor
+- [x] freigegebene Event-Aktion bleibt Runtime-owned und einzige automatisch hervorgehobene Event-Aktion
+- [x] bestätigte Blocker werden kompakt als `EVENT BLOCKIERT: …` erklärt
+- [x] Energie-, Bargeld- und Marktpreisheuristiken im Browser bewusst verworfen
+- [x] Audit, Laienhilfe und MutationObserver-Regressionsvertrag aktualisiert
+- [x] PR #224 · Head `4a6134ae7d56c8ef3ca2da65997d2201e541f051` · Merge `9777fb10d1339ba69d672e7520946b08af915a8b`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-UX-VISUAL-HIERARCHY-3-AUDIT
 
 ## Fortschritt
 
-**Bereit für fokussierten UX-Audit.** Das Control Deck besitzt bereits ein Runtime-basiertes Nächste-Aktion-Signal. Vor einer globalen Führung wird geprüft, welche bestätigten Zustände sicher erklärt werden können, ohne neue Entscheidungshoheit im Browser zu erzeugen.
+**Bereit für fokussierten Presentation-Audit.** Jobs und Economy besitzen bereits eine stärkere Karten- und KPI-Hierarchie. Als Nächstes werden nur konkrete Inkonsistenzen zwischen Event, Straße, Krise, Orte, Map und Ranking geprüft; keine flächige Neugestaltung auf Verdacht.
 
 ## Ziel
 
-Den vorhandenen Next-Action-Pfad auf Reichweite, Verständlichkeit und Autoritätsgrenzen prüfen und den kleinsten sicheren Ausbau für eine globale „Was mache ich jetzt?“-Führung festlegen.
+Die sichtbar wichtigsten Control-Deck-Bereiche gegen die bereits bewährte Economy-Hierarchie vergleichen und genau den kleinsten gemeinsamen Visual-Fix auswählen.
 
 ## Abnahme
 
-- [ ] vorhandene Quelle des Nächste-Aktion-Signals und alle direkten DOM-/Projection-Verträge dokumentieren
-- [ ] mindestens die Zustände Event bereit, Aktion blockiert, Energie niedrig und kein bestätigter nächster Event-Schritt auf sichere Erklärbarkeit prüfen
-- [ ] klar trennen zwischen Runtime-Freigabe, reiner Empfehlung und lokalem UI-Fokus
-- [ ] genau einen kleinsten UX-Ausbau auswählen oder Implementierung begründet zurückstellen
-- [ ] keine neue Browser-Fachlogik, keine automatischen Gameplayentscheidungen und keine zweite Recommendation-Engine
-- [ ] fokussierte Regression für die gewählte Signalquelle definieren
-- [ ] Laienhilfe und Changelog aktualisieren
+- [ ] vorhandene Panel-/Card-/Status-Stile von Economy gegen Event, Straße, Krise, Property, Map und Ranking gezielt vergleichen
+- [ ] höchstens einen reproduzierbaren Hierarchiebruch auswählen, der Orientierung oder Lesbarkeit messbar schwächt
+- [ ] bestehende Klassen, Panels und Renderingpfade wiederverwenden; kein zweites Designsystem
+- [ ] High Contrast, Reduced Motion, kleine Fenster und Fokusmodus erhalten
+- [ ] keine Gameplay-, Runtime-, Save-, Journal-, Economy- oder Projection-Autorität verändern
+- [ ] fokussierte Presentation-Regression für den gewählten visuellen Vertrag ergänzen
+- [ ] Laienhilfe und Changelog nur für die tatsächlich sichtbare Änderung aktualisieren
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Runtime-/Projection-Daten bleiben Fachquelle; Browser erklärt und fokussiert nur.
-- keine automatische Ausführung einer empfohlenen Aktion.
-- keine erfundenen Blocker, Ressourcenwerte oder Storyzustände.
-- bestehendes `next_action_attention_signal` zuerst wiederverwenden.
+- visuelle Hierarchie erklärt vorhandene Zustände; sie erzeugt keine neuen Fachzustände.
+- bestätigte FX bleiben bestätigungsgebunden und nicht blockierend.
+- vorhandene CSS-/Panel-Architektur zuerst wiederverwenden.
+- kein neues Dashboard, keine parallele Map oder zweite Kartenkomponenten-Familie.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) · [`docs/STATUS_SYNC_AFTER_PR222_LAIENHILFE.md`](docs/STATUS_SYNC_AFTER_PR222_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/A4_CONTROL_DECK_HILFE.md`](docs/A4_CONTROL_DECK_HILFE.md) · [`docs/NEXT_BEST_ACTION_GUIDANCE_AUDIT.md`](docs/NEXT_BEST_ACTION_GUIDANCE_AUDIT.md) · [`AGENTS.md`](AGENTS.md)

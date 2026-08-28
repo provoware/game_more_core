@@ -8,8 +8,8 @@
 
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
-  <img alt="Feature Stand Street Tone Diversity Audit validiert" src="https://img.shields.io/badge/Feature_Stand-STREET--TONE--AUDIT_validiert-7dff00">
-  <img alt="Aktive Iteration Next Best Action Guidance Audit" src="https://img.shields.io/badge/Aktiv-NEXT--BEST--ACTION--AUDIT-00c2ff">
+  <img alt="Feature Stand Next Best Action Guidance validiert" src="https://img.shields.io/badge/Feature_Stand-NEXT--ACTION--GUIDANCE_validiert-7dff00">
+  <img alt="Aktive Iteration Visual Hierarchy 3 Audit" src="https://img.shields.io/badge/Aktiv-VISUAL--HIERARCHY--3--AUDIT-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,11 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a` |
-| **Validierter Feature-Stand** | ✅ `0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT` |
-| **Aktive Iteration** | 🟡 `0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE-AUDIT` |
-| **Danach** | nur bei sauberer Signalquelle den kleinsten globalen „Was mache ich jetzt?“-Ausbau umsetzen; keine automatische Aktion und keine Browser-Fachautorität |
+| **Status-Sync-Anker** | PR #224 · Merge `9777fb10d1339ba69d672e7520946b08af915a8b` |
+| **Validierter Feature-Stand** | ✅ `0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE` |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-VISUAL-HIERARCHY-3-AUDIT` |
+| **Danach** | genau einen reproduzierbaren Hierarchiebruch beheben; kein neues Dashboard und kein zweites Designsystem |
+| **Spiel-Führung** | ✅ Erststart · freigegebene Runtime-Event-Aktion · bestätigte Blocker; keine Energie-/Geld-/Markt-Heuristik im Browser |
 | **Street Story Audit** | ✅ Story 001 sozial-technisch · Story 002 materiell-persönlich · Story 003 bewusst zurückgestellt · `construction_detour` nur Reservekandidat |
 | **Arbeit & Einkommen** | ✅ fünf Jobs · Stundenlohn · bestätigter Erschöpfungslohn · Energie-/Stresskosten direkt vergleichbar |
 | **Equipment-Handel** | ✅ kanonischer Marktpreis · Kaufen · Verkaufen · Reservieren · Freigeben · reservierter Bestand bleibt geschützt |
@@ -52,7 +53,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die aktuelle Feature-Linie bis PR #222 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
+> Die aktuelle Feature-Linie bis PR #224 wurde ausschließlich über den Repository-Workflow mit grünen Pflicht-Gates und `/safe-merge` nach `main` übernommen. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync gegen den letzten fachlich relevanten Safe Merge geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
