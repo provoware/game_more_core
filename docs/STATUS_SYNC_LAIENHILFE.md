@@ -21,7 +21,7 @@ Beispiel: Der Job-Lohn-Kontexthinweis wurde mit PR #231 als Spielfunktion abgesc
 Darum dürfen zwei Aussagen gleichzeitig richtig sein:
 
 - **letzte validierte Spielfunktion:** `0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY` aus PR #231,
-- **aktueller Status-Sync-Anker:** PR #234, weil dies der neueste relevante und sicher gemergte QA-Stand ist.
+- **damaliger Status-Sync-Anker:** PR #234, weil dies zu diesem Zeitpunkt der neueste relevante und sicher gemergte QA-Stand war.
 
 Diese Trennung verhindert, dass eine reine Testhärtung fälschlich als neue Gameplayfunktion bezeichnet wird. Gleichzeitig bleibt die Projektübersicht technisch auf dem neuesten bestätigten Repository-Stand.
 
@@ -39,21 +39,26 @@ Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien*
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #234
+## Praktisches Beispiel nach PR #238
 
-PR #231 führte den verständlichen Hinweis für reduzierten Joblohn ein. PR #232 bewies ihn im echten Chromium-Pfad mit Voll- und Teillohnfällen, `aria-label`, Hohem Kontrast und kleinem Fenster. PR #234 beseitigte anschließend eine konkrete Race-Condition im Acceptance-Harness, indem erst nach vollständiger `payoutReducedByEnergy`-Dekoration klassifiziert wird.
+PR #236 bestätigte zunächst nur, dass das vorhandene Economy-Ledger eine sichere read-only Handelshistorie tragen kann. PR #238 hat diese Funktion anschließend wirklich umgesetzt: Im bestehenden Equipment-Bereich werden jetzt die letzten acht wirksamen bestätigten Käufe und Verkäufe mit Aktion, Equipment, Menge und tatsächlichem Stückpreis angezeigt. Kompensierte Original-/Gegenbuchungspaare werden aus der normalen Historie ausgeblendet, Gewinn oder Kostenbasis werden nicht erfunden.
 
-Die drei Statusdateien standen danach noch auf PR #229. Das Spiel und seine QA-Evidenz waren also weiter als die Projektübersichten. Der Status-Sync zieht deshalb den technischen Anker auf PR #234, lässt den letzten Feature-Stand aber korrekt auf PR #231.
+Damit ist PR #238 wieder **beides zugleich**:
+
+- letzter validierter Feature-Stand `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY`,
+- aktueller fachlich relevanter Status-Sync-Anker `PR #238 / 52934e08…`.
+
+Der vor dieser Statuskorrektur rote Status-Sync bedeutet deshalb nicht, dass die Handelsfunktion fehlerhaft ist. Er bedeutet nur: Die drei Projektübersichten standen noch auf dem früheren Audit PR #236 und müssen auf den bereits sicher gemergten Produktstand nachgezogen werden.
 
 ### Was ist danach der echte nächste Inhaltsschritt?
 
-`POOL-ECON-010` wird zunächst nur als **Equipment-Handelsverlauf-Audit** gezogen. Dabei wird geprüft, ob das vorhandene Ledger historische Kauf-/Verkaufspreise und Item-Identitäten bereits zuverlässig genug speichert.
+Als nächster kleiner Qualitäts-Slice wird ein **echter Browser-E2E für die Handelshistorie** gezogen. Er soll im vorhandenen Chromium-Acceptance-Pfad vier Dinge beweisen: leere Historie, bestätigten Kauf, bestätigten Verkauf und korrekt ausgeblendete Kompensationspaare. Kleines Fenster und Hoher Kontrast sollen dabei mitgeprüft werden.
 
-Erst wenn diese Evidenz ausreicht, darf ein späterer Presentation-Slice Gewinn oder Verlust read-only erklären. Es werden keine alten Preise aus dem aktuellen Marktpreis zurückgerechnet und keine zweite Marktengine erfunden.
+Dieser nächste Test darf keine neue Markt-, Ledger- oder Gewinnlogik einführen. Eine spätere Gewinn-/Verlustanzeige bleibt weiterhin getrennt und braucht zuerst einen eindeutigen Kostenbasisvertrag.
 
 ### Merksatz für Laien
 
-**Der Status-Sync sagt, bis wohin das Repository sicher geprüft ist. Der Feature-Stand sagt, welche Spielfunktion zuletzt wirklich hinzugekommen ist. Beides kann auf unterschiedliche PRs zeigen und trotzdem korrekt sein.**
+**Der Status-Sync sagt, bis wohin das Repository sicher geprüft ist. Der Feature-Stand sagt, welche Spielfunktion zuletzt wirklich hinzugekommen ist. Nach PR #238 zeigen beide wieder auf denselben produktiven Stand.**
 
 ## Für Entwickler
 
@@ -69,7 +74,7 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass Feature-Stand, Safe-Merge-Anker, Feature-Pool und nächste aktive Arbeit konsistent bleiben, ohne QA-Härtungen fälschlich als neue Spielfunktion zu klassifizieren.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass Feature-Stand, Safe-Merge-Anker, Feature-Pool und nächste aktive Arbeit konsistent bleiben, ohne reine QA-Härtungen fälschlich als neue Spielfunktion zu klassifizieren.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
