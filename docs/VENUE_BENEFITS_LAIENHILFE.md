@@ -14,10 +14,20 @@ Der echte Chromium-Nachweis startet mit einem isolierten Spielstand, kauft über
 
 Neu prüft derselbe Browser-Nachweis nicht mehr nur die fünf Bezeichnungen: **Hinter jeder Bezeichnung muss tatsächlich ein sichtbarer numerischer Wert stehen.** Damit kann eine leere oder nur beschriftete Profilzeile nicht versehentlich als vollständig funktionierend durch die Release-Abnahme rutschen.
 
-Noch nicht erlaubt sind automatische Vorteile wie „mehr Events“, „billigerer Betrieb“, „mehr Kapazität“ oder „laufender Gewinn“. Für solche Wirkungen fehlt noch eine eigene Spielregel, die Speichern, Wiederholen und Fehlerfälle eindeutig regelt.
+## Mechanik-Audit: Publikumskraft
+
+Als erster einzelner Kandidat wurde **Publikumskraft (`audience_pull`)** gegen die bestehende Event-Abrechnung geprüft. Das Ergebnis ist aktuell **NO-GO für einen mechanischen Bonus**.
+
+Der Grund ist einfach: Die Event-Abrechnung kennt heute Event, Geld und Charakter, aber keinen autoritativen Property-/Upgrade-State. Sie besitzt auch kein Receipt-Feld, das später eindeutig beweisen könnte, welcher Publikumskraft-Wert welchen Bonus erzeugt hat. Eine Prozentzahl einfach in den Gewinn einzurechnen wäre deshalb eine neue versteckte Regel und beim Replay fachlich nicht sauber erklärbar.
+
+Auch Scene Jobs sind kein zulässiger Umweg: Ihr Vertrag verbietet fremd eingespeiste Payout- und Effektmodifikatoren.
+
+Das bedeutet nicht, dass Publikumskraft dauerhaft wirkungslos bleiben muss. Vor einem späteren GO braucht genau ein Zielpfad eine eindeutige Event→Location-Zuordnung, eine begrenzte Formel, Journal-/Receipt-Evidence und denselben Effekt nach Reload/Replay.
+
+Noch nicht erlaubt sind daher automatische Vorteile wie „mehr Events“, „billigerer Betrieb“, „mehr Kapazität“ oder „laufender Gewinn“. Für solche Wirkungen fehlt weiterhin eine eigene Spielregel, die Speichern, Wiederholen und Fehlerfälle eindeutig regelt.
 
 ## Merksatz
 
-**Anzeigen, was bei deinem Ort bestätigt ist: ja. Bei fremden Orten Besitznutzen vortäuschen, leere Werte als fertig ausgeben oder neue Wirkung erfinden: nein.**
+**Anzeigen, was bei deinem Ort bestätigt ist: ja. Einen Bonus erfinden, bevor Server, Journal und Replay dieselbe Ursache beweisen können: nein.**
 
-Der nächste sinnvolle Gameplay-Schritt ist nach diesem Browser-Nachweis ein eigener fachlicher Audit für genau **einen** mechanischen Venue Benefit. Erst dann darf entschieden werden, ob einer der fünf Werte tatsächlich eine neue Spielwirkung bekommt.
+Der nächste sinnvolle Gameplay-Schritt ist nach diesem Audit nicht eine allgemeine Bonusengine, sondern die Entscheidung, ob `audience_pull` durch eine kleine Erweiterung des kanonischen Settlement-Vertrags sauber autorisiert werden kann oder ob ein anderer einzelner Venue-Wert den besseren bestehenden Zielpfad besitzt.
