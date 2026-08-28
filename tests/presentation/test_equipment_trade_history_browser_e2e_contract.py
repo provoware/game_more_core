@@ -26,11 +26,22 @@ class EquipmentTradeHistoryBrowserE2EContractTests(unittest.TestCase):
         self.assertNotIn("sendCommand", browser_fragment)
         self.assertNotIn("cost_basis", browser_fragment.lower())
 
-    def test_browser_checks_high_contrast_and_horizontal_overflow(self):
+    def test_density_audit_reaches_limit_and_stresses_long_display_name(self):
+        self.assertIn("DENSITY_LIMIT = 8", HARNESS)
+        self.assertIn("def _extend_to_density_limit", HARNESS)
+        self.assertIn('for pair_index in range(3)', HARNESS)
+        self.assertIn('_browser_phase(save_dir, "density")', HARNESS)
+        self.assertIn("Mobiles Vierkanal-Hochleistungs-Soundsystem", HARNESS)
+        self.assertIn("Langer Test-Anzeigename wurde nicht sicher gesetzt", HARNESS)
+        self.assertIn("Dichte-Audit verliert Aktions-/Mengen-/Preisstruktur", HARNESS)
+
+    def test_browser_checks_large_text_high_contrast_and_horizontal_overflow(self):
         self.assertIn('BunkerUIPrefs.set(\\"highContrast\\", true)', HARNESS)
+        self.assertIn('BunkerUIPrefs.set(\\"largeText\\", true)', HARNESS)
         self.assertIn("width: 760px; height: 680px", HARNESS)
         self.assertIn("rect.right > viewportWidth + 1", HARNESS)
         self.assertIn("node.scrollWidth > node.clientWidth + 1", HARNESS)
+        self.assertIn("Textinhalt ragt aus der Handelszeile heraus", HARNESS)
         self.assertIn("Read-only Handelsverlauf enthält unerwartete Aktion", HARNESS)
 
     def test_projection_proof_rejects_compensated_pair_and_wrong_execution_price(self):
