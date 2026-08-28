@@ -57,9 +57,9 @@ def _harness() -> str:
       const ownedText = ownedDetail.textContent || \"\";
       for (const label of labels) {
         if (!ownedText.includes(label)) throw new Error(\"Eigenes Betriebsprofil verliert: \" + label);
-        const match = ownedText.match(new RegExp(`${label}\\s+([+-]?\\d+(?:[.,]\\d+)?)`));
-        const numericValue = match ? Number(match[1].replace(\",\", \".\")) : Number.NaN;
-        if (!Number.isFinite(numericValue)) throw new Error(\"Eigenes Betriebsprofil hat keinen numerischen Wert für: \" + label);
+        const valueToken = (ownedText.split(label)[1] || \"\").split(\"·\")[0].trim();
+        const numericValue = Number(valueToken.replace(\",\", \".\"));
+        if (!valueToken || !Number.isFinite(numericValue)) throw new Error(\"Eigenes Betriebsprofil hat keinen numerischen Wert für: \" + label);
       }
       const foreign = rows.filter((row) => row !== owned[0]);
       for (const row of foreign) {
