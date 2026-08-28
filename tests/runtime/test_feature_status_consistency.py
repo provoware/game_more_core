@@ -105,7 +105,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertFalse(presentation["equipment_trade_history_profit_calculation"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
-        self.assertIn("leere Historie", todo)
+        self.assertIn("leere Handelshistorie", todo)
         self.assertIn("kompensierte", todo)
         self.assertIn("Hoher Kontrast", todo)
 
