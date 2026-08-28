@@ -76,13 +76,21 @@
     document.head.append(script);
   }
 
-  function ensureMotionDepthStylesheet() {
-    if (document.querySelector('link[data-motion-depth="true"]')) return;
+  function appendStylesheet(filename, datasetKey) {
+    if (document.querySelector(`link[data-${datasetKey}="true"]`)) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = assetUrl("motion_depth.css");
-    link.dataset.motionDepth = "true";
+    link.href = assetUrl(filename);
+    link.dataset[datasetKey.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())] = "true";
     document.head.append(link);
+  }
+
+  function ensureMotionDepthStylesheet() {
+    appendStylesheet("motion_depth.css", "motion-depth");
+  }
+
+  function ensureVisualHierarchy3Stylesheet() {
+    appendStylesheet("visual_hierarchy_3.css", "visual-hierarchy-3");
   }
 
   function ensureFocusModule() {
@@ -176,6 +184,7 @@
     load();
     apply();
     ensureMotionDepthStylesheet();
+    ensureVisualHierarchy3Stylesheet();
     ensureFocusModule();
     ensureDistrictBiographyModule();
     ensureFinanceStatementExportModule();
