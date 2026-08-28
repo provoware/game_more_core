@@ -14,7 +14,7 @@ def _pool_row(pool: str, pool_id: str) -> str:
 
 
 class FeatureStatusConsistencyTests(unittest.TestCase):
-    def test_last_validated_feature_tracks_productive_trade_history(self):
+    def test_last_validated_feature_stays_productive_trade_history(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -30,27 +30,26 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn("PR #238", todo)
         self.assertIn("52934e08dfc5c24e6b9c2933f6c53d8374018079", todo)
         self.assertIn(f"**{iteration}:** PR #238", pool)
-        self.assertIn("52934e08dfc5c24e6b9c2933f6c53d8374018079", pool)
 
-    def test_latest_safe_merge_anchor_tracks_productive_trade_history(self):
+    def test_latest_safe_merge_anchor_tracks_trade_history_browser_e2e(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         validation = status["remote_validation"]
         sync = status["status_sync"]
 
-        self.assertEqual(validation["pull_request"], 238)
-        self.assertEqual(validation["validated_head"], "20b0ed21b97d16babd2108e76cecc25aaa32a889")
-        self.assertEqual(validation["merged_commit"], "52934e08dfc5c24e6b9c2933f6c53d8374018079")
+        self.assertEqual(validation["pull_request"], 240)
+        self.assertEqual(validation["validated_head"], "d919b33ce1c752a99fee933993a4f9d9021d5e67")
+        self.assertEqual(validation["merged_commit"], "3d256f40da15c2cab42b78a3b64e5dbbea6fbad0")
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
-        self.assertEqual(sync["anchor_pull_request"], 238)
+        self.assertEqual(sync["anchor_pull_request"], 240)
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
-        self.assertEqual(sync["anchor_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
-        self.assertIn("Status-Sync-Anker:** PR #238", todo)
-        self.assertIn("Status-Sync-Anker:** PR #238", pool)
-        self.assertIn("**0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY:** PR #238", pool)
+        self.assertEqual(sync["anchor_iteration"], "0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E")
+        self.assertIn("Status-Sync-Anker:** PR #240", todo)
+        self.assertIn("Status-Sync-Anker:** PR #240", pool)
+        self.assertIn("**0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E:** PR #240", pool)
 
     def test_validated_and_next_pool_items_have_single_current_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -67,13 +66,13 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
             "POOL-QA-017", "POOL-WORLD-003", "POOL-STREET-003", "POOL-ECON-009",
             "POOL-STORY-002", "POOL-UX-010", "POOL-UX-011", "POOL-UX-012", "POOL-UX-013",
-            "POOL-ECON-010",
+            "POOL-ECON-010", "POOL-QA-018",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-QA-018"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-014"))
 
-    def test_current_status_describes_trade_history_and_next_browser_e2e(self):
+    def test_current_status_describes_browser_proof_and_density_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         economy = status["subsystems"]["economy"]
@@ -83,30 +82,31 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
-        self.assertEqual(status["active_iteration"], "0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E")
-        self.assertEqual(status["current_focus"], "equipment_trade_history_browser_e2e")
+        self.assertEqual(status["active_iteration"], "0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT")
+        self.assertEqual(status["current_focus"], "equipment_trade_history_density_audit")
         self.assertIsNone(status["next_iteration"])
         self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
 
-        self.assertTrue(economy["equipment_trade_history_audit_validated"])
-        self.assertTrue(economy["equipment_trade_history_readonly_supported_by_ledger"])
-        self.assertEqual(economy["equipment_trade_history_source_kinds"], ["buy", "sell"])
-        self.assertIn("unit_price_cents", economy["equipment_trade_history_fields"])
-        self.assertFalse(economy["equipment_trade_history_realized_profit_supported"])
-        self.assertFalse(economy["equipment_trade_history_cost_basis_contract"])
-        self.assertFalse(economy["equipment_trade_history_compensates_is_cost_basis"])
         self.assertTrue(economy["equipment_trade_history_product_ui_visible"])
         self.assertEqual(economy["equipment_trade_history_visible_limit"], 8)
         self.assertTrue(economy["equipment_trade_history_compensated_pairs_filtered"])
+        self.assertFalse(economy["equipment_trade_history_realized_profit_supported"])
 
         self.assertTrue(presentation["equipment_trade_history_visible"])
-        self.assertEqual(presentation["equipment_trade_history_location"], "existing_equipment_economy_panel")
+        self.assertTrue(presentation["equipment_trade_history_browser_e2e_validated"])
+        self.assertEqual(presentation["equipment_trade_history_browser_e2e_browser"], "chromium")
+        self.assertTrue(presentation["equipment_trade_history_browser_e2e_empty_state"])
+        self.assertTrue(presentation["equipment_trade_history_browser_e2e_real_buy_sell"])
+        self.assertTrue(presentation["equipment_trade_history_browser_e2e_compensation_filter"])
+        self.assertTrue(presentation["equipment_trade_history_browser_e2e_high_contrast"])
+        self.assertTrue(presentation["equipment_trade_history_browser_e2e_small_window"])
         self.assertFalse(presentation["equipment_trade_history_browser_commands"])
         self.assertFalse(presentation["equipment_trade_history_profit_calculation"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
-        self.assertIn("leere Handelshistorie", todo)
-        self.assertIn("kompensierte", todo)
+        self.assertIn("acht", todo.lower())
+        self.assertIn("lange Equipment-Namen", todo)
+        self.assertIn("große Schrift", todo)
         self.assertIn("Hoher Kontrast", todo)
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
@@ -146,7 +146,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-ECON-009": "`DONE`", "POOL-STORY-002": "`DONE`",
             "POOL-UX-010": "`DONE`", "POOL-UX-011": "`DONE`",
             "POOL-UX-012": "`DONE`", "POOL-UX-013": "`DONE`",
-            "POOL-ECON-010": "`DONE`", "POOL-QA-018": "`PULLED`",
+            "POOL-ECON-010": "`DONE`", "POOL-QA-018": "`DONE`",
+            "POOL-UX-014": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
