@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0`
+- **Status-Sync-Anker:** PR #242 · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815`
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 · Head `20b0ed21b97d16babd2108e76cecc25aaa32a889` · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
-- **Start-/Release-Qualität:** die read-only Equipment-Handelshistorie ist zusätzlich im echten Chromium für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster belegt; PR #240 änderte keine Gameplay- oder Economylogik
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT`
+- **Start-/Release-Qualität:** der maximale read-only Equipment-Handelsverlauf ist nach PR #242 im echten Chromium mit acht wirksamen Trades, langem Anzeigenamen, Großer Schrift, Hohem Kontrast und 760×680-Fenster ohne reproduzierbaren Clipping-/Überbreitenbefund bestätigt; kein CSS-Fix war nötig
+- **Nächste aktive Entwicklungsstufe:** `0.8.8-GAMEPLAY-VENUE-BENEFITS-CONTRACT-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -233,41 +233,47 @@
 - [x] Release Acceptance, fokussierte Presentation-Regression, Laienhilfe und Changelog sichern den Vertrag
 - [x] PR #240 · Head `d919b33ce1c752a99fee933993a4f9d9021d5e67` · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0`
 
+## 0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT
+- [x] vorhandener Chromium-Harness auf exakt acht wirksame Trades erweitert
+- [x] langer rein testseitiger Anzeigename, Große Schrift, Hoher Kontrast und 760×680-Fenster gemeinsam geprüft
+- [x] sichtbare Bounds, horizontale Überbreite und Aktions-/Mengen-/Preisstruktur fail-closed abgesichert
+- [x] kein reproduzierbarer Darstellungsbefund; deshalb kein CSS-/Layout-Fix und keine Produktlogikänderung
+- [x] PR #242 · Head `bc7ebccd34f3ef2b63b7e73c87dc945a2b20a11a` · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815`
+
 ## 0.8.8-STATUS-SYNC-AFTER-SAFE-MERGE
 - [x] drei kanonische Statusdateien werden gegen den letzten fachlich relevanten Safe Merge geprüft
 - [x] reine Status-Sync-Merges werden übersprungen; kein direkter Bot-Push auf `main`
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT
+# Aktiv / nächste Iteration – 0.8.8-GAMEPLAY-VENUE-BENEFITS-CONTRACT-AUDIT
 
 ## Fortschritt
 
-**Browser-Beweis abgeschlossen; nächster Schritt bleibt bewusst ein Audit.** `POOL-QA-018` ist nach PR #240 `DONE`. `POOL-UX-014` prüft jetzt ausschließlich, ob die maximale read-only Historie unter anspruchsvollen Anzeigeeinstellungen tatsächlich einen reproduzierbaren Dichte- oder Lesbarkeitsfehler besitzt.
+**Neuer Gameplay-Owner gezogen; Implementierung noch 0 %.** Nach der langen Economy-/QA-Kette ist `POOL-UX-014` abgeschlossen. `POOL-PROPERTY-003` wird zunächst ausschließlich als Contract-Audit geöffnet, damit ein sichtbarer Venue-/Betriebsnutzen nicht als zweite Property- oder Bonusengine entsteht.
 
 ## Ziel
 
-Mit den vorhandenen acht Handelszeilen im bestehenden Economy-Bereich prüfen, ob lange Equipment-Namen, große Schrift, Hoher Kontrast und kleines Fenster ohne Clipping, unlesbare Verdichtung oder horizontale Überbreite funktionieren. Ohne reproduzierbaren Befund wird **kein** CSS-/Layout-Patch erzeugt.
+Prüfen, ob die vorhandenen Property-, Event-, Availability- und Projection-Verträge einen kleinen, nachvollziehbaren Venue-Benefit/Betriebsprofil-Vertrag tragen können, ohne Bonuswerte im Browser zu erfinden oder bestehende Ownership-/Upgrade-Regeln zu duplizieren.
 
 ## Abnahme
 
-- [ ] bestehenden Trade-History-Renderer und vorhandenen Chromium-Acceptance-Pfad wiederverwenden; keine zweite Oberfläche
-- [ ] genau acht sichtbare wirksame Trades als Maximalfall prüfen
-- [ ] mindestens einen langen realen oder testseitig sicher dargestellten Equipment-Namen auf Zeilenumbruch/Clipping prüfen
-- [ ] große Schrift, Hohen Kontrast und kleines Fenster gemeinsam prüfen
-- [ ] `scrollWidth`, sichtbare Bounds und lesbare Aktions-/Mengen-/Preisstruktur fail-closed messen
-- [ ] keine Preis-, Kostenbasis-, Gewinn-/Verlust- oder Gameplaylogik verändern
-- [ ] nur bei reproduzierbarem Darstellungsbefund den kleinsten Presentation-Fix erlauben; sonst Audit als „kein Fix nötig“ abschließen
-- [ ] fokussierte Regression und Laienhilfe für den tatsächlichen Befund ergänzen
+- [ ] bestehende Property-/Upgrade-/Event-/Availability-Verträge gezielt lesen; kein Repository-Breitenscan
+- [ ] mindestens drei mögliche Nutzenarten gegen vorhandene Autoritäten vergleichen, z. B. Event-Verfügbarkeit, bestätigte Kosten-/Kapazitätswirkung oder rein narrative Venue-Identität
+- [ ] nur Nutzen zulassen, dessen Quelle und Zuständigkeit bereits kanonisch belegbar oder mit einem einzigen kleinen Domain-Vertrag sauber ergänzbar ist
+- [ ] keine versteckten Browserboni, keine zweite Property-State-Engine und keine Systemzeit-Autorität einführen
+- [ ] Save-/Journal-/Replay-Folgen ausdrücklich dokumentieren, bevor produktive Werte entstehen
+- [ ] Ergebnis als Contract-Audit mit klarer GO/NO-GO-Entscheidung und fokussierter Regression absichern
+- [ ] Laienhilfe erklären, was ein Venue Benefit später bedeuten darf und was nicht
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
 ## Architektur- und Sicherheitsgrenzen
 
-- Ledger, Economy-Service und Projection bleiben alleinige Finanzautorität.
-- Der Audit darf Daten nur darstellen oder messen; keine zweite Historien-, Markt- oder Portfolioengine.
-- Sichtbare Namen bleiben Anzeige und werden nicht zu Identifikatoren.
-- Keine Kostenbasis- oder Gewinnlogik im Browser.
+- Property Ownership und Upgrades bleiben in ihren vorhandenen Domain-/Application-Verträgen.
+- Event-Verfügbarkeit darf nicht durch reine Browserdarstellung verändert werden.
+- Neue Gameplaywerte benötigen einen katalogisierten, replaybaren Fachvertrag; kein lokaler UI-Bonus.
+- Keine Miete, kein Verkauf und keine laufende Betriebsökonomie in diesem Audit.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/EQUIPMENT_TRADE_HISTORY_LAIENHILFE.md`](docs/EQUIPMENT_TRADE_HISTORY_LAIENHILFE.md) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
