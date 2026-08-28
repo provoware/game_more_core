@@ -34,6 +34,7 @@
       .next-action-signal::after { content: "NÄCHSTER SCHRITT"; position: absolute; right: .45rem; top: -.65rem; padding: .12rem .35rem; border-radius: 999px; background: var(--accent); color: #101208; font-size: .52rem; font-weight: 900; letter-spacing: .06em; }
       .deck-next-action { display: inline-flex; align-items: center; gap: .35rem; flex: 0 0 auto; padding: .38rem .62rem; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent); font-size: .67rem; font-weight: 850; letter-spacing: .05em; }
       .deck-next-action[data-state="idle"] { border-color: #44515f; color: var(--muted); }
+      .deck-next-action[data-state="blocked"] { border-color: var(--danger); color: var(--danger); }
       @media (prefers-reduced-motion: no-preference) { .next-action-signal { animation: deck-next-action-pulse 1.8s ease-in-out infinite; } }
       @keyframes deck-next-action-pulse { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 10%, transparent); } }
     `;
@@ -100,25 +101,58 @@
     return status;
   }
 
+  function visible(element) {
+    return element instanceof HTMLElement && !element.classList.contains("hidden");
+  }
+
+  function nextConfirmedAction() {
+    const firstRun = document.getElementById("first-run");
+    const newGame = document.getElementById("new-game");
+    if (visible(firstRun) && newGame instanceof HTMLButtonElement && !newGame.disabled) {
+      return { button: newGame, label: "NEUES SPIEL ANLEGEN" };
+    }
+
+    const enabledEventAction = document.querySelector("#event-actions button:not(:disabled)");
+    if (enabledEventAction instanceof HTMLButtonElement) {
+      return { button: enabledEventAction, label: enabledEventAction.textContent || "EVENT-AKTION" };
+    }
+    return null;
+  }
+
+  function confirmedBlockerText() {
+    const eventPanel = document.getElementById("event-panel");
+    const blockers = document.getElementById("blockers");
+    if (!visible(eventPanel) || !(blockers instanceof HTMLElement)) return null;
+    const text = blockers.textContent?.trim() || "";
+    return text.startsWith("Blockiert:") ? text.slice("Blockiert:".length).trim() : null;
+  }
+
   function syncNextAction() {
     const status = ensureNextActionStatus();
     if (!status) return;
 
-    const enabledEventAction = document.querySelector("#event-actions button:not(:disabled)");
+    const nextAction = nextConfirmedAction();
     const currentSignal = document.querySelector(`.${SIGNAL_CLASS}`);
-    if (currentSignal !== enabledEventAction) {
+    if (currentSignal !== nextAction?.button) {
       currentSignal?.classList.remove(SIGNAL_CLASS);
-      if (enabledEventAction instanceof HTMLButtonElement) enabledEventAction.classList.add(SIGNAL_CLASS);
+      nextAction?.button.classList.add(SIGNAL_CLASS);
     }
 
-    if (enabledEventAction instanceof HTMLButtonElement) {
+    if (nextAction) {
       status.dataset.state = "ready";
-      setTextIfChanged(status, `NÄCHSTER SCHRITT: ${enabledEventAction.textContent || "EVENT-AKTION"}`);
+      setTextIfChanged(status, `NÄCHSTER SCHRITT: ${nextAction.label}`);
+      return;
+    }
+
+    const blocker = confirmedBlockerText();
+    if (blocker) {
+      status.dataset.state = "blocked";
+      setTextIfChanged(status, `EVENT BLOCKIERT: ${blocker}`);
       return;
     }
 
     status.dataset.state = "idle";
-    setTextIfChanged(status, "NÄCHSTER SCHRITT: Runtime-Gate abwarten");
+    setTextIfChanged(status, "NÄCHSTER SCHRITT: Noch keine freigegebene Event-Aktion");
   }
 
   function reconcile() {
