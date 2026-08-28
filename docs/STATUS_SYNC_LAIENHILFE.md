@@ -14,19 +14,25 @@ Der Status-Sync-Check liest dafür **nur** die Git-Historie und diese drei vorha
 
 ## Wichtig: Safe-Merge-Anker ist nicht immer eine neue Spielfunktion
 
-Ein späterer Audit-, Test-, UX- oder Robustheits-PR kann der neueste fachlich relevante Safe Merge sein, obwohl er **keine neue Spielfunktion** eingeführt hat.
+Ein späterer Audit-, Test-, UX- oder Robustheits-PR kann der neueste fachlich relevante Safe Merge sein, obwohl er keine neue eigenständige Gameplayfunktion freigibt.
 
-Die read-only Equipment-Handelshistorie wurde mit PR #238 als Spielfunktion abgeschlossen. Danach wurde ihre Darstellung weiter geprüft. Anschließend wechselte der Fokus zu eigenen Locations:
+Die read-only Equipment-Handelshistorie wurde mit PR #238 als letzte vollständig abgeschlossene neue Spielfunktion geführt. Danach wechselte der Schwerpunkt zu eigenen Locations. Die Venue-Kette wurde schrittweise und ohne zweite Architektur gehärtet:
 
-- PR #244 prüfte, welche Venue Benefits überhaupt fachlich zulässig sind. Ergebnis: Ein read-only Betriebsprofil ist erlaubt; automatische Event-, Kosten-, Kapazitäts- oder Ertragsboni sind ohne eigenen Fachvertrag gesperrt.
-- PR #245 begrenzte dieses Betriebsprofil noch genauer auf fünf bereits bestätigte Werte aus der vorhandenen Property-Upgrade-Projection: **Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen**.
+- PR #244 prüfte zulässige Venue Benefits. Ergebnis: read-only Betriebsprofil GO; Event-, Kosten-, Kapazitäts- und Ertragsboni ohne eigenen Fachvertrag NO-GO.
+- PR #245 begrenzte das Profil auf fünf vorhandene Werte: **Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen**.
+- PR #247 machte diese Werte ausschließlich bei tatsächlich besessenen Locations sichtbar.
+- PR #248 ersetzte kryptische Kürzel durch verständliche Bezeichnungen.
+- PR #249 sicherte reine Textausgabe und exakt fünf erlaubte Felder.
+- PR #250 verbot einen Browser-Rückfall auf die interne Ortswert-Karte, der die Eigentumsgrenze umgehen könnte.
+- PR #251 bewies das Profil im echten Chromium bei **760×680**, **Großer Schrift** und **Hohem Kontrast**, einschließlich Eigentumsgrenze und horizontaler Überbreite.
+- PR #252 verschärfte denselben Nachweis: Hinter jedem der fünf sichtbaren Begriffe muss tatsächlich ein endlicher numerischer Wert stehen.
 
-Darum sind zwei unterschiedliche Aussagen gleichzeitig richtig:
+Darum sind weiterhin zwei Aussagen gleichzeitig richtig:
 
-- **letzte validierte Spielfunktion:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` aus PR #238,
-- **aktueller Status-Sync-Anker:** PR #245, weil dies der neueste fachlich relevante und sicher gemergte Vertrags-/UX-Stand ist.
+- **letzte als vollständig abgeschlossene neue Spielfunktion geführte Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` aus PR #238,
+- **aktueller Status-Sync-Anker:** PR #252, weil dies der neueste fachlich relevante und sicher gemergte Venue-/QA-Stand ist.
 
-Diese Trennung verhindert, dass ein Audit oder Presentation-Vertrag fälschlich als neue Gameplayfunktion bezeichnet wird.
+Diese Trennung verhindert, dass reine Vertrags-, Presentation- oder QA-Härtungen versehentlich als neue Gameplaymechanik bezeichnet werden.
 
 ## Was bedeutet `STATUS SYNC FAIL`?
 
@@ -34,44 +40,41 @@ Mindestens eine Projektübersicht hängt hinter der bereits gemergten Realität 
 
 Das ist absichtlich ein **sichtbarer Qualitätsfehler**. Der Check repariert `main` nicht heimlich und führt keinen direkten Bot-Push aus. Die Statuskorrektur bleibt ein normal prüfbarer PR und wird anschließend wieder über `/safe-merge` abgeschlossen.
 
-### Warum war der Status-Sync auf PR #245 rot?
+### Warum war der Status-Sync auf PR #252 rot?
 
-Der Feature-Head von PR #245 enthielt bereits den neuen Presentation-Vertrag, während die drei kanonischen Statusdateien noch auf PR #242 zeigten. Deshalb meldete der read-only Driftcheck korrekt einen bestehenden Rückstand. Die drei Required Checks für den Safe-Merge waren auf dem geprüften Head grün und `/safe-merge` bestätigte anschließend den Merge samt Main-Provenienz. Diese Statusiteration zieht nun die Projektübersichten auf die bereits gemergte Realität nach.
+Der Feature-Head von PR #252 enthielt bereits den verschärften echten Chromium-Nachweis, während `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` weiterhin auf PR #245 zeigten. Der read-only Driftcheck meldete deshalb korrekt den vorhandenen Rückstand. Die für normale PRs vorgeschriebenen Required Checks waren auf dem geprüften Head grün; `/safe-merge` bestätigte anschließend den Merge samt Main-Provenienz. Diese Statusiteration zieht die Projektübersichten jetzt auf die bereits gemergte Realität nach.
 
 ## Warum erzeugt der Status-Sync-Merge nicht sofort wieder Drift?
 
-Reine Status-Sync-Merges verändern mindestens gemeinsam `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json`. Optional dürfen nur die bereits katalogisierten Status-Sync-Helfer wie Checker, Tests, Workflow, README, Laienhilfe oder passender Changelog-Nachweis dazukommen.
+Reine Status-Sync-Merges verändern mindestens gemeinsam `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json`. Optional dürfen nur die bereits katalogisierten Status-Sync-Helfer wie Checker, Tests, Workflow, README, Laienhilfe oder ein passender Changelog-Nachweis dazukommen.
 
-Auch der **kleinste Fall mit ausschließlich den drei kanonischen Statusdateien** wird ausdrücklich als reine Statuskorrektur erkannt. Solche Merges werden bei der Suche nach dem letzten **fachlich relevanten** Safe Merge übersprungen. Dadurch zeigt der Anker weiterhin auf den zuletzt bestätigten Spiel-/QA-/UX-/Story-Slice statt auf seine eigene Dokumentationsreparatur.
+Auch der kleinste Fall mit ausschließlich den drei kanonischen Statusdateien wird als reine Statuskorrektur erkannt. Solche Merges werden bei der Suche nach dem letzten **fachlich relevanten** Safe Merge übersprungen. Dadurch zeigt der Anker weiterhin auf den zuletzt bestätigten Spiel-/QA-/UX-/Story-Slice statt auf seine eigene Dokumentationsreparatur.
 
 Ein beliebiger README-, Test- oder Dokumentations-Merge wird dadurch nicht versteckt: Ohne alle drei kanonischen Statusdateien bleibt er ein normaler relevanter Safe Merge.
 
-## Praktisches Beispiel nach PR #245
+## Praktisches Beispiel nach PR #252
 
-PR #244 und PR #245 haben noch keine sichtbare Betriebsprofil-Karte gebaut. Sie haben zuerst festgelegt, **was die Oberfläche später sicher anzeigen darf**:
+Das Betriebsprofil ist jetzt nicht mehr nur ein Vertrag auf Papier. Bei einem wirklich besessenen Ort zeigt die vorhandene Property-/Location-Ansicht genau fünf bestätigte Werte:
 
-- nur für einen wirklich besessenen Ort,
-- nur Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen,
-- direkt aus den bereits bestätigten Ausbauwerten,
-- keine zweite Berechnung im Browser,
-- keine neue Speicherung,
-- kein erfundener Bonus auf Events, Kosten, Kapazität oder Gewinn.
+- Prestige,
+- Publikumskraft,
+- Risiko,
+- Underground-Faktor,
+- Nutzen.
 
-Damit gilt nach dieser Statuskorrektur:
+Ein fremder oder nicht gekaufter Ort bekommt kein eigenes Besitzprofil. Die Anzeige erfindet keine Werte und holt fehlende Besitzwerte auch nicht aus einer internen Hilfsmap zurück. Im echten Chromium wurde zusätzlich geprüft, dass alle fünf Werte als Zahlen sichtbar sind und die Zeile unter großer Schrift, hohem Kontrast und engem Fenster nicht horizontal überläuft.
 
-- letzter validierter Feature-Stand bleibt `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` aus PR #238,
-- aktueller fachlich relevanter Status-Sync-Anker ist `PR #245 / f9357d16…`,
-- nächster produktiver Slice ist `0.8.8-UX-VENUE-OPERATING-PROFILE-READONLY`.
+### Sichtbarer Wert ist noch keine Spielwirkung
 
-### Was ist danach der echte nächste Inhaltsschritt?
+Ein Wert wie `Publikumskraft 74` bedeutet im Moment: **Dieser bestätigte Ortswert wird dir angezeigt.** Er bedeutet noch nicht automatisch „74 % mehr Besucher“, „mehr Events“ oder „höherer Gewinn“.
 
-In der bereits vorhandenen Property-/Location-Ansicht sollen die fünf bestätigten Ortswerte für **besessene Locations** verständlich gruppiert sichtbar werden. Ein fremder oder nicht gekaufter Ort darf kein eigenes Betriebsprofil vortäuschen.
+Für eine solche echte Wirkung braucht es zuerst einen klaren Spielvertrag: Welche Aktion verwendet den Wert? Wer berechnet den Effekt? Wie wird er gespeichert oder im Journal belegt? Was passiert bei Replay, Retry und Grenzwerten? Wie wird verhindert, dass ein Bonus doppelt angewendet wird?
 
-Das Betriebsprofil ist zunächst nur eine bessere Lesebrille für bereits vorhandene Spieldaten. Erst ein späterer, eigener Fachvertrag darf entscheiden, ob beispielsweise Publikumskraft oder Nutzen tatsächlich eine neue mechanische Wirkung bekommt.
+Darum ist die nächste aktive Stufe ein enger **Venue-Benefit-Mechanik-Audit**. Genau ein vorhandener Wert wird gegen bestehende Domain-/Application-, Journal-/Replay- und Balanceverträge geprüft. Nur bei eindeutiger Autorität darf daraus später ein mechanischer Implementierungsslice entstehen. Sonst lautet das Ergebnis bewusst NO-GO.
 
 ### Merksatz für Laien
 
-**PR #238 ist weiterhin die letzte neue Spielfunktion. PR #245 ist der aktuelle geprüfte Repository-Anker. Als Nächstes werden fünf bereits bestätigte Werte sichtbar gemacht – ohne heimlich neue Spielregeln zu erfinden.**
+**Ein Ortswert zeigt, wie dein Ort bestätigt dasteht. Eine echte Spielwirkung entsteht erst, wenn dafür eine geprüfte Spielregel existiert.**
 
 ## Für Entwickler
 
@@ -87,7 +90,7 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
-Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass Feature-Stand, Safe-Merge-Anker, Feature-Pool und nächste aktive Arbeit konsistent bleiben, ohne reine Audit-/UX-Härtungen fälschlich als neue Spielfunktion zu klassifizieren.
+Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass Feature-Stand, Safe-Merge-Anker, Feature-Pool und nächste aktive Arbeit konsistent bleiben, ohne reine Audit-/UX-/QA-Härtungen fälschlich als neue Gameplayfunktion zu klassifizieren.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
