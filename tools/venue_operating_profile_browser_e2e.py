@@ -55,7 +55,12 @@ def _harness() -> str:
       const ownedDetail = owned[0].querySelector(\":scope > div > span\");
       if (!ownedDetail) throw new Error(\"Eigenes Betriebsprofil besitzt keine Detailzeile\");
       const ownedText = ownedDetail.textContent || \"\";
-      for (const label of labels) if (!ownedText.includes(label)) throw new Error(\"Eigenes Betriebsprofil verliert: \" + label);
+      for (const label of labels) {
+        if (!ownedText.includes(label)) throw new Error(\"Eigenes Betriebsprofil verliert: \" + label);
+        const match = ownedText.match(new RegExp(`${label}\\s+([+-]?\\d+(?:[.,]\\d+)?)`));
+        const numericValue = match ? Number(match[1].replace(\",\", \".\")) : Number.NaN;
+        if (!Number.isFinite(numericValue)) throw new Error(\"Eigenes Betriebsprofil hat keinen numerischen Wert für: \" + label);
+      }
       const foreign = rows.filter((row) => row !== owned[0]);
       for (const row of foreign) {
         const text = row.querySelector(\":scope > div > span\")?.textContent || \"\";
@@ -68,7 +73,7 @@ def _harness() -> str:
       }
       if (rect.width <= 0 || rect.height <= 0) throw new Error(\"Eigenes Betriebsprofil ist nicht sichtbar\");
       if (ownedDetail.scrollWidth > ownedDetail.clientWidth + 1) throw new Error(\"Betriebsprofil erzeugt horizontale Überbreite\");
-      document.body.textContent = `VENUE_PROFILE_E2E: PASS\n760x680 · Große Schrift · Hoher Kontrast · genau ein sichtbares owned-only Fünf-Werte-Profil`;
+      document.body.textContent = `VENUE_PROFILE_E2E: PASS\n760x680 · Große Schrift · Hoher Kontrast · genau ein sichtbares owned-only Fünf-Werte-Profil mit fünf numerischen Werten`;
     } catch (error) {
       document.body.textContent = `VENUE_PROFILE_E2E: FAIL · ${String(error?.message || error)}`;
     }
@@ -104,7 +109,7 @@ def main() -> int:
             if PASS not in completed.stdout or "VENUE_PROFILE_E2E: FAIL" in completed.stdout:
                 detail = " | ".join(line.strip() for line in completed.stdout.splitlines() if "VENUE_PROFILE_E2E:" in line)
                 raise RuntimeError("Venue-Profile-E2E ohne PASS" + (f": {detail}" if detail else ""))
-            print(PASS + " · owned-only · 5 Werte · 760x680 · Große Schrift · Hoher Kontrast")
+            print(PASS + " · owned-only · 5 Werte · 5 numerische Werte · 760x680 · Große Schrift · Hoher Kontrast")
             return 0
         finally:
             harness_path.unlink(missing_ok=True)
