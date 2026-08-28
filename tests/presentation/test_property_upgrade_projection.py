@@ -110,6 +110,25 @@ class PropertyUpgradeProjectionTests(unittest.TestCase):
         base = next(item for item in CITY_MAP["locations"] if item["location_id"] == "signalwerk")
         self.assertEqual(entry["effective_values"], base["values"])
 
+    def test_unowned_location_keeps_internal_values_but_exposes_no_operating_profile(self):
+        properties = build_property_projection(
+            None,
+            property_manifest=PROPERTY,
+            city_map_manifest=CITY_MAP,
+        )
+        upgrades = build_property_upgrade_projection(
+            None,
+            upgrade_manifest=UPGRADES,
+            city_map_manifest=CITY_MAP,
+            property_projection=properties,
+        )
+        entry = next(item for item in upgrades["entries"] if item["location_id"] == "signalwerk")
+        base = next(item for item in CITY_MAP["locations"] if item["location_id"] == "signalwerk")
+
+        self.assertFalse(entry["owned"])
+        self.assertIsNone(entry["effective_values"])
+        self.assertEqual(upgrades["effective_values_by_location"]["signalwerk"], base["values"])
+
     def test_upgrade_state_for_unowned_property_fails_closed(self):
         properties = build_property_projection(
             None,
