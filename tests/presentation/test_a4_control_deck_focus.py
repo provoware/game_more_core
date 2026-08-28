@@ -19,17 +19,33 @@ class ControlDeckFocusContractTests(unittest.TestCase):
         self.assertNotIn("localStorage", FOCUS)
         self.assertNotIn("sessionStorage", FOCUS)
 
-    def test_focus_module_highlights_only_enabled_runtime_event_action(self):
+    def test_guidance_reuses_only_existing_confirmed_ui_signals(self):
+        self.assertIn('document.getElementById("first-run")', FOCUS)
+        self.assertIn('document.getElementById("new-game")', FOCUS)
         self.assertIn('#event-actions button:not(:disabled)', FOCUS)
+        self.assertIn('document.getElementById("blockers")', FOCUS)
+        self.assertIn('text.startsWith("Blockiert:")', FOCUS)
         self.assertIn('NÄCHSTER SCHRITT:', FOCUS)
-        self.assertIn('Runtime-Gate abwarten', FOCUS)
+        self.assertIn('EVENT BLOCKIERT:', FOCUS)
         self.assertNotIn("ACTION_LABELS", FOCUS)
+        self.assertNotIn("hud-energy", FOCUS)
+        self.assertNotIn("hud-cash", FOCUS)
+        self.assertNotIn("market_price", FOCUS)
+
+    def test_first_run_and_runtime_event_action_are_the_only_highlighted_actions(self):
+        self.assertIn('return { button: newGame, label: "NEUES SPIEL ANLEGEN" }', FOCUS)
+        self.assertIn('return { button: enabledEventAction, label: enabledEventAction.textContent || "EVENT-AKTION" }', FOCUS)
+        self.assertIn('currentSignal !== nextAction?.button', FOCUS)
+        self.assertIn('nextAction?.button.classList.add(SIGNAL_CLASS)', FOCUS)
+
+    def test_blocker_is_explained_without_inventing_a_recommendation(self):
+        self.assertIn('return text.startsWith("Blockiert:") ? text.slice("Blockiert:".length).trim() : null;', FOCUS)
+        self.assertIn('status.dataset.state = "blocked"', FOCUS)
+        self.assertIn('NÄCHSTER SCHRITT: Noch keine freigegebene Event-Aktion', FOCUS)
 
     def test_next_action_signal_does_not_self_trigger_mutation_observer_forever(self):
         self.assertIn('const currentSignal = document.querySelector(`.${SIGNAL_CLASS}`);', FOCUS)
-        self.assertIn('if (currentSignal !== enabledEventAction)', FOCUS)
         self.assertIn('currentSignal?.classList.remove(SIGNAL_CLASS);', FOCUS)
-        self.assertIn('enabledEventAction.classList.add(SIGNAL_CLASS)', FOCUS)
         self.assertNotIn(
             'for (const button of document.querySelectorAll(`.${SIGNAL_CLASS}`)) button.classList.remove(SIGNAL_CLASS);',
             FOCUS,
