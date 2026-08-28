@@ -52,17 +52,23 @@ def _harness() -> str:
       const owned = rows.filter((row) => (row.querySelector(\"strong\")?.textContent || \"\").includes(\"EIGENTUM\"));
       if (owned.length !== 1) throw new Error(\"Erwartet genau einen bestätigten eigenen Ort, gefunden: \" + owned.length);
       const labels = [\"Prestige\", \"Publikumskraft\", \"Risiko\", \"Underground-Faktor\", \"Nutzen\"];
-      const ownedText = owned[0].textContent || \"\";
+      const ownedDetail = owned[0].querySelector(\":scope > div > span\");
+      if (!ownedDetail) throw new Error(\"Eigenes Betriebsprofil besitzt keine Detailzeile\");
+      const ownedText = ownedDetail.textContent || \"\";
       for (const label of labels) if (!ownedText.includes(label)) throw new Error(\"Eigenes Betriebsprofil verliert: \" + label);
       const foreign = rows.filter((row) => row !== owned[0]);
       for (const row of foreign) {
-        const text = row.textContent || \"\";
+        const text = row.querySelector(\":scope > div > span\")?.textContent || \"\";
         if (labels.some((label) => text.includes(label))) throw new Error(\"Fremder Ort zeigt ein Besitz-Betriebsprofil\");
       }
-      const rect = owned[0].getBoundingClientRect();
+      const style = w.getComputedStyle(ownedDetail);
+      const rect = ownedDetail.getBoundingClientRect();
+      if (style.display === \"none\" || style.visibility === \"hidden\" || Number(style.opacity) === 0) {
+        throw new Error(\"Eigenes Betriebsprofil ist per CSS unsichtbar\");
+      }
       if (rect.width <= 0 || rect.height <= 0) throw new Error(\"Eigenes Betriebsprofil ist nicht sichtbar\");
-      if (owned[0].scrollWidth > owned[0].clientWidth + 1) throw new Error(\"Betriebsprofil erzeugt horizontale Überbreite\");
-      document.body.textContent = `VENUE_PROFILE_E2E: PASS\n760x680 · Große Schrift · Hoher Kontrast · genau ein owned-only Fünf-Werte-Profil`;
+      if (ownedDetail.scrollWidth > ownedDetail.clientWidth + 1) throw new Error(\"Betriebsprofil erzeugt horizontale Überbreite\");
+      document.body.textContent = `VENUE_PROFILE_E2E: PASS\n760x680 · Große Schrift · Hoher Kontrast · genau ein sichtbares owned-only Fünf-Werte-Profil`;
     } catch (error) {
       document.body.textContent = `VENUE_PROFILE_E2E: FAIL · ${String(error?.message || error)}`;
     }
