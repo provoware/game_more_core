@@ -21,6 +21,16 @@ Die kleine Anzeige oben hilft dir nur mit bereits sicheren Informationen:
 
 Wichtig: Die Anzeige berechnet **keine eigene Strategie** aus Energie, Geld, Marktpreisen oder anderen Werten. Sie entscheidet auch nichts automatisch für dich.
 
+## Was ist schon ein sicherer Hinweis – und was noch nicht?
+
+Bei Scene Jobs berechnet das Spiel den **aktuellen Lohn bereits serverseitig mit derselben Regel wie die echte Auszahlung**. Wenn wegen niedriger Energie weniger als der volle Lohn möglich ist, bekommt die Oberfläche dafür ausdrücklich den bestätigten Hinweis `payout_reduced_by_energy`. Sie muss keinen Energie-Grenzwert selbst erraten.
+
+Das bedeutet: **„Der aktuelle Joblohn ist wegen Energie reduziert“ ist ein sicherer Fakt.** Daraus folgt aber nicht automatisch **„Du musst dich jetzt erholen“**. Erholung erhöht Energie, kostet aber Stress und bleibt deshalb deine Entscheidung.
+
+Genauso ist ein Event-Blocker ein bestätigter Fakt aus der Event-Steuerung. Die Oberfläche darf ihn erklären, aber sie darf nicht eigenmächtig entscheiden, ob Job, Recovery, Handel, Property oder Event gerade die wichtigste Gesamtstrategie ist.
+
+Darum gibt es bewusst noch **keine globale Rangliste von Empfehlungen**. Eine solche Priorisierung wird erst ergänzt, wenn die Runtime selbst eindeutig vorgibt, welcher gleichzeitig gültige Hinweis Vorrang hat.
+
 ## Die wichtigsten Bereiche
 
 **Straße:** Wähle einen Stil für deine Runde. Er verschiebt Chancen, verspricht aber kein bestimmtes Ereignis.
@@ -53,4 +63,4 @@ Die technische ID ist die eindeutige interne Kennung deines Charakters. Sie ist 
 
 ## Spätere Verbesserungsidee
 
-Nach dem Event-Bereich sollte erst durch denselben gezielten Vergleich entschieden werden, ob ein zweiter Bereich wirklich einen ähnlich deutlichen Hierarchiebruch besitzt. Eine flächige Neugestaltung wäre schlechter als kleine, belegte Verbesserungen. Eine echte strategische Empfehlung wie „erst erholen“ bleibt außerdem weiterhin an einen späteren Runtime-owned Empfehlungshinweis gebunden.
+Ein gemeinsamer strategischer Hinweisvertrag wird erst wieder geprüft, wenn mehrere gleichzeitig gültige Hinweise fachlich priorisiert werden müssen. Dann muss diese Priorität aus Runtime, Application oder Projection kommen – nicht aus DOM-Reihenfolge, Farbe, Geldbetrag oder einer Browser-Heuristik.
