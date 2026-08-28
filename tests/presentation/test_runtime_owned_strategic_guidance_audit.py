@@ -36,6 +36,16 @@ class RuntimeOwnedStrategicGuidanceAuditTests(unittest.TestCase):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, JOB_BROWSER)
 
+    def test_job_browser_explains_reduced_payout_without_recovery_recommendation(self):
+        context = "Aktueller Lohn reduziert – deine Energie reicht nicht für die volle Auszahlung."
+        self.assertIn(f'const reducedPayoutContext = "{context}";', JOB_BROWSER)
+        self.assertIn("? `${job.duration_hours} h · Lohn bis zu", JOB_BROWSER)
+        self.assertIn("${reducedPayoutContext}`", JOB_BROWSER)
+        self.assertIn("${reducedPayoutContext}`", JOB_BROWSER)
+        self.assertNotIn("RECOVERY", JOB_BROWSER.upper())
+        self.assertNotIn("erholen", JOB_BROWSER.lower())
+        self.assertNotIn("regener", JOB_BROWSER.lower())
+
     def test_event_blockers_are_owned_by_event_service_projection(self):
         self.assertIn("EventExecutionService.available_actions(event)", GAME_PROJECTION)
         self.assertIn('"enabled": item.enabled', GAME_PROJECTION)
