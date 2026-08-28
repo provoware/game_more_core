@@ -9,7 +9,7 @@
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
   <img alt="Feature Stand Equipment Trade History Readonly validiert" src="https://img.shields.io/badge/Feature_Stand-EQUIPMENT--TRADE--HISTORY--READONLY_validiert-7dff00">
-  <img alt="Aktive Iteration Venue Benefits Contract Audit" src="https://img.shields.io/badge/Aktiv-VENUE--BENEFITS--CONTRACT--AUDIT-00c2ff">
+  <img alt="Aktive Iteration Venue Operating Profile Readonly" src="https://img.shields.io/badge/Aktiv-VENUE--OPERATING--PROFILE--READONLY-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,12 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #242 · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815` |
+| **Status-Sync-Anker** | PR #245 · Merge `f9357d16690675e282bffedd0baa78958079606e` |
 | **Validierter Feature-Stand** | ✅ `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 |
-| **Aktive Iteration** | 🟡 `0.8.8-GAMEPLAY-VENUE-BENEFITS-CONTRACT-AUDIT` |
-| **Danach** | vorhandene Property-, Event-, Availability- und Projection-Verträge auf einen kleinsten replaybaren Venue-Benefit/Betriebsprofil-Vertrag prüfen; noch keine Bonuswerte implementieren |
+| **Aktive Iteration** | 🟡 `0.8.8-UX-VENUE-OPERATING-PROFILE-READONLY` |
+| **Danach** | die fünf bestätigten Ortswerte nur für besessene Locations in der bestehenden Property-/Location-Ansicht sichtbar machen; keine mechanischen Boni oder zweite Berechnung |
+| **Venue Presentation Contract** | ✅ PR #245: ausschließlich Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen aus `property_upgrades.entries[*].effective_values`; keine neue Persistenz oder Browserautorität |
+| **Venue Benefits Audit** | ✅ PR #244: read-only Betriebsprofil GO; Event-, Kosten-, Kapazitäts- und Ertragsboni ohne eigenen katalogisierten Fachvertrag NO-GO |
 | **Equipment-Historie Dichte** | ✅ PR #242: acht reale wirksame Trades, langer Anzeigename, Große Schrift, Hoher Kontrast und 760×680-Fenster ohne reproduzierbaren Clipping-/Überbreitenbefund; kein CSS-Fix nötig |
 | **Equipment-Historie QA** | ✅ PR #240: echter Chromium-Pfad für leeren Zustand, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster; keine neue Economylogik |
 | **Equipment-Historie** | ✅ PR #238: letzte acht wirksamen bestätigten Käufe/Verkäufe mit Aktion, Equipment, Menge und tatsächlichem Stückpreis · kompensierte Paare ausgeblendet · keine Kostenbasis/Gewinnrechnung |
@@ -61,7 +63,7 @@
 | **Netzwerk/Telegram** | noch nicht implementiert; keine erfundenen Remote-Spieler |
 
 > [!IMPORTANT]
-> Die letzte validierte **Spielfunktion** bleibt PR #238 mit der read-only Equipment-Handelshistorie. Der neueste fachlich relevante **Safe-Merge-Anker** ist PR #242: Dort wurde der maximale Dichte-/Lesbarkeitsfall erfolgreich im echten Chromium bewiesen, ohne Produktdarstellung zu ändern. Als nächster Owner ist `POOL-PROPERTY-003` ausschließlich als Contract-Audit gezogen; Bonuswerte, Availability-Effekte oder eine Betriebsengine entstehen erst nach belegter fachlicher Zuständigkeit. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync geprüft.
+> Die letzte validierte **Spielfunktion** bleibt PR #238 mit der read-only Equipment-Handelshistorie. Der neueste fachlich relevante **Safe-Merge-Anker** ist PR #245. PR #244 hat mechanische Venue-Boni ohne eigenen Fachvertrag gesperrt; PR #245 begrenzt den freigegebenen read-only Betriebsprofil-Slice auf fünf bestätigte Werte der bestehenden Property-Upgrade-Projection. `POOL-PROPERTY-003` bleibt `PULLED`, bis diese Werte tatsächlich nur für besessene Locations sichtbar sind. `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` werden zusätzlich durch den read-only Status-Sync geprüft.
 
 Die README ist bewusst **Navigation und Projektpuls**, keine zweite Feature-Historie. Detailstatus steht in [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json), aktive Arbeit in [`TODO.md`](TODO.md), Ausbauvorrat in [`FEATURE_POOL.md`](FEATURE_POOL.md) und historische Änderungen in `CHANGELOG.md`/`CHANGELOG.d/`.
 
