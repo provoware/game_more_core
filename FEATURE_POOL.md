@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #245 · Merge `f9357d16690675e282bffedd0baa78958079606e`
+- **Status-Sync-Anker:** PR #252 · Merge `923d748f139f80b60d06c6b8922cff98c0d6d88e`
 
 ## Statuswerte
 
@@ -41,7 +41,13 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ### Letzte Remote-Abnahmen
 
-- **0.8.8-UX-VENUE-OPERATING-PROFILE-PRESENTATION-CONTRACT:** PR #245 · Merge `f9357d16690675e282bffedd0baa78958079606e` · der nächste sichtbare Venue-Slice ist auf genau fünf bestätigte `effective_values` der bestehenden Property-Upgrade-Projection begrenzt; keine Browser-Neuberechnung, neue Persistenz oder mechanischen Boni; noch kein Produkt-UI
+- **0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES:** PR #252 · Merge `923d748f139f80b60d06c6b8922cff98c0d6d88e` · echter Chromium-Nachweis verlangt hinter allen fünf sichtbaren Profilbezeichnungen einen endlichen numerischen Wert; owned-only-, A11y- und Overflow-Grenzen bleiben erhalten; keine Produktlogik geändert
+- **0.8.8-QA-VENUE-OPERATING-PROFILE-BROWSER-E2E:** PR #251 · Merge `683c0dd2a11302df5fe1b31183b1b738c8dc5678` · echter Runtime→Projection→HTTP→Chromium-DOM-Pfad beweist genau ein owned-only Fünf-Werte-Profil bei 760×680, Großer Schrift und Hohem Kontrast ohne horizontale Überbreite
+- **0.8.8-QA-VENUE-OPERATING-PROFILE-SOURCE-GUARD:** PR #250 · Merge `06ed4bb009b9cc71c0e181f1c8a76a79afd89012` · Browser darf fehlende Besitzwerte nicht aus `effective_values_by_location` rekonstruieren; sichtbare Quelle bleibt `upgradeEntry?.effective_values`
+- **0.8.8-QA-VENUE-OPERATING-PROFILE-TEXT-SAFETY:** PR #249 · Merge `1e89843a7982825f7f73632c820307d04f50d45a` · Textausgabe bleibt `textContent`-basiert und auf exakt fünf freigegebene Felder begrenzt
+- **0.8.8-UX-VENUE-OPERATING-PROFILE-LABELS:** PR #248 · Merge `dcc33354acefd45d3fc395df4ce1e4ab18958b23` · kryptische Kürzel durch Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen ersetzt; keine neue Berechnung oder Wirkung
+- **0.8.8-UX-VENUE-OPERATING-PROFILE-READONLY:** PR #247 · Merge `c02519a0cdbfad3660956c589e4c74a1ffc2af5b` · `entries[*].effective_values` nur für tatsächlich besessene Locations sichtbar; interne Ortswert-Map für bestehende Map-/District-Projections unverändert
+- **0.8.8-UX-VENUE-OPERATING-PROFILE-PRESENTATION-CONTRACT:** PR #245 · Merge `f9357d16690675e282bffedd0baa78958079606e` · sichtbarer Venue-Slice auf genau fünf bestätigte `effective_values` der bestehenden Property-Upgrade-Projection begrenzt; keine Browser-Neuberechnung, neue Persistenz oder mechanischen Boni
 - **0.8.8-GAMEPLAY-VENUE-BENEFITS-CONTRACT-AUDIT:** PR #244 · Merge `bcd3fb30b91cfdf638a60163c9c33d6c9ba176a4` · read-only Betriebsprofil als GO; Event-, Kosten-, Kapazitäts- und Ertragsboni ohne eigenen katalogisierten Fachvertrag NO-GO; keine Produktlogik geändert
 - **0.8.8-UX-EQUIPMENT-TRADE-HISTORY-DENSITY-AUDIT:** PR #242 · Merge `5e112a6c6d9655d2f76dde464b24a01a86147815` · acht reale wirksame Trades mit langem Anzeigenamen, großer Schrift, Hohem Kontrast und 760×680-Fenster im echten Chromium geprüft; kein CSS-/Layout-Fix nötig, keine Produktlogik geändert
 - **0.8.8-QA-EQUIPMENT-TRADE-HISTORY-BROWSER-E2E:** PR #240 · Merge `3d256f40da15c2cab42b78a3b64e5dbbea6fbad0` · echter Chromium-Pfad beweist leere wirksame Historie, realen Kauf/Verkauf, gespeicherten Ausführungspreis, Compensation-Filter, Hohen Kontrast und kleines Fenster; keine neue Economylogik
@@ -53,7 +59,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 - **0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT:** PR #229 · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27` · reduzierter Joblohn und Event-Blocker als getrennte bestätigte Runtime-/Projection-Fakten geprüft; kein globaler `strategic_guidance`-Aggregator, keine Browser-Priorisierung und keine Auto-Aktion eingeführt
 - **0.8.8-UX-VISUAL-HIERARCHY-3:** PR #226 · Merge `aa4fb893efd01e7060ee82b8e326e597975e495a` · Event-Steuerung nutzt die volle Arbeitsbreite und trennt bestätigte Eckdaten, nächste Runtime-Aktion und Blocker klar; High Contrast, Reduced Motion und kleine Fenster bleiben erhalten; keine Gameplay- oder Browser-Fachautorität
 - **0.8.8-UX-NEXT-BEST-ACTION-GUIDANCE:** PR #224 · Merge `9777fb10d1339ba69d672e7520946b08af915a8b` · Erststart, freigegebene Runtime-Event-Aktion und bestätigte Blocker werden in der bestehenden Schnellleiste verständlich geführt; keine Energie-, Geld- oder Marktpreisheuristik im Browser
-- **0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a` · zwei vorhandene Street-Nachhalle gegen vier reale Parents geprüft; Story 003 bewusst nicht freigegeben; `street.construction_detour` bleibt nur Reservekandidat; keine Runtime-, Balance- oder Persistenzänderung
+- **0.8.8-STORY-STREET-TONE-DIVERSITY-AUDIT:** PR #222 · Merge `008326acc726e9be513c97682293c4a26e932c3a` · zwei vorhandene Street-Nachhalle gegen vier reale Parents geprüft; Story 003 bewusst zurückgestellt; `street.construction_detour` bleibt nur Reservekandidat; keine Runtime-, Balance- oder Persistenzänderung
 - **0.8.8-ECON-JOBS-TRADE-GUIDANCE-VISUAL:** PR #218 · Merge `eb97181f80678110ca12063165d446273cfcff5e` · Jobs zeigen Stundenlohn und aktuellen Erschöpfungslohn; Equipment-Handel nutzt den bestehenden Runtime-Vertrag vollständig; aktueller Marktpreis und frei verkaufbarer Bestand kommen read-only aus der kanonischen Projection; responsive KPI-/Marktvisuals und Geldkreislauf-Führung ergänzt
 - **0.8.8-UX-TOOL-HELP-CLARITY:** PR #217 · Merge `12b001a731c0da5a1d98913676da9e48b0afd064` · zentrale Control-Deck-Hilfen in kurze Spielersprache übersetzt; `Bestätigt`, `Nur Anzeige` und `Sofort gespeichert` direkt erklärt
 - **0.8.8-QA-STREET-STORY-002-RUNTIME-BROWSER-E2E:** PR #215 · Merge `1acceec43514caf7e2e945535896bce9472a19de` · beide produktiven Street-Micro-Stories durch echte Runtime → Journal/Persistenz → Reload → `/api/state` → Chromium-DOM bewiesen; Retry Exactly-once
@@ -129,7 +135,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 |---|---|---|---|
 | `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
 | `POOL-WORLD-003` | `DONE` | District-Ereignisketten mit Erinnerung | Contract V1, zwei produktive Micro-Stories, read-only Kausalitätsprojection und Runtime→Browser-E2E bis PR #206 vollständig validiert |
-| `POOL-PROPERTY-003` | `PULLED` | Venue Benefits / Betriebsprofil | PR #244/#245: read-only Betriebsprofil freigegeben und auf fünf bestehende `effective_values` begrenzt; sichtbarer Product-Slice noch offen, mechanische Boni gesperrt |
+| `POOL-PROPERTY-003` | `PULLED` | Venue Benefits / Betriebsprofil | read-only Betriebsprofil bis PR #252 vollständig sichtbar und Chromium-bewiesen; mechanische Wirkung bleibt gesperrt, bis genau ein Bonuspfad Domain-/Journal-/Replay-seitig auditiert ist |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
 | `POOL-NET-002` | `DEPENDENCY` | Crew-Identity-Synchronisation | `POOL-NET-001` |
@@ -161,4 +167,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-PROPERTY-003` bleibt nach PR #244/#245 bewusst `PULLED`: Der Audit hat ausschließlich ein read-only Betriebsprofil freigegeben, und der Presentation-Vertrag begrenzt dieses auf Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen aus der vorhandenen Property-Upgrade-Projection. Als nächster Slice wird `0.8.8-UX-VENUE-OPERATING-PROFILE-READONLY` gezogen: Die fünf Werte werden nur für besessene Locations in der bestehenden Ansicht sichtbar gemacht; keine zweite Berechnung, Persistenz, Event-Verfügbarkeit oder mechanische Bonusengine.
+`POOL-PROPERTY-003` bleibt nach PR #252 bewusst `PULLED`: Das read-only Betriebsprofil ist jetzt für eigene Locations sichtbar, verständlich beschriftet und im echten Chromium inklusive fünf numerischer Werte, Großer Schrift, Hohem Kontrast und engem Fenster bewiesen. Als nächster Slice wird `0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT` gezogen: genau ein vorhandener Wert wird gegen bestehende Domain-/Application-, Journal-/Replay- und Balanceverträge geprüft. Ohne eindeutige Autorität bleibt das Ergebnis NO-GO; es entsteht weder ein generischer Bonus-Aggregator noch eine zweite Venue-Engine.
