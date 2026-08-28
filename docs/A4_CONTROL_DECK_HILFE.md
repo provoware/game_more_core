@@ -31,7 +31,7 @@ Wichtig: Die Anzeige berechnet **keine eigene Strategie** aus Energie, Geld, Mar
 
 **Berlin Ops Map:** Überblick über Bezirke, Orte und dein Eigentum. Kaufen und Ausbauen machst du im Bereich „Orte & Ausbau“.
 
-**Orte & Ausbau:** Hier kaufst du Orte und verbesserst vorhandene Ausbauplätze bis Stufe 3. Preis und mögliche Stufe werden vom Spiel vorgegeben.
+**Orte & Ausbau:** Hier kaufst du Orte und verbesserst vorhandene Ausbauplätze bis Stufe 3. Preis und mögliche Stufe werden vom Spiel vorgegeben. Der Bereich nutzt jetzt die volle Arbeitsbreite: Bei mehreren Orten stehen die vorhandenen Einträge übersichtlicher nebeneinander; auf kleineren Fenstern springen sie automatisch untereinander. Die Darstellung ändert weder Preise noch Regeln.
 
 **Hall of Tribute:** Zeigt bestätigte Ranglistenwerte. Ohne echte bestätigte Konkurrenz erfindet das Spiel keine Gegner.
 
@@ -53,4 +53,4 @@ Die technische ID ist die eindeutige interne Kennung deines Charakters. Sie ist 
 
 ## Spätere Verbesserungsidee
 
-Nach dem Event-Bereich sollte erst durch denselben gezielten Vergleich entschieden werden, ob ein zweiter Bereich wirklich einen ähnlich deutlichen Hierarchiebruch besitzt. Eine flächige Neugestaltung wäre schlechter als kleine, belegte Verbesserungen. Eine echte strategische Empfehlung wie „erst erholen“ bleibt außerdem weiterhin an einen späteren Runtime-owned Empfehlungshinweis gebunden.
+Wenn bei echter Nutzung sehr viele Orte zusammenkommen, kann später ein reiner Anzeige-Filter „ALLE / EIGENTUM / KAUFBAR“ geprüft werden. Er soll nur beim Finden helfen und niemals Kauf-, Ausbau- oder Auswahlregeln im Browser erfinden. Eine echte strategische Empfehlung wie „erst erholen“ bleibt außerdem weiterhin an einen späteren Runtime-owned Empfehlungshinweis gebunden.
