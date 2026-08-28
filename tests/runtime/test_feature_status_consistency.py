@@ -14,32 +14,43 @@ def _pool_row(pool: str, pool_id: str) -> str:
 
 
 class FeatureStatusConsistencyTests(unittest.TestCase):
-    def test_last_validated_feature_is_consistent_across_status_todo_pool_and_history(self):
+    def test_last_validated_feature_is_consistent_without_conflating_qa_anchor(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
         iteration = status["last_validated_feature_iteration"]
-        validation = status["remote_validation"]
-        latest = status["validated_feature_history"][-1]
-        merge_sha = validation["merged_commit"]
-        pr_number = validation["pull_request"]
+        latest_feature = status["validated_feature_history"][-1]
 
-        self.assertEqual(latest["iteration"], iteration)
-        self.assertEqual(latest["pull_request"], pr_number)
-        self.assertEqual(latest["merged_commit"], merge_sha)
+        self.assertEqual(latest_feature["iteration"], iteration)
+        self.assertEqual(latest_feature["pull_request"], 231)
+        self.assertEqual(latest_feature["merged_commit"], "ffef7b170ee162651ccd5da239648445f1f93479")
         self.assertIn(f"Zuletzt remote validierte Feature-Stufe:** `{iteration}`", todo)
-        self.assertIn(f"PR #{pr_number}", todo)
-        self.assertIn(merge_sha, todo)
-        self.assertIn(f"**{iteration}:** PR #{pr_number}", pool)
-        self.assertIn(merge_sha, pool)
-        self.assertIn(iteration, readme)
-        self.assertIn(f"PR #{pr_number}", readme)
-        self.assertIn(merge_sha, readme)
+        self.assertIn("PR #231", todo)
+        self.assertIn("ffef7b170ee162651ccd5da239648445f1f93479", todo)
+        self.assertIn(f"**{iteration}:** PR #231", pool)
+        self.assertIn("ffef7b170ee162651ccd5da239648445f1f93479", pool)
+
+    def test_latest_safe_merge_anchor_may_be_qa_without_relabeling_feature(self):
+        status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
+        todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
+        pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
+        validation = status["remote_validation"]
+        sync = status["status_sync"]
+
+        self.assertEqual(validation["pull_request"], 234)
+        self.assertEqual(validation["validated_head"], "80baa7ec9307a596dc4a6cd92098cfee6c8d5f2c")
+        self.assertEqual(validation["merged_commit"], "57a78efecb5aa312fdad595dcae5a8352bef63ec")
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
+        self.assertEqual(sync["anchor_pull_request"], 234)
+        self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
+        self.assertEqual(sync["anchor_iteration"], "0.8.8-QA-JOB-PAYOUT-CONTEXT-DECORATION-WAIT")
+        self.assertIn("Status-Sync-Anker:** PR #234", todo)
+        self.assertIn("Status-Sync-Anker:** PR #234", pool)
+        self.assertIn("**0.8.8-QA-JOB-PAYOUT-CONTEXT-DECORATION-WAIT:** PR #234", pool)
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY")
 
     def test_validated_and_next_pool_items_have_single_current_owners(self):
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -55,62 +66,35 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-QA-010", "POOL-QA-006", "POOL-UX-008", "POOL-QA-011", "POOL-QA-013",
             "POOL-QA-014", "POOL-QA-015", "POOL-UX-009", "POOL-QA-016", "POOL-MAP-003",
             "POOL-QA-017", "POOL-WORLD-003", "POOL-STREET-003", "POOL-ECON-009",
-            "POOL-STORY-002", "POOL-UX-010", "POOL-UX-011", "POOL-UX-012",
+            "POOL-STORY-002", "POOL-UX-010", "POOL-UX-011", "POOL-UX-012", "POOL-UX-013",
         )
         for pool_id in done:
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
-        self.assertIn("`PULLED`", _pool_row(pool, "POOL-UX-013"))
+        self.assertIn("`PULLED`", _pool_row(pool, "POOL-ECON-010"))
 
-    def test_current_status_describes_guidance_audit_and_next_job_payout_context(self):
+    def test_current_status_describes_job_payout_context_and_next_trade_history_audit(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
         presentation = status["subsystems"]["presentation"]
         process = status["subsystems"]["development_process"]
         sync = status["status_sync"]
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
-        self.assertIn(status["active_iteration"], readme)
-        self.assertIn(status["last_validated_feature_iteration"], readme)
-        self.assertEqual(status["current_focus"], "job_payout_context_clarity")
+        self.assertEqual(status["current_focus"], "equipment_trade_history_audit")
         self.assertIsNone(status["next_iteration"])
+        self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY")
 
-        self.assertEqual(validation["pull_request"], 229)
-        self.assertEqual(validation["validated_head"], "40ec4d980d77dc1b801ece77fe65e4018a1eda37")
-        self.assertEqual(validation["merged_commit"], "d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27")
+        self.assertTrue(presentation["scene_job_reduced_payout_context_clarity_validated"])
         self.assertEqual(
-            status["last_validated_feature_iteration"],
-            "0.8.8-UX-RUNTIME-OWNED-STRATEGIC-GUIDANCE-AUDIT",
-        )
-
-        self.assertTrue(presentation["runtime_owned_strategic_guidance_audit_validated"])
-        self.assertFalse(presentation["runtime_owned_strategic_guidance_global_aggregator_created"])
-        self.assertEqual(
-            presentation["runtime_owned_strategic_guidance_job_signal_source"],
+            presentation["scene_job_reduced_payout_context_source"],
             "scene_jobs_projection.payout_reduced_by_energy",
         )
-        self.assertEqual(
-            presentation["runtime_owned_strategic_guidance_event_blocker_source"],
-            "EventExecutionService.available_actions.blockers",
-        )
+        self.assertFalse(presentation["scene_job_reduced_payout_context_recommends_recovery"])
+        self.assertFalse(presentation["scene_job_reduced_payout_context_browser_recalculation"])
+        self.assertTrue(presentation["runtime_owned_strategic_guidance_audit_validated"])
+        self.assertFalse(presentation["runtime_owned_strategic_guidance_global_aggregator_created"])
         self.assertFalse(presentation["runtime_owned_strategic_guidance_browser_priority_engine"])
-
-        self.assertTrue(presentation["visual_hierarchy_3_validated"])
-        self.assertEqual(presentation["visual_hierarchy_3_surface"], "event_panel")
-        self.assertTrue(presentation["visual_hierarchy_3_event_full_width"])
-        self.assertTrue(presentation["visual_hierarchy_3_separates_summary_action_blockers"])
-        self.assertTrue(presentation["visual_hierarchy_3_high_contrast_preserved"])
-        self.assertTrue(presentation["visual_hierarchy_3_reduced_motion_preserved"])
-
-        self.assertTrue(presentation["next_action_attention_signal"])
-        self.assertEqual(
-            presentation["next_action_source"],
-            "first_run_or_enabled_runtime_event_action_dom_with_confirmed_blocker_copy",
-        )
-        self.assertTrue(presentation["next_action_guidance_validated"])
-        self.assertFalse(presentation["next_action_browser_strategy_heuristics"])
-        self.assertFalse(presentation["next_action_auto_executes"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
         self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
@@ -149,7 +133,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             "POOL-WORLD-003": "`DONE`", "POOL-STREET-003": "`DONE`",
             "POOL-ECON-009": "`DONE`", "POOL-STORY-002": "`DONE`",
             "POOL-UX-010": "`DONE`", "POOL-UX-011": "`DONE`",
-            "POOL-UX-012": "`DONE`", "POOL-UX-013": "`PULLED`",
+            "POOL-UX-012": "`DONE`", "POOL-UX-013": "`DONE`",
+            "POOL-ECON-010": "`PULLED`",
         }
         for pool_id, state in expected.items():
             self.assertIn(state, _pool_row(pool, pool_id), pool_id)
