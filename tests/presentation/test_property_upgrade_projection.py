@@ -143,6 +143,27 @@ class PropertyUpgradeProjectionTests(unittest.TestCase):
                 property_projection=properties,
             )
 
+    def test_persisted_upgrade_outside_location_slots_fails_closed_before_filtering(self):
+        properties = build_property_projection(
+            owned_signalwerk(),
+            property_manifest=PROPERTY,
+            city_map_manifest=CITY_MAP,
+        )
+        raw_state = stage_level(1)
+        raw_state["revision"] = 2
+        raw_state["properties"]["signalwerk"]["upgrades"]["ghost_slot"] = {
+            "level": 1,
+            "economy_transaction_ids": ["property_upgrade:ghost-slot-1"],
+        }
+
+        with self.assertRaisesRegex(ValueError, "passt nicht zu den Location-Slots"):
+            build_property_upgrade_projection(
+                raw_state,
+                upgrade_manifest=UPGRADES,
+                city_map_manifest=CITY_MAP,
+                property_projection=properties,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
