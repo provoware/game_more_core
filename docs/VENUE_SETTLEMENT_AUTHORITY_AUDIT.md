@@ -29,6 +29,14 @@ Die effektiven Ortswerte werden jetzt durch `domain.property_upgrade.effective_v
 
 Damit ist das frühere Vor-Gate erfüllt: Eine spätere Venue-Evidence darf dieselbe gemeinsame Wertautorität verwenden, ohne aus der Application-Schicht die Presentation-Schicht importieren oder die Berechnung der effektiven Ortswerte im Settlement duplizieren zu müssen. Die Werte bleiben auf 0–100 begrenzt; es wurde weder ein Settlement-Effekt noch eine Balanceänderung eingeführt.
 
+## Read-only Evidence-Resolver
+
+`application.venue_settlement_evidence.resolve_owned_venue_evidence(...)` löst die bereits freigegebene Kette jetzt erstmals als reine Application-Abfrage auf. Der Resolver liest ausschließlich den Event-Ort, den bestätigten Besitz, den bestätigten Upgrade-State sowie City-Map- und Upgrade-Katalog und verwendet für den effektiven Wert die gemeinsame Domain-Autorität.
+
+Für einen eigenen Event-Ort liefert er eine kleine, versionierte Evidence-Struktur mit `location_id`, `owner_character_id`, bestätigtem `audience_pull` sowie den gelesenen Property-/Upgrade-Revisionen. Ein nicht eigener oder einem anderen Character gehörender Ort liefert keine Evidence. Katalog- oder Upgrade-Widersprüche schlagen fail-closed fehl.
+
+Wichtig: Der Resolver schreibt noch **nichts** in `SettlementState`, Journal oder Save und verändert keinen Effekt. Damit ist nur die lesende Autoritätsauflösung umgesetzt; die persistierte Receipt-Brücke bleibt ein eigener Vertragsschritt.
+
 ## Harte Grenzen des nächsten Slices
 
 Der nächste Slice darf ausschließlich:
@@ -37,7 +45,7 @@ Der nächste Slice darf ausschließlich:
 - für genau diesen Ort bestätigten Besitz des abrechnenden Charakters verlangen,
 - den bestätigten Upgrade-Zustand desselben Orts als Wertquelle referenzieren,
 - dieselbe gemeinsame effektive Wertautorität wie die bestehende Projection verwenden,
-- `location_id`, Ownership-Bezug und den bestätigten `audience_pull`-Wert als read-only Evidence im Settlement-Receipt festhalten,
+- die bereits aufgelöste Evidence explizit und versioniert in den Settlement-Vertrag übernehmen,
 - Replay/Recovery gegen dieselbe gespeicherte Evidence prüfen.
 
 Er darf **nicht**:
@@ -48,16 +56,16 @@ Er darf **nicht**:
 - einen Browserwert als Autorität akzeptieren,
 - aus der Application-Schicht die Presentation-Schicht importieren,
 - die Berechnung der effektiven Ortswerte im Settlement duplizieren,
-- fehlenden Besitz oder fehlende Upgrade-Evidence still durch Defaultwerte ersetzen.
+- fehlenden Besitz oder fehlende Upgrade-Evidence still durch erfundene Werte ersetzen.
 
 ## Noch offene Implementierungsarbeit
 
-Der aktuelle `SettlementState` ist `additionalProperties: false` und besitzt kein Venue-Evidence-Feld. Ein echter Authority-Bridge-Slice muss deshalb den Settlement-Vertrag explizit und versioniert erweitern; ein unsichtbares Zusatzfeld wäre kein zulässiger Shortcut.
+Der aktuelle `SettlementState` ist `additionalProperties: false` und besitzt kein Venue-Evidence-Feld. Ein echter Receipt-Bridge-Slice muss deshalb den Settlement-Vertrag explizit und versioniert erweitern; ein unsichtbares Zusatzfeld wäre kein zulässiger Shortcut.
 
-Die gemeinsame Wertautorität ist nun vorhanden. Offen bleibt damit bewusst nur der nächste getrennte Vertragsschritt: Settlement muss `location_id`, bestätigten Besitz und den daraus bestätigten `audience_pull` als versionierte read-only Evidence aufnehmen und Replay/Recovery dafür beweisen. Eine zweite Publikumskraft-Berechnung, ein Application→Presentation-Import oder bereits jetzt ein Publikumskraft-Bonus bleibt NO-GO.
+Die gemeinsame Wertautorität und die read-only Auflösung sind nun vorhanden. Offen bleibt damit bewusst der nächste getrennte Vertragsschritt: Settlement muss diese bestätigte Evidence versioniert aufnehmen und Replay/Recovery dafür beweisen. Eine zweite Publikumskraft-Berechnung, ein Application→Presentation-Import oder bereits jetzt ein Publikumskraft-Bonus bleibt NO-GO.
 
 ## Ergebnis
 
-**Architektur-GO für Evidence-Plumbing, Mechanik-NO-GO bleibt bestehen; die gemeinsame Wertautorität ist erfüllt.**
+**Architektur-GO für Evidence-Plumbing, Mechanik-NO-GO bleibt bestehen; gemeinsame Wertautorität und read-only Resolver sind erfüllt.**
 
-Damit ist der nächste minimale Implementierungsschritt klar: die versionierte Venue→Settlement-Evidence-Brücke. Erst danach darf ein weiterer, separat geprüfter Slice über eine begrenzte Spielwirkung entscheiden.
+Damit ist der nächste minimale Implementierungsschritt klar: die versionierte Aufnahme der bereits bestätigten Venue-Evidence in den Settlement-Vertrag. Erst danach darf ein weiterer, separat geprüfter Slice über eine begrenzte Spielwirkung entscheiden.
