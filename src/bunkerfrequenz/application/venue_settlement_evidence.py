@@ -49,9 +49,15 @@ def resolve_owned_venue_evidence(
         raise ValueError("Eigene Event-Location muss genau einmal im City-Map-Katalog existieren")
     location = matches[0]
 
-    if upgrade_manifest.get("city_map_manifest_version") != city_map_manifest.get("version"):
+    city_map_version = city_map_manifest.get("version")
+    upgrade_manifest_version = upgrade_manifest.get("version")
+    if not isinstance(city_map_version, str) or not city_map_version.strip():
+        raise ValueError("City-Map benötigt eine gültige Vertragsversion")
+    if not isinstance(upgrade_manifest_version, str) or not upgrade_manifest_version.strip():
+        raise ValueError("Property-Upgrade-Katalog benötigt eine gültige Vertragsversion")
+    if upgrade_manifest.get("city_map_manifest_version") != city_map_version:
         raise ValueError("Property-Upgrade- und City-Map-Vertrag passen nicht zusammen")
-    if property_upgrade_state.contract_version != upgrade_manifest.get("version"):
+    if property_upgrade_state.contract_version != upgrade_manifest_version:
         raise ValueError("Property-Upgrade-State besitzt falsche Vertragsversion")
 
     upgrade_catalog = upgrade_manifest.get("catalog")
@@ -82,6 +88,8 @@ def resolve_owned_venue_evidence(
         "location_id": location_id,
         "owner_character_id": ownership["owner_character_id"],
         "audience_pull": effective["audience_pull"],
+        "city_map_manifest_version": city_map_version,
+        "property_upgrade_manifest_version": upgrade_manifest_version,
         "property_revision": property_state.revision,
         "property_upgrade_revision": property_upgrade_state.revision,
     }
