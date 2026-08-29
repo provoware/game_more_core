@@ -32,8 +32,16 @@ Damit zählt jetzt auch der komplette Block `scope_boundaries`. Wird dort späte
 
 Noch nicht erlaubt sind daher automatische Vorteile wie „mehr Events“, „billigerer Betrieb“, „mehr Kapazität“ oder „laufender Gewinn“. Für solche Wirkungen fehlt weiterhin eine eigene Spielregel, die Speichern, Wiederholen und Fehlerfälle eindeutig regelt.
 
+## Konkrete Folgeidee: Venue→Settlement-Authority-Vertrag
+
+Als nächste **kleine Erweiterungsidee** soll nicht sofort ein Bonus gebaut werden. Zuerst wird ein minimaler Vertrag geprüft, der genau drei Dinge autoritativ verbindet: **bestätigtes Event → eigener Ort → zum Settlement-Zeitpunkt gültige Publikumskraft**. Zusätzlich muss das Settlement-Receipt den angewandten Ortsbeitrag eindeutig belegen können.
+
+**Nutzen:** Damit würde erstmals eine belastbare technische Brücke zwischen Besitz/Ausbau und Event-Abrechnung entstehen, ohne eine zweite Bonusengine einzuführen. **Begründung:** Erst wenn Zuordnung, Wertquelle und Evidence eindeutig sind, kann ein späterer begrenzter Publikumskraft-Effekt deterministisch, replaybar und für den Spieler nachvollziehbar umgesetzt werden.
+
+Die Folgeidee ändert heute noch keine Balance und gibt keinen Bonus frei. Sie ist ausschließlich der kleinste mögliche Architekturbaustein für einen späteren mechanischen GO.
+
 ## Merksatz
 
 **Anzeigen, was bei deinem Ort bestätigt ist: ja. Einen Bonus erfinden, bevor Server, Journal und Replay dieselbe Ursache beweisen können: nein.**
 
-Der nächste sinnvolle Gameplay-Schritt ist nach diesem Audit nicht eine allgemeine Bonusengine, sondern die Entscheidung, ob `audience_pull` durch eine kleine Erweiterung des kanonischen Settlement-Vertrags sauber autorisiert werden kann oder ob ein anderer einzelner Venue-Wert den besseren bestehenden Zielpfad besitzt.
+Der nächste sinnvolle Gameplay-Schritt ist deshalb der minimale Venue→Settlement-Authority-Vertrag. Erst wenn dieser Vertrag GO ist, darf genau ein begrenzter `audience_pull`-Effekt als eigener Folgeslice umgesetzt werden.
