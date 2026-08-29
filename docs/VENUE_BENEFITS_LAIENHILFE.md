@@ -54,7 +54,9 @@ Der Beweisweg ist jetzt konkret geprüft. **GO gibt es nur für eine reine Evide
 
 Der aktuelle Settlement-State erlaubt allerdings keine beliebigen Zusatzfelder. Die Venue-Evidence muss deshalb als explizite, versionierte Vertragserweiterung eingeführt werden. Dabei darf sie zunächst nur `location_id`, bestätigten Besitz und den serverseitig bestätigten `audience_pull` belegen; Budget, Ruf, Stress, Heat und Stability bleiben unverändert.
 
-Wichtig: Der Upgrade-State speichert die gekauften Upgrade-Level. Der sichtbare Ortswert wird bereits serverseitig projiziert. Der spätere Authority-Slice muss genau diese vorhandene Projection wiederverwenden und darf keine zweite Publikumskraft-Berechnung einführen.
+Wichtig: Der Upgrade-State speichert die gekauften Upgrade-Level. Der sichtbare Ortswert wird heute im serverseitigen Projection-Pfad aus Basiswerten und bestätigten Upgrade-Leveln abgeleitet. Diese Berechnung liegt derzeit in der Darstellungs-Schicht. Die Event-Abrechnung darf sie deshalb **weder von dort importieren noch kopieren**.
+
+Bevor das Settlement den Wert als Evidence speichern darf, muss genau diese bestehende Wertableitung an eine gemeinsam nutzbare Stelle verschoben werden. Karte/Betriebsprofil und Settlement sollen danach dieselbe read-only Berechnung verwenden. So bleibt es eine Wahrheit statt zwei fast gleiche Formeln.
 
 ### Spätere Verbesserungsidee: sichtbarer Receipt-Hinweis
 
@@ -64,4 +66,4 @@ Falls der Venue→Settlement-Vertrag später wirklich GO wird, soll die vorhande
 
 **Anzeigen, was bei deinem Ort bestätigt ist: ja. Einen Bonus erfinden, bevor Server, Journal und Replay dieselbe Ursache beweisen können: nein.**
 
-Der nächste sinnvolle Gameplay-Schritt ist deshalb die minimale, versionierte Venue→Settlement-Evidence-Brücke. Erst wenn diese Brücke mit Replay/Recovery grün ist, darf genau ein begrenzter `audience_pull`-Effekt als eigener Folgeslice umgesetzt werden.
+Der nächste sinnvolle Gameplay-Schritt ist deshalb zuerst die gemeinsame read-only Wertautorität für die fünf Ortswerte. Danach kann die minimale, versionierte Venue→Settlement-Evidence-Brücke folgen. Erst wenn beide Schritte mit Replay/Recovery grün sind, darf genau ein begrenzter `audience_pull`-Effekt als eigener Folgeslice umgesetzt werden.
