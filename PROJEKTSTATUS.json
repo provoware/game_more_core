@@ -27,9 +27,9 @@
   },
   "status_sync": {
     "mode": "read_only_latest_relevant_safe_merge_anchor",
-    "anchor_pull_request": 271,
-    "anchor_merge_commit": "2887bf07b235597103f47ccf1f34dc7fda09e6ec",
-    "anchor_iteration": "0.8.8-QA-VENUE-DUPLICATE-UPGRADE-SLOT-GUARD",
+    "anchor_pull_request": 273,
+    "anchor_merge_commit": "ad3b64d67200be639260159c675048cde21ccb8f",
+    "anchor_iteration": "0.8.8-GAMEPLAY-VENUE-SETTLEMENT-EVIDENCE-RESOLVER",
     "canonical_documents": ["TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json"],
     "checker": "tools/status_sync.py",
     "workflow": ".github/workflows/status-sync.yml",
@@ -604,5 +604,5 @@
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-29T15:00:24+00:00"
+  "updated_at": "2026-08-29T17:54:36+00:00"
 }
