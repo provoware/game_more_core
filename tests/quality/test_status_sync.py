@@ -6,6 +6,7 @@ import unittest
 
 from tools.status_sync import (
     SafeMergeAnchor,
+    build_sync_markdown,
     build_sync_suggestion,
     check_status_sync,
     latest_relevant_safe_merge,
@@ -110,6 +111,19 @@ class StatusSyncTests(unittest.TestCase):
                 "status_sync.anchor_merge_commit": expected.merge_commit,
             },
         )
+
+    def test_markdown_suggestion_is_copyable_and_keeps_validation_provenance_read_only(self):
+        expected = self.merge_feature(177)
+        checklist = build_sync_markdown(expected)
+
+        self.assertIn(f"PR #177 · Merge `{expected.merge_commit}`", checklist)
+        self.assertIn("`TODO.md`", checklist)
+        self.assertIn("`FEATURE_POOL.md`", checklist)
+        self.assertIn("`status_sync.anchor_pull_request` auf `177`", checklist)
+        self.assertIn(f"`status_sync.anchor_merge_commit` auf `{expected.merge_commit}`", checklist)
+        self.assertIn("`remote_validation` unverändert lassen", checklist)
+        self.assertIn("python3 tools/status_sync.py check", checklist)
+        self.assertIn("`/safe-merge`", checklist)
 
     def test_applying_suggested_anchor_values_clears_status_drift_without_rewriting_validation(self):
         expected = self.merge_feature(176)
