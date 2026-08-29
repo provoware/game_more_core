@@ -57,9 +57,11 @@ Der Scene-Job-Vertrag verbietet clientseitig eingespeiste Payout-/Effektmodifika
 
 ## Audit-Freshness-Guard
 
-Der NO-GO-Befund hängt bewusst von der **heutigen** Settlement-Oberfläche ab. Deshalb pinnt die fokussierte Regression jetzt nicht nur einzelne verbotene Namen, sondern die komplette für diese Entscheidung relevante Autoritätsfläche: erforderliche State-Blöcke, erlaubte Source Effects, Application-Ziele und Receipt-Invarianten.
+Der NO-GO-Befund hängt bewusst von der **heutigen** Settlement-Oberfläche ab. Deshalb pinnt die fokussierte Regression jetzt die komplette für diese Entscheidung relevante Autoritätsfläche: erforderliche und optionale State-Blöcke, erlaubte Source Effects, Application-Ziele, Receipt-Invarianten **und die vollständigen Scope-Grenzen**.
 
-Ändert sich später einer dieser Vertragsbereiche, muss der Audit erneut bewertet werden. So kann eine neue Property-/Venue-Autorität nicht unbemerkt entstehen, während diese Dokumentation fälschlich weiter einen alten Zustand behauptet.
+Gerade die Scope-Grenzen sind wichtig: Würde dort später etwa `property_changes` freigegeben oder eine neue Venue-bezogene Grenze ergänzt, soll der Audit nicht still weiter als aktuell gelten. Jede Änderung dieser Oberfläche erzwingt deshalb eine erneute fachliche Bewertung.
+
+So kann neue Property-/Venue-Autorität nicht unbemerkt entstehen, während diese Dokumentation fälschlich weiter einen alten Zustand behauptet.
 
 ## Voraussetzungen für ein späteres GO
 
