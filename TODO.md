@@ -3,7 +3,7 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #271 · Merge `2887bf07b235597103f47ccf1f34dc7fda09e6ec`
+- **Status-Sync-Anker:** PR #273 · Merge `ad3b64d67200be639260159c675048cde21ccb8f`
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 · Head `20b0ed21b97d16babd2108e76cecc25aaa32a889` · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
 - **Start-/Release-Qualität:** Venue-Betriebsprofil ist für eigene Locations sichtbar, auf exakt fünf bestätigte Werte begrenzt und bis zum echten Chromium-DOM inklusive numerischer Werte, Großer Schrift, Hohem Kontrast und 760×680-Fenster bewiesen; mechanische Venue-Boni bleiben ohne eigenen Fachvertrag gesperrt
 - **Nächste aktive Entwicklungsstufe:** `0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT`
@@ -187,7 +187,7 @@
 - [x] gemeinsamen globalen `strategic_guidance`-Aggregator bewusst verworfen, solange keine Runtime-Priorität existiert
 - [x] keine Browser-Heuristik, keine Auto-Aktion und keine Produktionslogik ergänzt
 - [x] Audit, Laienhilfe, Changelog und Autoritätsregression aktualisiert
-- [x] PR #229 · Head `40ec4d980d77dc1b801ece77fe65e4018a1eda37` · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
+- [x] PR #229 · Head `40ec4b980d77dc1b801ece77fe65e4018a1eda37` · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
 
 ## 0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY
 - [x] reduzierter Joblohn wird direkt an der vorhandenen Jobkarte verständlich erklärt
