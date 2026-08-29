@@ -114,7 +114,7 @@ def latest_relevant_safe_merge(root: Path = ROOT, history_ref: str = "HEAD") -> 
 
 
 def build_sync_suggestion(anchor: SafeMergeAnchor) -> dict:
-    """Return exact read-only replacement values for the three canonical files."""
+    """Return exact read-only status-anchor replacements without rewriting validation provenance."""
     marker = f"- **Status-Sync-Anker:** PR #{anchor.pull_request} · Merge `{anchor.merge_commit}`"
     return {
         "anchor": {
@@ -131,8 +131,6 @@ def build_sync_suggestion(anchor: SafeMergeAnchor) -> dict:
             PROJECT_STATUS_PATH: {
                 "status_sync.anchor_pull_request": anchor.pull_request,
                 "status_sync.anchor_merge_commit": anchor.merge_commit,
-                "remote_validation.pull_request": anchor.pull_request,
-                "remote_validation.merged_commit": anchor.merge_commit,
             },
         },
         "write_mode": "read_only",
@@ -195,17 +193,8 @@ def check_status_sync(
     remote = project_status.get("remote_validation")
     if not isinstance(remote, dict):
         errors.append("PROJEKTSTATUS.json: remote_validation fehlt")
-    else:
-        if remote.get("pull_request") != expected.pull_request:
-            errors.append(
-                "PROJEKTSTATUS.json: remote_validation.pull_request stimmt nicht mit dem Status-Sync-Anker überein"
-            )
-        if remote.get("merged_commit") != expected.merge_commit:
-            errors.append(
-                "PROJEKTSTATUS.json: remote_validation.merged_commit stimmt nicht mit dem Status-Sync-Anker überein"
-            )
-        if remote.get("safe_merge_result") != "PASS" or remote.get("main_provenance_confirmed") is not True:
-            errors.append("PROJEKTSTATUS.json: Remote-Validierung besitzt keinen bestätigten SAFE MERGE PASS")
+    elif remote.get("safe_merge_result") != "PASS" or remote.get("main_provenance_confirmed") is not True:
+        errors.append("PROJEKTSTATUS.json: Remote-Validierung besitzt keinen bestätigten SAFE MERGE PASS")
 
     declared = [anchor for anchor in (*markdown_anchors.values(), project_anchor) if anchor is not None]
     if declared and len(set(declared)) != 1:
