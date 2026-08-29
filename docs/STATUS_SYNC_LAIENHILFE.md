@@ -30,7 +30,7 @@ Die read-only Equipment-Handelshistorie wurde mit PR #238 als letzte vollständi
 Darum sind weiterhin zwei Aussagen gleichzeitig richtig:
 
 - **letzte als vollständig abgeschlossene neue Spielfunktion geführte Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` aus PR #238,
-- **aktueller Status-Sync-Anker:** PR #252, weil dies der neueste fachlich relevante und sicher gemergte Venue-/QA-Stand ist.
+- **aktueller Status-Sync-Anker:** PR #252, weil dies der in den kanonischen Dateien zuletzt nachgezogene fachlich relevante Venue-/QA-Stand ist.
 
 Diese Trennung verhindert, dass reine Vertrags-, Presentation- oder QA-Härtungen versehentlich als neue Gameplaymechanik bezeichnet werden.
 
@@ -40,9 +40,21 @@ Mindestens eine Projektübersicht hängt hinter der bereits gemergten Realität 
 
 Das ist absichtlich ein **sichtbarer Qualitätsfehler**. Der Check repariert `main` nicht heimlich und führt keinen direkten Bot-Push aus. Die Statuskorrektur bleibt ein normal prüfbarer PR und wird anschließend wieder über `/safe-merge` abgeschlossen.
 
+### Was macht `suggest`?
+
+Wenn der Check Drift meldet, kann zusätzlich der rein lesende Befehl
+
+```bash
+python3 tools/status_sync.py suggest
+```
+
+verwendet werden. Er gibt als JSON den **exakt erkannten letzten fachlich relevanten Safe-Merge-Anker** sowie die dazu passenden Zielwerte für `TODO.md`, `FEATURE_POOL.md` und die beiden Ankerfelder in `PROJEKTSTATUS.json` aus.
+
+Wichtig: `suggest` schreibt **keine Datei**. Es ist nur eine eindeutige Reparaturvorlage. Dadurch muss bei einer Statuskorrektur weder PR-Nummer noch Merge-SHA aus Fehlermeldungen abgeschrieben oder geraten werden, und die drei kanonischen Dateien bleiben weiterhin die einzigen Statusquellen.
+
 ### Warum war der Status-Sync auf PR #252 rot?
 
-Der Feature-Head von PR #252 enthielt bereits den verschärften echten Chromium-Nachweis, während `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` weiterhin auf PR #245 zeigten. Der read-only Driftcheck meldete deshalb korrekt den vorhandenen Rückstand. Die für normale PRs vorgeschriebenen Required Checks waren auf dem geprüften Head grün; `/safe-merge` bestätigte anschließend den Merge samt Main-Provenienz. Diese Statusiteration zieht die Projektübersichten jetzt auf die bereits gemergte Realität nach.
+Der Feature-Head von PR #252 enthielt bereits den verschärften echten Chromium-Nachweis, während `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` weiterhin auf PR #245 zeigten. Der read-only Driftcheck meldete deshalb korrekt den vorhandenen Rückstand. Die für normale PRs vorgeschriebenen Required Checks waren auf dem geprüften Head grün; `/safe-merge` bestätigte anschließend den Merge samt Main-Provenienz. Die folgende Statusiteration zog die Projektübersichten auf diese bereits gemergte Realität nach.
 
 ## Warum erzeugt der Status-Sync-Merge nicht sofort wieder Drift?
 
@@ -90,10 +102,18 @@ Nur den erkannten Anker anzeigen:
 python3 tools/status_sync.py anchor
 ```
 
+Exakte read-only Reparaturvorlage anzeigen:
+
+```bash
+python3 tools/status_sync.py suggest
+```
+
 Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass Feature-Stand, Safe-Merge-Anker, Feature-Pool und nächste aktive Arbeit konsistent bleiben, ohne reine Audit-/UX-/QA-Härtungen fälschlich als neue Gameplayfunktion zu klassifizieren.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
 
-## Spätere Verbesserungsidee
+## Spätere Verbesserungsideen
 
 **STATUS-SYNC-DRIFT-AGE:** Ein späterer rein diagnostischer Slice könnte bei `STATUS SYNC FAIL` zusätzlich ausgeben, wie viele fachlich relevante Safe Merges die Statusquellen hinter dem erkannten Anker liegen. Nutzen: Priorität und Alter einer Drift sind sofort sichtbar, ohne irgendeine Datei automatisch zu schreiben oder den `/safe-merge`-Schutz zu umgehen.
+
+**STATUS-SYNC-PR-CHECKLIST:** `suggest` könnte später optional eine kurze Markdown-Checkliste für den Status-PR ausgeben. Nutzen: Die vier notwendigen Ankeränderungen und der anschließende `check`-Nachweis lassen sich direkt in die PR-Beschreibung übernehmen, weiterhin ohne automatische Schreibrechte.

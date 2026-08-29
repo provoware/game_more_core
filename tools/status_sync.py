@@ -113,6 +113,32 @@ def latest_relevant_safe_merge(root: Path = ROOT, history_ref: str = "HEAD") -> 
     )
 
 
+def build_sync_suggestion(anchor: SafeMergeAnchor) -> dict:
+    """Return exact read-only replacement values for the three canonical files."""
+    marker = f"- **Status-Sync-Anker:** PR #{anchor.pull_request} · Merge `{anchor.merge_commit}`"
+    return {
+        "anchor": {
+            "pull_request": anchor.pull_request,
+            "merge_commit": anchor.merge_commit,
+        },
+        "canonical_updates": {
+            TODO_PATH: {
+                "status_sync_anchor": marker,
+            },
+            FEATURE_POOL_PATH: {
+                "status_sync_anchor": marker,
+            },
+            PROJECT_STATUS_PATH: {
+                "status_sync.anchor_pull_request": anchor.pull_request,
+                "status_sync.anchor_merge_commit": anchor.merge_commit,
+                "remote_validation.pull_request": anchor.pull_request,
+                "remote_validation.merged_commit": anchor.merge_commit,
+            },
+        },
+        "write_mode": "read_only",
+    }
+
+
 def _markdown_anchor(path: Path) -> SafeMergeAnchor | None:
     text = path.read_text(encoding="utf-8")
     match = MARKER_RE.search(text)
@@ -207,7 +233,7 @@ def _print_result(expected: SafeMergeAnchor, errors: Iterable[str]) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="BUNKERFREQUENZ Status-Sync nach Safe Merge")
-    parser.add_argument("command", choices=("check", "anchor"), nargs="?", default="check")
+    parser.add_argument("command", choices=("check", "anchor", "suggest"), nargs="?", default="check")
     parser.add_argument("--root", type=Path, default=ROOT, help="Repository-Root für Tests/Diagnose")
     parser.add_argument(
         "--history-ref",
@@ -220,6 +246,9 @@ def main() -> int:
         expected = latest_relevant_safe_merge(args.root, args.history_ref)
         if args.command == "anchor":
             print(json.dumps({"pull_request": expected.pull_request, "merge_commit": expected.merge_commit}))
+            return 0
+        if args.command == "suggest":
+            print(json.dumps(build_sync_suggestion(expected), indent=2, ensure_ascii=False))
             return 0
         checked, errors = check_status_sync(args.root, args.history_ref)
         return _print_result(checked, errors)

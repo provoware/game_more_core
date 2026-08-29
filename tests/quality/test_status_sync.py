@@ -4,7 +4,12 @@ import subprocess
 import tempfile
 import unittest
 
-from tools.status_sync import SafeMergeAnchor, check_status_sync, latest_relevant_safe_merge
+from tools.status_sync import (
+    SafeMergeAnchor,
+    build_sync_suggestion,
+    check_status_sync,
+    latest_relevant_safe_merge,
+)
 
 
 def git(root: Path, *args: str) -> str:
@@ -78,6 +83,30 @@ class StatusSyncTests(unittest.TestCase):
         self.assertTrue(any("TODO.md" in error for error in errors))
         self.assertTrue(any("FEATURE_POOL.md" in error for error in errors))
         self.assertTrue(any("PROJEKTSTATUS.json" in error for error in errors))
+
+    def test_suggestion_names_exact_read_only_updates_for_all_canonical_documents(self):
+        expected = self.merge_feature(174)
+        suggestion = build_sync_suggestion(expected)
+        marker = f"- **Status-Sync-Anker:** PR #174 · Merge `{expected.merge_commit}`"
+
+        self.assertEqual(
+            suggestion["anchor"],
+            {"pull_request": 174, "merge_commit": expected.merge_commit},
+        )
+        self.assertEqual(suggestion["write_mode"], "read_only")
+        self.assertEqual(
+            suggestion["canonical_updates"]["TODO.md"]["status_sync_anchor"],
+            marker,
+        )
+        self.assertEqual(
+            suggestion["canonical_updates"]["FEATURE_POOL.md"]["status_sync_anchor"],
+            marker,
+        )
+        project_updates = suggestion["canonical_updates"]["PROJEKTSTATUS.json"]
+        self.assertEqual(project_updates["status_sync.anchor_pull_request"], 174)
+        self.assertEqual(project_updates["status_sync.anchor_merge_commit"], expected.merge_commit)
+        self.assertEqual(project_updates["remote_validation.pull_request"], 174)
+        self.assertEqual(project_updates["remote_validation.merged_commit"], expected.merge_commit)
 
     def test_synced_documents_match_latest_relevant_safe_merge(self):
         expected = self.merge_feature()
