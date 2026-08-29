@@ -11,7 +11,7 @@ class VenueBenefitsHelpCurrentStageTests(unittest.TestCase):
         text = HELP.read_text(encoding="utf-8")
 
         self.assertIn("Seit PR #273 existiert außerdem der **read-only Evidence-Resolver**", text)
-        self.assertIn("resolve_owned_venue_evidence(...)`,", text)
+        self.assertIn("resolve_owned_venue_evidence(...)`", text)
         self.assertIn("Damit ist die reine Authority-Brücke **bereits vorhanden**", text)
         self.assertIn("nicht im Settlement-State, Settlement-Receipt, Journal oder Save gespeichert", text)
         self.assertIn("nicht mehr der Resolver selbst", text)
