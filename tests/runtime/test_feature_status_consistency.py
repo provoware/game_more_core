@@ -31,7 +31,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn("52934e08dfc5c24e6b9c2933f6c53d8374018079", todo)
         self.assertIn(f"**{iteration}:** PR #238", pool)
 
-    def test_latest_safe_merge_anchor_tracks_pr266_while_venue_profile_proof_stays_pr252(self):
+    def test_latest_safe_merge_anchor_tracks_pr271_while_venue_profile_proof_stays_pr252(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -44,11 +44,11 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
-        self.assertEqual(sync["anchor_pull_request"], 266)
-        self.assertEqual(sync["anchor_merge_commit"], "75a829de05e7d0e19481b6fb5137d71a360c8f08")
-        self.assertEqual(sync["anchor_iteration"], "0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES")
-        self.assertIn("Status-Sync-Anker:** PR #266", todo)
-        self.assertIn("Status-Sync-Anker:** PR #266", pool)
+        self.assertEqual(sync["anchor_pull_request"], 271)
+        self.assertEqual(sync["anchor_merge_commit"], "2887bf07b235597103f47ccf1f34dc7fda09e6ec")
+        self.assertEqual(sync["anchor_iteration"], "0.8.8-QA-VENUE-DUPLICATE-UPGRADE-SLOT-GUARD")
+        self.assertIn("Status-Sync-Anker:** PR #271", todo)
+        self.assertIn("Status-Sync-Anker:** PR #271", pool)
         self.assertIn("**0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES:** PR #252", pool)
 
     def test_validated_and_next_pool_items_have_single_current_owners(self):
@@ -125,8 +125,8 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn("audience_pull", todo)
         self.assertIn("utility", todo)
 
-        self.assertEqual(sync["anchor_pull_request"], 266)
-        self.assertEqual(sync["anchor_merge_commit"], "75a829de05e7d0e19481b6fb5137d71a360c8f08")
+        self.assertEqual(sync["anchor_pull_request"], 271)
+        self.assertEqual(sync["anchor_merge_commit"], "2887bf07b235597103f47ccf1f34dc7fda09e6ec")
         self.assertEqual(validation["pull_request"], 252)
         self.assertEqual(validation["merged_commit"], "923d748f139f80b60d06c6b8922cff98c0d6d88e")
         self.assertFalse(sync["direct_main_write"])
