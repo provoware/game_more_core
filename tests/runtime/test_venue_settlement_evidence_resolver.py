@@ -64,6 +64,8 @@ class VenueSettlementEvidenceResolverTests(unittest.TestCase):
                 "location_id": "signalwerk",
                 "owner_character_id": "char:operator",
                 "audience_pull": 94,
+                "city_map_manifest_version": "0.8.3-b2-foundation",
+                "property_upgrade_manifest_version": "0.8.6-b1",
                 "property_revision": 7,
                 "property_upgrade_revision": 4,
             },
@@ -101,6 +103,31 @@ class VenueSettlementEvidenceResolverTests(unittest.TestCase):
                 property_upgrade_state=upgrades,
                 city_map_manifest=CITY_MAP,
                 upgrade_manifest=UPGRADES,
+            )
+
+    def test_missing_source_contract_versions_fail_closed(self):
+        city_map = dict(CITY_MAP)
+        city_map.pop("version")
+        with self.assertRaisesRegex(ValueError, "City-Map benötigt eine gültige Vertragsversion"):
+            resolve_owned_venue_evidence(
+                event_location={"location_id": "signalwerk"},
+                settlement_character_id="char:operator",
+                property_state=_property_state(),
+                property_upgrade_state=_upgrade_state(),
+                city_map_manifest=city_map,
+                upgrade_manifest=UPGRADES,
+            )
+
+        upgrades = dict(UPGRADES)
+        upgrades.pop("version")
+        with self.assertRaisesRegex(ValueError, "Property-Upgrade-Katalog benötigt eine gültige Vertragsversion"):
+            resolve_owned_venue_evidence(
+                event_location={"location_id": "signalwerk"},
+                settlement_character_id="char:operator",
+                property_state=_property_state(),
+                property_upgrade_state=_upgrade_state(),
+                city_map_manifest=CITY_MAP,
+                upgrade_manifest=upgrades,
             )
 
 

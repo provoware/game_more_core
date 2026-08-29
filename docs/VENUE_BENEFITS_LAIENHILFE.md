@@ -60,13 +60,19 @@ Zusätzlich prüft jetzt auch der echte Projection-Pfad den **ungefilterten gesp
 
 Auch doppelt eingetragene `upgrade_slots` werden jetzt von der gemeinsamen Wertautorität abgewiesen. Damit kann ein fehlerhafter Location-Katalog denselben Ausbau nicht versehentlich zweimal auf Prestige, Publikumskraft oder andere Ortswerte anwenden.
 
-Seit PR #273 existiert außerdem der **read-only Evidence-Resolver** `resolve_owned_venue_evidence(...)`. Er verbindet bereits bestätigten Event-Ort, Besitz und dieselbe gemeinsame Wertautorität und liefert für einen eigenen Ort eine versionierte Evidence mit `location_id`, Besitzer, `audience_pull` sowie Property- und Ausbau-Revision. Fremde oder widersprüchliche Zustände werden nicht als gültige Venue-Evidence ausgegeben.
+Seit PR #273 existiert außerdem der **read-only Evidence-Resolver** `resolve_owned_venue_evidence(...)`. Er verbindet bereits bestätigten Event-Ort, Besitz und dieselbe gemeinsame Wertautorität und liefert für einen eigenen Ort eine versionierte Evidence mit `location_id`, Besitzer, `audience_pull` sowie Property- und Ausbau-Revision.
+
+Die Evidence nennt jetzt zusätzlich die tatsächlich gelesenen **City-Map- und Property-Upgrade-Vertragsversionen**. Für Spieler ändert das keinen Wert und keinen Bonus; für spätere Wiederholungs- und Recovery-Prüfungen ist aber eindeutig erkennbar, aus welchem Datenvertrag die bestätigte Publikumskraft stammt. Fehlt eine dieser Quellversionen, wird keine scheinbar vollständige Evidence erzeugt.
 
 Damit ist die reine Authority-Brücke **bereits vorhanden**. Noch fehlt aber der nächste klar getrennte Vertragsschritt: Diese Evidence wird derzeit **nicht im Settlement-State, Settlement-Receipt, Journal oder Save gespeichert**. Genau deshalb bleibt der mechanische Bonus weiterhin gesperrt.
 
 ### Spätere Verbesserungsidee: Manifest-Konsistenz vor dem Spielstart
 
 Als spätere kleine Qualitätsverbesserung kann der Repository-/Startup-Check doppelte Venue-Slots bereits direkt im Location-Manifest melden. **Nutzen:** Ein Katalogfehler wird dann schon beim Prüfen der Spieldaten verständlich angezeigt und nicht erst beim Berechnen eines Ortsprofils. **Begründung:** Die Domain-Grenze muss trotzdem fail-closed bleiben; ein früher Manifest-Hinweis verbessert zusätzlich Diagnose und Wartung, ohne eine zweite Fachregel zu erzeugen.
+
+### Spätere Verbesserungsidee: Receipt-Quellversionen sichtbar diagnostizieren
+
+Wenn Venue-Evidence später im Settlement-Receipt gespeichert wird, kann die Diagnoseansicht die beiden Quellversionen bei Bedarf mit ausgeben. **Nutzen:** Bei alten Saves oder Migrationen ist sofort erkennbar, auf welchem Karten- und Ausbauvertrag eine bestätigte Publikumskraft beruhte. **Begründung:** Diese Information ist jetzt bereits Teil derselben Evidence und benötigt deshalb keine zweite Berechnung oder neue Autorität.
 
 ### Spätere Verbesserungsidee: sichtbarer Receipt-Hinweis
 
