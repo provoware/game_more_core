@@ -201,7 +201,7 @@
       "scene_job_zero_energy_payout_cents": 0,
       "scene_job_exhaustion_requires_system_time": false,
       "scene_job_second_exhaustion_resource": false,
-      "assistant_uses_same_scene_job_exhaustion_rule_as_manual_scene_jobs": true,
+      "assistant_uses_same_scene_job_exhaustion_rule": true,
       "scene_job_effective_payout_preview_validated": true,
       "scene_job_effective_payout_preview_source": "confirmed_character_energy",
       "scene_job_effective_payout_preview_same_canonical_calculation": true,
