@@ -40,6 +40,10 @@ Als nächste **kleine Erweiterungsidee** soll nicht sofort ein Bonus gebaut werd
 
 Die Folgeidee ändert heute noch keine Balance und gibt keinen Bonus frei. Sie ist ausschließlich der kleinste mögliche Architekturbaustein für einen späteren mechanischen GO.
 
+### Spätere Verbesserungsidee: sichtbarer Receipt-Hinweis
+
+Falls der Venue→Settlement-Vertrag später wirklich GO wird, soll die vorhandene Event-Rückmeldung den angewandten Publikumskraft-Beitrag **read-only als bestätigte Ursache** anzeigen. **Nutzen:** Der Spieler sieht dann nicht nur einen veränderten Ausgang, sondern auch, welcher eigene Ort und welcher bestätigte Ortswert dazu beigetragen haben. **Begründung:** Sichtbare Ursache und gespeicherte Receipt-Evidence sollten dieselbe Wahrheit zeigen; deshalb keine neue Berechnung im Browser und keine zweite Bonuslogik nur für die Oberfläche.
+
 ## Merksatz
 
 **Anzeigen, was bei deinem Ort bestätigt ist: ja. Einen Bonus erfinden, bevor Server, Journal und Replay dieselbe Ursache beweisen können: nein.**
