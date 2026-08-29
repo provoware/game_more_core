@@ -108,6 +108,19 @@ class StatusSyncTests(unittest.TestCase):
         self.assertEqual(project_updates["remote_validation.pull_request"], 174)
         self.assertEqual(project_updates["remote_validation.merged_commit"], expected.merge_commit)
 
+    def test_applying_suggested_anchor_values_clears_status_drift(self):
+        expected = self.merge_feature(176)
+        suggestion = build_sync_suggestion(expected)
+        suggested_anchor = SafeMergeAnchor(
+            suggestion["anchor"]["pull_request"],
+            suggestion["anchor"]["merge_commit"],
+        )
+        write_status(self.root, suggested_anchor)
+
+        checked, errors = check_status_sync(self.root)
+        self.assertEqual(checked, expected)
+        self.assertEqual(errors, [])
+
     def test_synced_documents_match_latest_relevant_safe_merge(self):
         expected = self.merge_feature()
         write_status(self.root, expected)
