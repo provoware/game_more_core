@@ -31,24 +31,24 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn("52934e08dfc5c24e6b9c2933f6c53d8374018079", todo)
         self.assertIn(f"**{iteration}:** PR #238", pool)
 
-    def test_latest_safe_merge_anchor_tracks_venue_profile_browser_proof(self):
+    def test_latest_safe_merge_anchor_tracks_pr261_while_venue_profile_proof_stays_pr252(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
         validation = status["remote_validation"]
         sync = status["status_sync"]
 
-        self.assertEqual(validation["pull_request"], 252)
+        self.assertEqual(validation["pull_request"], 261)
         self.assertEqual(validation["validated_head"], "cf0727c81df0d6381f3a2db26f0e766f9cebe7d0")
-        self.assertEqual(validation["merged_commit"], "923d748f139f80b60d06c6b8922cff98c0d6d88e")
+        self.assertEqual(validation["merged_commit"], "9bf156dbab23cd525587824ddaf361cb27be7019")
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
-        self.assertEqual(sync["anchor_pull_request"], 252)
+        self.assertEqual(sync["anchor_pull_request"], 261)
         self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
         self.assertEqual(sync["anchor_iteration"], "0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES")
-        self.assertIn("Status-Sync-Anker:** PR #252", todo)
-        self.assertIn("Status-Sync-Anker:** PR #252", pool)
+        self.assertIn("Status-Sync-Anker:** PR #261", todo)
+        self.assertIn("Status-Sync-Anker:** PR #261", pool)
         self.assertIn("**0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES:** PR #252", pool)
 
     def test_validated_and_next_pool_items_have_single_current_owners(self):
