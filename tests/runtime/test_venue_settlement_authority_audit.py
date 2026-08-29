@@ -12,6 +12,7 @@ SETTLEMENT_SCHEMA = ROOT / "schemas" / "settlement_state.schema.json"
 UPGRADE_MANIFEST = ROOT / "manifests" / "PROPERTY_UPGRADE_MANIFEST.json"
 SETTLEMENT_MANIFEST = ROOT / "manifests" / "SETTLEMENT_MANIFEST.json"
 SETTLEMENT_SERVICE = ROOT / "src" / "bunkerfrequenz" / "application" / "settlement_service.py"
+UPGRADE_DOMAIN = ROOT / "src" / "bunkerfrequenz" / "domain" / "property_upgrade.py"
 UPGRADE_PROJECTION = ROOT / "src" / "bunkerfrequenz" / "presentation" / "property_upgrade_projection.py"
 
 
@@ -55,13 +56,15 @@ class VenueSettlementAuthorityAuditTests(unittest.TestCase):
 
     def test_settlement_cannot_shortcut_effective_values_through_presentation(self):
         settlement_code = SETTLEMENT_SERVICE.read_text(encoding="utf-8")
+        domain_code = UPGRADE_DOMAIN.read_text(encoding="utf-8")
         projection_code = UPGRADE_PROJECTION.read_text(encoding="utf-8")
 
         self.assertNotIn("bunkerfrequenz.presentation", settlement_code)
-        self.assertIn("def build_property_upgrade_projection", projection_code)
-        self.assertIn("effective_values_by_location", projection_code)
-        self.assertIn("value_delta_per_level", projection_code)
-        self.assertIn("_bounded", projection_code)
+        self.assertIn("def effective_venue_values", domain_code)
+        self.assertIn("effective_venue_values", projection_code)
+        self.assertIn("VENUE_VALUE_KEYS", projection_code)
+        self.assertNotIn("def _bounded", projection_code)
+        self.assertNotIn("effective[key] =", projection_code)
 
     def test_audit_keeps_evidence_go_separate_from_mechanic_go(self):
         text = AUDIT.read_text(encoding="utf-8")
