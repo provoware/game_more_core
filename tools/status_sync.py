@@ -82,6 +82,12 @@ def _changed_paths(root: Path, merge_commit: str) -> tuple[str, ...]:
 
 def _is_status_only_safe_merge(root: Path, merge_commit: str) -> bool:
     paths = set(_changed_paths(root, merge_commit))
+    # README, Status-Regressionen und versionsbezogene Status-Laienhilfen dürfen
+    # wegen der Repository-Health-/Konsistenzverträge Teil eines Status-Syncs
+    # sein. Ein beliebiger Doku-/Test-Merge darf aber niemals als Status-Sync
+    # verschwinden: alle drei kanonischen Statusdateien müssen gemeinsam
+    # enthalten sein. Eine reine PROJEKTSTATUS-Korrektur ist ebenfalls nur
+    # Statuspflege und darf keinen neuen fachlichen Anker erzeugen.
     if paths == {PROJECT_STATUS_PATH}:
         return True
     return (
