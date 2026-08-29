@@ -60,7 +60,9 @@ Zusätzlich prüft jetzt auch der echte Projection-Pfad den **ungefilterten gesp
 
 Auch doppelt eingetragene `upgrade_slots` werden jetzt von der gemeinsamen Wertautorität abgewiesen. Damit kann ein fehlerhafter Location-Katalog denselben Ausbau nicht versehentlich zweimal auf Prestige, Publikumskraft oder andere Ortswerte anwenden.
 
-Damit ist das frühere Vor-Gate erfüllt: Die Event-Abrechnung muss keine Darstellungslogik importieren und darf die Formel weiterhin nicht kopieren. Der nächste fachliche Schritt kann sich deshalb auf die versionierte Settlement-Evidence konzentrieren.
+Seit PR #273 existiert außerdem der **read-only Evidence-Resolver** `resolve_owned_venue_evidence(...)`. Er verbindet bereits bestätigten Event-Ort, Besitz und dieselbe gemeinsame Wertautorität und liefert für einen eigenen Ort eine versionierte Evidence mit `location_id`, Besitzer, `audience_pull` sowie Property- und Ausbau-Revision. Fremde oder widersprüchliche Zustände werden nicht als gültige Venue-Evidence ausgegeben.
+
+Damit ist die reine Authority-Brücke **bereits vorhanden**. Noch fehlt aber der nächste klar getrennte Vertragsschritt: Diese Evidence wird derzeit **nicht im Settlement-State, Settlement-Receipt, Journal oder Save gespeichert**. Genau deshalb bleibt der mechanische Bonus weiterhin gesperrt.
 
 ### Spätere Verbesserungsidee: Manifest-Konsistenz vor dem Spielstart
 
@@ -74,4 +76,4 @@ Falls der Venue→Settlement-Vertrag später wirklich GO wird, soll die vorhande
 
 **Anzeigen, was bei deinem Ort bestätigt ist: ja. Einen Bonus erfinden, bevor Server, Journal und Replay dieselbe Ursache beweisen können: nein.**
 
-Der nächste sinnvolle Gameplay-Schritt ist jetzt die minimale, versionierte Venue→Settlement-Evidence-Brücke. Erst wenn sie mit Replay/Recovery grün ist, darf genau ein begrenzter `audience_pull`-Effekt als eigener Folgeslice umgesetzt werden.
+Der nächste sinnvolle Gameplay-Schritt ist jetzt **nicht mehr der Resolver selbst**, sondern die minimale versionierte Aufnahme der bereits bestätigten Venue-Evidence in den Settlement-Vertrag. Erst danach folgt separat der Replay-/Recovery-Beweis; erst wenn auch dieser grün ist, darf genau ein begrenzter `audience_pull`-Effekt als eigener Folgeslice geprüft werden.
