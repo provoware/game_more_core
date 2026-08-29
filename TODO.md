@@ -187,7 +187,7 @@
 - [x] gemeinsamen globalen `strategic_guidance`-Aggregator bewusst verworfen, solange keine Runtime-Priorität existiert
 - [x] keine Browser-Heuristik, keine Auto-Aktion und keine Produktionslogik ergänzt
 - [x] Audit, Laienhilfe, Changelog und Autoritätsregression aktualisiert
-- [x] PR #229 · Head `40ec4b980d77dc1b801ece77fe65e4018a1eda37` · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
+- [x] PR #229 · Head `40ec4d980d77dc1b801ece77fe65e4018a1eda37` · Merge `d8b5833b91861e1e80ee74d6f0fbab32cd2c0c27`
 
 ## 0.8.8-UX-JOB-PAYOUT-CONTEXT-CLARITY
 - [x] reduzierter Joblohn wird direkt an der vorhandenen Jobkarte verständlich erklärt
