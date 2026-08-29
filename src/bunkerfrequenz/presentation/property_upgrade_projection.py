@@ -5,15 +5,11 @@ from typing import Any, Mapping
 
 from bunkerfrequenz.domain.property_upgrade import (
     MAX_UPGRADE_LEVEL,
+    VENUE_VALUE_KEYS,
     PropertyUpgradeState,
+    effective_venue_values,
     upgrade_cost_cents,
 )
-
-_VALUE_KEYS = ("prestige", "audience_pull", "risk", "underground_factor", "utility")
-
-
-def _bounded(value: int) -> int:
-    return max(0, min(100, value))
 
 
 def build_property_upgrade_projection(
@@ -86,14 +82,13 @@ def build_property_upgrade_projection(
         location = location_by_id[location_id]
         values = location.get("values")
         slots = location.get("upgrade_slots", [])
-        if not isinstance(values, Mapping) or set(values) != set(_VALUE_KEYS):
+        if not isinstance(values, Mapping) or set(values) != set(VENUE_VALUE_KEYS):
             raise ValueError("Location besitzt ungültige Basiswerte")
         if not isinstance(slots, list) or any(slot not in catalog for slot in slots):
             raise ValueError("Location besitzt ungültige Upgrade-Slots")
 
         record = state.properties.get(location_id, {"location_id": location_id, "upgrades": {}})
         levels: dict[str, int] = {}
-        effective = {key: int(values[key]) for key in _VALUE_KEYS}
         upgrades_out: list[dict[str, Any]] = []
         owned = property_entry.get("owned") is True
         purchase_price = property_entry.get("purchase_price_cents")
@@ -109,15 +104,10 @@ def build_property_upgrade_projection(
                 raise ValueError("Property-Upgrade-Katalogeintrag muss Mapping sein")
             deltas = spec.get("value_delta_per_level")
             cost_bps = spec.get("cost_bps")
-            if not isinstance(deltas, Mapping) or set(deltas) != set(_VALUE_KEYS):
+            if not isinstance(deltas, Mapping) or set(deltas) != set(VENUE_VALUE_KEYS):
                 raise ValueError("Property-Upgrade-Wertedeltas sind ungültig")
             if isinstance(cost_bps, bool) or not isinstance(cost_bps, int) or cost_bps < 1:
                 raise ValueError("Property-Upgrade-Kostenfaktor ist ungültig")
-            for key in _VALUE_KEYS:
-                delta = deltas[key]
-                if isinstance(delta, bool) or not isinstance(delta, int):
-                    raise ValueError("Property-Upgrade-Wertedelta muss Ganzzahl sein")
-                effective[key] = _bounded(effective[key] + delta * level)
 
             next_level = level + 1 if level < MAX_UPGRADE_LEVEL else None
             next_cost = None
@@ -138,6 +128,12 @@ def build_property_upgrade_projection(
                 "value_delta_per_level": deepcopy(dict(deltas)),
             })
 
+        effective = effective_venue_values(
+            values,
+            upgrade_slots=slots,
+            upgrade_levels=levels,
+            upgrade_catalog=catalog,
+        )
         levels_by_location[location_id] = levels
         effective_values_by_location[location_id] = effective
         entries.append({

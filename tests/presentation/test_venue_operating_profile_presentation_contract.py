@@ -7,15 +7,19 @@ ROOT = Path(__file__).parents[2]
 
 class VenueOperatingProfilePresentationContractTests(unittest.TestCase):
     def setUp(self):
+        self.domain = (ROOT / "src/bunkerfrequenz/domain/property_upgrade.py").read_text(encoding="utf-8")
         self.projection = (ROOT / "src/bunkerfrequenz/presentation/property_upgrade_projection.py").read_text(encoding="utf-8")
         self.contract = (ROOT / "docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md").read_text(encoding="utf-8")
         self.app = (ROOT / "web/a4/app.js").read_text(encoding="utf-8")
 
     def test_projection_keeps_single_authoritative_value_set(self):
         self.assertIn(
-            '_VALUE_KEYS = ("prestige", "audience_pull", "risk", "underground_factor", "utility")',
-            self.projection,
+            'VENUE_VALUE_KEYS = ("prestige", "audience_pull", "risk", "underground_factor", "utility")',
+            self.domain,
         )
+        self.assertIn("def effective_venue_values", self.domain)
+        self.assertIn("effective_venue_values(", self.projection)
+        self.assertNotIn("def _bounded", self.projection)
         self.assertIn('"effective_values": deepcopy(effective) if owned else None', self.projection)
         self.assertIn('"effective_values_by_location": effective_values_by_location', self.projection)
 

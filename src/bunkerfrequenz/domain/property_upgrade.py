@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass, field
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 
 MAX_UPGRADE_LEVEL = 3
+VENUE_VALUE_KEYS = ("prestige", "audience_pull", "risk", "underground_factor", "utility")
 
 
 def _text(value: Any, field_name: str) -> str:
@@ -18,6 +19,55 @@ def _nonnegative_int(value: Any, field_name: str) -> int:
     if isinstance(value, bool) or not isinstance(value, int) or value < 0:
         raise ValueError(f"{field_name} muss eine nichtnegative Ganzzahl sein")
     return value
+
+
+def _bounded_venue_value(value: int) -> int:
+    return max(0, min(100, value))
+
+
+def effective_venue_values(
+    base_values: Mapping[str, Any],
+    *,
+    upgrade_slots: Sequence[str],
+    upgrade_levels: Mapping[str, Any],
+    upgrade_catalog: Mapping[str, Any],
+) -> dict[str, int]:
+    """Return confirmed effective venue values from base values and upgrade levels.
+
+    The function is deliberately read-only and deterministic so presentation and
+    later evidence consumers can share one authority without copying the formula.
+    """
+    if set(base_values) != set(VENUE_VALUE_KEYS):
+        raise ValueError("Location besitzt ungültige Basiswerte")
+    if isinstance(upgrade_slots, (str, bytes)):
+        raise ValueError("Location besitzt ungültige Upgrade-Slots")
+
+    effective: dict[str, int] = {}
+    for key in VENUE_VALUE_KEYS:
+        value = base_values[key]
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError("Location-Basiswert muss Ganzzahl sein")
+        effective[key] = _bounded_venue_value(value)
+
+    for slot in upgrade_slots:
+        if not isinstance(slot, str) or slot not in upgrade_catalog:
+            raise ValueError("Location besitzt ungültige Upgrade-Slots")
+        level = upgrade_levels.get(slot, 0)
+        if isinstance(level, bool) or not isinstance(level, int) or not 0 <= level <= MAX_UPGRADE_LEVEL:
+            raise ValueError("Property-Upgrade-Level ist ungültig")
+        spec = upgrade_catalog[slot]
+        if not isinstance(spec, Mapping):
+            raise ValueError("Property-Upgrade-Katalogeintrag muss Mapping sein")
+        deltas = spec.get("value_delta_per_level")
+        if not isinstance(deltas, Mapping) or set(deltas) != set(VENUE_VALUE_KEYS):
+            raise ValueError("Property-Upgrade-Wertedeltas sind ungültig")
+        for key in VENUE_VALUE_KEYS:
+            delta = deltas[key]
+            if isinstance(delta, bool) or not isinstance(delta, int):
+                raise ValueError("Property-Upgrade-Wertedelta muss Ganzzahl sein")
+            effective[key] = _bounded_venue_value(effective[key] + delta * level)
+
+    return effective
 
 
 def upgrade_cost_cents(purchase_price_cents: int, cost_bps: int, level_multiplier_bps: int) -> int:
