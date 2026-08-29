@@ -34,6 +34,44 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
         self.assertNotIn("audience_pull", self.settlement_manifest["source_effects"])
         self.assertNotIn("venue_audience_pull", self.settlement_manifest["application"])
 
+    def test_audit_freshness_guard_pins_exact_settlement_authority_surface(self):
+        self.assertEqual(
+            self.settlement_manifest["required_state_blocks"],
+            ["event", "economy", "character"],
+        )
+        self.assertEqual(
+            self.settlement_manifest["optional_initial_state_blocks"],
+            ["incidents"],
+        )
+        self.assertEqual(
+            self.settlement_manifest["source_effects"],
+            [
+                "budget_delta_cents",
+                "reputation_delta",
+                "crew_stress_delta",
+                "stability_delta",
+                "heat_delta",
+            ],
+        )
+        self.assertEqual(
+            self.settlement_manifest["application"],
+            {
+                "budget_delta_cents": "economy_ledger_settlement_transaction",
+                "reputation_delta": "character.reputation_changed",
+                "crew_stress_delta": "character.resources_changed",
+                "stability_delta": "settlement_receipt_event_outcome_only",
+                "heat_delta": "settlement_receipt_event_outcome_only",
+            },
+        )
+        self.assertEqual(
+            self.settlement_manifest["receipt_invariants"],
+            {
+                "budget_delta_matches_effect": True,
+                "stress_delta_matches_effect": True,
+                "reputation_delta_matches_effect": True,
+            },
+        )
+
     def test_scene_jobs_do_not_offer_modifier_shortcut(self):
         availability = self.scene_job_manifest["availability"]
         exhaustion = self.scene_job_manifest["exhaustion_policy"]
@@ -46,6 +84,7 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
         self.assertIn("Keine generische Venue-Bonusengine", self.audit)
         self.assertIn("kein stiller Settlement-Multiplikator", self.audit)
         self.assertIn("Replay/Recovery mit demselben Ergebnis", self.audit)
+        self.assertIn("Audit-Freshness-Guard", self.audit)
 
 
 if __name__ == "__main__":
