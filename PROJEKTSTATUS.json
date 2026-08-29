@@ -27,9 +27,9 @@
   },
   "status_sync": {
     "mode": "read_only_latest_relevant_safe_merge_anchor",
-    "anchor_pull_request": 266,
-    "anchor_merge_commit": "75a829de05e7d0e19481b6fb5137d71a360c8f08",
-    "anchor_iteration": "0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES",
+    "anchor_pull_request": 271,
+    "anchor_merge_commit": "2887bf07b235597103f47ccf1f34dc7fda09e6ec",
+    "anchor_iteration": "0.8.8-QA-VENUE-DUPLICATE-UPGRADE-SLOT-GUARD",
     "canonical_documents": ["TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json"],
     "checker": "tools/status_sync.py",
     "workflow": ".github/workflows/status-sync.yml",
@@ -604,5 +604,5 @@
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-28T21:54:54+00:00"
+  "updated_at": "2026-08-29T15:00:24+00:00"
 }
