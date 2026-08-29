@@ -11,6 +11,8 @@ UPGRADE_SCHEMA = ROOT / "schemas" / "property_upgrade_state.schema.json"
 SETTLEMENT_SCHEMA = ROOT / "schemas" / "settlement_state.schema.json"
 UPGRADE_MANIFEST = ROOT / "manifests" / "PROPERTY_UPGRADE_MANIFEST.json"
 SETTLEMENT_MANIFEST = ROOT / "manifests" / "SETTLEMENT_MANIFEST.json"
+SETTLEMENT_SERVICE = ROOT / "src" / "bunkerfrequenz" / "application" / "settlement_service.py"
+UPGRADE_PROJECTION = ROOT / "src" / "bunkerfrequenz" / "presentation" / "property_upgrade_projection.py"
 
 
 class VenueSettlementAuthorityAuditTests(unittest.TestCase):
@@ -51,6 +53,16 @@ class VenueSettlementAuthorityAuditTests(unittest.TestCase):
         self.assertNotIn("properties", settlement["required_state_blocks"])
         self.assertNotIn("property_upgrades", settlement["required_state_blocks"])
 
+    def test_settlement_cannot_shortcut_effective_values_through_presentation(self):
+        settlement_code = SETTLEMENT_SERVICE.read_text(encoding="utf-8")
+        projection_code = UPGRADE_PROJECTION.read_text(encoding="utf-8")
+
+        self.assertNotIn("bunkerfrequenz.presentation", settlement_code)
+        self.assertIn("def build_property_upgrade_projection", projection_code)
+        self.assertIn("effective_values_by_location", projection_code)
+        self.assertIn("value_delta_per_level", projection_code)
+        self.assertIn("_bounded", projection_code)
+
     def test_audit_keeps_evidence_go_separate_from_mechanic_go(self):
         text = AUDIT.read_text(encoding="utf-8")
 
@@ -61,6 +73,9 @@ class VenueSettlementAuthorityAuditTests(unittest.TestCase):
         self.assertIn("keine Venue-Bonusengine", text)
         self.assertIn("additionalProperties: false", text)
         self.assertIn("Architektur-GO für Evidence-Plumbing, Mechanik-NO-GO", text)
+        self.assertIn("gemeinsame Wertautorität", text)
+        self.assertIn("Application-Schicht die Presentation-Schicht importieren", text)
+        self.assertIn("Berechnung der effektiven Ortswerte im Settlement duplizieren", text)
 
 
 if __name__ == "__main__":
