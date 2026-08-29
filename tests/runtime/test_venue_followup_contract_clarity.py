@@ -21,6 +21,19 @@ class VenueFollowupContractClarityTests(unittest.TestCase):
         self.assertIn("ändert heute noch keine Balance", text)
         self.assertIn("zweite Bonusengine", text)
 
+    def test_authority_followup_is_explicitly_non_mechanical(self):
+        text = HELP.read_text(encoding="utf-8")
+        boundary = text.split("### Harte Grenze für diesen Folgeschritt", 1)[1].split(
+            "### Spätere Verbesserungsidee", 1
+        )[0]
+
+        self.assertIn("nur den Beweisweg", boundary)
+        self.assertIn("noch keine Bonusformel", boundary)
+        self.assertIn("keinen Multiplikator", boundary)
+        self.assertIn("keine neue Auszahlung", boundary)
+        self.assertIn("keine Browser-Berechnung", boundary)
+        self.assertIn("erst Autorität und Evidence, danach separat Balance und Wirkung", boundary)
+
     def test_help_keeps_future_receipt_feedback_read_only_and_confirmed(self):
         text = HELP.read_text(encoding="utf-8")
 
