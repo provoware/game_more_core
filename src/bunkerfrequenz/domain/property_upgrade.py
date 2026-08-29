@@ -41,6 +41,8 @@ def effective_venue_values(
         raise ValueError("Location besitzt ungültige Basiswerte")
     if isinstance(upgrade_slots, (str, bytes)):
         raise ValueError("Location besitzt ungültige Upgrade-Slots")
+    if any(upgrade_id not in upgrade_slots for upgrade_id in upgrade_levels):
+        raise ValueError("Property-Upgrade passt nicht zu den Location-Slots")
 
     effective: dict[str, int] = {}
     for key in VENUE_VALUE_KEYS:
