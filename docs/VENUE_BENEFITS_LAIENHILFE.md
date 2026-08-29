@@ -48,6 +48,14 @@ Damit bleibt die Reihenfolge eindeutig: **erst Autorität und Evidence, danach s
 
 Der Schutz prüft diese Aussage jetzt nicht mehr nur gegen diese Erklärung. Er liest zusätzlich die echte Settlement-Regel, den Property-Upgrade-Vertrag und den vorhandenen Property-Renderer. Solange dort Property-Änderungen gesperrt sind, keine Publikumskraft als Settlement-Effekt katalogisiert ist und die Oberfläche nur bestätigte Werte als Text anzeigt, bleibt der Folgeschritt nachweisbar nicht-mechanisch.
 
+### Ergebnis des Authority-Audits
+
+Der Beweisweg ist jetzt konkret geprüft. **GO gibt es nur für eine reine Evidence-Brücke; der mechanische Bonus bleibt NO-GO.** Event, bestätigter Besitz und Ausbau besitzen bereits denselben fachlichen Schlüssel `location_id`. Deshalb darf ein nächster Implementierungsslice diese bestehenden Autoritäten verbinden, ohne einen zweiten Property-State oder eine neue Venue-Engine einzuführen.
+
+Der aktuelle Settlement-State erlaubt allerdings keine beliebigen Zusatzfelder. Die Venue-Evidence muss deshalb als explizite, versionierte Vertragserweiterung eingeführt werden. Dabei darf sie zunächst nur `location_id`, bestätigten Besitz und den serverseitig bestätigten `audience_pull` belegen; Budget, Ruf, Stress, Heat und Stability bleiben unverändert.
+
+Wichtig: Der Upgrade-State speichert die gekauften Upgrade-Level. Der sichtbare Ortswert wird bereits serverseitig projiziert. Der spätere Authority-Slice muss genau diese vorhandene Projection wiederverwenden und darf keine zweite Publikumskraft-Berechnung einführen.
+
 ### Spätere Verbesserungsidee: sichtbarer Receipt-Hinweis
 
 Falls der Venue→Settlement-Vertrag später wirklich GO wird, soll die vorhandene Event-Rückmeldung den angewandten Publikumskraft-Beitrag **read-only als bestätigte Ursache** anzeigen. **Nutzen:** Der Spieler sieht dann nicht nur einen veränderten Ausgang, sondern auch, welcher eigene Ort und welcher bestätigte Ortswert dazu beigetragen haben. **Begründung:** Sichtbare Ursache und gespeicherte Receipt-Evidence sollten dieselbe Wahrheit zeigen; deshalb keine neue Berechnung im Browser und keine zweite Bonuslogik nur für die Oberfläche.
@@ -56,4 +64,4 @@ Falls der Venue→Settlement-Vertrag später wirklich GO wird, soll die vorhande
 
 **Anzeigen, was bei deinem Ort bestätigt ist: ja. Einen Bonus erfinden, bevor Server, Journal und Replay dieselbe Ursache beweisen können: nein.**
 
-Der nächste sinnvolle Gameplay-Schritt ist deshalb der minimale Venue→Settlement-Authority-Vertrag. Erst wenn dieser Vertrag GO ist, darf genau ein begrenzter `audience_pull`-Effekt als eigener Folgeslice umgesetzt werden.
+Der nächste sinnvolle Gameplay-Schritt ist deshalb die minimale, versionierte Venue→Settlement-Evidence-Brücke. Erst wenn diese Brücke mit Replay/Recovery grün ist, darf genau ein begrenzter `audience_pull`-Effekt als eigener Folgeslice umgesetzt werden.
