@@ -3,7 +3,7 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #252 · Merge `923d748f139f80b60d06c6b8922cff98c0d6d88e`
+- **Status-Sync-Anker:** PR #261 · Merge `9bf156dbab23cd525587824ddaf361cb27be7019`
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 · Head `20b0ed21b97d16babd2108e76cecc25aaa32a889` · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
 - **Start-/Release-Qualität:** Venue-Betriebsprofil ist für eigene Locations sichtbar, auf exakt fünf bestätigte Werte begrenzt und bis zum echten Chromium-DOM inklusive numerischer Werte, Großer Schrift, Hohem Kontrast und 760×680-Fenster bewiesen; mechanische Venue-Boni bleiben ohne eigenen Fachvertrag gesperrt
 - **Nächste aktive Entwicklungsstufe:** `0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT`
