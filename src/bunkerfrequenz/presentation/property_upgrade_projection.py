@@ -88,6 +88,8 @@ def build_property_upgrade_projection(
             raise ValueError("Location besitzt ungültige Upgrade-Slots")
 
         record = state.properties.get(location_id, {"location_id": location_id, "upgrades": {}})
+        if set(record["upgrades"]) - set(slots):
+            raise ValueError("Persistierter Property-Upgrade-State passt nicht zu den Location-Slots")
         levels: dict[str, int] = {}
         upgrades_out: list[dict[str, Any]] = []
         owned = property_entry.get("owned") is True
