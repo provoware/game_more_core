@@ -82,12 +82,6 @@ def _changed_paths(root: Path, merge_commit: str) -> tuple[str, ...]:
 
 def _is_status_only_safe_merge(root: Path, merge_commit: str) -> bool:
     paths = set(_changed_paths(root, merge_commit))
-    # README, Status-Regressionen und versionsbezogene Status-Laienhilfen dürfen
-    # wegen der Repository-Health-/Konsistenzverträge Teil eines Status-Syncs
-    # sein. Ein beliebiger Doku-/Test-Merge darf aber niemals als Status-Sync
-    # verschwinden: alle drei kanonischen Statusdateien müssen gemeinsam
-    # enthalten sein. Eine reine PROJEKTSTATUS-Korrektur ist ebenfalls nur
-    # Statuspflege und darf keinen neuen fachlichen Anker erzeugen.
     if paths == {PROJECT_STATUS_PATH}:
         return True
     return (
@@ -135,6 +129,24 @@ def build_sync_suggestion(anchor: SafeMergeAnchor) -> dict:
         },
         "write_mode": "read_only",
     }
+
+
+def build_sync_markdown(anchor: SafeMergeAnchor) -> str:
+    """Return a copyable read-only checklist for a normal status-sync PR."""
+    marker = f"PR #{anchor.pull_request} · Merge `{anchor.merge_commit}`"
+    return "\n".join(
+        (
+            "# Status-Sync Reparaturcheckliste",
+            "",
+            f"- [ ] `TODO.md`: Status-Sync-Anker auf {marker} setzen.",
+            f"- [ ] `FEATURE_POOL.md`: Status-Sync-Anker auf {marker} setzen.",
+            f"- [ ] `PROJEKTSTATUS.json`: `status_sync.anchor_pull_request` auf `{anchor.pull_request}` setzen.",
+            f"- [ ] `PROJEKTSTATUS.json`: `status_sync.anchor_merge_commit` auf `{anchor.merge_commit}` setzen.",
+            "- [ ] `remote_validation` unverändert lassen; historische Abnahme-Evidenz nicht umdeuten.",
+            "- [ ] `python3 tools/status_sync.py check` ergibt `STATUS SYNC PASS`.",
+            "- [ ] Required Gates auf dem finalen PR-Head grün; anschließend ausschließlich `/safe-merge` verwenden.",
+        )
+    )
 
 
 def _markdown_anchor(path: Path) -> SafeMergeAnchor | None:
@@ -222,7 +234,12 @@ def _print_result(expected: SafeMergeAnchor, errors: Iterable[str]) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="BUNKERFREQUENZ Status-Sync nach Safe Merge")
-    parser.add_argument("command", choices=("check", "anchor", "suggest"), nargs="?", default="check")
+    parser.add_argument(
+        "command",
+        choices=("check", "anchor", "suggest", "suggest-markdown"),
+        nargs="?",
+        default="check",
+    )
     parser.add_argument("--root", type=Path, default=ROOT, help="Repository-Root für Tests/Diagnose")
     parser.add_argument(
         "--history-ref",
@@ -238,6 +255,9 @@ def main() -> int:
             return 0
         if args.command == "suggest":
             print(json.dumps(build_sync_suggestion(expected), indent=2, ensure_ascii=False))
+            return 0
+        if args.command == "suggest-markdown":
+            print(build_sync_markdown(expected))
             return 0
         checked, errors = check_status_sync(args.root, args.history_ref)
         return _print_result(checked, errors)
