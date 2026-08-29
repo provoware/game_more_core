@@ -27,8 +27,8 @@
   },
   "status_sync": {
     "mode": "read_only_latest_relevant_safe_merge_anchor",
-    "anchor_pull_request": 261,
-    "anchor_merge_commit": "9bf156dbab23cd525587824ddaf361cb27be7019",
+    "anchor_pull_request": 266,
+    "anchor_merge_commit": "75a829de05e7d0e19481b6fb5137d71a360c8f08",
     "anchor_iteration": "0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES",
     "canonical_documents": ["TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json"],
     "checker": "tools/status_sync.py",

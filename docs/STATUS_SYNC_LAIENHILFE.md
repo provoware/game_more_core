@@ -27,10 +27,10 @@ Die read-only Equipment-Handelshistorie wurde mit PR #238 als letzte vollständi
 - PR #251 bewies das Profil im echten Chromium bei **760×680**, **Großer Schrift** und **Hohem Kontrast**, einschließlich Eigentumsgrenze und horizontaler Überbreite.
 - PR #252 verschärfte denselben Nachweis: Hinter jedem der fünf sichtbaren Begriffe muss tatsächlich ein endlicher numerischer Wert stehen.
 
-Darum sind weiterhin zwei Aussagen gleichzeitig richtig:
+Darum waren nach dieser Abnahme zwei Aussagen gleichzeitig richtig:
 
 - **letzte als vollständig abgeschlossene neue Spielfunktion geführte Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` aus PR #238,
-- **aktueller Status-Sync-Anker:** PR #252, weil dies der in den kanonischen Dateien zuletzt nachgezogene fachlich relevante Venue-/QA-Stand ist.
+- **damaliger Status-Sync-Anker nach der PR-#252-Abnahme:** PR #252.
 
 Diese Trennung verhindert, dass reine Vertrags-, Presentation- oder QA-Härtungen versehentlich als neue Gameplaymechanik bezeichnet werden.
 
@@ -51,6 +51,18 @@ python3 tools/status_sync.py suggest
 verwendet werden. Er gibt als JSON den **exakt erkannten letzten fachlich relevanten Safe-Merge-Anker** sowie die dazu passenden Zielwerte für `TODO.md`, `FEATURE_POOL.md` und die beiden Ankerfelder in `PROJEKTSTATUS.json` aus.
 
 Wichtig: `suggest` schreibt **keine Datei**. Es ist nur eine eindeutige Reparaturvorlage. Dadurch muss bei einer Statuskorrektur weder PR-Nummer noch Merge-SHA aus Fehlermeldungen abgeschrieben oder geraten werden, und die drei kanonischen Dateien bleiben weiterhin die einzigen Statusquellen.
+
+### Was macht `suggest-markdown`?
+
+Für einen normalen Status-PR gibt der ebenfalls rein lesende Befehl
+
+```bash
+python3 tools/status_sync.py suggest-markdown
+```
+
+eine direkt kopierbare Markdown-Checkliste aus. Sie nennt dieselben vier Ankeränderungen, erinnert ausdrücklich daran, die historische `remote_validation` **unverändert** zu lassen, fordert anschließend `STATUS SYNC PASS` sowie die Required Gates und verweist auf den vorgeschriebenen `/safe-merge`-Pfad.
+
+Auch `suggest-markdown` schreibt **keine Datei** und besitzt keine Main-Schreibrechte. Es erleichtert nur die kontrollierte Statuskorrektur, ohne eine zweite Statusquelle zu erzeugen.
 
 ### Warum war der Status-Sync auf PR #252 rot?
 
@@ -108,6 +120,12 @@ Exakte read-only Reparaturvorlage anzeigen:
 python3 tools/status_sync.py suggest
 ```
 
+Kopierbare read-only PR-Checkliste anzeigen:
+
+```bash
+python3 tools/status_sync.py suggest-markdown
+```
+
 Die gezielte Regression liegt in `tests/quality/test_status_sync.py`. `tests/runtime/test_feature_status_consistency.py` stellt zusätzlich sicher, dass Feature-Stand, Safe-Merge-Anker, Feature-Pool und nächste aktive Arbeit konsistent bleiben, ohne reine Audit-/UX-/QA-Härtungen fälschlich als neue Gameplayfunktion zu klassifizieren.
 
 Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprüfung automatisch auf Pull Requests und nach Pushes auf `main` aus.
@@ -116,4 +134,4 @@ Der Workflow `.github/workflows/status-sync.yml` führt Regression und Driftprü
 
 **STATUS-SYNC-DRIFT-AGE:** Ein späterer rein diagnostischer Slice könnte bei `STATUS SYNC FAIL` zusätzlich ausgeben, wie viele fachlich relevante Safe Merges die Statusquellen hinter dem erkannten Anker liegen. Nutzen: Priorität und Alter einer Drift sind sofort sichtbar, ohne irgendeine Datei automatisch zu schreiben oder den `/safe-merge`-Schutz zu umgehen.
 
-**STATUS-SYNC-PR-CHECKLIST:** `suggest` könnte später optional eine kurze Markdown-Checkliste für den Status-PR ausgeben. Nutzen: Die vier notwendigen Ankeränderungen und der anschließende `check`-Nachweis lassen sich direkt in die PR-Beschreibung übernehmen, weiterhin ohne automatische Schreibrechte.
+**Umgesetzt – STATUS-SYNC-PR-CHECKLIST:** `suggest-markdown` liefert die kopierbare PR-Checkliste bereits read-only. Dadurch bleiben die vier nötigen Ankeränderungen, der Schutz der historischen `remote_validation`, der `check`-Nachweis und der anschließende `/safe-merge`-Pfad gemeinsam sichtbar, ohne automatische Schreibrechte.
