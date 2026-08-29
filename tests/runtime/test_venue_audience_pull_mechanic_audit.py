@@ -50,21 +50,21 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
             ],
         )
         self.assertEqual(
-            set(self.settlement_manifest["application"]),
+            self.settlement_manifest["application"],
             {
-                "budget_delta_cents",
-                "reputation_delta",
-                "crew_stress_delta",
-                "stability_delta",
-                "heat_delta",
+                "budget_delta_cents": "economy_ledger_settlement_transaction",
+                "reputation_delta": "character.reputation_changed",
+                "crew_stress_delta": "character.resources_changed",
+                "stability_delta": "settlement_receipt_event_outcome_only",
+                "heat_delta": "settlement_receipt_event_outcome_only",
             },
         )
         self.assertEqual(
-            set(self.settlement_manifest["receipt_invariants"]),
+            self.settlement_manifest["receipt_invariants"],
             {
-                "budget_delta_matches_effect",
-                "stress_delta_matches_effect",
-                "reputation_delta_matches_effect",
+                "budget_delta_matches_effect": True,
+                "stress_delta_matches_effect": True,
+                "reputation_delta_matches_effect": True,
             },
         )
 
