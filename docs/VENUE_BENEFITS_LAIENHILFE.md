@@ -26,9 +26,9 @@ Das bedeutet nicht, dass Publikumskraft dauerhaft wirkungslos bleiben muss. Vor 
 
 ### Schutz vor veraltetem Audit
 
-Der neue Audit-Schutz merkt sich nicht nur „Property fehlt“, sondern die komplette heute gültige Abrechnungsfläche: Welche Zustände hineingehen dürfen, welche Effekte verarbeitet werden, wohin sie angewendet werden und welche Receipt-Regeln existieren.
+Der Audit-Schutz merkt sich nicht nur „Property fehlt“, sondern die komplette heute gültige Abrechnungsfläche: Welche Zustände hineingehen dürfen, welche Effekte verarbeitet werden, wohin sie angewendet werden, welche Receipt-Regeln existieren und **welche Systemgrenzen ausdrücklich unverändert bleiben müssen**.
 
-Wenn sich dieser Vertrag später ändert, schlägt die Regression absichtlich an. Dann muss die Entscheidung neu geprüft werden, statt dass ein altes NO-GO oder ein neuer Bonus unbemerkt neben der tatsächlichen Spielregel weiterlebt.
+Damit zählt jetzt auch der komplette Block `scope_boundaries`. Wird dort später zum Beispiel `property_changes` freigegeben oder eine neue Venue-Grenze ergänzt, schlägt die Regression absichtlich an. Dann muss die Entscheidung neu geprüft werden, statt dass ein altes NO-GO oder ein neuer Bonus unbemerkt neben der tatsächlichen Spielregel weiterlebt.
 
 Noch nicht erlaubt sind daher automatische Vorteile wie „mehr Events“, „billigerer Betrieb“, „mehr Kapazität“ oder „laufender Gewinn“. Für solche Wirkungen fehlt weiterhin eine eigene Spielregel, die Speichern, Wiederholen und Fehlerfälle eindeutig regelt.
 
