@@ -2,7 +2,7 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #252 · Merge `923d748f139f80b60d06c6b8922cff98c0d6d88e`
+- **Status-Sync-Anker:** PR #261 · Merge `9bf156dbab23cd525587824ddaf361cb27be7019`
 
 ## Statuswerte
 
