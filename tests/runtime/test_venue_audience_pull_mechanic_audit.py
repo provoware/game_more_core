@@ -71,6 +71,17 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
                 "reputation_delta_matches_effect": True,
             },
         )
+        self.assertEqual(
+            self.settlement_manifest["scope_boundaries"],
+            {
+                "persistent_district_simulation": False,
+                "heat_is_district_state": False,
+                "stability_is_world_state": False,
+                "client_changes": False,
+                "property_changes": False,
+                "network_changes": False,
+            },
+        )
 
     def test_scene_jobs_do_not_offer_modifier_shortcut(self):
         availability = self.scene_job_manifest["availability"]
@@ -85,6 +96,7 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
         self.assertIn("kein stiller Settlement-Multiplikator", self.audit)
         self.assertIn("Replay/Recovery mit demselben Ergebnis", self.audit)
         self.assertIn("Audit-Freshness-Guard", self.audit)
+        self.assertIn("Scope-Grenzen", self.audit)
 
 
 if __name__ == "__main__":
