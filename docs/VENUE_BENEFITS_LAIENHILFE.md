@@ -58,7 +58,13 @@ Wichtig: Die Berechnung der fünf effektiven Ortswerte liegt jetzt gemeinsam in 
 
 Zusätzlich prüft jetzt auch der echte Projection-Pfad den **ungefilterten gespeicherten Ausbauzustand**, bevor daraus nur die gültigen Slots für die Anzeige gebildet werden. Ein alter oder fremder Schlüssel wie `ghost_slot` kann damit nicht mehr still verschwinden. Für Spieler bedeutet das: Ein widersprüchlicher Spielstand wird klar abgewiesen, statt unbemerkt mit teilweise ignorierten Ausbauten weiterzulaufen.
 
+Auch doppelt eingetragene `upgrade_slots` werden jetzt von der gemeinsamen Wertautorität abgewiesen. Damit kann ein fehlerhafter Location-Katalog denselben Ausbau nicht versehentlich zweimal auf Prestige, Publikumskraft oder andere Ortswerte anwenden.
+
 Damit ist das frühere Vor-Gate erfüllt: Die Event-Abrechnung muss keine Darstellungslogik importieren und darf die Formel weiterhin nicht kopieren. Der nächste fachliche Schritt kann sich deshalb auf die versionierte Settlement-Evidence konzentrieren.
+
+### Spätere Verbesserungsidee: Manifest-Konsistenz vor dem Spielstart
+
+Als spätere kleine Qualitätsverbesserung kann der Repository-/Startup-Check doppelte Venue-Slots bereits direkt im Location-Manifest melden. **Nutzen:** Ein Katalogfehler wird dann schon beim Prüfen der Spieldaten verständlich angezeigt und nicht erst beim Berechnen eines Ortsprofils. **Begründung:** Die Domain-Grenze muss trotzdem fail-closed bleiben; ein früher Manifest-Hinweis verbessert zusätzlich Diagnose und Wartung, ohne eine zweite Fachregel zu erzeugen.
 
 ### Spätere Verbesserungsidee: sichtbarer Receipt-Hinweis
 

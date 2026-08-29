@@ -51,9 +51,11 @@ def effective_venue_values(
             raise ValueError("Location-Basiswert muss Ganzzahl sein")
         effective[key] = _bounded_venue_value(value)
 
+    seen_slots: set[str] = set()
     for slot in upgrade_slots:
-        if not isinstance(slot, str) or slot not in upgrade_catalog:
+        if not isinstance(slot, str) or slot not in upgrade_catalog or slot in seen_slots:
             raise ValueError("Location besitzt ungültige Upgrade-Slots")
+        seen_slots.add(slot)
         level = upgrade_levels.get(slot, 0)
         if isinstance(level, bool) or not isinstance(level, int) or not 0 <= level <= MAX_UPGRADE_LEVEL:
             raise ValueError("Property-Upgrade-Level ist ungültig")
