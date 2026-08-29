@@ -38,14 +38,14 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         validation = status["remote_validation"]
         sync = status["status_sync"]
 
-        self.assertEqual(validation["pull_request"], 261)
+        self.assertEqual(validation["pull_request"], 252)
         self.assertEqual(validation["validated_head"], "cf0727c81df0d6381f3a2db26f0e766f9cebe7d0")
-        self.assertEqual(validation["merged_commit"], "9bf156dbab23cd525587824ddaf361cb27be7019")
+        self.assertEqual(validation["merged_commit"], "923d748f139f80b60d06c6b8922cff98c0d6d88e")
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
         self.assertEqual(sync["anchor_pull_request"], 261)
-        self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
+        self.assertEqual(sync["anchor_merge_commit"], "9bf156dbab23cd525587824ddaf361cb27be7019")
         self.assertEqual(sync["anchor_iteration"], "0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES")
         self.assertIn("Status-Sync-Anker:** PR #261", todo)
         self.assertIn("Status-Sync-Anker:** PR #261", pool)
@@ -125,8 +125,10 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn("audience_pull", todo)
         self.assertIn("utility", todo)
 
-        self.assertEqual(sync["anchor_pull_request"], validation["pull_request"])
-        self.assertEqual(sync["anchor_merge_commit"], validation["merged_commit"])
+        self.assertEqual(sync["anchor_pull_request"], 261)
+        self.assertEqual(sync["anchor_merge_commit"], "9bf156dbab23cd525587824ddaf361cb27be7019")
+        self.assertEqual(validation["pull_request"], 252)
+        self.assertEqual(validation["merged_commit"], "923d748f139f80b60d06c6b8922cff98c0d6d88e")
         self.assertFalse(sync["direct_main_write"])
         self.assertTrue(process["status_sync_automatic_drift_check"])
         self.assertFalse(process["status_sync_direct_main_write"])
