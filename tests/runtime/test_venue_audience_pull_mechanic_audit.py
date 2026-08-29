@@ -40,6 +40,10 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
             ["event", "economy", "character"],
         )
         self.assertEqual(
+            self.settlement_manifest["optional_initial_state_blocks"],
+            ["incidents"],
+        )
+        self.assertEqual(
             self.settlement_manifest["source_effects"],
             [
                 "budget_delta_cents",
