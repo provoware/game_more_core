@@ -72,6 +72,17 @@ class VenueValueAuthorityTests(unittest.TestCase):
                 upgrade_catalog=UPGRADES["catalog"],
             )
 
+    def test_upgrade_level_for_unavailable_location_slot_fails_closed(self):
+        location = next(item for item in CITY_MAP["locations"] if item["location_id"] == "signalwerk")
+
+        with self.assertRaisesRegex(ValueError, "passt nicht zu den Location-Slots"):
+            effective_venue_values(
+                location["values"],
+                upgrade_slots=location["upgrade_slots"],
+                upgrade_levels={"stage": 2, "ghost_slot": 1},
+                upgrade_catalog=UPGRADES["catalog"],
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
