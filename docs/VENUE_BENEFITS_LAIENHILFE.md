@@ -56,6 +56,8 @@ Der aktuelle Settlement-State erlaubt allerdings keine beliebigen Zusatzfelder. 
 
 Wichtig: Die Berechnung der fünf effektiven Ortswerte liegt jetzt gemeinsam in `domain.property_upgrade.effective_venue_values(...)`. Karte/Betriebsprofil und spätere Evidence-Verbraucher können damit dieselbe read-only Autorität verwenden. Unbekannte Upgrade-Level, die gar nicht zu den Slots des Orts gehören, werden nun fail-closed abgewiesen statt still ignoriert zu werden.
 
+Zusätzlich prüft jetzt auch der echte Projection-Pfad den **ungefilterten gespeicherten Ausbauzustand**, bevor daraus nur die gültigen Slots für die Anzeige gebildet werden. Ein alter oder fremder Schlüssel wie `ghost_slot` kann damit nicht mehr still verschwinden. Für Spieler bedeutet das: Ein widersprüchlicher Spielstand wird klar abgewiesen, statt unbemerkt mit teilweise ignorierten Ausbauten weiterzulaufen.
+
 Damit ist das frühere Vor-Gate erfüllt: Die Event-Abrechnung muss keine Darstellungslogik importieren und darf die Formel weiterhin nicht kopieren. Der nächste fachliche Schritt kann sich deshalb auf die versionierte Settlement-Evidence konzentrieren.
 
 ### Spätere Verbesserungsidee: sichtbarer Receipt-Hinweis
