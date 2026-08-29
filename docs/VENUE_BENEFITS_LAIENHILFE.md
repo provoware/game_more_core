@@ -46,6 +46,8 @@ Der nächste Authority-Slice darf **nur den Beweisweg** festlegen: bestätigtes 
 
 Damit bleibt die Reihenfolge eindeutig: **erst Autorität und Evidence, danach separat Balance und Wirkung**. Diese Trennung verhindert, dass ein technisch noch ungeklärter Venue-Bonus schon durch einen Vertrags-Patch heimlich spielwirksam wird.
 
+Der Schutz prüft diese Aussage jetzt nicht mehr nur gegen diese Erklärung. Er liest zusätzlich die echte Settlement-Regel, den Property-Upgrade-Vertrag und den vorhandenen Property-Renderer. Solange dort Property-Änderungen gesperrt sind, keine Publikumskraft als Settlement-Effekt katalogisiert ist und die Oberfläche nur bestätigte Werte als Text anzeigt, bleibt der Folgeschritt nachweisbar nicht-mechanisch.
+
 ### Spätere Verbesserungsidee: sichtbarer Receipt-Hinweis
 
 Falls der Venue→Settlement-Vertrag später wirklich GO wird, soll die vorhandene Event-Rückmeldung den angewandten Publikumskraft-Beitrag **read-only als bestätigte Ursache** anzeigen. **Nutzen:** Der Spieler sieht dann nicht nur einen veränderten Ausgang, sondern auch, welcher eigene Ort und welcher bestätigte Ortswert dazu beigetragen haben. **Begründung:** Sichtbare Ursache und gespeicherte Receipt-Evidence sollten dieselbe Wahrheit zeigen; deshalb keine neue Berechnung im Browser und keine zweite Bonuslogik nur für die Oberfläche.
