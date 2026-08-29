@@ -32,6 +32,10 @@ Der Status-Sync-Anker sagt: **Bis zu welchem fachlich relevanten Safe Merge ist 
 
 Diese historische Evidenz darf nicht auf einen neueren PR umgeschrieben werden, nur weil der Status-Anker weitergezogen wird.
 
+## Warum wird ein reiner Status-Sync-PR übersprungen?
+
+Ein Status-Sync repariert nur die Projektübersicht und fügt dem Spiel keine neue fachliche Stufe hinzu. Würde sein eigener Merge sofort zum nächsten Anker, müsste direkt danach wieder ein weiterer Status-Sync folgen. Deshalb zeigt der Anker immer auf den letzten **fachlich relevanten** Safe Merge; reine Statuskorrekturen werden bewusst übersprungen.
+
 ## Praktischer Ablauf
 
 1. `python3 tools/status_sync.py check` zeigt den Drift.
@@ -48,4 +52,4 @@ Diese historische Evidenz darf nicht auf einen neueren PR umgeschrieben werden, 
 
 ## Spätere Verbesserungsidee
 
-Eine spätere rein diagnostische Erweiterung könnte zusätzlich die Anzahl der fachlich relevanten Safe Merges zwischen altem und erwartetem Anker ausgeben. Nutzen: Man erkennt sofort, wie alt ein Drift ist, ohne Dateien automatisch zu verändern.
+Eine spätere rein diagnostische Erweiterung könnte zusätzlich die Anzahl der fachlich relevanten Safe Merges zwischen altem und erwartetem Anker **und die beschreibende `anchor_iteration` des Ziel-PRs** ausgeben. Nutzen: Man erkennt sofort, wie alt ein Drift ist, und reduziert manuelle Abweichungen zwischen Merge-Anker und Iterationsbezeichnung, ohne Dateien automatisch zu verändern.
