@@ -1,9 +1,14 @@
+import json
 from pathlib import Path
+import re
 import unittest
 
 
 ROOT = Path(__file__).parents[2]
 HELP = ROOT / "docs" / "VENUE_BENEFITS_LAIENHILFE.md"
+SETTLEMENT_MANIFEST = ROOT / "manifests" / "SETTLEMENT_MANIFEST.json"
+PROPERTY_UPGRADE_MANIFEST = ROOT / "manifests" / "PROPERTY_UPGRADE_MANIFEST.json"
+APP = ROOT / "web" / "a4" / "app.js"
 
 
 class VenueFollowupContractClarityTests(unittest.TestCase):
@@ -21,11 +26,19 @@ class VenueFollowupContractClarityTests(unittest.TestCase):
         self.assertIn("ändert heute noch keine Balance", text)
         self.assertIn("zweite Bonusengine", text)
 
-    def test_authority_followup_is_explicitly_non_mechanical(self):
+    def test_authority_followup_is_explicitly_non_mechanical_and_implementation_backed(self):
         text = HELP.read_text(encoding="utf-8")
         boundary = text.split("### Harte Grenze für diesen Folgeschritt", 1)[1].split(
             "### Spätere Verbesserungsidee", 1
         )[0]
+        settlement = json.loads(SETTLEMENT_MANIFEST.read_text(encoding="utf-8"))
+        upgrades = json.loads(PROPERTY_UPGRADE_MANIFEST.read_text(encoding="utf-8"))
+        app = APP.read_text(encoding="utf-8")
+        render = re.search(
+            r"function renderProperties\(properties, propertyUpgrades\) \{(?P<body>.*?)\n\}",
+            app,
+            re.DOTALL,
+        )
 
         self.assertIn("nur den Beweisweg", boundary)
         self.assertIn("noch keine Bonusformel", boundary)
@@ -33,6 +46,17 @@ class VenueFollowupContractClarityTests(unittest.TestCase):
         self.assertIn("keine neue Auszahlung", boundary)
         self.assertIn("keine Browser-Berechnung", boundary)
         self.assertIn("erst Autorität und Evidence, danach separat Balance und Wirkung", boundary)
+
+        self.assertFalse(settlement["scope_boundaries"]["property_changes"])
+        self.assertNotIn("audience_pull", settlement["source_effects"])
+        self.assertNotIn("venue_audience_pull", settlement["application"])
+        self.assertFalse(upgrades["projection"]["gameplay_event_rules_changed"])
+
+        self.assertIsNotNone(render, "renderProperties fehlt")
+        renderer = render.group("body")
+        self.assertIn("upgradeEntry?.effective_values", renderer)
+        self.assertRegex(renderer, r"detail\.textContent\s*=")
+        self.assertNotRegex(renderer, r"detail\.innerHTML\s*=")
 
     def test_help_keeps_future_receipt_feedback_read_only_and_confirmed(self):
         text = HELP.read_text(encoding="utf-8")
