@@ -10,7 +10,7 @@
   "validation_reference": "PR #252 / head cf0727c81df0d6381f3a2db26f0e766f9cebe7d0 / merge 923d748f139f80b60d06c6b8922cff98c0d6d88e",
   "remote_validation": {
     "status": "success_for_0.8.8_qa_venue_operating_profile_visible_values_required_gates",
-    "pull_request": 252,
+    "pull_request": 261,
     "validated_head": "cf0727c81df0d6381f3a2db26f0e766f9cebe7d0",
     "runtime_core_workflow_run": 33210555252,
     "presentation_core_workflow_run": 33210555251,
@@ -23,12 +23,12 @@
     "unresolved_review_threads": 0,
     "safe_merge_result": "PASS",
     "main_provenance_confirmed": true,
-    "merged_commit": "923d748f139f80b60d06c6b8922cff98c0d6d88e"
+    "merged_commit": "9bf156dbab23cd525587824ddaf361cb27be7019"
   },
   "status_sync": {
     "mode": "read_only_latest_relevant_safe_merge_anchor",
-    "anchor_pull_request": 252,
-    "anchor_merge_commit": "923d748f139f80b60d06c6b8922cff98c0d6d88e",
+    "anchor_pull_request": 261,
+    "anchor_merge_commit": "9bf156dbab23cd525587824ddaf361cb27be7019",
     "anchor_iteration": "0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES",
     "canonical_documents": ["TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json"],
     "checker": "tools/status_sync.py",
