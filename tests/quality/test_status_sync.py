@@ -125,6 +125,15 @@ class StatusSyncTests(unittest.TestCase):
         self.assertIn("python3 tools/status_sync.py check", checklist)
         self.assertIn("`/safe-merge`", checklist)
 
+    def test_status_help_documents_markdown_checklist_as_read_only(self):
+        help_path = Path(__file__).resolve().parents[2] / "docs" / "STATUS_SYNC_LAIENHILFE.md"
+        help_text = help_path.read_text(encoding="utf-8")
+
+        self.assertIn("python3 tools/status_sync.py suggest-markdown", help_text)
+        self.assertIn("historische `remote_validation` **unverändert**", help_text)
+        self.assertIn("Auch `suggest-markdown` schreibt **keine Datei**", help_text)
+        self.assertIn("`/safe-merge`", help_text)
+
     def test_applying_suggested_anchor_values_clears_status_drift_without_rewriting_validation(self):
         expected = self.merge_feature(176)
         suggestion = build_sync_suggestion(expected)
