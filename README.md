@@ -29,7 +29,8 @@
 | **Status-Sync-Anker** | PR #276 · Merge `0d3122532e639bc347cd75db11e9f94aaa0e7a27` |
 | **Validierter Feature-Stand** | ✅ `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 |
 | **Aktive Iteration** | 🟡 `0.8.8-VENUE-SETTLEMENT-EVIDENCE` – versionierter Ortsnachweis lokal gespeichert und wiederherstellbar; Remote-Gates/Merge offen |
-| **Danach** | gespeicherten Abrechnungsbeleg read-only sichtbar machen; erst danach separater Balancevertrag für genau einen begrenzten Publikumskraft-Effekt |
+| **Lokale Folgeschritte** | Ortsnachweis sichtbar und realer Browser geprüft; ausgeschalteter +1-Ruf-Vorschlag mit 16.665 Grenzkombinationen geprüft. Remote-Prüfung/Übernahme benötigt die gespeicherte Freigabe für `api.github.com`. |
+| **Danach** | nach Remote-Abnahme einen eigenen versionierten Effect-/Receipt-/Replay-Vertrag für den begrenzten Rufbonus schaffen; erst danach aktivieren |
 | **Venue Profil Browser-Nachweis** | ✅ PR #251/#252: owned-only Profil im echten Chromium bei 760×680, Großer Schrift und Hohem Kontrast; alle fünf Bezeichnungen besitzen sichtbare numerische Werte, keine horizontale Überbreite |
 | **Venue Profil Sicherheit** | ✅ PR #247–#250: nur besessene Locations, verständliche Bezeichnungen, `textContent`, exakt fünf Felder, kein Browser-Fallback auf interne Ortswert-Map |
 | **Venue Presentation Contract** | ✅ PR #245: ausschließlich Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen aus `property_upgrades.entries[*].effective_values`; keine neue Persistenz oder Browserautorität |

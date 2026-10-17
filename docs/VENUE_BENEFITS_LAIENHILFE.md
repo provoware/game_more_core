@@ -86,6 +86,12 @@ Falls der Venue→Settlement-Vertrag später wirklich GO wird, soll die vorhande
 
 ## Merksatz
 
+### Geprüfter Vorschlag für einen späteren Spielvorteil
+
+Vorgeschlagen ist **höchstens ein zusätzlicher Rufpunkt pro abgeschlossenem Event**: Dein eigener Ort muss beim Abschluss mindestens 50 Publikumskraft haben, der Eventausgang bereits mindestens zwei Rufpunkte bringen und es müssen mindestens 10 Euro bestätigte Krisenkosten entstanden sein. Alte Abrechnungen, fremde Orte, Verluste und kostenfreie Wiederholungen bekommen keinen Bonus. Ein Geldbonus ist nicht vorgesehen.
+
+**Dieser Vorschlag ist noch ausgeschaltet.** Die Regeln sind bereits gegen 16.665 Grenzkombinationen geprüft; die dauerhafte einmalige Anwendung benötigt noch einen eigenen Abrechnungs-/Wiederherstellungsvertrag. [Regeln, Nutzen und nächste Schritte](VENUE_AUDIENCE_BONUS_BALANCE.md).
+
 **Anzeigen, was bei deinem Ort bestätigt ist: ja. Einen Bonus erfinden, bevor Server, Journal und Replay dieselbe Ursache beweisen können: nein.**
 
 Der nächste sinnvolle Gameplay-Schritt ist jetzt **nicht mehr der Resolver selbst** und auch nicht mehr die minimale versionierte Aufnahme der bereits bestätigten Venue-Evidence: Speicherung, Retry und Crash-Recovery sind lokal umgesetzt. Der bestehende Abrechnungsbereich erklärt jetzt den gespeicherten Ort und Wert read-only; ein echter Browser prüft den historischen Wert nach einem späteren Ausbau, mit Großer Schrift und Hohem Kontrast. Erst ein eigener Balancevertrag darf danach genau einen begrenzten `audience_pull`-Effekt freigeben.

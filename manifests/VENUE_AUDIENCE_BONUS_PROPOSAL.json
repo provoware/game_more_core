@@ -1,0 +1,21 @@
+{
+  "version": "0.8.8-venue-reputation-proposal1",
+  "status": "proposal_only_not_activated",
+  "enabled": false,
+  "source": "settlement.venue_evidence",
+  "required_receipt_contract": "0.8.8-venue-evidence1",
+  "target_effect": "reputation_delta",
+  "minimum_audience_pull": 50,
+  "minimum_base_reputation_delta": 2,
+  "minimum_incident_cost_cents": 1000,
+  "maximum_bonus_per_event": 1,
+  "maximum_relative_gain_bps": 5000,
+  "once_key": "settlement.event_id",
+  "legacy_receipt_bonus": 0,
+  "missing_or_foreign_venue_bonus": 0,
+  "negative_or_zero_outcome_bonus": 0,
+  "budget_bonus_cents": 0,
+  "client_supplied_bonus_allowed": false,
+  "stack_multiple_properties": false,
+  "activation_requires_versioned_effect_receipt_and_replay": true
+}

@@ -293,9 +293,21 @@ Die bestätigte Publikumskraft eines eigenen Event-Orts versioniert im bestehend
 
 ## Nächste drei fachliche Schritte
 
-1. Änderungen über einen passenden Feature-PR durch die Remote-Gates prüfen und erst nach grünem finalem Head über `/safe-merge` übernehmen.
-2. Gespeicherten Venue-Beleg im vorhandenen Abrechnungsbereich read-only anzeigen und per echtem Browser absichern; keine neue Wertberechnung.
-3. Genau einen begrenzten Publikumskraft-Effekt fachlich definieren und gegen Null-/Maximalwerte, Besitzwechsel und Economy-Balance prüfen; erst bei GO implementieren. Eine spätere Releasefreigabe bleibt ein eigener Schritt.
+1. Gespeicherte Netzfreigabe für `api.github.com` in den Umgebungseinstellungen übernehmen; danach die getrennten Änderungen über passende PRs, grüne Remote-Gates und `/safe-merge` übernehmen.
+2. Den ausgeschalteten Rufbonusvorschlag in einen eigenen versionierten Effect-/Receipt-/Replay-Vertrag überführen; alte Belege und rohe Incident-Folgen nicht still umdeuten.
+3. Erst danach genau diesen begrenzten Bonus einmalig anwenden und den echten Eventablauf mit Crash/Reload und sichtbarer Bonusursache prüfen; Releasefreigabe separat durchführen.
+
+## Angeforderte drei Folgeschritte – lokaler Zwischenstand
+
+**66,7 % des Drei-Schritte-Auftrags lokal abgeschlossen (2/3 Schritte).** Diese Zahl ist weder Gesamtspiel-Fortschritt noch Mergefreigabe.
+
+| Schritt | Belegter Stand |
+|---|---|
+| Remote-CI / Safe Merge | Evidence-Commit `92a4c13` auf `feature/venue-settlement-receipt` hochgeladen; kein PR/CI-/Merge-PASS, GitHub-API durch Cloud-Netzpolicy blockiert. Zusätzliche Domain `api.github.com` im Konfigurationsentwurf gespeichert; Review/Speichern/Veröffentlichen steht aus. |
+| Ortsnachweis anzeigen | Lokal implementiert und mit echtem Chromium geprüft: gespeicherte Publikumskraft 94 bleibt nach bestätigtem Ausbau auf 99 sichtbar; Legacy-/Fremdort-Hinweise, Große Schrift und Hoher Kontrast geprüft. |
+| Begrenzten Bonus definieren/testen | Ausgeschalteter Vorschlag: höchstens +1 Ruf, Publikumskraft ≥50, Basis-Rufgewinn ≥2 und mindestens 10 Euro Incident-Kosten; fünf Tests mit 16.665 Grenzkombinationen, Beleg-/Client-Manipulationen und Retry/Reload. Keine aktive Bonusbuchung. |
+
+Siehe [Balancevorschlag und Grenzen](docs/VENUE_AUDIENCE_BONUS_BALANCE.md). Weitere Idee nach dem Anwendungsslice: einen serverseitigen read-only Vorher-/Nachher-Rufhinweis aus demselben gespeicherten Receipt projizieren, damit Spieler den Grund des einzelnen Bonuspunkts erkennen, ohne Browserberechnung.
 
 ## Architektur- und Sicherheitsgrenzen
 

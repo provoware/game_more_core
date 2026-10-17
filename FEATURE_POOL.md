@@ -135,7 +135,7 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 |---|---|---|---|
 | `POOL-COMPANION-003` | `DEPENDENCY` | Round-Authority Integration Harness | echter kanonischer Rundenproduzent |
 | `POOL-WORLD-003` | `DONE` | District-Ereignisketten mit Erinnerung | Contract V1, zwei produktive Micro-Stories, read-only Kausalitätsprojection und Runtime→Browser-E2E bis PR #206 vollständig validiert |
-| `POOL-PROPERTY-003` | `PULLED` | Venue Benefits / Betriebsprofil | Betriebsprofil remote bewiesen; versionierter Settlement-Nachweis lokal implementiert; mechanische Wirkung bleibt bis zum eigenen Balancevertrag gesperrt |
+| `POOL-PROPERTY-003` | `PULLED` | Venue Benefits / Betriebsprofil | Betriebsprofil remote bewiesen; Settlement-Nachweis lokal gespeichert und angezeigt; begrenzter +1-Ruf-Vorschlag getestet, noch ausgeschaltet; Remote-Gates und eigener Anwendungs-/Replay-Vertrag fehlen |
 | `POOL-PROPERTY-004` | `IDEA` | Verkauf / Miete / laufender Betrieb | Bilanz-/Ownership-Transfer-Vertrag |
 | `POOL-NET-001` | `DEPENDENCY` | 0.9 Network / Telegram Sync | eigener Server-/Transportvertrag |
 | `POOL-NET-002` | `DEPENDENCY` | Crew-Identity-Synchronisation | `POOL-NET-001` |
@@ -167,4 +167,4 @@ Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbei
 
 ## Nächste Entnahme
 
-`POOL-PROPERTY-003` bleibt bewusst `PULLED`: Das Betriebsprofil ist remote bewiesen; die reine Authority-Brücke ist vorhanden. `0.8.8-VENUE-SETTLEMENT-EVIDENCE` speichert jetzt lokal den versionierten Ortsnachweis im vorhandenen atomaren Settlement und erhält Legacy-Belege sowie Retry/Recovery. Remote-Gates und Merge sind noch offen. Nächste Entnahme: gespeicherten Receipt-Ort und Wert read-only anzeigen; anschließend erst einen eigenen begrenzten Balancevertrag prüfen. Kein generischer Bonus-Aggregator und keine zweite Venue-Engine.
+`POOL-PROPERTY-003` bleibt bewusst `PULLED`: Der versionierte Ortsnachweis ist lokal gespeichert und im bestehenden Abrechnungsbereich sichtbar. Ein vorgeschlagener Rufbonus mit maximal +1 ist gegen 16.665 Grenzkombinationen geprüft, aber ausdrücklich ausgeschaltet. Remote-Gates/Merge sind durch die GitHub-API-Freigabe blockiert. Nach deren Auflösung folgt ein eigener versionierter Effect-/Receipt-/Replay-Vertrag, erst dann eine aktive Anwendung. Kein generischer Bonus-Aggregator und keine zweite Venue-Engine.

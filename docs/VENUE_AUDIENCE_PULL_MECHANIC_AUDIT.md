@@ -65,6 +65,8 @@ So kann neue Property-/Venue-Autorität nicht unbemerkt entstehen, während dies
 
 ## Voraussetzungen für ein späteres GO
 
+**Konkreter Folgevorschlag:** [Begrenzter Publikumskraft-Rufbonus](VENUE_AUDIENCE_BONUS_BALANCE.md) definiert maximal +1 Ruf bei bestätigtem eigenen Ort, Publikumskraft ≥50, Basis-Rufgewinn ≥2 und mindestens 10 Euro Incident-Kosten. 16.665 Grenzkombinationen sowie Typ-, Besitzer- und Clientparameter-Manipulationen sind lokal geprüft. `enabled: false` bleibt verbindlich: Das ist ein getesteter Balancevorschlag, noch kein GO für eine aktive Buchung oder Umdeutung bestehender Receipts.
+
 **Aktualisierung `0.8.8-VENUE-SETTLEMENT-EVIDENCE`:** Der Settlement-Vertrag akzeptiert `properties` und `property_upgrades` jetzt als optionale, ausschließlich gelesene Eingaben. Er speichert einen versionierten Venue-Nachweis im bestehenden Abschluss. Der Audit-Freshness-Guard berücksichtigt diese Erweiterung ausdrücklich; Effekte, Anwendungsregeln und Scope-Grenzen bleiben unverändert. Damit ist die Evidence-Brücke umgesetzt, aber weiterhin keine Bonusformel freigegeben.
 
 Ein späterer mechanischer Einsatz von `audience_pull` darf erst GO werden, wenn **ein einzelner kanonischer Zielpfad** folgende Punkte gemeinsam definiert:

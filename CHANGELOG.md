@@ -4,6 +4,12 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Balancevertrag – 0.8.8-VENUE-REPUTATION-PROPOSAL
+
+- genau einen ausgeschalteten Bonusvorschlag definiert: maximal +1 Ruf pro bestätigtem Event, eigener Ort mit gespeicherter Publikumskraft ≥50, Basis-Rufgewinn ≥2 und mindestens 1.000 Cent bestätigte Incident-Kosten; höchstens 50 % relative Verstärkung, kein Geldbonus und kein Stapeln.
+- fünf Audit-Tests mit 16.665 Grenzkombinationen sowie manipulierten Belegen, Clientparametern und Retry/Reload ausgeführt; bestehende Runtime vergibt ausdrücklich weiterhin keinen Bonus.
+- Aktivierung bleibt bis zu einem eigenen versionierten Effect-/Receipt-/Replay-Vertrag getrennt; keine Runtime-Abhängigkeit oder zweite Bonusengine hinzugefügt.
+
 ### Anzeige – 0.8.8-VENUE-SETTLEMENT-RECEIPT-UI
 
 - gespeicherten eigenen Event-Ort und damalige Publikumskraft im bestehenden Abrechnungsbereich verständlich angezeigt; fehlender eigener Besitz und alte Abrechnungen besitzen getrennte Hinweise.

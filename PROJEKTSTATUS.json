@@ -11,12 +11,29 @@
     "completed_acceptance_points": 7,
     "total_acceptance_points": 9,
     "progress_percent": 77.8,
-    "validation_scope": "local_uncommitted_worktree",
-    "local_tests": {"runtime": 314, "presentation": 291, "repository": 22},
+    "validation_scope": "local_feature_branch",
+    "local_tests": {"runtime": 319, "presentation": 293, "repository": 22},
     "repository_health": "PASS",
     "status_sync": "PASS",
     "remote_gates": "not_run",
     "merge": "not_performed"
+  },
+  "requested_followups": {
+    "completed_local_steps": 2,
+    "total_steps": 3,
+    "progress_percent": 66.7,
+    "remote_step": "blocked_by_cloud_policy_api.github.com",
+    "evidence_branch": "feature/venue-settlement-receipt",
+    "evidence_commit": "92a4c13f30c76f9126bf82b445698f4bbad0f6db",
+    "receipt_display_branch": "feature/venue-settlement-receipt-ui",
+    "receipt_display_commit": "37312b6314f0597dc6de6a09becbc4dd75258b9b",
+    "bonus_proposal_branch": "feature/venue-reputation-bonus-contract",
+    "receipt_display": "locally_implemented_and_real_chromium_validated",
+    "receipt_display_saved_value": 94,
+    "receipt_display_current_value_after_upgrade": 99,
+    "bonus_definition": "locally_balance_tested_proposal_only",
+    "bonus_boundary_combinations": 16665,
+    "bonus_enabled": false
   },
   "last_validated_feature_iteration": "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY",
   "last_validated_release": "0.8.4-alpha.1",
@@ -620,5 +637,5 @@
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-10-17T20:17:50+00:00"
+  "updated_at": "2026-10-17T20:32:11+00:00"
 }
