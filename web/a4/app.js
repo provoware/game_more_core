@@ -767,6 +767,26 @@ function renderSettlement(p) {
   const host = $("settlement-content");
   host.replaceChildren();
   if (p.settlement) {
+    const venue = document.createElement("section");
+    venue.className = "notice";
+    venue.id = "settlement-venue-receipt";
+    const title = document.createElement("h3");
+    title.textContent = "Ortsnachweis beim Eventabschluss";
+    const detail = document.createElement("p");
+    const evidence = p.settlement.venue_evidence;
+    if (evidence) {
+      const locationName = p.event?.location?.location_id === evidence.location_id
+        ? p.event.location.display_name : evidence.location_id;
+      detail.textContent = `${locationName} · Publikumskraft beim Abschluss: ${evidence.audience_pull}/100. Eigenes Eigentum beim Abschluss bestätigt.`;
+    } else {
+      detail.textContent = Object.hasOwn(p.settlement, "venue_evidence")
+        ? "Für diese Abrechnung wurde kein eigener Veranstaltungsort bestätigt."
+        : "Ältere Abrechnung: Ein Ortsnachweis wurde damals noch nicht gespeichert.";
+    }
+    const help = document.createElement("p");
+    help.textContent = "Der gespeicherte Nachweis bleibt nach späteren Ausbauten unverändert. Er erzeugt derzeit keinen zusätzlichen Geldbonus.";
+    venue.append(title, detail, help);
+    host.append(venue);
     const pre = document.createElement("pre");
     pre.textContent = JSON.stringify({ status: p.settlement.status, effects: p.settlement.effects, budget: p.settlement.budget, stress: p.settlement.stress, reputation: p.settlement.reputation }, null, 2);
     host.append(pre);

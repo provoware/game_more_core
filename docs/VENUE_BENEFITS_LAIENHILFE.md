@@ -70,7 +70,7 @@ Damit ist die reine Authority-Brücke **bereits vorhanden**. Seit `0.8.8-VENUE-S
 
 Wenn du ein Event an deinem eigenen Ort abschließt, merkt sich die Abrechnung, welcher Ort dir zu diesem Zeitpunkt gehörte und welche Publikumskraft bestätigt war. Gehört dir der Ort nicht, gibt es keinen eigenen Venue-Nachweis. Alte Abrechnungen bleiben unverändert und erhalten keinen nachträglich erfundenen Nachweis.
 
-**Beispiel:** Dein Signalwerk hat beim Abschluss Publikumskraft 94. Dieser Wert bleibt im Beleg 94, auch wenn ein späterer Ausbau oder neue Spieldaten den aktuellen Ortswert ändern. **Das ist ein nachvollziehbarer Nachweis, noch kein Lohn- oder Gewinnbonus.** Die Anzeige des Belegs im Spiel ist der nächste getrennte Schritt.
+**Beispiel:** Dein Signalwerk hat beim Abschluss Publikumskraft 94. Dieser Wert bleibt im Beleg 94, auch wenn ein späterer Ausbau den aktuellen Ortswert auf 99 erhöht. **Das ist ein nachvollziehbarer Nachweis, noch kein Lohn- oder Gewinnbonus.** Im Bereich „Abrechnung“ zeigt „Ortsnachweis beim Eventabschluss“ jetzt genau diesen gespeicherten Wert. Ein fremder Ort oder ein älterer Beleg bekommt einen verständlichen Hinweis statt einer erfundenen Null.
 
 ### Spätere Verbesserungsidee: Manifest-Konsistenz vor dem Spielstart
 
@@ -88,4 +88,4 @@ Falls der Venue→Settlement-Vertrag später wirklich GO wird, soll die vorhande
 
 **Anzeigen, was bei deinem Ort bestätigt ist: ja. Einen Bonus erfinden, bevor Server, Journal und Replay dieselbe Ursache beweisen können: nein.**
 
-Der nächste sinnvolle Gameplay-Schritt ist jetzt **nicht mehr der Resolver selbst** und auch nicht mehr die minimale versionierte Aufnahme der bereits bestätigten Venue-Evidence: Speicherung, Retry und Crash-Recovery sind lokal umgesetzt. Als Nächstes soll der bestehende Abrechnungsbereich den gespeicherten Ort und Wert read-only erklären. Erst ein eigener Balancevertrag darf danach genau einen begrenzten `audience_pull`-Effekt freigeben.
+Der nächste sinnvolle Gameplay-Schritt ist jetzt **nicht mehr der Resolver selbst** und auch nicht mehr die minimale versionierte Aufnahme der bereits bestätigten Venue-Evidence: Speicherung, Retry und Crash-Recovery sind lokal umgesetzt. Der bestehende Abrechnungsbereich erklärt jetzt den gespeicherten Ort und Wert read-only; ein echter Browser prüft den historischen Wert nach einem späteren Ausbau, mit Großer Schrift und Hohem Kontrast. Erst ein eigener Balancevertrag darf danach genau einen begrenzten `audience_pull`-Effekt freigeben.

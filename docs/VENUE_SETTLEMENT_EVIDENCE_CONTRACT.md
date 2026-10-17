@@ -42,4 +42,10 @@ Keine Remote-CI, kein PR-/Merge- oder Release-PASS für diesen Arbeitsstand beha
 
 ## Nächster fachlicher Schritt
 
-Der Beleg schafft Nachvollziehbarkeit, noch keinen Spielvorteil. Als nächster separater Slice ist eine read-only Anzeige des **gespeicherten** Belegs sinnvoll: Spieler erkennen Ort und bestätigten Wert ohne Browserberechnung. Anschließend kann genau ein begrenzter Publikumskraft-Effekt mit messbarem Balancevertrag bewertet werden. Produktversion und Releasefreigabe bleiben davon getrennt.
+Der Beleg schafft Nachvollziehbarkeit, noch keinen Spielvorteil. Der lokale Folgeslice zeigt den **gespeicherten** Ort und Wert jetzt direkt im vorhandenen Abrechnungsbereich. Legacy-Belege und fehlender eigener Besitz erhalten getrennte Hinweise; spätere Ausbauten verändern die Anzeige nicht. Die bestehende Projection bleibt unverändert die Quelle, Text wird ausschließlich mit `textContent` gesetzt. Eine gezielte Umbruchregel schützt lange Ortsnamen; die gemeinsame Asset-Revision wurde aktualisiert.
+
+Prüfung: `PYTHONPATH=src:. python3 -m unittest tests.presentation.test_a4_venue_receipt -v`. Der DOM-Test prüft eigenen/fehlenden/Legacy-Nachweis und sichere Textausgabe. Für den echten Chromium-Test zusätzlich `BUNKER_PLAYWRIGHT_MODULE` auf ein vorhandenes Playwright-Modul setzen (Cloud: `/workspace/GAME_HTML_2026/node_modules/playwright`); ohne diese optionale Testabhängigkeit wird nur der Browserfall als **übersprungen** ausgewiesen. Keine neue Runtime-Abhängigkeit. Der Browser verwendet ein isoliertes Profil und endet kontrolliert; der verwaltete Browser untersagt Inkognito und sein CLI-Dump-Pfad hängt, deshalb verwendet dieser Test das bereits vorhandene Playwright ausschließlich als Testtreiber.
+
+Realer lokaler Browsernachweis: bestätigter Abschlusswert **94**, anschließend bestätigter Ausbau auf **99**, neuer Serverprozess, API und sichtbare Abrechnung weiter **94**; 760×680, Große Schrift, Hoher Kontrast und keine Kartenüberbreite. Kein übersprungener Browserfall wurde als PASS gezählt. Eine fehlerhafte Fixture-Erwartung 100 wurde auf den tatsächlichen Level-3-Katalogwert 99 korrigiert.
+
+Anschließend kann genau ein begrenzter Publikumskraft-Effekt mit messbarem Balancevertrag bewertet werden. Produktversion und Releasefreigabe bleiben davon getrennt.

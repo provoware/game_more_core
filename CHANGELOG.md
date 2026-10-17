@@ -4,6 +4,12 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Anzeige – 0.8.8-VENUE-SETTLEMENT-RECEIPT-UI
+
+- gespeicherten eigenen Event-Ort und damalige Publikumskraft im bestehenden Abrechnungsbereich verständlich angezeigt; fehlender eigener Besitz und alte Abrechnungen besitzen getrennte Hinweise.
+- nachträgliche Ausbauten verändern den historischen Anzeigewert nicht; reine Textausgabe, Umbruch langer Namen und aktualisierte Asset-Revision erhalten sichere, lesbare Darstellung.
+- gezielter Renderer- und echter Chromium-Test prüfen gespeichert 94 / aktueller Ausbau 99, Reload, Große Schrift und Hohen Kontrast; Remote-CI/Merge bleiben bis zur GitHub-API-Freigabe offen.
+
 ### Gameplay-Nachweise – 0.8.8-VENUE-SETTLEMENT-EVIDENCE
 
 - bestätigten eigenen Event-Ort, Publikumskraft, Quellvertragsversionen und Besitz-/Ausbaurevisionen erstmals versioniert im bestehenden atomaren Settlement-Beleg gespeichert; die Game-Session nutzt dafür ihre vorhandenen Kataloge und denselben read-only Resolver.
