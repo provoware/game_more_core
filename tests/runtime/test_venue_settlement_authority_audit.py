@@ -45,12 +45,17 @@ class VenueSettlementAuthorityAuditTests(unittest.TestCase):
         self.assertNotIn("audience_pull", settlement["source_effects"])
         self.assertFalse(settlement["scope_boundaries"]["property_changes"])
 
-    def test_current_settlement_requires_explicit_versioned_receipt_extension(self):
+    def test_current_settlement_has_explicit_versioned_receipt_extension(self):
         schema = json.loads(SETTLEMENT_SCHEMA.read_text(encoding="utf-8"))
         settlement = json.loads(SETTLEMENT_MANIFEST.read_text(encoding="utf-8"))
 
         self.assertFalse(schema["additionalProperties"])
-        self.assertNotIn("venue_evidence", schema["properties"])
+        self.assertIn("venue_evidence", schema["properties"])
+        self.assertEqual(schema["properties"]["contract_version"]["enum"],
+                         ["0.8.3-c1", "0.8.8-venue-evidence1"])
+        self.assertEqual(schema["then"]["required"], ["venue_evidence"])
+        self.assertEqual(schema["else"]["not"]["required"], ["venue_evidence"])
+        self.assertFalse(settlement["venue_evidence"]["mechanical_effect"])
         self.assertNotIn("properties", settlement["required_state_blocks"])
         self.assertNotIn("property_upgrades", settlement["required_state_blocks"])
 

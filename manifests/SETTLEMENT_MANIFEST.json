@@ -1,9 +1,24 @@
 {
-  "version": "0.8.3-c1",
-  "iteration": "0.8.3-C",
+  "version": "0.8.8-venue-evidence1",
+  "iteration": "0.8.8-VENUE-SETTLEMENT-EVIDENCE",
+  "legacy_contract_version": "0.8.3-c1",
   "state_block": "settlement",
   "required_state_blocks": ["event", "economy", "character"],
-  "optional_initial_state_blocks": ["incidents"],
+  "optional_initial_state_blocks": ["incidents", "properties", "property_upgrades"],
+  "venue_evidence": {
+    "schema_version": 1,
+    "source": "resolve_owned_venue_evidence",
+    "owned_location_required": true,
+    "owner_must_match_settlement_character": true,
+    "audience_pull_bounds": [0, 100],
+    "source_contract_versions_required": true,
+    "source_revisions_required": true,
+    "missing_upgrade_state_means_no_upgrades": true,
+    "unowned_or_foreign_location": null,
+    "legacy_receipts_unchanged": true,
+    "replay_uses_frozen_receipt_not_current_catalogs": true,
+    "mechanical_effect": false
+  },
   "preconditions": {
     "event_phase": "settlement",
     "active_incident": null,

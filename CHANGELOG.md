@@ -4,6 +4,14 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### Gameplay-Nachweise – 0.8.8-VENUE-SETTLEMENT-EVIDENCE
+
+- bestätigten eigenen Event-Ort, Publikumskraft, Quellvertragsversionen und Besitz-/Ausbaurevisionen erstmals versioniert im bestehenden atomaren Settlement-Beleg gespeichert; die Game-Session nutzt dafür ihre vorhandenen Kataloge und denselben read-only Resolver.
+- Legacy-Belege unverändert lesbar gehalten und wiederholte alte Abschlussbefehle auch nach Aktivierung des neuen Vertrags ohne Neubuchung erhalten.
+- ungültige Evidence, widersprüchliche Besitz-/Ortsbindungen und Revisionen fail-closed abgesichert; Crash-Recovery bewahrt den historischen Beleg ohne Neuberechnung anhand späterer Kataloge.
+- kein Publikumskraft-Bonus, keine zweite Engine, keine Browserautorität und keine neue Buchungsart; Laienhilfe erklärt erstmals den Unterschied zwischen gespeichertem Ortsnachweis und echter Spielwirkung.
+- vorhandenen Status-Drift auf den lokal belegten letzten relevanten Safe Merge PR #276 korrigiert; historische Feature-/Browser-Remote-Nachweise bleiben unverändert und werden nicht den neuen Änderungen zugeschrieben.
+
 ### UX – 0.8.8-UX-RECEIPT-CLARITY
 
 - die bereits vorhandenen District-Receipt-Signale nach bestätigtem Settlement im bestehenden Control Deck als `NEU BESTÄTIGT`, `BEREITS BESTÄTIGT` oder `NICHT AUSGELÖST` verständlich sichtbar gemacht.

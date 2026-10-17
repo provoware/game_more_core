@@ -15,7 +15,7 @@ Es wird dafür kein zweiter Property-State, keine Venue-Bonusengine und keine Br
 1. `EventState.location.location_id` ist bereits ein kanonischer, persistierter Ortsbezug des Events.
 2. `PropertyState.owned` ist nach `location_id` adressierbar und enthält den bestätigten `owner_character_id`.
 3. `PropertyUpgradeState.properties` ist ebenfalls nach `location_id` adressierbar. Der Upgrade-Vertrag katalogisiert `audience_pull` und begrenzt projizierte Ortswerte auf 0–100.
-4. Der aktuelle Settlement-Vertrag nimmt `properties` und `property_upgrades` noch nicht als State-Blöcke an und das Receipt besitzt noch keine Venue-Evidence. Genau diese fehlende Brücke ist damit klar abgegrenzt.
+4. Der ursprüngliche Vertrag `0.8.3-c1` besaß noch keine Venue-Evidence. Der Folgevertrag `0.8.8-venue-evidence1` übernimmt jetzt die bestätigte Evidence in denselben atomaren Settlement-Commit; die historische Form bleibt lesbar.
 
 ## Warum der Authority-Bridge grundsätzlich GO ist
 
@@ -35,7 +35,7 @@ Damit ist das frühere Vor-Gate erfüllt: Eine spätere Venue-Evidence darf dies
 
 Für einen eigenen Event-Ort liefert er eine kleine, versionierte Evidence-Struktur mit `location_id`, `owner_character_id`, bestätigtem `audience_pull` sowie den gelesenen Property-/Upgrade-Revisionen. Ein nicht eigener oder einem anderen Character gehörender Ort liefert keine Evidence. Katalog- oder Upgrade-Widersprüche schlagen fail-closed fehl.
 
-Wichtig: Der Resolver schreibt noch **nichts** in `SettlementState`, Journal oder Save und verändert keinen Effekt. Damit ist nur die lesende Autoritätsauflösung umgesetzt; die persistierte Receipt-Brücke bleibt ein eigener Vertragsschritt.
+Der Resolver selbst bleibt read-only. Der bestehende Settlement-Service übernimmt sein Ergebnis jetzt explizit in `SettlementState`, Journal und Save; er verändert damit keinen Effekt. Details: [Venue-Evidence-Vertrag](VENUE_SETTLEMENT_EVIDENCE_CONTRACT.md).
 
 ## Harte Grenzen des nächsten Slices
 
@@ -58,14 +58,14 @@ Er darf **nicht**:
 - die Berechnung der effektiven Ortswerte im Settlement duplizieren,
 - fehlenden Besitz oder fehlende Upgrade-Evidence still durch erfundene Werte ersetzen.
 
-## Noch offene Implementierungsarbeit
+## Versionierte Receipt-Brücke
 
-Der aktuelle `SettlementState` ist `additionalProperties: false` und besitzt kein Venue-Evidence-Feld. Ein echter Receipt-Bridge-Slice muss deshalb den Settlement-Vertrag explizit und versioniert erweitern; ein unsichtbares Zusatzfeld wäre kein zulässiger Shortcut.
+Der `SettlementState` bleibt `additionalProperties: false`. Der neue Vertrag benötigt das explizite Feld `venue_evidence`; alte `0.8.3-c1`-Belege dürfen dieses Feld weiterhin nicht besitzen. Es gibt kein unsichtbares Zusatzfeld und keine Umdeutung alter Saves.
 
-Die gemeinsame Wertautorität und die read-only Auflösung sind nun vorhanden. Offen bleibt damit bewusst der nächste getrennte Vertragsschritt: Settlement muss diese bestätigte Evidence versioniert aufnehmen und Replay/Recovery dafür beweisen. Eine zweite Publikumskraft-Berechnung, ein Application→Presentation-Import oder bereits jetzt ein Publikumskraft-Bonus bleibt NO-GO.
+Settlement speichert die Evidence jetzt versioniert; Retry und Crash-Recovery erhalten denselben Beleg. Recovery bindet ihn an den damaligen Event-Ort und bestätigten Besitz-/Ausbauzustand, ohne neue Katalogstände rückwirkend anzuwenden. Eine zweite Publikumskraft-Berechnung, ein Application→Presentation-Import oder bereits jetzt ein Publikumskraft-Bonus bleibt NO-GO.
 
 ## Ergebnis
 
 **Architektur-GO für Evidence-Plumbing, Mechanik-NO-GO bleibt bestehen; gemeinsame Wertautorität und read-only Resolver sind erfüllt.**
 
-Damit ist der nächste minimale Implementierungsschritt klar: die versionierte Aufnahme der bereits bestätigten Venue-Evidence in den Settlement-Vertrag. Erst danach darf ein weiterer, separat geprüfter Slice über eine begrenzte Spielwirkung entscheiden.
+Die versionierte Aufnahme ist lokal umgesetzt und regressionsgesichert. Als nächster Schritt kann der gespeicherte Beleg read-only sichtbar werden. Über eine begrenzte Spielwirkung entscheidet erst ein weiterer, separat geprüfter Balancevertrag; Remote-Gates und Releasefreigabe bleiben getrennt.

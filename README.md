@@ -9,7 +9,7 @@
 <p>
   <img alt="Runtime Baseline 0.8.4 alpha 1" src="https://img.shields.io/badge/Runtime_Baseline-0.8.4--alpha.1-ff4d00">
   <img alt="Feature Stand Equipment Trade History Readonly validiert" src="https://img.shields.io/badge/Feature_Stand-EQUIPMENT--TRADE--HISTORY--READONLY_validiert-7dff00">
-  <img alt="Aktive Iteration Venue Benefit Mechanic Audit" src="https://img.shields.io/badge/Aktiv-VENUE--BENEFIT--MECHANIC--AUDIT-00c2ff">
+  <img alt="Aktive Iteration Venue Settlement Evidence" src="https://img.shields.io/badge/Aktiv-VENUE--SETTLEMENT--EVIDENCE-00c2ff">
   <img alt="Mergeweg Safe Merge" src="https://img.shields.io/badge/Mergeweg-%2Fsafe--merge-8a2be2">
 </p>
 
@@ -26,10 +26,10 @@
 | | Aktueller Stand |
 |---|---|
 | **Release-Baseline** | `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease |
-| **Status-Sync-Anker** | PR #252 · Merge `923d748f139f80b60d06c6b8922cff98c0d6d88e` |
+| **Status-Sync-Anker** | PR #276 · Merge `0d3122532e639bc347cd75db11e9f94aaa0e7a27` |
 | **Validierter Feature-Stand** | ✅ `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 |
-| **Aktive Iteration** | 🟡 `0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT` |
-| **Danach** | nur bei Audit-GO genau einen vorhandenen Venue-Wert über einen eindeutigen Domain-/Application-, Journal-/Replay- und Balancevertrag mechanisch wirksam machen; keine generische Bonusengine |
+| **Aktive Iteration** | 🟡 `0.8.8-VENUE-SETTLEMENT-EVIDENCE` – versionierter Ortsnachweis lokal gespeichert und wiederherstellbar; Remote-Gates/Merge offen |
+| **Danach** | gespeicherten Abrechnungsbeleg read-only sichtbar machen; erst danach separater Balancevertrag für genau einen begrenzten Publikumskraft-Effekt |
 | **Venue Profil Browser-Nachweis** | ✅ PR #251/#252: owned-only Profil im echten Chromium bei 760×680, Großer Schrift und Hohem Kontrast; alle fünf Bezeichnungen besitzen sichtbare numerische Werte, keine horizontale Überbreite |
 | **Venue Profil Sicherheit** | ✅ PR #247–#250: nur besessene Locations, verständliche Bezeichnungen, `textContent`, exakt fünf Felder, kein Browser-Fallback auf interne Ortswert-Map |
 | **Venue Presentation Contract** | ✅ PR #245: ausschließlich Prestige, Publikumskraft, Risiko, Underground-Faktor und Nutzen aus `property_upgrades.entries[*].effective_values`; keine neue Persistenz oder Browserautorität |

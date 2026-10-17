@@ -31,7 +31,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertIn("52934e08dfc5c24e6b9c2933f6c53d8374018079", todo)
         self.assertIn(f"**{iteration}:** PR #238", pool)
 
-    def test_latest_safe_merge_anchor_tracks_pr273_while_venue_profile_proof_stays_pr252(self):
+    def test_latest_safe_merge_anchor_tracks_pr276_while_venue_profile_proof_stays_pr252(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         pool = (ROOT / "FEATURE_POOL.md").read_text(encoding="utf-8")
@@ -44,11 +44,11 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertEqual(validation["safe_merge_result"], "PASS")
         self.assertTrue(validation["main_provenance_confirmed"])
         self.assertNotIn("codex_review_execution", validation)
-        self.assertEqual(sync["anchor_pull_request"], 273)
-        self.assertEqual(sync["anchor_merge_commit"], "ad3b64d67200be639260159c675048cde21ccb8f")
-        self.assertEqual(sync["anchor_iteration"], "0.8.8-GAMEPLAY-VENUE-SETTLEMENT-EVIDENCE-RESOLVER")
-        self.assertIn("Status-Sync-Anker:** PR #273", todo)
-        self.assertIn("Status-Sync-Anker:** PR #273", pool)
+        self.assertEqual(sync["anchor_pull_request"], 276)
+        self.assertEqual(sync["anchor_merge_commit"], "0d3122532e639bc347cd75db11e9f94aaa0e7a27")
+        self.assertEqual(sync["anchor_iteration"], "0.8.8-QA-VENUE-EVIDENCE-SOURCE-VERSIONS")
+        self.assertIn("Status-Sync-Anker:** PR #276", todo)
+        self.assertIn("Status-Sync-Anker:** PR #276", pool)
         self.assertIn("**0.8.8-QA-VENUE-OPERATING-PROFILE-VISIBLE-VALUES:** PR #252", pool)
 
     def test_validated_and_next_pool_items_have_single_current_owners(self):
@@ -72,7 +72,7 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
             self.assertIn("`DONE`", _pool_row(pool, pool_id), pool_id)
         self.assertIn("`PULLED`", _pool_row(pool, "POOL-PROPERTY-003"))
 
-    def test_current_status_describes_browser_proven_profile_and_mechanic_audit(self):
+    def test_current_status_separates_local_receipt_work_from_remote_baseline(self):
         status = json.loads((ROOT / "PROJEKTSTATUS.json").read_text(encoding="utf-8"))
         todo = (ROOT / "TODO.md").read_text(encoding="utf-8")
         economy = status["subsystems"]["economy"]
@@ -83,8 +83,18 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         validation = status["remote_validation"]
 
         self.assertIn(status["active_iteration"], todo)
-        self.assertEqual(status["active_iteration"], "0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT")
-        self.assertEqual(status["current_focus"], "venue_benefit_mechanic_audit")
+        self.assertEqual(status["active_iteration"], "0.8.8-VENUE-SETTLEMENT-EVIDENCE")
+        self.assertEqual(status["current_focus"], "versioned_venue_settlement_receipt_and_recovery")
+        self.assertTrue(properties["venue_evidence_persisted_locally"])
+        self.assertFalse(properties["venue_evidence_remote_validated"])
+        local = status["local_iteration"]
+        acceptance = todo.split("# Aktiv / lokale Implementierung", 1)[1].split("## Architektur-", 1)[0]
+        completed = acceptance.count("- [x]")
+        total = completed + acceptance.count("- [ ]")
+        self.assertEqual(local["completed_acceptance_points"], completed)
+        self.assertEqual(local["total_acceptance_points"], total)
+        self.assertEqual(local["progress_percent"], round(100 * completed / total, 1))
+        self.assertEqual(local["remote_gates"], "not_run")
         self.assertIsNone(status["next_iteration"])
         self.assertEqual(status["last_validated_feature_iteration"], "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY")
 
@@ -120,13 +130,12 @@ class FeatureStatusConsistencyTests(unittest.TestCase):
         self.assertFalse(presentation["venue_operating_profile_new_persistence"])
         self.assertFalse(presentation["browser_gameplay_authority"])
 
-        self.assertIn("mechanische Venue-Wirkung 0 %", todo)
+        self.assertIn("Mechanische Venue-Wirkung weiterhin 0 %", todo)
         self.assertIn("keine zweite Venue-Engine", todo)
         self.assertIn("audience_pull", todo)
-        self.assertIn("utility", todo)
 
-        self.assertEqual(sync["anchor_pull_request"], 273)
-        self.assertEqual(sync["anchor_merge_commit"], "ad3b64d67200be639260159c675048cde21ccb8f")
+        self.assertEqual(sync["anchor_pull_request"], 276)
+        self.assertEqual(sync["anchor_merge_commit"], "0d3122532e639bc347cd75db11e9f94aaa0e7a27")
         self.assertEqual(validation["pull_request"], 252)
         self.assertEqual(validation["merged_commit"], "923d748f139f80b60d06c6b8922cff98c0d6d88e")
         self.assertFalse(sync["direct_main_write"])

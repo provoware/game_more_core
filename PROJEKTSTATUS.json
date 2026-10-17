@@ -2,9 +2,22 @@
   "project": "BUNKERFREQUENZ",
   "version": "0.8.4-alpha.1",
   "release_baseline": "0.8.4-alpha.1",
-  "active_iteration": "0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT",
-  "status": "0_8_8_venue_operating_profile_readonly_browser_validated_mechanical_benefit_audit_active",
-  "current_focus": "venue_benefit_mechanic_audit",
+  "active_iteration": "0.8.8-VENUE-SETTLEMENT-EVIDENCE",
+  "status": "venue_settlement_evidence_local_implementation_unreleased",
+  "current_focus": "versioned_venue_settlement_receipt_and_recovery",
+  "local_iteration": {
+    "baseline_head": "15b440c974acb3bc594d2d4c8e7ecd3f53d28c31",
+    "progress_basis": "active_iteration_acceptance_points_in_TODO",
+    "completed_acceptance_points": 7,
+    "total_acceptance_points": 9,
+    "progress_percent": 77.8,
+    "validation_scope": "local_uncommitted_worktree",
+    "local_tests": {"runtime": 314, "presentation": 291, "repository": 22},
+    "repository_health": "PASS",
+    "status_sync": "PASS",
+    "remote_gates": "not_run",
+    "merge": "not_performed"
+  },
   "last_validated_feature_iteration": "0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY",
   "last_validated_release": "0.8.4-alpha.1",
   "validation_reference": "PR #252 / head cf0727c81df0d6381f3a2db26f0e766f9cebe7d0 / merge 923d748f139f80b60d06c6b8922cff98c0d6d88e",
@@ -27,9 +40,9 @@
   },
   "status_sync": {
     "mode": "read_only_latest_relevant_safe_merge_anchor",
-    "anchor_pull_request": 273,
-    "anchor_merge_commit": "ad3b64d67200be639260159c675048cde21ccb8f",
-    "anchor_iteration": "0.8.8-GAMEPLAY-VENUE-SETTLEMENT-EVIDENCE-RESOLVER",
+    "anchor_pull_request": 276,
+    "anchor_merge_commit": "0d3122532e639bc347cd75db11e9f94aaa0e7a27",
+    "anchor_iteration": "0.8.8-QA-VENUE-EVIDENCE-SOURCE-VERSIONS",
     "canonical_documents": ["TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json"],
     "checker": "tools/status_sync.py",
     "workflow": ".github/workflows/status-sync.yml",
@@ -385,7 +398,10 @@
       "venue_readonly_operating_profile_visible": true,
       "venue_readonly_operating_profile_browser_e2e_validated": true,
       "venue_readonly_operating_profile_numeric_values_validated": true,
-      "mechanical_venue_bonuses_allowed": false
+      "mechanical_venue_bonuses_allowed": false,
+      "venue_evidence_contract": "0.8.8-venue-evidence1",
+      "venue_evidence_persisted_locally": true,
+      "venue_evidence_remote_validated": false
     },
     "ranking": {"status": "crew_identity_micro_polish_remote_validated", "seasonal_hall_iteration": "0.8.7-A", "seasonal_hall_pull_request": 87, "seasonal_hall_merge": "841258a37915e05d7f87eed7841c8e4b8d79bf46", "weekly_monthly_cycles": true, "system_time_sole_authority": false, "fake_local_champion_titles": false, "local_confirmed_crew_badge": true, "crew_badge_match": "entry.character_id_equals_hall.local_character_id", "foreign_crew_badges_invented": false},
     "presentation": {
@@ -599,10 +615,10 @@
     "native_branch_protection": "optional_server_side_hardening_pending"
   },
   "next_iteration": null,
-  "next_goal": "0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT prüft genau einen vorhandenen Venue-Wert gegen bestehende Domain-/Application-, Journal-/Replay- und Balanceverträge; nur bei eindeutiger Autorität entsteht ein späterer mechanischer Implementierungsslice, sonst dokumentiertes NO-GO.",
+  "next_goal": "Gespeicherten Venue-Beleg read-only im bestehenden Abrechnungsbereich sichtbar machen; anschließend separat genau einen begrenzten Publikumskraft-Effekt auf Balance prüfen. Remote-Gates, Safe Merge und Release-Abnahme bleiben gesonderte Schritte.",
   "runtime_code": true,
   "presentation_code": true,
   "developer_tool_code": true,
   "repository_policy": "one_active_implementation_pr_per_canonical_target",
-  "updated_at": "2026-08-29T17:54:36+00:00"
+  "updated_at": "2026-10-17T20:17:50+00:00"
 }

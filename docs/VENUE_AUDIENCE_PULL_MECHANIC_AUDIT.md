@@ -4,7 +4,7 @@
 
 **NO-GO für eine mechanische Wirkung von `audience_pull` auf die aktuelle Event-Abrechnung.**
 
-Der Wert ist als bestätigter, serverseitig berechneter Ortswert vorhanden und auf 0–100 begrenzt. Der bestehende Settlement-Vertrag besitzt aber weder Property-/Upgrade-State als Eingabe noch einen katalogisierten Venue-Modifikator. Eine direkte Multiplikation oder ein versteckter Bonus würde deshalb eine zweite, unbelegte Wirkungsarchitektur erzeugen.
+Der Wert ist als bestätigter, serverseitig berechneter Ortswert vorhanden und auf 0–100 begrenzt. Der Settlement-Vertrag besitzt inzwischen optionale read-only Property-/Upgrade-Eingaben für Evidence, aber weiterhin keinen katalogisierten Venue-Modifikator. Eine direkte Multiplikation oder ein versteckter Bonus würde deshalb eine zweite, unbelegte Wirkungsarchitektur erzeugen.
 
 ## Geprüfter Einzelkandidat
 
@@ -64,6 +64,8 @@ Gerade die Scope-Grenzen sind wichtig: Würde dort später etwa `property_change
 So kann neue Property-/Venue-Autorität nicht unbemerkt entstehen, während diese Dokumentation fälschlich weiter einen alten Zustand behauptet.
 
 ## Voraussetzungen für ein späteres GO
+
+**Aktualisierung `0.8.8-VENUE-SETTLEMENT-EVIDENCE`:** Der Settlement-Vertrag akzeptiert `properties` und `property_upgrades` jetzt als optionale, ausschließlich gelesene Eingaben. Er speichert einen versionierten Venue-Nachweis im bestehenden Abschluss. Der Audit-Freshness-Guard berücksichtigt diese Erweiterung ausdrücklich; Effekte, Anwendungsregeln und Scope-Grenzen bleiben unverändert. Damit ist die Evidence-Brücke umgesetzt, aber weiterhin keine Bonusformel freigegeben.
 
 Ein späterer mechanischer Einsatz von `audience_pull` darf erst GO werden, wenn **ein einzelner kanonischer Zielpfad** folgende Punkte gemeinsam definiert:
 

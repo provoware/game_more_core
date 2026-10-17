@@ -3,10 +3,10 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #273 · Merge `ad3b64d67200be639260159c675048cde21ccb8f`
+- **Status-Sync-Anker:** PR #276 · Merge `0d3122532e639bc347cd75db11e9f94aaa0e7a27`
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 · Head `20b0ed21b97d16babd2108e76cecc25aaa32a889` · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
 - **Start-/Release-Qualität:** Venue-Betriebsprofil ist für eigene Locations sichtbar, auf exakt fünf bestätigte Werte begrenzt und bis zum echten Chromium-DOM inklusive numerischer Werte, Großer Schrift, Hohem Kontrast und 760×680-Fenster bewiesen; mechanische Venue-Boni bleiben ohne eigenen Fachvertrag gesperrt
-- **Nächste aktive Entwicklungsstufe:** `0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT`
+- **Aktive lokale Entwicklungsstufe:** `0.8.8-VENUE-SETTLEMENT-EVIDENCE` – versionierter Ortsnachweis im bestehenden Abschluss, kein mechanischer Bonus
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
@@ -269,34 +269,41 @@
 
 ---
 
-# Aktiv / nächste Iteration – 0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT
+# Aktiv / lokale Implementierung – 0.8.8-VENUE-SETTLEMENT-EVIDENCE
 
 ## Fortschritt
 
-**Read-only Betriebsprofil vollständig sichtbar und bis zum echten Browser bewiesen; mechanische Venue-Wirkung 0 %.** `POOL-PROPERTY-003` bleibt bewusst `PULLED`, weil der sichtbare Besitznutzen jetzt erklärt wird, aber noch kein Wert eine echte neue Spielwirkung besitzt.
+**Entwicklungsfortschritt dieser Stufe: 77,8 % (7/9 Abnahmepunkte).** Die lokale Implementierung und ihre Prüfungen sind abgeschlossen; Remote-Gates und Safe Merge bleiben offen. **Mechanische Venue-Wirkung weiterhin 0 %.** `POOL-PROPERTY-003` bleibt `PULLED`; gespeicherte Evidence ist noch kein Gameplay-Bonus. Der Prozentwert beschreibt weder das Gesamtspiel noch eine Releasefreigabe.
 
 ## Ziel
 
-Genau **einen** der fünf vorhandenen Venue-Werte gegen bestehende Domain-/Application-Verträge prüfen und nur dann für einen mechanischen Folgeslice freigeben, wenn Autorität, Persistenz, Replay, Balancegrenzen und sichtbare Bestätigung ohne zweite Bonusarchitektur eindeutig belegbar sind.
+Die bestätigte Publikumskraft eines eigenen Event-Orts versioniert im bestehenden atomaren Abschluss speichern, Legacy-Belege erhalten und Retry sowie Crash-Recovery gegen dieselbe historische Evidence beweisen.
 
 ## Abnahme
 
-- [ ] vorhandene Property-, Upgrade-, Event-/Job- und Journal-/Replay-Verträge gezielt auf mögliche bestehende Autorität prüfen; kein Repository-Breitenscan
-- [ ] genau einen Kandidaten auswählen, bevorzugt `audience_pull` oder `utility`, und mindestens zwei naheliegende Alternativen begründet verwerfen
-- [ ] keine Browserberechnung, keinen generischen Bonus-Aggregator und keine zweite Venue-Engine einführen
-- [ ] GO nur bei eindeutiger Domain-/Application-Autorität sowie definierter Save-/Journal-/Replay-Semantik; sonst dokumentiertes NO-GO
-- [ ] bei GO konkreten Grenzwert-/Balancevertrag und messbare Abnahme für den späteren Implementierungsslice festlegen
-- [ ] passende fokussierte Regression für die Auditannahmen ergänzen; keine Produktlogik in diesem Audit
-- [ ] Laienspielanleitung um den Unterschied zwischen „sichtbarer Ortswert“ und „echte Spielwirkung“ ergänzen
+- [x] expliziten Receipt-Vertrag `0.8.8-venue-evidence1` und Schema ergänzen; Legacy-Form unverändert halten
+- [x] vorhandenen Resolver über die Game-Session an den bestehenden atomaren Abschluss anbinden
+- [x] genau acht Evidence-Felder, Besitzbindung, Grenzen und ungültige Eingaben absichern; keine neue Wirkung
+- [x] idempotente neue und alte Abschlussbefehle ohne zusätzliche Buchung erhalten
+- [x] Crash-Recovery und historische Orts-/Revisionsbindung prüfen; keine Neuberechnung mit späteren Katalogen
+- [x] direkte Regressionen sowie relevante lokale Runtime-, Presentation- und Repository-Gates bestehen
+- [x] Laienhilfe, Vertragsdokumentation und Status auf denselben lokalen Entwicklungsstand bringen
 - [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
 - [ ] Merge ausschließlich über `/safe-merge`
 
+## Nächste drei fachliche Schritte
+
+1. Änderungen über einen passenden Feature-PR durch die Remote-Gates prüfen und erst nach grünem finalem Head über `/safe-merge` übernehmen.
+2. Gespeicherten Venue-Beleg im vorhandenen Abrechnungsbereich read-only anzeigen und per echtem Browser absichern; keine neue Wertberechnung.
+3. Genau einen begrenzten Publikumskraft-Effekt fachlich definieren und gegen Null-/Maximalwerte, Besitzwechsel und Economy-Balance prüfen; erst bei GO implementieren. Eine spätere Releasefreigabe bleibt ein eigener Schritt.
+
 ## Architektur- und Sicherheitsgrenzen
 
+- Keine Browserberechnung und keine zweite Venue-Engine; `audience_pull` ist in dieser Stufe nur ein gespeicherter Nachweis.
 - Die fünf Venue-Werte bleiben dieselben bestätigten `effective_values`; keine sechste versteckte Kennzahl.
 - Mechanische Wirkung darf nur in einem vorhandenen zuständigen Domain-/Application-Pfad entstehen oder benötigt vor Implementierung einen klar katalogisierten neuen Vertrag.
 - Browser/Presentation bleibt read-only und darf weder Bonuswerte bestimmen noch Ereignisse künstlich freischalten.
 - Bestehende Saves und Journaltypen werden nicht still erweitert.
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
-Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md`](docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md) · [`docs/VENUE_BENEFITS_LAIENHILFE.md`](docs/VENUE_BENEFITS_LAIENHILFE.md) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/VENUE_SETTLEMENT_EVIDENCE_CONTRACT.md`](docs/VENUE_SETTLEMENT_EVIDENCE_CONTRACT.md) · [`docs/VENUE_BENEFITS_LAIENHILFE.md`](docs/VENUE_BENEFITS_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)

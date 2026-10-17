@@ -136,7 +136,11 @@ class GameClientSession:
             deepcopy(incident_catalog),
             contract_version=incident_contract_version,
         )
-        self.settlement = SettlementService(persistence)
+        self.settlement = SettlementService(
+            persistence,
+            city_map_manifest=city_map_manifest if property_upgrade_manifest is not None else None,
+            upgrade_manifest=property_upgrade_manifest,
+        )
 
     def read_state(self) -> dict[str, Any]:
         return deepcopy(self.persistence.load_state() or {})

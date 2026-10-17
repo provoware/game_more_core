@@ -2,6 +2,8 @@
 
 ## Zweck
 
+**Kompatible Erweiterung:** `0.8.8-venue-evidence1` speichert zusätzlich den bestätigten eigenen Event-Ort und dessen damalige Publikumskraft im selben Abschlussbeleg. Alte `0.8.3-c1`-Belege bleiben unverändert. Die unten beschriebenen Effekte und sechs Journaltypen ändern sich nicht; siehe [Venue-Evidence-Vertrag](VENUE_SETTLEMENT_EVIDENCE_CONTRACT.md).
+
 0.8.3-C schließt den fachlichen Event-Loop. Ein Event darf erst von `settlement` nach `completed` wechseln, wenn alle bereits bestätigten Folgen genau einmal verarbeitet und gemeinsam dauerhaft geschrieben wurden.
 
 Der Settlement-Service erfindet keine neuen Krisenfolgen. Falls ein Event Incidents hatte, ist `IncidentState.pending_settlement` die einzige Quelle dieser Folgen. Ein vollkommen krisenfreies Event ist ebenfalls gültig: Fehlt vor dem Settlement noch ein `incidents`-Block, wird fachlich ein leerer `IncidentState(event_id=<event>)` angenommen.

@@ -52,7 +52,7 @@ Der Schutz prüft diese Aussage jetzt nicht mehr nur gegen diese Erklärung. Er 
 
 Der Beweisweg ist jetzt konkret geprüft. **GO gibt es nur für eine reine Evidence-Brücke; der mechanische Bonus bleibt NO-GO.** Event, bestätigter Besitz und Ausbau besitzen bereits denselben fachlichen Schlüssel `location_id`. Deshalb darf ein nächster Implementierungsslice diese bestehenden Autoritäten verbinden, ohne einen zweiten Property-State oder eine neue Venue-Engine einzuführen.
 
-Der aktuelle Settlement-State erlaubt allerdings keine beliebigen Zusatzfelder. Die Venue-Evidence muss deshalb als explizite, versionierte Vertragserweiterung eingeführt werden. Dabei darf sie zunächst nur `location_id`, bestätigten Besitz und den serverseitig bestätigten `audience_pull` belegen; Budget, Ruf, Stress, Heat und Stability bleiben unverändert.
+Der Settlement-State erlaubt weiterhin keine beliebigen Zusatzfelder. Die Venue-Evidence ist jetzt als explizite, versionierte Vertragserweiterung eingeführt. Sie belegt nur `location_id`, bestätigten Besitz und den serverseitig bestätigten `audience_pull`; Budget, Ruf, Stress, Heat und Stability bleiben unverändert.
 
 Wichtig: Die Berechnung der fünf effektiven Ortswerte liegt jetzt gemeinsam in `domain.property_upgrade.effective_venue_values(...)`. Karte/Betriebsprofil und spätere Evidence-Verbraucher können damit dieselbe read-only Autorität verwenden. Unbekannte Upgrade-Level, die gar nicht zu den Slots des Orts gehören, werden nun fail-closed abgewiesen statt still ignoriert zu werden.
 
@@ -64,7 +64,13 @@ Seit PR #273 existiert außerdem der **read-only Evidence-Resolver** `resolve_ow
 
 Die Evidence nennt jetzt zusätzlich die tatsächlich gelesenen **City-Map- und Property-Upgrade-Vertragsversionen**. Für Spieler ändert das keinen Wert und keinen Bonus; für spätere Wiederholungs- und Recovery-Prüfungen ist aber eindeutig erkennbar, aus welchem Datenvertrag die bestätigte Publikumskraft stammt. Fehlt eine dieser Quellversionen, wird keine scheinbar vollständige Evidence erzeugt.
 
-Damit ist die reine Authority-Brücke **bereits vorhanden**. Noch fehlt aber der nächste klar getrennte Vertragsschritt: Diese Evidence wird derzeit **nicht im Settlement-State, Settlement-Receipt, Journal oder Save gespeichert**. Genau deshalb bleibt der mechanische Bonus weiterhin gesperrt.
+Damit ist die reine Authority-Brücke **bereits vorhanden**. Seit `0.8.8-VENUE-SETTLEMENT-EVIDENCE` wird die Evidence außerdem **im Settlement-State, Settlement-Receipt, Journal und Save gespeichert**. Ein wiederholter Abschluss oder eine Wiederherstellung übernimmt genau diesen Beleg und erzeugt keine zweite Buchung. Dabei bleibt der mechanische Bonus weiterhin gesperrt: Ein gespeicherter Ortswert allein erhöht noch keine Auszahlung.
+
+### Was bedeutet der neue Beleg für dich?
+
+Wenn du ein Event an deinem eigenen Ort abschließt, merkt sich die Abrechnung, welcher Ort dir zu diesem Zeitpunkt gehörte und welche Publikumskraft bestätigt war. Gehört dir der Ort nicht, gibt es keinen eigenen Venue-Nachweis. Alte Abrechnungen bleiben unverändert und erhalten keinen nachträglich erfundenen Nachweis.
+
+**Beispiel:** Dein Signalwerk hat beim Abschluss Publikumskraft 94. Dieser Wert bleibt im Beleg 94, auch wenn ein späterer Ausbau oder neue Spieldaten den aktuellen Ortswert ändern. **Das ist ein nachvollziehbarer Nachweis, noch kein Lohn- oder Gewinnbonus.** Die Anzeige des Belegs im Spiel ist der nächste getrennte Schritt.
 
 ### Spätere Verbesserungsidee: Manifest-Konsistenz vor dem Spielstart
 
@@ -82,4 +88,4 @@ Falls der Venue→Settlement-Vertrag später wirklich GO wird, soll die vorhande
 
 **Anzeigen, was bei deinem Ort bestätigt ist: ja. Einen Bonus erfinden, bevor Server, Journal und Replay dieselbe Ursache beweisen können: nein.**
 
-Der nächste sinnvolle Gameplay-Schritt ist jetzt **nicht mehr der Resolver selbst**, sondern die minimale versionierte Aufnahme der bereits bestätigten Venue-Evidence in den Settlement-Vertrag. Erst danach folgt separat der Replay-/Recovery-Beweis; erst wenn auch dieser grün ist, darf genau ein begrenzter `audience_pull`-Effekt als eigener Folgeslice geprüft werden.
+Der nächste sinnvolle Gameplay-Schritt ist jetzt **nicht mehr der Resolver selbst** und auch nicht mehr die minimale versionierte Aufnahme der bereits bestätigten Venue-Evidence: Speicherung, Retry und Crash-Recovery sind lokal umgesetzt. Als Nächstes soll der bestehende Abrechnungsbereich den gespeicherten Ort und Wert read-only erklären. Erst ein eigener Balancevertrag darf danach genau einen begrenzten `audience_pull`-Effekt freigeben.

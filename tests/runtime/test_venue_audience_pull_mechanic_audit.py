@@ -41,7 +41,7 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
         )
         self.assertEqual(
             self.settlement_manifest["optional_initial_state_blocks"],
-            ["incidents"],
+            ["incidents", "properties", "property_upgrades"],
         )
         self.assertEqual(
             self.settlement_manifest["source_effects"],
