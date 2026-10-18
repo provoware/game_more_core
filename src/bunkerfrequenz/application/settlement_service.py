@@ -2,13 +2,18 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Mapping
 
 from bunkerfrequenz.domain.character import CharacterState, RESOURCE_MAX, RESOURCE_MIN
 from bunkerfrequenz.domain.economy import EconomyState, SETTLEMENT_LEDGER_ITEM_ID
 from bunkerfrequenz.domain.event import EventState
 from bunkerfrequenz.domain.incident import IncidentState
-from bunkerfrequenz.domain.settlement import SettlementState
+from bunkerfrequenz.domain.settlement import (
+    LEGACY_SETTLEMENT_CONTRACT_VERSION, SETTLEMENT_CONTRACT_VERSION, SettlementState,
+)
+from bunkerfrequenz.domain.property import PropertyState
+from bunkerfrequenz.domain.property_upgrade import PropertyUpgradeState
+from bunkerfrequenz.application.venue_settlement_evidence import resolve_owned_venue_evidence
 from bunkerfrequenz.infrastructure.persistence import JournalContext, PersistenceError, PersistenceKernel
 
 _EFFECT_KEYS = (
@@ -34,16 +39,30 @@ class SettlementCommitResult:
 class SettlementService:
     """Finalize one event atomically from already confirmed event/economy/incident state."""
 
-    def __init__(self, persistence: PersistenceKernel, *, contract_version: str = "0.8.3-c1"):
+    def __init__(
+        self, persistence: PersistenceKernel, *,
+        contract_version: str = SETTLEMENT_CONTRACT_VERSION,
+        city_map_manifest: Mapping[str, Any] | None = None,
+        property_upgrade_manifest: Mapping[str, Any] | None = None,
+    ):
+        if contract_version not in (LEGACY_SETTLEMENT_CONTRACT_VERSION, SETTLEMENT_CONTRACT_VERSION):
+            raise ValueError("Unbekannte Settlement-Vertragsversion")
+        if (city_map_manifest is None) != (property_upgrade_manifest is None):
+            raise ValueError("Venue-Evidence benötigt City-Map- und Upgrade-Vertrag gemeinsam")
         self.persistence = persistence
         self.contract_version = contract_version
+        self.city_map_manifest = deepcopy(city_map_manifest)
+        self.property_upgrade_manifest = deepcopy(property_upgrade_manifest)
 
     def complete(self, *, context: JournalContext) -> SettlementCommitResult:
         self._validate_context(context)
         request = {"operation": "complete_settlement", "contract_version": self.contract_version}
         existing = self._existing(context.command_id)
         if existing is not None:
-            if existing.get("payload", {}).get("request") != request:
+            saved_request = existing.get("payload", {}).get("request")
+            legacy_request = {"operation": "complete_settlement", "contract_version": LEGACY_SETTLEMENT_CONTRACT_VERSION}
+            legacy_retry = self.contract_version == SETTLEMENT_CONTRACT_VERSION and saved_request == legacy_request
+            if saved_request != request and not legacy_retry:
                 raise PersistenceError("Command-ID wurde mit anderem Settlement verwendet")
             return self._current_result(context, replay=True)
 
@@ -58,6 +77,7 @@ class SettlementService:
         if not any(member["character_id"] == character.character_id for member in event.crew):
             raise ValueError("Settlement-Character ist dem Event nicht als Crew zugeordnet")
 
+        venue_evidence = self._resolve_venue_evidence(state, event, character.character_id)
         effects = {key: incidents.pending_settlement[key] for key in _EFFECT_KEYS}
         budget_after = event.budget_cents + effects["budget_delta_cents"]
         if budget_after < 0:
@@ -94,6 +114,7 @@ class SettlementService:
             event_revision={"old": event.revision, "new": final_event.revision},
             economy_revision={"old": economy.revision, "new": economy_after.revision},
             incident_revision={"old": incidents.revision, "new": incidents_after.revision},
+            venue_evidence=venue_evidence,
         )
         settlement.validate()
 
@@ -206,6 +227,31 @@ class SettlementService:
             False,
         )
 
+    def _resolve_venue_evidence(self, state: dict[str, Any], event: EventState, character_id: str) -> dict[str, Any] | None:
+        if self.contract_version == LEGACY_SETTLEMENT_CONTRACT_VERSION:
+            return None
+        if "properties" not in state:
+            return None
+        properties = PropertyState.from_dict(state["properties"])
+        ownership = properties.owned.get(event.location.get("location_id")) if event.location else None
+        if ownership is None or ownership["owner_character_id"] != character_id:
+            return None
+        if self.city_map_manifest is None or self.property_upgrade_manifest is None:
+            raise ValueError("Eigener Event-Ort benötigt Venue-Quellverträge für die Abrechnung")
+        upgrades = (
+            PropertyUpgradeState.from_dict(state["property_upgrades"])
+            if "property_upgrades" in state
+            else PropertyUpgradeState(contract_version=self.property_upgrade_manifest.get("version", ""))
+        )
+        return resolve_owned_venue_evidence(
+            event_location=event.location,
+            settlement_character_id=character_id,
+            property_state=properties,
+            property_upgrade_state=upgrades,
+            city_map_manifest=self.city_map_manifest,
+            upgrade_manifest=self.property_upgrade_manifest,
+        )
+
     @staticmethod
     def _apply_economy_settlement(
         economy: EconomyState,
@@ -290,6 +336,11 @@ class SettlementService:
         settlement = SettlementState.from_dict(state["settlement"])
         if settlement.event_id != event.event_id:
             raise PersistenceError("Settlement-State gehört zu anderem Event")
+        if settlement.venue_evidence is not None and (
+            event.location is None
+            or event.location.get("location_id") != settlement.venue_evidence["location_id"]
+        ):
+            raise PersistenceError("Venue-Evidence gehört zu anderem Event-Ort")
         self._assert_character_context(context, settlement.character_id)
         character = CharacterState.from_dict(state["character"])
         if character.character_id != settlement.character_id:
@@ -339,6 +390,8 @@ def replay_settlement_event(derived_state: dict[str, Any], record: dict[str, Any
     target_settlement = SettlementState.from_dict(payload["settlement"])
     if target_event.event_id != target_settlement.event_id or target_incidents.event_id != target_event.event_id:
         raise ValueError("Settlement-Replay verweist auf widersprüchliche Event-IDs")
+
+    _validate_venue_replay_source(derived_state, target_event, target_settlement)
 
     state = deepcopy(derived_state)
     required = {"event", "economy", "character"}
@@ -397,3 +450,34 @@ def replay_settlement_event(derived_state: dict[str, Any], record: dict[str, Any
     state["incidents"] = target_incidents.to_dict()
     state["settlement"] = target_settlement.to_dict()
     return state
+
+
+def _validate_venue_replay_source(state: dict[str, Any], event: EventState, settlement: SettlementState) -> None:
+    """Bind stored evidence to historical state without revaluing current catalogs."""
+    evidence = settlement.venue_evidence
+    if evidence is None:
+        if settlement.contract_version == SETTLEMENT_CONTRACT_VERSION and "properties" in state:
+            properties = PropertyState.from_dict(state["properties"])
+            ownership = properties.owned.get(event.location.get("location_id")) if event.location else None
+            if ownership is not None and ownership["owner_character_id"] == settlement.character_id:
+                raise ValueError("Eigener Event-Ort benötigt gespeicherte Venue-Evidence beim Replay")
+        return
+    if event.location is None or event.location.get("location_id") != evidence["location_id"]:
+        raise ValueError("Venue-Evidence gehört zu anderem Event-Ort")
+    if "properties" not in state:
+        raise ValueError("Venue-Evidence benötigt bestätigten Besitz beim Replay")
+    properties = PropertyState.from_dict(state["properties"])
+    ownership = properties.owned.get(evidence["location_id"])
+    if ownership is None or ownership["owner_character_id"] != settlement.character_id:
+        raise ValueError("Venue-Evidence widerspricht bestätigtem Besitz")
+    if properties.revision != evidence["property_revision"]:
+        raise ValueError("Venue-Evidence besitzt falsche Property-Revision")
+    upgrades = (
+        PropertyUpgradeState.from_dict(state["property_upgrades"])
+        if "property_upgrades" in state
+        else PropertyUpgradeState(contract_version=evidence["property_upgrade_manifest_version"])
+    )
+    if upgrades.revision != evidence["property_upgrade_revision"]:
+        raise ValueError("Venue-Evidence besitzt falsche Upgrade-Revision")
+    if upgrades.contract_version != evidence["property_upgrade_manifest_version"]:
+        raise ValueError("Venue-Evidence besitzt falsche Upgrade-Vertragsversion")

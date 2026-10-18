@@ -119,6 +119,42 @@ def _equipment_trade_history_projection(
     return result
 
 
+def _settlement_venue_comparison(projection: Mapping[str, Any]) -> dict[str, Any] | None:
+    settlement = projection.get("settlement")
+    evidence = settlement.get("venue_evidence") if settlement else None
+    if evidence is None:
+        return None
+    event = projection.get("event")
+    if (
+        event is None
+        or event["event_id"] != settlement["event_id"]
+        or not event.get("location")
+        or event["location"]["location_id"] != evidence["location_id"]
+    ):
+        raise ValueError("Settlement-Ortsnachweis passt nicht zum bestätigten Event")
+    comparison = {
+        "location_id": evidence["location_id"],
+        "at_settlement": evidence["audience_pull"],
+        "current": None,
+    }
+    properties = projection.get("properties")
+    upgrades = projection.get("property_upgrades")
+    character = projection.get("character")
+    if not properties or not upgrades or not character or character["character_id"] != evidence["owner_character_id"]:
+        return comparison
+    ownership = next((
+        item for item in properties["entries"]
+        if item["location_id"] == evidence["location_id"]
+        and item["owned"]
+        and item["ownership"]["owner_character_id"] == evidence["owner_character_id"]
+    ), None)
+    if ownership is not None:
+        entry = next((item for item in upgrades["entries"] if item["location_id"] == evidence["location_id"]), None)
+        if entry is not None and entry["owned"] and entry["effective_values"] is not None:
+            comparison["current"] = entry["effective_values"]["audience_pull"]
+    return comparison
+
+
 def build_a4_game_projection(
     state: Mapping[str, Any] | None,
     *,
@@ -178,6 +214,7 @@ def build_a4_game_projection(
         "economy": None,
         "incidents": None,
         "settlement": None,
+        "settlement_venue_comparison": None,
         "districts": None,
         "properties": None,
         "property_upgrades": None,
@@ -301,6 +338,8 @@ def build_a4_game_projection(
         )
         projection["property_upgrades"] = upgrade_projection
         location_value_overrides = upgrade_projection["effective_values_by_location"]
+
+    projection["settlement_venue_comparison"] = _settlement_venue_comparison(projection)
 
     if district_manifest is not None and city_map_manifest is not None:
         raw_districts = raw.get("districts")

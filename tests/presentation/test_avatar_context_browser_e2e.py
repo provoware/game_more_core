@@ -108,6 +108,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
                     "http://127.0.0.1:8044/?startup=real-session",
                     require_browser=True,
                     avatar_context=False,
+                    backend="dump-dom",
                 )
             self.assertEqual(run.call_args.args[0][-1], "http://127.0.0.1:8044/?startup=real-session")
             self.assertFalse((root / "web" / "a4" / acceptance.AVATAR_CONTEXT_HARNESS).exists())
@@ -133,6 +134,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
                     "http://127.0.0.1:8044/?startup=cache-token",
                     require_browser=True,
                     avatar_context=True,
+                    backend="dump-dom",
                 )
 
             self.assertTrue(acceptance._avatar_context_passed(dom))
@@ -171,6 +173,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
                         "http://127.0.0.1:8044/",
                         require_browser=True,
                         avatar_context=True,
+                        backend="dump-dom",
                     )
             self.assertFalse((root / "web" / "a4" / acceptance.AVATAR_CONTEXT_HARNESS).exists())
 

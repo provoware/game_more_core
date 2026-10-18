@@ -4,6 +4,9 @@ from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any
 
+LEGACY_SETTLEMENT_CONTRACT_VERSION = "0.8.3-c1"
+SETTLEMENT_CONTRACT_VERSION = "0.8.8-venue-evidence-v1"
+
 _EFFECT_KEYS = {
     "budget_delta_cents",
     "reputation_delta",
@@ -71,12 +74,15 @@ class SettlementState:
     incident_revision: dict[str, int]
     status: str = "completed"
     revision: int = 1
+    venue_evidence: dict[str, Any] | None = None
 
     def validate(self) -> None:
         _text(self.event_id, "event_id")
         _text(self.settlement_id, "settlement_id")
-        _text(self.contract_version, "contract_version")
+        if self.contract_version not in (LEGACY_SETTLEMENT_CONTRACT_VERSION, SETTLEMENT_CONTRACT_VERSION):
+            raise ValueError("Unbekannte Settlement-Vertragsversion")
         _text(self.character_id, "character_id")
+        self._validate_venue_evidence()
         if self.status != "completed":
             raise ValueError("SettlementState.status muss completed sein")
         if not isinstance(self.incident_ids, list):
@@ -125,9 +131,34 @@ class SettlementState:
         if new != old + steps:
             raise ValueError(f"{field} muss exakt um {steps} steigen")
 
+    def _validate_venue_evidence(self) -> None:
+        evidence = self.venue_evidence
+        if evidence is None:
+            return
+        if self.contract_version == LEGACY_SETTLEMENT_CONTRACT_VERSION:
+            raise ValueError("Legacy-Settlement erlaubt keine Venue-Evidence")
+        fields = {
+            "schema_version", "location_id", "owner_character_id", "audience_pull",
+            "city_map_manifest_version", "property_upgrade_manifest_version",
+            "property_revision", "property_upgrade_revision",
+        }
+        if not isinstance(evidence, dict) or set(evidence) != fields:
+            raise ValueError("Venue-Evidence besitzt ungültige Felder")
+        if _int(evidence["schema_version"], "venue_evidence.schema_version") != 1:
+            raise ValueError("Unbekannte Venue-Evidence-Version")
+        for key in ("location_id", "owner_character_id", "city_map_manifest_version", "property_upgrade_manifest_version"):
+            _text(evidence[key], f"venue_evidence.{key}")
+        if evidence["owner_character_id"] != self.character_id:
+            raise ValueError("Venue-Evidence gehört zu anderem Character")
+        audience_pull = _int(evidence["audience_pull"], "venue_evidence.audience_pull", minimum=0)
+        if audience_pull > 100:
+            raise ValueError("Venue-Evidence Publikumskraft muss in 0..100 liegen")
+        for key in ("property_revision", "property_upgrade_revision"):
+            _int(evidence[key], f"venue_evidence.{key}", minimum=0)
+
     def to_dict(self) -> dict[str, Any]:
         self.validate()
-        return {
+        data = {
             "event_id": self.event_id,
             "settlement_id": self.settlement_id,
             "contract_version": self.contract_version,
@@ -143,9 +174,16 @@ class SettlementState:
             "status": self.status,
             "revision": self.revision,
         }
+        if self.contract_version == SETTLEMENT_CONTRACT_VERSION:
+            data["venue_evidence"] = deepcopy(self.venue_evidence)
+        return data
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "SettlementState":
+        if data.get("contract_version") == SETTLEMENT_CONTRACT_VERSION and "venue_evidence" not in data:
+            raise ValueError("Neuer Settlement-Vertrag benötigt explizite venue_evidence")
+        if data.get("contract_version") == LEGACY_SETTLEMENT_CONTRACT_VERSION and "venue_evidence" in data:
+            raise ValueError("Legacy-Settlement erlaubt kein Venue-Evidence-Feld")
         state = cls(
             event_id=data["event_id"],
             settlement_id=data["settlement_id"],
@@ -161,6 +199,7 @@ class SettlementState:
             incident_revision=deepcopy(data["incident_revision"]),
             status=data.get("status", "completed"),
             revision=data.get("revision", 1),
+            venue_evidence=deepcopy(data.get("venue_evidence")),
         )
         state.validate()
         return state

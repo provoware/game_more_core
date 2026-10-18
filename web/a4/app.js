@@ -770,6 +770,27 @@ function renderSettlement(p) {
     const pre = document.createElement("pre");
     pre.textContent = JSON.stringify({ status: p.settlement.status, effects: p.settlement.effects, budget: p.settlement.budget, stress: p.settlement.stress, reputation: p.settlement.reputation }, null, 2);
     host.append(pre);
+    const venue = document.createElement("p");
+    venue.id = "settlement-venue-evidence";
+    const evidence = p.settlement.venue_evidence;
+    if (evidence) {
+      const locationName = p.event?.location?.display_name || evidence.location_id;
+      venue.textContent = `Eigener Veranstaltungsort bestätigt: ${locationName}. Publikumskraft bei der Abrechnung: ${evidence.audience_pull}/100. Dieser gespeicherte Ortsnachweis erzeugt keinen zusätzlichen Gewinn oder Bonus.`;
+    } else if (Object.hasOwn(p.settlement, "venue_evidence")) {
+      venue.textContent = "Kein eigener Veranstaltungsort für diese Abrechnung nachgewiesen. Das bestätigte Event-Ergebnis bleibt unverändert.";
+    } else {
+      venue.textContent = "Ältere Abrechnung: Damals wurde noch kein Ortsnachweis gespeichert. Das bestätigte Event-Ergebnis bleibt erhalten.";
+    }
+    host.append(venue);
+    if (evidence) {
+      const comparison = p.settlement_venue_comparison;
+      const current = document.createElement("p");
+      current.id = "settlement-venue-current";
+      current.textContent = comparison?.current == null
+        ? "Heutige Publikumskraft: nicht verfügbar. Der gespeicherte Wert dieser Abrechnung bleibt erhalten."
+        : `Heutige Publikumskraft: ${comparison.current}/100. Spätere Ausbauten ändern den damaligen Abrechnungswert nicht.`;
+      host.append(current);
+    }
     return;
   }
   if (p.event?.phase === "settlement") {

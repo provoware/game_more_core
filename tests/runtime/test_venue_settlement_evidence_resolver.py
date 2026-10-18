@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 from pathlib import Path
 import unittest
 
@@ -47,6 +48,54 @@ def _upgrade_state() -> PropertyUpgradeState:
 
 
 class VenueSettlementEvidenceResolverTests(unittest.TestCase):
+    def test_invalid_event_location_reports_validation_error(self):
+        for location in ([], "signalwerk", 42, False, {}, {"location_id": " "}):
+            with self.subTest(location=location):
+                with self.assertRaisesRegex(ValueError, "Event-Location"):
+                    resolve_owned_venue_evidence(
+                        event_location=location,
+                        settlement_character_id="char:operator",
+                        property_state=_property_state(),
+                        property_upgrade_state=_upgrade_state(),
+                        city_map_manifest=CITY_MAP,
+                        upgrade_manifest=UPGRADES,
+                    )
+
+    def test_no_event_location_produces_no_evidence(self):
+        self.assertIsNone(resolve_owned_venue_evidence(
+            event_location=None,
+            settlement_character_id="char:operator",
+            property_state=_property_state(),
+            property_upgrade_state=_upgrade_state(),
+            city_map_manifest=CITY_MAP,
+            upgrade_manifest=UPGRADES,
+        ))
+
+    def test_repeated_resolution_ignores_supplied_values_and_preserves_inputs(self):
+        inputs = {
+            "event_location": {
+                "location_id": "signalwerk",
+                "audience_pull": 999,
+                "owner_character_id": "char:forged",
+                "effective_values": {"audience_pull": 999},
+            },
+            "settlement_character_id": "char:operator",
+            "property_state": _property_state(),
+            "property_upgrade_state": _upgrade_state(),
+            "city_map_manifest": deepcopy(CITY_MAP),
+            "upgrade_manifest": deepcopy(UPGRADES),
+        }
+        original = deepcopy(inputs)
+
+        first = resolve_owned_venue_evidence(**inputs)
+        second = resolve_owned_venue_evidence(**inputs)
+
+        self.assertEqual(first["audience_pull"], 94)
+        self.assertEqual(first["owner_character_id"], "char:operator")
+        self.assertEqual(first, second)
+        self.assertIsNot(first, second)
+        self.assertEqual(inputs, original)
+
     def test_owned_event_location_resolves_confirmed_audience_pull(self):
         evidence = resolve_owned_venue_evidence(
             event_location={"location_id": "signalwerk"},

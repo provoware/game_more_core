@@ -16,6 +16,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install real browser acceptance driver
+        run: python3 -m pip install playwright==1.55.0
       - name: Verify checkout is clean of save state
         run: |
           test ! -e .local-save

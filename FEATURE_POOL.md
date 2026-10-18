@@ -2,7 +2,11 @@
 
 Dieser Pool ist der Ausbauvorrat. `TODO.md` bleibt die verbindliche aktive Arbeit.
 
-- **Status-Sync-Anker:** PR #273 · Merge `ad3b64d67200be639260159c675048cde21ccb8f`
+- **Status-Sync-Anker:** PR #276 · Merge `0d3122532e639bc347cd75db11e9f94aaa0e7a27`
+
+## Lokaler Entwicklungsstand (2026-10-18)
+
+`POOL-PROPERTY-003` bleibt `PULLED`. Die lokale Erweiterung `0.8.8-GAMEPLAY-VENUE-RECEIPT-V1` speichert bestätigte Venue-Evidence jetzt versioniert in der Event-Abrechnung und sichert Legacy, Retry sowie Replay/Recovery ab. Die Spielanzeige erklärt eigene, fehlende und alte Ortsnachweise. Dies ist kein mechanischer Bonus und noch kein Remote-/Safe-Merge-Abschluss. Der reguläre Browser-Acceptance nutzt nun den optionalen echten Chromium-Treiber. Historische und heutige Publikumskraft sind getrennt sichtbar. Ein mathematisch begrenzter Ruf-Vorschlag wurde auditiert, bleibt aber ohne Wirkungsvertrag/Playtest deaktiviert. Lokale Gates und Remote-CI werden in `TODO.md` bzw. den PR-Checks nachvollziehbar geführt.
 
 ## Statuswerte
 

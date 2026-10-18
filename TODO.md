@@ -3,7 +3,7 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #273 · Merge `ad3b64d67200be639260159c675048cde21ccb8f`
+- **Status-Sync-Anker:** PR #276 · Merge `0d3122532e639bc347cd75db11e9f94aaa0e7a27`
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 · Head `20b0ed21b97d16babd2108e76cecc25aaa32a889` · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
 - **Start-/Release-Qualität:** Venue-Betriebsprofil ist für eigene Locations sichtbar, auf exakt fünf bestätigte Werte begrenzt und bis zum echten Chromium-DOM inklusive numerischer Werte, Großer Schrift, Hohem Kontrast und 760×680-Fenster bewiesen; mechanische Venue-Boni bleiben ohne eigenen Fachvertrag gesperrt
 - **Nächste aktive Entwicklungsstufe:** `0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT`
@@ -270,6 +270,54 @@
 ---
 
 # Aktiv / nächste Iteration – 0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT
+
+## Aktuelle Arbeitsiteration – Browser, Wertevergleich und Ruf-Audit (2026-10-18)
+
+- [x] Regulärer Browser-Acceptance ohne work/-Hilfsaufruf inklusive Profil→HUD→Map→Ranking im echten Chromium bestanden; optionale Test-Treiberverwendung und Fehlergrenzen dokumentiert.
+- [x] Historische und heutige Publikumskraft serverseitig getrennt projiziert; eigener/fremder/Legacy-Kontext sowie Ausbau nach Abrechnung im echten Browser geprüft.
+- [x] Genau einen begrenzten Ruf-Kandidaten mit Formel/Cap und 40.602 + 404 Fällen sowie 2.176 Ausbaukombinationen geprüft; Aktivierung bleibt NO-GO bis Wirkungsvertrag und Playtest.
+- [x] Einsteigerhilfe, Venue-Hilfe, Audit und Changelog aktualisiert.
+- [x] Vollständige lokale Gates bestätigt: 319 Runtime-, 296 Presentation-, 80 Release-, 22 Repository- und 11 Status-Sync-Tests sowie regulärer Start und zusätzliche Job-/Handels-/Venue-Profil-Browsernachweise bestanden.
+- [ ] Remote-CI auf dem konkreten PR-Head abschließen und belegen.
+
+Stand: **5/6 Abnahmepunkte = 83 %**; Remote-CI steht noch aus. Produkt-/Runtime-Baseline bleibt unverändert. Remote-Ergebnisse werden nur nach echten Check-Läufen eingetragen; kein direkter Merge nach main.
+
+## Lokale Entwicklung – Venue-Receipt V1 (2026-10-18)
+
+- [x] Versionierter Receipt-Vertrag mit expliziter Evidence oder `null`; Legacy ohne Zusatzfeld lesbar.
+- [x] Event-Ort, bestätigter Besitz und gemeinsame Ausbau-Wertautorität angebunden.
+- [x] Evidence atomar im bestehenden Abrechnungsjournal gespeichert und nach Neustart gelesen.
+- [x] Legacy- und neue Command-Retries ohne Doppelbuchung geprüft.
+- [x] Replay bindet Nachweis an Event, Character, Besitz und Quellrevisionen.
+- [x] Crash nach dauerhaftem Journal über bestehenden Recovery-Pfad abgesichert.
+- [x] Widersprüchliche, fehlende oder falsch versionierte Evidence wird vor Mutation abgewiesen.
+- [x] Ortsnachweis, Abrechnung ohne eigenen Ort und alte Abrechnung verständlich angezeigt.
+- [x] Spielerhilfe, Auditannahmen und Changelog auf aktuellen lokalen Vertrag gebracht.
+- [x] Echter Chromium-Nachweis für alle drei Anzeigezustände über vorhandenen Playwright-Treiber bestanden; 760×680, große Schrift, hoher Kontrast, sichere Textausgabe und keine horizontale Überbreite.
+
+Implementierung: **3/3 Nutzerziele umgesetzt**. Abnahme: **10/10 = 100 %**, echter Browser-Nachweis über Playwright bestanden. Der Standard-`--dump-dom`-Aufruf hängt in dieser Umgebung auch auf `about:blank` und wird nicht als bestanden behauptet. Kein Bonus, keine Balanceänderung, keine neue Produktversion. Remote-CI/PR/Merge sind nicht erfolgt; Safe-Merge-Anker wurde auf den lokal belegten historischen PR #276 synchronisiert; das ist kein Merge dieser lokalen Änderung.
+
+Nächste Queue:
+
+- [ ] `VENUE-REPUTATION-EFFECT-CONTRACT` — REQUIRES: geprüfter Ruf-Kandidat. Basisdelta, Zusatz und Gesamtdelta versioniert getrennt katalogisieren; Legacy, Exactly-once und Crash-Recovery spezifizieren, bevor eine Mechanik aktiviert wird.
+- [ ] `VENUE-REPUTATION-REPEATED-EVENT-PLAYTEST` — REQUIRES: Wirkungsvertrag/isolierte Simulation. Wiederholte Events und Anreize zu absichtlichen Krisen gegen Location-Vielfalt und Ruf-Grind prüfen; mathematische Caps allein sind kein Langzeit-Balancebeweis.
+- [ ] `VENUE-RECEIPT-SOURCE-DIAGNOSTIC` — REQUIRES: Receipt-V1. Gespeicherte Quellversionen/Revisionen optional lesbar erklären, ohne den historischen Nachweis neu zu berechnen; Nutzen und Begründung in der Venue-Laienhilfe.
+- [x] `QA-CHROMIUM-DUMPDOM-LOCAL` — Regulärer Standard-Acceptance über optionalen Playwright-Treiber abgesichert; Raw-Dump-DOM-Sonderfall bleibt als historische Umgebungsdiagnose bekannt. REPRODUCED: Standard-Chromium `--dump-dom` hängt lokal auch ohne Spiel auf `about:blank`; derselbe Browser funktioniert über Playwright. Der normale `tools/start_a4_acceptance.py --require-browser`-Aufruf ist nun ohne Hilfs-Runner grün; kein verdeckender Fallback nach UI-Fehlern.
+- [x] `VENUE-RECEIPT-HISTORICAL-COMPARISON` — Umgesetzt und durch echte Abrechnung→Ausbau→Neustart→API→Chromium geprüft. REQUIRES: Receipt-V1. Historische und heutige bestätigte Publikumskraft getrennt darstellen und gegen spätere Upgrades prüfen; keine Neuberechnung des alten Receipts. Nutzen/Begründung in der Venue-Laienhilfe.
+
+## Lokaler Qualitätsabschluss – Venue-Resolver-Eingabegrenze (2026-10-18)
+
+- [x] Fehler mit falsch typisierten Event-Orten reproduziert; Resolver meldet jetzt ValueError statt AttributeError.
+- [x] Fehlender Ort bleibt ohne Evidence; ungültiger Ort wird klar abgewiesen.
+- [x] Mitgelieferte Besitzer-/Publikumskraftwerte ersetzen keine bestätigten State-/Katalogwerte.
+- [x] Mehrfachabfragen sind deterministisch und verändern keine Eingabedaten; 30 Venue-Runtime- und 5 Property-Projection-Tests lokal bestanden.
+- [x] Venue-Laienhilfe und Changelog ergänzt; Focused-Read-Scope eingehalten, keine neue Produktversion.
+
+Lokaler Iterationsfortschritt: **5/5 = 100 %**. Remote-CI, PR und Merge sind für diese Änderung noch nicht nachgewiesen; der neu synchronisierte historische Anker PR #276 ist kein Merge dieser lokalen Änderung.
+
+### Folgepunkt zur nächsten Receipt-Anbindung
+
+- [x] `VENUE-RECEIPT-LOCATION-FEEDBACK` — REQUIRES erfüllt durch lokalen Receipt-V1-Vertrag: Die Abrechnung erklärt fehlenden eigenen Ortsnachweis und Legacy-Receipts getrennt; ungültige Quellverträge brechen vor Commit über die vorhandene Fehleranzeige ab. Anzeige liest ausschließlich gespeicherte Evidence. Remote-Abnahme ausstehend.
 
 ## Fortschritt
 

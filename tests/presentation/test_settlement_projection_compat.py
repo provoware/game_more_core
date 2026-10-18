@@ -145,5 +145,86 @@ class SettlementProjectionCompatibilityTests(unittest.TestCase):
                 SettlementService(kernel).complete(context=bad)
 
 
+class SettlementVenueComparisonTests(unittest.TestCase):
+    def _settled_state(self):
+        from bunkerfrequenz.domain.property import PropertyState
+        from bunkerfrequenz.domain.property_upgrade import PropertyUpgradeState
+        location_event = event().to_dict()
+        location_event['location']['location_id'] = 'signalwerk'
+        location_event['location']['display_name'] = 'Signalwerk'
+        state = {
+            'event': location_event,
+            'economy': EconomyState(catalog={}).to_dict(),
+            'character': CharacterState('player-1', 'Testfigur').to_dict(),
+            'properties': PropertyState(contract_version='0.8.6-a1', revision=1, owned={
+                'signalwerk': {'location_id': 'signalwerk', 'owner_character_id': 'player-1',
+                              'purchase_price_cents': 6_200_000, 'economy_transaction_id': 'buy-1',
+                              'event_id': 'event-1'},
+            }).to_dict(),
+            'property_upgrades': PropertyUpgradeState(contract_version='0.8.6-b1', revision=2, properties={
+                'signalwerk': {'location_id': 'signalwerk', 'upgrades': {
+                    'stage': {'level': 2, 'economy_transaction_ids': ['stage-1', 'stage-2']}}},
+            }).to_dict(),
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            kernel = PersistenceKernel(tmp, ALLOWED)
+            kernel.initialize_state(state)
+            SettlementService(kernel, city_map_manifest=self._manifest('CITY_MAP'),
+                              property_upgrade_manifest=self._manifest('PROPERTY_UPGRADE')).complete(
+                                  context=context('venue-comparison'))
+            return kernel.load_state()
+
+    def _manifest(self, name):
+        return json.loads((ROOT / 'manifests' / f'{name}_MANIFEST.json').read_text())
+
+    def _project(self, state, *, with_properties=True):
+        from bunkerfrequenz.presentation.a4_game_projection import build_a4_game_projection
+        manifests = {
+            'city_map_manifest': self._manifest('CITY_MAP'),
+            'district_manifest': self._manifest('DISTRICT_STATE'),
+            'property_manifest': self._manifest('PROPERTY'),
+            'property_upgrade_manifest': self._manifest('PROPERTY_UPGRADE'),
+        } if with_properties else {}
+        return build_a4_game_projection(state, incident_catalog={}, **manifests)
+
+    def test_later_upgrade_changes_only_current_comparison_and_never_saved_receipt(self):
+        from copy import deepcopy
+        state = self._settled_state()
+        state['property_upgrades']['revision'] = 3
+        stage = state['property_upgrades']['properties']['signalwerk']['upgrades']['stage']
+        stage['level'] = 3
+        stage['economy_transaction_ids'].append('stage-3')
+        original = deepcopy(state)
+        projection = self._project(state)
+        self.assertEqual(projection['settlement_venue_comparison'], {
+            'location_id': 'signalwerk', 'at_settlement': 94, 'current': 99,
+        })
+        self.assertEqual(projection['settlement'], state['settlement'])
+        self.assertEqual(state, original)
+
+    def test_missing_current_sources_preserves_history_without_inventing_current_value(self):
+        state = self._settled_state()
+        self.assertEqual(self._project(state, with_properties=False)['settlement_venue_comparison'], {
+            'location_id': 'signalwerk', 'at_settlement': 94, 'current': None,
+        })
+
+    def test_foreign_current_owner_cannot_supply_current_value_for_historical_owner(self):
+        state = self._settled_state()
+        state['properties']['owned']['signalwerk']['owner_character_id'] = 'another-character'
+        self.assertIsNone(self._project(state)['settlement_venue_comparison']['current'])
+
+    def test_legacy_receipt_never_gets_invented_historical_value_from_current_upgrades(self):
+        state = self._settled_state()
+        state['settlement']['contract_version'] = '0.8.3-c1'
+        state['settlement'].pop('venue_evidence')
+        self.assertIsNone(self._project(state)['settlement_venue_comparison'])
+
+    def test_receipt_for_different_event_location_fails_closed(self):
+        state = self._settled_state()
+        state['event']['location']['location_id'] = 'concrete_orbit'
+        with self.assertRaisesRegex(ValueError, 'Ortsnachweis'):
+            self._project(state)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 from pathlib import Path
 import queue
@@ -337,13 +338,49 @@ def _avatar_context_passed(dom: str) -> bool:
     return re.search(r"<body(?:\s[^>]*)?>\s*AVATAR_CONTEXT_E2E: PASS(?:\s|<)", dom, flags=re.IGNORECASE) is not None
 
 
+def _playwright_dom(browser_path: str, address: str, *, timeout: float, avatar_context: bool) -> str:
+    """Control the real installed browser; never replace a failed UI with a fallback."""
+    from playwright.sync_api import Error as BrowserError, sync_playwright
+
+    timeout_ms = int(max(timeout, MIN_BROWSER_WALLCLOCK_TIMEOUT) * 1000)
+    try:
+        with sync_playwright() as driver:
+            browser = driver.chromium.launch(
+                executable_path=browser_path,
+                headless=True,
+                args=["--no-sandbox", "--disable-dev-shm-usage"],
+                timeout=timeout_ms,
+            )
+            try:
+                page = browser.new_page(viewport={"width": 900, "height": 760})
+                page.set_default_timeout(timeout_ms)
+                page.goto(address, wait_until="domcontentloaded", timeout=timeout_ms)
+                if avatar_context:
+                    page.wait_for_function(
+                        r"/^[A-Z0-9_]+_E2E: (PASS|FAIL)(?:\s|$)/.test(document.body.textContent.trimStart())"
+                    )
+                else:
+                    page.wait_for_function(
+                        "document.getElementById('connection-status')?.textContent.includes('BEREIT') && "
+                        "!document.getElementById('event-timeline-status')?.textContent.includes('Timeline wird geladen')"
+                    )
+                return page.content()
+            finally:
+                browser.close()
+    except BrowserError as exc:
+        raise RuntimeError(f"Echter Browser-Acceptance scheiterte: {exc}") from exc
+
+
 def browser_dom(
     address: str,
     *,
     require_browser: bool,
     timeout: float = MIN_BROWSER_WALLCLOCK_TIMEOUT,
     avatar_context: bool = False,
+    backend: str = "auto",
 ) -> str | None:
+    if backend not in {"auto", "playwright", "dump-dom"}:
+        raise ValueError("Unbekannter Browser-Acceptance-Backend")
     browser = find_browser()
     if browser is None:
         if require_browser:
@@ -376,24 +413,31 @@ def browser_dom(
         "--dump-dom",
         target_url,
     ]
+    use_playwright = backend == "playwright" or (
+        backend == "auto" and importlib.util.find_spec("playwright") is not None
+    )
     try:
-        completed = subprocess.run(
-            command,
-            cwd=ROOT,
-            capture_output=True,
-            text=True,
-            timeout=max(timeout, MIN_BROWSER_WALLCLOCK_TIMEOUT),
-        )
-    except subprocess.TimeoutExpired as exc:
-        raise RuntimeError("Browser reagierte nicht rechtzeitig; möglicher JS-/MutationObserver-Freeze") from exc
+        if use_playwright:
+            dom = _playwright_dom(browser, target_url, timeout=timeout, avatar_context=avatar_context)
+        else:
+            try:
+                completed = subprocess.run(
+                    command,
+                    cwd=ROOT,
+                    capture_output=True,
+                    text=True,
+                    timeout=max(timeout, MIN_BROWSER_WALLCLOCK_TIMEOUT),
+                )
+            except subprocess.TimeoutExpired as exc:
+                raise RuntimeError("Browser reagierte nicht rechtzeitig; möglicher JS-/MutationObserver-Freeze") from exc
+            if completed.returncode != 0:
+                detail = (completed.stderr or completed.stdout).strip().splitlines()[-5:]
+                raise RuntimeError("Headless-Browser scheiterte: " + " | ".join(detail))
+            dom = completed.stdout
     finally:
         if harness_path is not None:
             harness_path.unlink(missing_ok=True)
 
-    if completed.returncode != 0:
-        detail = (completed.stderr or completed.stdout).strip().splitlines()[-5:]
-        raise RuntimeError("Headless-Browser scheiterte: " + " | ".join(detail))
-    dom = completed.stdout
     if avatar_context and not _avatar_context_passed(dom):
         detail = " | ".join(line.strip() for line in dom.splitlines() if "AVATAR_CONTEXT_E2E:" in line)
         raise RuntimeError("Avatar-Context-E2E lieferte keinen ausgeführten PASS-Nachweis" + (f": {detail}" if detail else ""))

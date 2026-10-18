@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -73,7 +74,7 @@ def _harness() -> str:
       }
       if (rect.width <= 0 || rect.height <= 0) throw new Error(\"Eigenes Betriebsprofil ist nicht sichtbar\");
       if (ownedDetail.scrollWidth > ownedDetail.clientWidth + 1) throw new Error(\"Betriebsprofil erzeugt horizontale Überbreite\");
-      document.body.textContent = `VENUE_PROFILE_E2E: PASS\n760x680 · Große Schrift · Hoher Kontrast · genau ein sichtbares owned-only Fünf-Werte-Profil mit fünf numerischen Werten`;
+      document.body.textContent = `VENUE_PROFILE_E2E: PASS\n● BEREIT\nBUNKERFREQUENZ – Control Deck\n760x680 · Große Schrift · Hoher Kontrast · genau ein sichtbares owned-only Fünf-Werte-Profil mit fünf numerischen Werten`;
     } catch (error) {
       document.body.textContent = `VENUE_PROFILE_E2E: FAIL · ${String(error?.message || error)}`;
     }
@@ -84,43 +85,39 @@ def _harness() -> str:
 """
 
 
+def _passed(dom: str) -> bool:
+    return re.search(r"<body(?:\s[^>]*)?>\s*VENUE_PROFILE_E2E: PASS(?:\s|<)", dom) is not None
+
+
 def main() -> int:
-    browser = acceptance.find_browser()
-    if browser is None:
-        raise RuntimeError("Kein Chrome/Chromium für Venue-Profile-E2E gefunden")
-    harness_path = ROOT / "web" / "a4" / HARNESS
-    if harness_path.exists():
-        raise RuntimeError(f"Temporärer Harness-Pfad ist bereits belegt: {harness_path}")
-    with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-venue-e2e-") as save_dir:
-        acceptance.prepare_owned_map_fixture(save_dir)
-        process = acceptance._start_server(save_dir)
-        try:
-            address = acceptance._wait_for_address(process)
-            acceptance.probe_http(address)
-            harness_path.write_text(_harness(), encoding="utf-8")
-            target = address.rstrip("/") + "/" + HARNESS
-            completed = subprocess.run([
-                browser, "--headless=new", "--disable-gpu", "--disable-dev-shm-usage", "--no-sandbox",
-                "--no-first-run", "--disable-background-networking", "--disable-extensions", "--incognito",
-                "--window-size=760,680", "--virtual-time-budget=18000", "--dump-dom", target,
-            ], cwd=ROOT, capture_output=True, text=True, timeout=35)
-            if completed.returncode != 0:
-                raise RuntimeError("Chromium scheiterte: " + " | ".join((completed.stderr or "").splitlines()[-5:]))
-            if PASS not in completed.stdout or "VENUE_PROFILE_E2E: FAIL" in completed.stdout:
-                detail = " | ".join(line.strip() for line in completed.stdout.splitlines() if "VENUE_PROFILE_E2E:" in line)
-                raise RuntimeError("Venue-Profile-E2E ohne PASS" + (f": {detail}" if detail else ""))
-            print(PASS + " · owned-only · 5 Werte · 5 numerische Werte · 760x680 · Große Schrift · Hoher Kontrast")
-            return 0
-        finally:
-            harness_path.unlink(missing_ok=True)
-            if process.poll() is None:
-                process.terminate()
+    original = (acceptance.AVATAR_CONTEXT_HARNESS, acceptance._avatar_context_harness, acceptance._avatar_context_passed)
+    acceptance.AVATAR_CONTEXT_HARNESS = HARNESS
+    acceptance._avatar_context_harness = _harness
+    acceptance._avatar_context_passed = _passed
+    try:
+        with tempfile.TemporaryDirectory(prefix="bunkerfrequenz-venue-e2e-") as save_dir:
+            acceptance.prepare_owned_map_fixture(save_dir)
+            process = acceptance._start_server(save_dir)
             try:
-                process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                process.kill(); process.wait(timeout=3)
-            if process.stdout is not None:
-                process.stdout.close()
+                address = acceptance._wait_for_address(process)
+                acceptance.probe_http(address)
+                dom = acceptance.browser_dom(address, require_browser=True, timeout=35, avatar_context=True)
+                if dom is None or not _passed(dom):
+                    raise RuntimeError("Venue-Profile-E2E ohne ausgeführten PASS")
+                print(PASS + " · owned-only · 5 Werte · 5 numerische Werte · 760x680 · Große Schrift · Hoher Kontrast")
+                return 0
+            finally:
+                if process.poll() is None:
+                    process.terminate()
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=3)
+                if process.stdout is not None:
+                    process.stdout.close()
+    finally:
+        acceptance.AVATAR_CONTEXT_HARNESS, acceptance._avatar_context_harness, acceptance._avatar_context_passed = original
 
 
 if __name__ == "__main__":

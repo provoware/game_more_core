@@ -1,5 +1,9 @@
 # 0.8.3-C – Settlement & Consequences
 
+## Aktuelle kompatible Erweiterung
+
+Die hier beschriebene Basis bleibt für ältere Receipts `0.8.3-c1` gültig. Neue Abrechnungen verwenden `0.8.8-venue-evidence-v1` mit expliziter, optional befüllter `venue_evidence`. Sie wird im selben atomaren Commit gespeichert, bei Replay/Recovery unverändert gelesen und erzeugt keinen zusätzlichen Effekt. Versionsgrenzen und Nachweise: [Venue→Settlement Authority Audit](VENUE_SETTLEMENT_AUTHORITY_AUDIT.md).
+
 ## Zweck
 
 0.8.3-C schließt den fachlichen Event-Loop. Ein Event darf erst von `settlement` nach `completed` wechseln, wenn alle bereits bestätigten Folgen genau einmal verarbeitet und gemeinsam dauerhaft geschrieben wurden.

@@ -22,6 +22,8 @@ def resolve_owned_venue_evidence(
     """
     if event_location is None:
         return None
+    if not isinstance(event_location, Mapping):
+        raise ValueError("Event-Location muss ein Mapping mit location_id sein")
     if not isinstance(settlement_character_id, str) or not settlement_character_id.strip():
         raise ValueError("Settlement-Character-ID muss nicht-leerer Text sein")
 

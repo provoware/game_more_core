@@ -20,9 +20,12 @@ class VenueOperatingProfileBrowserE2EContractTests(unittest.TestCase):
     def test_harness_uses_canonical_owned_fixture_and_real_chromium(self):
         self.assertIn("acceptance.prepare_owned_map_fixture(save_dir)", self.tool)
         self.assertIn("acceptance._start_server(save_dir)", self.tool)
-        self.assertIn('"--headless=new"', self.tool)
-        self.assertIn('"--window-size=760,680"', self.tool)
-        self.assertIn('"--dump-dom"', self.tool)
+        self.assertIn("acceptance.browser_dom(address, require_browser=True", self.tool)
+        self.assertIn("avatar_context=True", self.tool)
+        self.assertIn("width:760px;height:680px", self.harness)
+        self.assertNotIn("subprocess.run(", self.tool)
+        self.assertFalse(venue._passed('<body><script>"VENUE_PROFILE_E2E: PASS"</script></body>'))
+        self.assertTrue(venue._passed('<body>VENUE_PROFILE_E2E: PASS</body>'))
 
     def test_harness_checks_owned_only_five_value_profile_under_accessibility_modes(self):
         for label in ("Prestige", "Publikumskraft", "Risiko", "Underground-Faktor", "Nutzen"):

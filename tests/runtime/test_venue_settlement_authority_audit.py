@@ -45,12 +45,19 @@ class VenueSettlementAuthorityAuditTests(unittest.TestCase):
         self.assertNotIn("audience_pull", settlement["source_effects"])
         self.assertFalse(settlement["scope_boundaries"]["property_changes"])
 
-    def test_current_settlement_requires_explicit_versioned_receipt_extension(self):
+    def test_current_settlement_has_explicit_versioned_evidence_and_legacy_boundary(self):
         schema = json.loads(SETTLEMENT_SCHEMA.read_text(encoding="utf-8"))
         settlement = json.loads(SETTLEMENT_MANIFEST.read_text(encoding="utf-8"))
 
         self.assertFalse(schema["additionalProperties"])
-        self.assertNotIn("venue_evidence", schema["properties"])
+        self.assertIn("venue_evidence", schema["properties"])
+        self.assertEqual(schema["properties"]["contract_version"]["enum"],
+                         ["0.8.3-c1", "0.8.8-venue-evidence-v1"])
+        branch = schema["allOf"][0]
+        self.assertEqual(branch["then"]["required"], ["venue_evidence"])
+        self.assertEqual(branch["else"]["not"]["required"], ["venue_evidence"])
+        self.assertIn("properties", settlement["optional_initial_state_blocks"])
+        self.assertIn("property_upgrades", settlement["optional_initial_state_blocks"])
         self.assertNotIn("properties", settlement["required_state_blocks"])
         self.assertNotIn("property_upgrades", settlement["required_state_blocks"])
 
@@ -77,7 +84,7 @@ class VenueSettlementAuthorityAuditTests(unittest.TestCase):
         self.assertIn("additionalProperties: false", text)
         self.assertIn("Architektur-GO für Evidence-Plumbing, Mechanik-NO-GO", text)
         self.assertIn("gemeinsame Wertautorität", text)
-        self.assertIn("Application-Schicht die Presentation-Schicht importieren", text)
+        self.assertIn("Application-Schicht darf weiterhin nicht die Presentation-Schicht importieren", text)
         self.assertIn("Berechnung der effektiven Ortswerte im Settlement duplizieren", text)
 
 

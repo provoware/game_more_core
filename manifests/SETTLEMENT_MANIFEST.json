@@ -1,9 +1,9 @@
 {
-  "version": "0.8.3-c1",
-  "iteration": "0.8.3-C",
+  "version": "0.8.8-venue-evidence-v1",
+  "iteration": "0.8.8-GAMEPLAY-VENUE-RECEIPT-V1",
   "state_block": "settlement",
   "required_state_blocks": ["event", "economy", "character"],
-  "optional_initial_state_blocks": ["incidents"],
+  "optional_initial_state_blocks": ["incidents", "properties", "property_upgrades"],
   "preconditions": {
     "event_phase": "settlement",
     "active_incident": null,
@@ -77,11 +77,35 @@
     "same_command_id_idempotent": true,
     "same_command_id_different_request_rejected": true
   },
+  "readable_contract_versions": ["0.8.3-c1", "0.8.8-venue-evidence-v1"],
+  "venue_evidence": {
+    "schema_version": 1,
+    "field": "venue_evidence",
+    "legacy_field_absent": true,
+    "new_receipt_field_required": true,
+    "no_owned_event_location": null,
+    "authority": "application.venue_settlement_evidence.resolve_owned_venue_evidence",
+    "value_source": "domain.property_upgrade.effective_venue_values",
+    "owned_event_location_requires_source_manifests": true,
+    "stored_fields": [
+      "schema_version",
+      "location_id",
+      "owner_character_id",
+      "audience_pull",
+      "city_map_manifest_version",
+      "property_upgrade_manifest_version",
+      "property_revision",
+      "property_upgrade_revision"
+    ],
+    "changes_effects": false,
+    "replay_uses_stored_evidence_not_current_catalog_values": true,
+    "replay_checks_event_character_ownership_and_source_revisions": true
+  },
   "scope_boundaries": {
     "persistent_district_simulation": false,
     "heat_is_district_state": false,
     "stability_is_world_state": false,
-    "client_changes": false,
+    "client_changes": true,
     "property_changes": false,
     "network_changes": false
   }

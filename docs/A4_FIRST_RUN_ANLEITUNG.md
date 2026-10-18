@@ -24,6 +24,9 @@ Für einen getrennten Test-Spielstand:
 
 Im Terminal muss anschließend `STATUS: BEREIT` stehen. Beenden: `Strg+C`.
 
+Die automatische Browserprüfung verwendet bei installiertem Playwright den echten vorhandenen Chrome/Chromium über diesen Treiber. Fehlt das optionale Prüfwerkzeug, bleibt der bisherige Browserpfad verfügbar. Für eine reproduzierbare Prüfung in deiner Python-Umgebung kann das Testpaket mit `python3 -m pip install playwright==1.55.0` installiert werden. Das Spiel selbst benötigt es nicht als Pflichtabhängigkeit. Ein fehlgeschlagener Browser-Test bleibt ein Fehler und wird nicht durch einen zweiten Versuch als erfolgreich ausgegeben. Spielstandsdateien dafür nicht löschen.
+
+
 ## 2. Neues Spiel anlegen
 
 Beim ersten Start erscheint **FIRST RUN**:

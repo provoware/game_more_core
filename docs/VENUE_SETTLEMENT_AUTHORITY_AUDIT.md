@@ -2,70 +2,49 @@
 
 ## Entscheidung
 
-**GO für einen rein evidenzbasierten Authority-Bridge-Folgeslice; weiterhin NO-GO für jeden Publikumskraft-Bonus.**
+**GO für einen rein evidenzbasierten Authority-Bridge-Folgeslice; weiterhin NO-GO für jeden Publikumskraft-Bonus.** Die freigegebene Evidence-Brücke ist in der lokalen Entwicklungsstufe jetzt einschließlich versioniertem Receipt, Replay/Recovery und lesender Spielanzeige umgesetzt.
 
-Der kleinste saubere Pfad kann vorhandene Autoritäten wiederverwenden:
+Die bestätigte Kette bleibt:
 
 `event.location.location_id → property_state.owned[location_id] → property_upgrades.properties[location_id] → Settlement-Receipt-Evidence`
 
-Es wird dafür kein zweiter Property-State, keine Venue-Bonusengine und keine Browser-Autorität benötigt.
-
-## Bestätigte Autoritätskette
-
-1. `EventState.location.location_id` ist bereits ein kanonischer, persistierter Ortsbezug des Events.
-2. `PropertyState.owned` ist nach `location_id` adressierbar und enthält den bestätigten `owner_character_id`.
-3. `PropertyUpgradeState.properties` ist ebenfalls nach `location_id` adressierbar. Der Upgrade-Vertrag katalogisiert `audience_pull` und begrenzt projizierte Ortswerte auf 0–100.
-4. Der aktuelle Settlement-Vertrag nimmt `properties` und `property_upgrades` noch nicht als State-Blöcke an und das Receipt besitzt noch keine Venue-Evidence. Genau diese fehlende Brücke ist damit klar abgegrenzt.
-
-## Warum der Authority-Bridge grundsätzlich GO ist
-
-Die Identität muss nicht neu erfunden werden: Event, Besitz und Ausbau teilen bereits denselben fachlichen Schlüssel `location_id`. Ein späterer Authority-Slice darf deshalb nur die vorhandenen Zustände lesen, die Übereinstimmung beweisen und diesen Beweis in das Settlement-Receipt übernehmen.
-
-Das ist eine Ergänzung der bestehenden Settlement-Evidence, keine neue Wirkungsarchitektur.
+Es gibt keine Venue-Bonusengine und keinen zweiten Property-State.
 
 ## Gemeinsame Wertautorität
 
-Die effektiven Ortswerte werden jetzt durch `domain.property_upgrade.effective_venue_values(...)` deterministisch und read-only aus City-Map-Basiswerten, bestätigten Upgrade-Leveln und dem vorhandenen Upgrade-Katalog berechnet. Die bestehende `presentation/property_upgrade_projection.py` verwendet genau diese Domain-Funktion und besitzt keine eigene Kopie der Wertformel mehr.
+`domain.property_upgrade.effective_venue_values(...)` berechnet dieselben effektiven Ortswerte für Betriebsprofil und Evidence. Die Application-Schicht darf weiterhin nicht die Presentation-Schicht importieren oder die Berechnung der effektiven Ortswerte im Settlement duplizieren. Der vorhandene Resolver `application.venue_settlement_evidence.resolve_owned_venue_evidence(...)` bleibt die einzige lesende Evidence-Auflösung.
 
-Damit ist das frühere Vor-Gate erfüllt: Eine spätere Venue-Evidence darf dieselbe gemeinsame Wertautorität verwenden, ohne aus der Application-Schicht die Presentation-Schicht importieren oder die Berechnung der effektiven Ortswerte im Settlement duplizieren zu müssen. Die Werte bleiben auf 0–100 begrenzt; es wurde weder ein Settlement-Effekt noch eine Balanceänderung eingeführt.
+## Explizite Vertragsversion statt verstecktem Zusatzfeld
 
-## Read-only Evidence-Resolver
+Der neue Settlement-Vertrag `0.8.8-venue-evidence-v1` verlangt das Feld `venue_evidence` mit genau einem Objekt oder `null`. Der alte Vertrag `0.8.3-c1` bleibt ohne dieses Feld lesbar und exakt serialisierbar. Das Schema bleibt `additionalProperties: false`. Ein Legacy-Receipt mit heimlich hinzugefügtem Evidence-Feld wird abgewiesen.
 
-`application.venue_settlement_evidence.resolve_owned_venue_evidence(...)` löst die bereits freigegebene Kette jetzt erstmals als reine Application-Abfrage auf. Der Resolver liest ausschließlich den Event-Ort, den bestätigten Besitz, den bestätigten Upgrade-State sowie City-Map- und Upgrade-Katalog und verwendet für den effektiven Wert die gemeinsame Domain-Autorität.
+Erforderliche State-Blöcke bleiben Event, Economy und Character. Besitz und Ausbau werden optional gelesen. Für einen eigenen Event-Ort sind die Quellverträge erforderlich; fehlender Besitz oder ein fremder Besitzer ergeben `null`. Ein eigener Ort ohne bisherigen Ausbau verwendet die bestätigten Basiswerte und Ausbau-Revision 0. Widersprüchliche Quellen werden vor jedem Commit abgewiesen.
 
-Für einen eigenen Event-Ort liefert er eine kleine, versionierte Evidence-Struktur mit `location_id`, `owner_character_id`, bestätigtem `audience_pull` sowie den gelesenen Property-/Upgrade-Revisionen. Ein nicht eigener oder einem anderen Character gehörender Ort liefert keine Evidence. Katalog- oder Upgrade-Widersprüche schlagen fail-closed fehl.
+## Gespeicherter Nachweis
 
-Wichtig: Der Resolver schreibt noch **nichts** in `SettlementState`, Journal oder Save und verändert keinen Effekt. Damit ist nur die lesende Autoritätsauflösung umgesetzt; die persistierte Receipt-Brücke bleibt ein eigener Vertragsschritt.
+Das Evidence-Objekt enthält ausschließlich:
 
-## Harte Grenzen des nächsten Slices
+- `schema_version: 1`, `location_id`, `owner_character_id`,
+- `audience_pull` als Ganzzahl in 0–100,
+- `city_map_manifest_version`, `property_upgrade_manifest_version`,
+- `property_revision`, `property_upgrade_revision`.
 
-Der nächste Slice darf ausschließlich:
+Der Besitzer muss zum abrechnenden Character gehören. Der Ortsbezug stammt vom bestätigten Event; zusätzliche Client-Fachwerte werden nicht akzeptiert. Der Browser zeigt nur den gespeicherten Nachweis an.
 
-- `event.location.location_id` lesen,
-- für genau diesen Ort bestätigten Besitz des abrechnenden Charakters verlangen,
-- den bestätigten Upgrade-Zustand desselben Orts als Wertquelle referenzieren,
-- dieselbe gemeinsame effektive Wertautorität wie die bestehende Projection verwenden,
-- die bereits aufgelöste Evidence explizit und versioniert in den Settlement-Vertrag übernehmen,
-- Replay/Recovery gegen dieselbe gespeicherte Evidence prüfen.
+## Atomarer Commit, Replay und Recovery
 
-Er darf **nicht**:
+Evidence ist Bestandteil desselben `event.completed`-Payloads und desselben atomaren Commits wie das vorhandene Receipt. Neue Journaltypen oder eine zweite Speicherung entstehen nicht.
 
-- Budget, Reputation, Stress, Heat oder Stability verändern,
-- `audience_pull` multiplizieren oder in eine Auszahlung umrechnen,
-- einen neuen Property-/Upgrade-State einführen,
-- einen Browserwert als Autorität akzeptieren,
-- aus der Application-Schicht die Presentation-Schicht importieren,
-- die Berechnung der effektiven Ortswerte im Settlement duplizieren,
-- fehlenden Besitz oder fehlende Upgrade-Evidence still durch erfundene Werte ersetzen.
+Beim Replay werden Event-Ort, Character, damaliger Besitz, Besitzrevision, Ausbaurevision und Ausbauvertragsversion gegen die chronologisch rekonstruierten Zustände geprüft. Der gespeicherte Wert wird nicht mit heutigen Manifestdaten neu berechnet. Damit bleiben historische Abrechnungen nach späteren Katalogänderungen unverändert.
 
-## Noch offene Implementierungsarbeit
+Legacy-Replay und ein erneuter Abschluss desselben alten Commands bleiben unterstützt. Eine Absturz-Injektion nach dauerhaft geschriebenem Journal belegt Recovery ohne doppelte Ledgerbuchung. Direkter Replay eines identischen Records bleibt idempotent; widersprüchliche Evidence schlägt vor Zustandsänderungen fehl.
 
-Der aktuelle `SettlementState` ist `additionalProperties: false` und besitzt kein Venue-Evidence-Feld. Ein echter Receipt-Bridge-Slice muss deshalb den Settlement-Vertrag explizit und versioniert erweitern; ein unsichtbares Zusatzfeld wäre kein zulässiger Shortcut.
+## Harte Mechanikgrenze
 
-Die gemeinsame Wertautorität und die read-only Auflösung sind nun vorhanden. Offen bleibt damit bewusst der nächste getrennte Vertragsschritt: Settlement muss diese bestätigte Evidence versioniert aufnehmen und Replay/Recovery dafür beweisen. Eine zweite Publikumskraft-Berechnung, ein Application→Presentation-Import oder bereits jetzt ein Publikumskraft-Bonus bleibt NO-GO.
+Budget, Reputation, Stress, Heat und Stability folgen weiter ausschließlich den bisherigen Source Effects. Kein Publikumskraft-Multiplikator, keine neue Auszahlung und keine Änderung des Property-/Upgrade-Zustands wird eingeführt. Die lesbare Anzeige erklärt ausdrücklich, dass der Nachweis keinen zusätzlichen Gewinn oder Bonus erzeugt.
 
-## Ergebnis
+## Ergebnis und nächster Schritt
 
-**Architektur-GO für Evidence-Plumbing, Mechanik-NO-GO bleibt bestehen; gemeinsame Wertautorität und read-only Resolver sind erfüllt.**
+**Architektur-GO für Evidence-Plumbing, Mechanik-NO-GO bleibt bestehen; gemeinsame Wertautorität, Resolver und Receipt-Brücke sind lokal umgesetzt.** Lokale Testergebnisse stehen im Iterationsabschluss; sie sind kein Remote-CI- oder Merge-Nachweis.
 
-Damit ist der nächste minimale Implementierungsschritt klar: die versionierte Aufnahme der bereits bestätigten Venue-Evidence in den Settlement-Vertrag. Erst danach darf ein weiterer, separat geprüfter Slice über eine begrenzte Spielwirkung entscheiden.
+Als nächster fachlicher Slice darf genau eine begrenzte Wirkung gesondert geprüft werden: Formel, Cap, Grenzwerte, Einfluss auf bestehende Deltas und reproduzierbare Balance-Abnahme. Ein vorhandener Ortsnachweis allein ist keine Freigabe für einen Bonus.

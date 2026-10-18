@@ -41,7 +41,7 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
         )
         self.assertEqual(
             self.settlement_manifest["optional_initial_state_blocks"],
-            ["incidents"],
+            ["incidents", "properties", "property_upgrades"],
         )
         self.assertEqual(
             self.settlement_manifest["source_effects"],
@@ -77,11 +77,46 @@ class VenueAudiencePullMechanicAuditTests(unittest.TestCase):
                 "persistent_district_simulation": False,
                 "heat_is_district_state": False,
                 "stability_is_world_state": False,
-                "client_changes": False,
+                "client_changes": True,
                 "property_changes": False,
                 "network_changes": False,
             },
         )
+
+    def test_versioned_evidence_is_read_only_and_legacy_remains_readable(self):
+        self.assertEqual(self.settlement_manifest["version"], "0.8.8-venue-evidence-v1")
+        self.assertEqual(self.settlement_manifest["readable_contract_versions"],
+                         ["0.8.3-c1", "0.8.8-venue-evidence-v1"])
+        evidence = self.settlement_manifest["venue_evidence"]
+        self.assertFalse(evidence["changes_effects"])
+        self.assertTrue(evidence["replay_uses_stored_evidence_not_current_catalog_values"])
+        self.assertTrue(evidence["replay_checks_event_character_ownership_and_source_revisions"])
+        self.assertEqual(evidence["stored_fields"], [
+            "schema_version", "location_id", "owner_character_id", "audience_pull",
+            "city_map_manifest_version", "property_upgrade_manifest_version",
+            "property_revision", "property_upgrade_revision",
+        ])
+
+    def test_proposed_reputation_effect_is_bounded_and_not_activated(self):
+        from tools.venue_reputation_balance_audit import run_audit
+        report = run_audit()
+        self.assertEqual(report["exhaustive_cases"], 40602)
+        self.assertEqual(report["extra_large_delta_cases"], 404)
+        self.assertEqual(sum(item["upgrade_combinations"] for item in report["venues"]), 2176)
+        self.assertEqual(report["absolute_cap"], 2)
+        self.assertEqual(report["relative_cap_percent"], 25)
+        self.assertFalse(report["runtime_mechanic_enabled"])
+        self.assertEqual(report["money_effect"], 0)
+        self.assertTrue(report["decision"].startswith("NO_GO_ACTIVATION"))
+
+    def test_proposed_thresholds_do_not_reward_tiny_losing_or_foreign_events(self):
+        from tools.venue_reputation_balance_audit import proposed_bonus
+        for audience, delta, expected in ((49, 8, 0), (50, 8, 1), (99, 8, 1),
+                                          (100, 8, 2), (100, 3, 0), (100, 4, 1),
+                                          (100, 0, 0), (100, -4, 0)):
+            with self.subTest(audience=audience, delta=delta):
+                self.assertEqual(proposed_bonus(audience, delta, owned=True), expected)
+                self.assertEqual(proposed_bonus(audience, delta, owned=False), 0)
 
     def test_scene_jobs_do_not_offer_modifier_shortcut(self):
         availability = self.scene_job_manifest["availability"]

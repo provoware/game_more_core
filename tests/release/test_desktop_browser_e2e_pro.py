@@ -210,7 +210,7 @@ class DesktopBrowserE2EContractTests(unittest.TestCase):
             patch.object(acceptance, "find_browser", return_value="/usr/bin/chromium"),
             patch.object(acceptance.subprocess, "run", return_value=completed) as run,
         ):
-            acceptance.browser_dom("http://127.0.0.1:8044/", require_browser=True, timeout=15.0)
+            acceptance.browser_dom("http://127.0.0.1:8044/", require_browser=True, timeout=15.0, backend="dump-dom")
         self.assertEqual(run.call_args.kwargs["timeout"], acceptance.MIN_BROWSER_WALLCLOCK_TIMEOUT)
         self.assertEqual(acceptance.MIN_BROWSER_WALLCLOCK_TIMEOUT, 30.0)
 
