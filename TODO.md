@@ -278,9 +278,9 @@
 - [x] Genau einen begrenzten Ruf-Kandidaten mit Formel/Cap und 40.602 + 404 Fällen sowie 2.176 Ausbaukombinationen geprüft; Aktivierung bleibt NO-GO bis Wirkungsvertrag und Playtest.
 - [x] Einsteigerhilfe, Venue-Hilfe, Audit und Changelog aktualisiert.
 - [x] Vollständige lokale Gates bestätigt: 319 Runtime-, 296 Presentation-, 80 Release-, 22 Repository- und 11 Status-Sync-Tests sowie regulärer Start und zusätzliche Job-/Handels-/Venue-Profil-Browsernachweise bestanden.
-- [ ] Remote-CI auf dem konkreten PR-Head abschließen und belegen.
+- [x] Remote-CI-Checkpoint für PR #278 / Implementierungshead `bda7d7d3cc885ac56e2e67c813d16677eaa9ff93`: alle sechs Checks grün, aktueller main enthalten, 0 ungelöste Review-Threads. Der abschließende Status-Commit wird erneut gegen sämtliche Checks geprüft; maßgeblich bleibt der live geprüfte finale PR-Head.
 
-Stand: **5/6 Abnahmepunkte = 83 %**; Remote-CI steht noch aus. Produkt-/Runtime-Baseline bleibt unverändert. Remote-Ergebnisse werden nur nach echten Check-Läufen eingetragen; kein direkter Merge nach main.
+Stand: **6/6 Abnahmepunkte = 100 %** am belegten Implementierungscheckpoint. Finale PR-Checks bleiben nach dem Status-Commit erneut verpflichtend. Produkt-/Runtime-Baseline bleibt unverändert. Remote-Ergebnisse werden nur nach echten Check-Läufen eingetragen; kein direkter Merge nach main.
 
 ## Lokale Entwicklung – Venue-Receipt V1 (2026-10-18)
 
@@ -295,7 +295,7 @@ Stand: **5/6 Abnahmepunkte = 83 %**; Remote-CI steht noch aus. Produkt-/Runtime-
 - [x] Spielerhilfe, Auditannahmen und Changelog auf aktuellen lokalen Vertrag gebracht.
 - [x] Echter Chromium-Nachweis für alle drei Anzeigezustände über vorhandenen Playwright-Treiber bestanden; 760×680, große Schrift, hoher Kontrast, sichere Textausgabe und keine horizontale Überbreite.
 
-Implementierung: **3/3 Nutzerziele umgesetzt**. Abnahme: **10/10 = 100 %**, echter Browser-Nachweis über Playwright bestanden. Der Standard-`--dump-dom`-Aufruf hängt in dieser Umgebung auch auf `about:blank` und wird nicht als bestanden behauptet. Kein Bonus, keine Balanceänderung, keine neue Produktversion. Remote-CI/PR/Merge sind nicht erfolgt; Safe-Merge-Anker wurde auf den lokal belegten historischen PR #276 synchronisiert; das ist kein Merge dieser lokalen Änderung.
+Implementierung: **3/3 Nutzerziele umgesetzt**. Abnahme: **10/10 = 100 %**, echter Browser-Nachweis über Playwright bestanden. Der Standard-`--dump-dom`-Aufruf hängt in dieser Umgebung auch auf `about:blank` und wird nicht als bestanden behauptet. Kein Bonus, keine Balanceänderung, keine neue Produktversion. PR- und Remote-CI-Belege für den zusammengeführten Stand stehen in der aktuellen Arbeitsiteration oben; ein Merge ist nicht erfolgt. Der historische Safe-Merge-Anker wurde auf den lokal belegten historischen PR #276 synchronisiert; das ist kein Merge dieser lokalen Änderung.
 
 Nächste Queue:
 
@@ -313,7 +313,7 @@ Nächste Queue:
 - [x] Mehrfachabfragen sind deterministisch und verändern keine Eingabedaten; 30 Venue-Runtime- und 5 Property-Projection-Tests lokal bestanden.
 - [x] Venue-Laienhilfe und Changelog ergänzt; Focused-Read-Scope eingehalten, keine neue Produktversion.
 
-Lokaler Iterationsfortschritt: **5/5 = 100 %**. Remote-CI, PR und Merge sind für diese Änderung noch nicht nachgewiesen; der neu synchronisierte historische Anker PR #276 ist kein Merge dieser lokalen Änderung.
+Lokaler Iterationsfortschritt: **5/5 = 100 %**. Die Änderung ist inzwischen Bestandteil von PR #278; der Remote-CI-Checkpoint steht in der aktuellen Arbeitsiteration oben. Der synchronisierte historische Anker PR #276 ist kein Merge dieser Änderung.
 
 ### Folgepunkt zur nächsten Receipt-Anbindung
 
@@ -329,15 +329,16 @@ Genau **einen** der fünf vorhandenen Venue-Werte gegen bestehende Domain-/Appli
 
 ## Abnahme
 
-- [ ] vorhandene Property-, Upgrade-, Event-/Job- und Journal-/Replay-Verträge gezielt auf mögliche bestehende Autorität prüfen; kein Repository-Breitenscan
-- [ ] genau einen Kandidaten auswählen, bevorzugt `audience_pull` oder `utility`, und mindestens zwei naheliegende Alternativen begründet verwerfen
-- [ ] keine Browserberechnung, keinen generischen Bonus-Aggregator und keine zweite Venue-Engine einführen
-- [ ] GO nur bei eindeutiger Domain-/Application-Autorität sowie definierter Save-/Journal-/Replay-Semantik; sonst dokumentiertes NO-GO
-- [ ] bei GO konkreten Grenzwert-/Balancevertrag und messbare Abnahme für den späteren Implementierungsslice festlegen
-- [ ] passende fokussierte Regression für die Auditannahmen ergänzen; keine Produktlogik in diesem Audit
-- [ ] Laienspielanleitung um den Unterschied zwischen „sichtbarer Ortswert“ und „echte Spielwirkung“ ergänzen
-- [ ] relevante Gates auf finalem Head grün, 0 ungelöste Review-Threads, 0 Commits hinter `main`
+- [x] vorhandene Property-, Upgrade-, Event-/Job- und Journal-/Replay-Verträge gezielt auf mögliche bestehende Autorität prüfen; kein Repository-Breitenscan
+- [x] genau einen Kandidaten auswählen, bevorzugt `audience_pull` oder `utility`, und mindestens zwei naheliegende Alternativen begründet verwerfen
+- [x] keine Browserberechnung, keinen generischen Bonus-Aggregator und keine zweite Venue-Engine einführen
+- [x] GO nur bei eindeutiger Domain-/Application-Autorität sowie definierter Save-/Journal-/Replay-Semantik; sonst dokumentiertes NO-GO
+- [x] bei GO konkreten Grenzwert-/Balancevertrag und messbare Abnahme für den späteren Implementierungsslice festlegen
+- [x] passende fokussierte Regression für die Auditannahmen ergänzen; keine Produktlogik in diesem Audit
+- [x] Laienspielanleitung um den Unterschied zwischen „sichtbarer Ortswert“ und „echte Spielwirkung“ ergänzen
+- [x] Implementierungscheckpoint PR #278 / `bda7d7d` besitzt alle sechs grünen Remote-Gates, 0 ungelöste Review-Threads und enthält den aktuellen main; nach Status-Commit bleiben erneut die Checks des finalen PR-Heads maßgeblich.
 - [ ] Merge ausschließlich über `/safe-merge`
+
 
 ## Architektur- und Sicherheitsgrenzen
 

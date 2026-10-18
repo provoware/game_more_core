@@ -5,9 +5,9 @@
   "local_development": {
     "iteration": "0.8.8-QA-VENUE-COMPARISON-AND-BALANCE-AUDIT",
     "base_head": "15b440c974acb3bc594d2d4c8e7ecd3f53d28c31",
-    "implementation_goals_completed": 2,
+    "implementation_goals_completed": 3,
     "implementation_goals_total": 3,
-    "acceptance_progress_percent": 83,
+    "acceptance_progress_percent": 100,
     "settlement_contract": "0.8.8-venue-evidence-v1",
     "legacy_settlement_contract_readable": "0.8.3-c1",
     "venue_mechanical_bonus": false,
@@ -16,7 +16,24 @@
     "historical_current_comparison": "passed_receipt_94_current_99_after_upgrade",
     "reputation_proposal_audit": "bounded_but_not_activated_40602_plus_404_cases_2176_upgrade_combinations",
     "raw_dump_dom_environment": "known_timeout_not_used_when_optional_driver_available",
-    "remote_ci": "pending_feature_branch_pull_request",
+    "remote_ci": "implementation_checkpoint_passed_final_head_checks_required",
+    "remote_ci_checkpoint": {
+      "pull_request": 278,
+      "url": "https://github.com/provoware/game_more_core/pull/278",
+      "validated_implementation_head": "bda7d7d3cc885ac56e2e67c813d16677eaa9ff93",
+      "base_head": "15b440c974acb3bc594d2d4c8e7ecd3f53d28c31",
+      "result": "all_six_checks_success",
+      "unresolved_review_threads": 0,
+      "workflow_runs": {
+        "runtime_core": 39134073918,
+        "presentation_core": 39134073890,
+        "repository_health": 39134073837,
+        "release_acceptance": 39134073817,
+        "release_package": 39134073862,
+        "status_sync": 39134073921
+      },
+      "final_head_policy": "all_required_and_release_checks_must_pass_again_after_status_commit"
+    },
     "merged": false,
     "details": "TODO.md"
   },
