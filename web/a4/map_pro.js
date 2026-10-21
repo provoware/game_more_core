@@ -308,7 +308,11 @@
         });
         const visible = model.locations.find(matchesFilter);
         if (visible) showLocation(visible);
-        else clearDetail("Keine Treffer", "Dieser reine Sichtfilter blendet alle Locations aus. Spielzustand wurde nicht verändert.");
+        else {
+          selectedKey = null;
+          document.querySelectorAll("#berlin-map-canvas .is-selected").forEach((item) => item.classList.remove("is-selected"));
+          clearDetail("Keine Treffer", "Dieser reine Sichtfilter blendet alle Locations aus. Spielzustand wurde nicht verändert.");
+        }
       };
     });
     updateFilterButtons();
@@ -318,6 +322,9 @@
     const panel = document.getElementById("map-pro-panel");
     const canvas = document.getElementById("berlin-map-canvas");
     if (!panel || !canvas) return;
+    const focusedKey = canvas.contains(document.activeElement)
+      ? document.activeElement?.dataset?.mapKey
+      : null;
     currentModel = model || null;
     if (!model) {
       panel.classList.add("hidden");
@@ -337,10 +344,28 @@
     bindFilters(model);
     applyView(model);
 
-    const selected = selectedKey && model.locations.find((item) => `location:${item.location_id}` === selectedKey);
-    const first = selected || model.locations.find(matchesFilter);
-    if (first) showLocation(first);
-    else clearDetail("Berlin Ops", "Wähle einen Bezirk oder Ort aus.");
+    const selectedLocation = model.locations.find(
+      (item) => `location:${item.location_id}` === selectedKey && matchesFilter(item)
+    );
+    const selectedDistrict = model.districts.find(
+      (item) => `district:${item.district_id}` === selectedKey
+    );
+    if (selectedLocation) showLocation(selectedLocation);
+    else if (selectedDistrict) showDistrict(selectedDistrict);
+    else {
+      const first = model.locations.find(matchesFilter);
+      if (first) showLocation(first);
+      else {
+        selectedKey = null;
+        clearDetail("Keine Treffer", "Dieser Sichtfilter zeigt gerade keinen Ort.");
+      }
+    }
+    if (focusedKey) {
+      const target = Array.from(canvas.querySelectorAll("[data-map-key]")).find(
+        (element) => element.dataset.mapKey === focusedKey && !element.hidden
+      );
+      target?.focus({ preventScroll: true });
+    }
   }
 
   window.BunkerMapPro = Object.freeze({ render });

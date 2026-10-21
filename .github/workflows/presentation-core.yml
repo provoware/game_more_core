@@ -41,3 +41,7 @@ jobs:
             src/bunkerfrequenz/application/command_dispatcher.py
       - name: Presentation tests
         run: PYTHONPATH=src python3 -m unittest discover -s tests/presentation -v
+      - name: Map refresh and focus regression (Node.js)
+        run: |
+          node --check web/a4/map_pro.js
+          node tests/presentation/map_focus_refresh_harness.cjs
