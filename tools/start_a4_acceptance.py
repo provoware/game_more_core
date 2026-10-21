@@ -320,7 +320,7 @@ def _avatar_context_harness() -> str:
       frame.style.height = "600px";
       w.BunkerUIPrefs.set("largeText", true);
       await waitFor(() => d.body.classList.contains("ui-large-text"), "Große Schrift bei 800x600");
-      await waitFor(() => d.documentElement.clientWidth === 800, "800px Viewport");
+      await waitFor(() => w.innerWidth === 800, "800px Browser-Viewport");
       const measuredFont = Number.parseFloat(w.getComputedStyle(d.body).fontSize);
       if (!Number.isFinite(measuredFont) || measuredFont < 21) {
         throw new Error("Große Schrift ist bei 800x600 nicht wirksam");
