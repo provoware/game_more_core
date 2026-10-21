@@ -11,6 +11,15 @@
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
 
+## Vorrelease-Pflichten – neue 0.8.8-Kandidatenlinie
+
+- [x] Verbindliche Funktions-, Spielverlaufs-, Daten-, UI-, Sicherheits-, CI- und Release-Pflichten mit konkreten Quellen und offenen Nachweisen erfassen: `docs/VORRELEASE_PFLICHTMATRIX.md`.
+- [ ] Release Autopilot: leerer oder unbekannter Gate-Satz muss `RELEASE_INVALID` liefern; Test auf finalem PR-HEAD und drei Required Checks belegen.
+- [ ] Main-Integrity-Fehler auf `main` (Run 36186414235, Issue #277) ursächlich klären und ohne Umgehung beheben.
+- [ ] Status-Sync-Fehler auf `main` (Run 36186414155) ursächlich klären.
+- [ ] Vollständige 800×600-/200%- und Tastatur-/Fokus-Prüfung der Hauptspielschleife automatisieren.
+- [ ] Erst nach Feature-Freeze, grüner Gesamtprüfung und dokumentiertem Release-Kandidaten die gebündelte persönliche Endabnahme anfordern. Keine Nutzer-Zwischenabnahme.
+
 ---
 
 # Abgeschlossen ✅
