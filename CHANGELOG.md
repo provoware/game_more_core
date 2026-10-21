@@ -4,6 +4,12 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### QA – PR #279: Status-Sync-Konsistenz und Browser-Grenzfall
+
+- Die drei Status-Sync-Anker auf den nachgewiesenen Safe-Merge PR #276 aktualisiert; hart codierte, veraltete PR-#273-Laufzeittests durch dauerhafte Dateikonsistenzprüfungen ersetzt. Der Git-Verlaufswächter selbst bleibt streng und unverändert.
+- Vorhandenen Chromium-Avatar-Context-Nachweis um 800×600, große Schrift, horizontale Seitenbreite und Fokusfähigkeit zweier primärer Bedienelemente erweitert. Zusätzlicher Testszenario-Vertrag in Presentation Core.
+- Historischen Main-Integrity-Vorfall #277 nicht umgangen; echter 175–200-%-Zoom und native Tab-Folge verbleiben als offene Vorrelease-Pflichten.
+
 ### Vorrelease-Sicherheit – Fail-Closed-Promotion und Pflichtmatrix
 
 - Release-Autopilot gibt für einen **leeren** oder **unbekannten/ungültigen** Gate-Status nicht mehr irrtümlich `RELEASE_READY`, sondern `RELEASE_INVALID` zurück. Die bestehende Prüfung der Source- und SHA-256-Bindung bleibt unverändert.

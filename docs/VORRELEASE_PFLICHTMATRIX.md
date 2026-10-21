@@ -43,14 +43,14 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 | Q01 | Save, Journal, Snapshot, Neustart, beschädigte Daten, Legacy-Saves | `docs/PERSISTENCE_CONTRACT.md`, `tests/runtime/` | Offen auf Ziel-HEAD |
 | Q02 | Offline-Start, Portkollision, Pfadschutz, localhost, fremde Schreib-Origins | `tests/release/test_a4_release_acceptance.py` | Offen auf Ziel-HEAD |
 | Q03 | Absturz, ENOSPC, Prozessgrenzen, Speicherlast und lange Pfade | `tools/failure_containment_pro.py` | Offen auf Ziel-HEAD |
-| Q04 | 800×600, 175–200 % Skalierung, lange Texte, kein horizontales Überlaufen | `tools/desktop_browser_e2e_pro.py` | Spezifischer Gesamtnachweis offen |
-| Q05 | Tastatur, Fokus, Kontrast, große Schrift, reduzierte Animation | `tests/presentation/`, `docs/UI_UX_BLUEPRINT.md` | Spezifischer Gesamtnachweis offen |
+| Q04 | 800×600, 175–200 % Skalierung, lange Texte, kein horizontales Überlaufen | `tools/start_a4_acceptance.py`, `tools/desktop_browser_e2e_pro.py` | Echter Chromium-PASS bei 800×600/großer Schrift ohne Seitenüberlauf (Run 39666775754). 175–200 % Browserzoom und Vollansichten weiterhin offen. |
+| Q05 | Tastatur, Fokus, Kontrast, große Schrift, reduzierte Animation | `tests/presentation/`, `docs/UI_UX_BLUEPRINT.md` | Sichtbarkeit/Fokussierbarkeit von Sprunglink und Ansichtsknopf im echten Chromium geprüft. Echte Tab-Navigation und Kontrast-Gesamttest noch offen. |
 | Q06 | Chromium und Firefox: Hauptspielschleife, keine Hänger | `tools/desktop_browser_e2e_pro.py` | Neuer Quellstand offen |
 | Q07 | Linux-Klickstart und entpacktes Paket ohne Entwicklerumgebung | `START_BUNKERFREQUENZ.sh`, `tests/release/` | Neuer Quellstand offen |
 | Q08 | Bytegleiches Paket, SHA-256, Dateimodi, unveränderte Quellen | `tools/release_autopilot.py` | Neuer Quellstand offen |
-| Q09 | Fehlende/ungültige Prüfergebnisse dürfen keine Freigabe ergeben | `evaluate_release_state` | **Offen: leerer Gate-Satz ergibt derzeit READY** |
+| Q09 | Fehlende/ungültige Prüfergebnisse dürfen keine Freigabe ergeben | `evaluate_release_state` | Auf PR #279 behoben; Negativtests und CI am geprüften Stand PASS |
 | Q10 | Drei Required Checks, Review-Threads, Safe-Merge, Main Integrity | `.github/workflows/` | **Blockiert: Main Integrity rot** |
-| Q11 | Statusdateien konsistent und mit echten Nachweisen | `tools/status_sync.py` | **Blockiert: Status Sync rot** |
+| Q11 | Statusdateien konsistent und mit echten Nachweisen | `tools/status_sync.py` | PR #279: kanonische Anker auf bestätigten PR #276 gebracht; Status-Sync PASS (Run 39666775031). Nicht mit Main-Integrity-Vorfall verwechseln. |
 | Q12 | Versions-Freeze, Changelog, Release Notes, Rückfall, Evidence-Chain | `VERSION.json`, `CHANGELOG.md`, `docs/RELEASE_EVIDENCE_CHAIN_PRO.md` | Offen |
 | Q13 | Einmalige persönliche Sicht-/Kubuntu-/Spielgefühl-Endabnahme | Release-Kandidat | **Ganz zuletzt**, kein Zwischentest |
 
@@ -72,3 +72,11 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 - **BLOCKED:** Die GitHub-Schnittstelle verweigerte die PR-Erstellung mehrfach. Daher kein PR, keine PR-gebundenen Required Checks und keine Merge-Freigabe. Kein Versuch, Schutzregeln zu umgehen.
 - Vergleichsseite: `https://github.com/provoware/game_more_core/compare/main...fix/release-gate-fail-closed-prerelease-matrix-20261021`.
 - Die fachliche Änderung bleibt vorläufig im separaten Entwicklungszweig; die offenen CI- und Integritätsprüfungen sind **nicht** als PASS markiert.
+
+## Nachtrag – GitHub PR #279 (21.10.2026)
+
+- **PR:** https://github.com/provoware/game_more_core/pull/279 (Entwicklungszweig, `main` unverändert).
+- **Status-Sync:** Die ursprüngliche fehlerhafte CI benannte exakt PR #273 statt des nachgewiesenen letzten relevanten Safe-Merges **PR #276** (`0d3122532e639bc347cd75db11e9f94aaa0e7a27`). `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` sind auf dem PR-Zweig korrigiert. Die dynamische Git-Historienprüfung bleibt unverändert; zwei veraltete, fest auf #273 verdrahtete Runtime-Tests wurden auf Dateikonsistenz umgestellt. **PASS:** https://github.com/provoware/game_more_core/actions/runs/39666080006 (Runtime), https://github.com/provoware/game_more_core/actions/runs/39666775031 (Status Sync).
+- **Echter Chromium-Nachweis:** Der vorhandene Avatar-Context-E2E misst nach dem bisherigen 760×680-Test nun zusätzlich eine **800×600**-Ansicht mit großer Schrift, horizontalem Seitenüberlauf sowie sichtbarem Fokus von Sprunglink und Ansichtsknopf. Ein anfänglicher fehlerhafter Vergleich mit der Scrollleisten-bereinigten Breite wurde korrigiert; **PASS:** https://github.com/provoware/game_more_core/actions/runs/39666775754 (Commit `4bd6a2b532a3b35b12202f11d81b865f6242adde`). **Grenze:** programmatischer Fokus ist noch kein nativer Tab-Tastaturtest und „große Schrift“ entspricht keiner bestätigten 175–200-%-Browser-Zoomprüfung.
+- **Historischer Main-Integrity-Vorfall #277:** https://github.com/provoware/game_more_core/issues/277. Exakter Fehler: Commit `15b440c974acb3bc594d2d4c8e7ecd3f53d28c31` in `main` ist kein zweielterlicher Safe-Merge, unabhängig davon, ob ein neuer PR grün wird. **Offen:** Berechtigungs-/Provenienz-Audit und künftige Safe-Merge-Regel sicherstellen. Kein Force-Push, keine Umschreibung, keine vorgetäuschte historische Freigabe.
+- **Nächste Pflicht:** eigene Browser-QA für echtes 175–200-%-Zoom, native Tastatur-Tabfolge und weitere Spielansichten, danach erneute Gesamtprüfkette mit endgültigem SHA. Nutzer-Endabnahme ausschließlich unmittelbar vor Release.

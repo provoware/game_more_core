@@ -14,10 +14,10 @@
 ## Vorrelease-Pflichten – neue 0.8.8-Kandidatenlinie
 
 - [x] Verbindliche Funktions-, Spielverlaufs-, Daten-, UI-, Sicherheits-, CI- und Release-Pflichten mit konkreten Quellen und offenen Nachweisen erfassen: `docs/VORRELEASE_PFLICHTMATRIX.md`.
-- [ ] Release Autopilot: leerer oder unbekannter Gate-Satz muss `RELEASE_INVALID` liefern; Test auf finalem PR-HEAD und drei Required Checks belegen.
-- [ ] Main-Integrity-Fehler auf `main` (Run 36186414235, Issue #277) ursächlich klären und ohne Umgehung beheben.
-- [ ] Status-Sync-Fehler auf `main` (Run 36186414155) ursächlich klären.
-- [ ] Vollständige 800×600-/200%- und Tastatur-/Fokus-Prüfung der Hauptspielschleife automatisieren.
+- [x] Release Autopilot lehnt leere/unbekannte Gate-Sätze als `RELEASE_INVALID` ab; Regression und Required Checks auf PR #279 nachgewiesen. Vor Integration endgültigen Head erneut prüfen.
+- [ ] Historischen Main-Integrity-Vorfall (Run 36186414235, Issue #277) abschließend auditieren: Hauptzweig-Commit `15b440c` ist kein Zwei-Eltern-Safe-Merge. Git-Historie nicht umschreiben; keine Check-Umgehung.
+- [x] Status-Sync-Drift auf PR #279 korrigiert: alle drei kanonischen Anker von PR #273 auf nachweisbaren PR #276 gesetzt; Remote-Status-Sync PASS (Run 39666775031). `main` bis gesicherter Integration unverändert.
+- [ ] UI-Audit vervollständigen: realer Chromium-Check bei 800×600 mit großer Schrift, Scrollbreite und Fokusfähigkeit PASS (Run 39666775754). Echte Tastatur-Tabfolge, 175–200 % Browserzoom sowie übrige Spielansichten noch offen.
 - [ ] Erst nach Feature-Freeze, grüner Gesamtprüfung und dokumentiertem Release-Kandidaten die gebündelte persönliche Endabnahme anfordern. Keine Nutzer-Zwischenabnahme.
 
 ---
