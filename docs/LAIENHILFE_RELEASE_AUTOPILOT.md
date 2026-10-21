@@ -49,6 +49,14 @@ Du musst nicht mehr prüfen, ob ein ZIP technisch überhaupt startbar, vollstän
 
 Deine freiwillige Prüfung kann sich damit auf Dinge konzentrieren, die Maschinen nicht zuverlässig entscheiden können: Spielgefühl, Gestaltung, Verständlichkeit und persönliche Vorlieben.
 
+## Vorrelease und deine persönliche Endabnahme
+
+Ein leeres oder unbekanntes technisches Prüfergebnis gilt als **ungültig**, niemals als Freigabe. Das ist ein zusätzlicher Schutz gegen versehentliche Freigaben bei unvollständigen Prüfberichten.
+
+Die automatische Meldung `RELEASE_READY` bedeutet **nur**, dass die vorgesehenen technischen Paketprüfungen bestanden sind. Sie ist **keine** persönliche Freigabe und veröffentlicht kein Spiel auf GitHub. Die komplette Pflichtliste steht in `docs/VORRELEASE_PFLICHTMATRIX.md`.
+
+Während der Entwicklung musst du keine Oberflächen-, Kubuntu- oder Installationstests durchführen. Die gesammelte persönliche Endabnahme folgt **erst beim vollständig vorbereiteten Release-Kandidaten**, unmittelbar vor einer ausdrücklich genehmigten Veröffentlichung.
+
 ## Wichtige Sicherheitsregel
 
 Der Release-Autopilot installiert keine Systempakete, verwendet kein `sudo`, löscht keine Nutzerdaten und verändert keinen Spielstand. Er entscheidet ausschließlich über Build, Prüfung, Quarantäne und Freigabe des Release-Artefakts.
