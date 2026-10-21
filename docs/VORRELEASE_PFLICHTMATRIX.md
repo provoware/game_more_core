@@ -54,6 +54,8 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 | Q12 | Versions-Freeze, Changelog, Release Notes, Rückfall, Evidence-Chain | `VERSION.json`, `CHANGELOG.md`, `docs/RELEASE_EVIDENCE_CHAIN_PRO.md` | Offen |
 | Q13 | Einmalige persönliche Sicht-/Kubuntu-/Spielgefühl-Endabnahme | Release-Kandidat | **Ganz zuletzt**, kein Zwischentest |
 
+**Gezielte Ursachenprüfung (GitHub-Fehllogs, 25.09.2026):** Main Integrity beanstandet `15b440c974ac` ausdrücklich als **keinen Zwei-Eltern-PR-Merge** (Direkt-/Rebase-/Squash-Push). Status Sync erwartet nach dem letzten relevanten Safe-Merge **PR #276 / `0d3122532e639bc347cd75db11e9f94aaa0e7a27`**, während `TODO.md`, `FEATURE_POOL.md` und `PROJEKTSTATUS.json` noch auf **PR #273 / `ad3b64d67200be639260159c675048cde21ccb8f`** zeigen. Das sind getrennte Blocker; keine Umschreibung von `main`, kein künstlich grünes Gate.
+
 **Rote Ist-Nachweise:** Auf `main`-Commit `15b440c974acb3bc594d2d4c8e7ecd3f53d28c31` meldet GitHub für Main Integrity Run `36186414235` und Status Sync Run `36186414155` `failure`; Issue #277 ist offen. Ursache zuerst anhand der konkreten Fehljobs klären, keine Schutzregel umgehen.
 
 **Sicherer nächster Arbeitsschritt:** Den leeren bzw. unbekannten Gate-Zustand im Release Autopilot als ungültig behandeln und durch Negativtests belegen. Danach Main-Integrität und Status-Sync gezielt untersuchen; 800×600/200%- und Tastatur-Browsertests ergänzen. Alles auf demselben eingefrorenen Commit nachweisen. Keine persönlichen Nutzer-Zwischenabnahmen.
