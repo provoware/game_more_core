@@ -45,6 +45,20 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         self.assertNotIn("property.purchase", source)
         self.assertNotIn('"Timeline wird geladen"', source)
 
+    def test_harness_validates_800x600_large_text_and_focus_in_real_browser(self):
+        source = acceptance._avatar_context_harness()
+        self.assertIn('frame.style.width = "800px";', source)
+        self.assertIn('frame.style.height = "600px";', source)
+        self.assertIn('BunkerUIPrefs.set("largeText", true)', source)
+        self.assertIn('d.documentElement.clientWidth === 800', source)
+        self.assertIn('d.documentElement.scrollWidth > d.documentElement.clientWidth + 1', source)
+        self.assertIn("skipLink.focus();", source)
+        self.assertIn("d.activeElement !== skipLink", source)
+        self.assertIn("Number.parseFloat(skipStyle.left) < 0", source)
+        self.assertIn("optionsButton.focus();", source)
+        self.assertIn("d.activeElement !== optionsButton", source)
+        self.assertIn("Horizontaler Seitenüberlauf bei 800x600", source)
+
     def test_harness_checks_computed_compact_mark_sizes_against_rem_floor(self):
         source = acceptance._avatar_context_harness()
         self.assertIn('const compactMarks = [', source)
