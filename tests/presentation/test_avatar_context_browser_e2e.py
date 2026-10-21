@@ -50,7 +50,7 @@ class AvatarContextBrowserE2ETests(unittest.TestCase):
         self.assertIn('frame.style.width = "800px";', source)
         self.assertIn('frame.style.height = "600px";', source)
         self.assertIn('BunkerUIPrefs.set("largeText", true)', source)
-        self.assertIn('d.documentElement.clientWidth === 800', source)
+        self.assertIn('w.innerWidth === 800', source)
         self.assertIn('d.documentElement.scrollWidth > d.documentElement.clientWidth + 1', source)
         self.assertIn("skipLink.focus();", source)
         self.assertIn("d.activeElement !== skipLink", source)
