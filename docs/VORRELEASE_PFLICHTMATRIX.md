@@ -61,3 +61,12 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 **Laiensicht:** „Das Programm wurde gebaut“ ist nicht dasselbe wie „Das Spiel ist fertig geprüft“. Erst die vollständigen grünen Nachweise machen es zum Vorrelease-Kandidaten. Deine persönliche Gesamtprüfung findet **einmal ganz am Ende** statt.
 
 **Spätere Verbesserungsidee:** Eine bestehende Repository-Health-Prüfung könnte diese Matrix automatisch mit den konkreten Run-IDs und SHAs abgleichen, ohne eine zweite Freigabeengine aufzubauen.
+
+## Ausführungsnachweis 21.10.2026
+
+- Entwicklungszweig: `fix/release-gate-fail-closed-prerelease-matrix-20261021`, ausschließlich vom damaligen `main`-HEAD abgezweigt; `main` unverändert.
+- `evaluate_release_state` gegen leere, fehlerhafte und unbekannte Gate-Einträge abgesichert; zugehörige Unit-Regression ergänzt.
+- **Isolierte Funktionsprüfung:** 9 Fälle unter Python 3 erfolgreich. Das ist **kein** vollständiger Repository-/CI-Nachweis.
+- **BLOCKED:** Die GitHub-Schnittstelle verweigerte die PR-Erstellung mehrfach. Daher kein PR, keine PR-gebundenen Required Checks und keine Merge-Freigabe. Kein Versuch, Schutzregeln zu umgehen.
+- Vergleichsseite: `https://github.com/provoware/game_more_core/compare/main...fix/release-gate-fail-closed-prerelease-matrix-20261021`.
+- Die fachliche Änderung bleibt vorläufig im separaten Entwicklungszweig; die offenen CI- und Integritätsprüfungen sind **nicht** als PASS markiert.

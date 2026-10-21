@@ -318,7 +318,12 @@ def clean_room_validate(zip_path: Path, work_root: Path) -> dict[str, object]:
 
 
 def evaluate_release_state(subgates: dict[str, dict[str, str | None]]) -> str:
-    if not subgates or any(not isinstance(item, dict) or item.get("status") not in ALLOWED_SUBGATE_STATES for item in subgates.values()):
+    # Unvollständige oder unbekannte Gate-Zustände dürfen nie RELEASE_READY ergeben.
+    if not subgates or any(
+        not isinstance(item, dict)
+        or item.get("status") not in ALLOWED_SUBGATE_STATES
+        for item in subgates.values()
+    ):
         return INVALID
     statuses = {item["status"] for item in subgates.values()}
     if "FAIL" in statuses:
