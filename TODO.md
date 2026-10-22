@@ -3,13 +3,22 @@
 ## Aktueller Stand
 
 - **Release-Baseline:** `0.8.4-alpha.1` – letzter bewusst freigegebener Produktrelease
-- **Status-Sync-Anker:** PR #273 · Merge `ad3b64d67200be639260159c675048cde21ccb8f`
+- **Status-Sync-Anker:** PR #276 · Merge `0d3122532e639bc347cd75db11e9f94aaa0e7a27`
 - **Zuletzt remote validierte Feature-Stufe:** `0.8.8-ECON-EQUIPMENT-TRADE-HISTORY-READONLY` · PR #238 · Head `20b0ed21b97d16babd2108e76cecc25aaa32a889` · Merge `52934e08dfc5c24e6b9c2933f6c53d8374018079`
 - **Start-/Release-Qualität:** Venue-Betriebsprofil ist für eigene Locations sichtbar, auf exakt fünf bestätigte Werte begrenzt und bis zum echten Chromium-DOM inklusive numerischer Werte, Großer Schrift, Hohem Kontrast und 760×680-Fenster bewiesen; mechanische Venue-Boni bleiben ohne eigenen Fachvertrag gesperrt
 - **Nächste aktive Entwicklungsstufe:** `0.8.8-GAMEPLAY-VENUE-BENEFIT-MECHANIC-AUDIT`
 - **Status-Drift-Schutz:** `tools/status_sync.py` + `.github/workflows/status-sync.yml` prüfen die drei kanonischen Statusdateien gegen den letzten fachlich relevanten Safe Merge
 - **Repository-Arbeitsmodus:** Focused-Read bleibt verpflichtend; grüne Logs kompakt, rote Gates zuerst nur im konkreten Fehlerausschnitt
 - **Release-Blocker:** keiner für `0.8.4-alpha.1`; neuer Produktrelease benötigt eigene Release-Abnahme
+
+## Vorrelease-Pflichten – neue 0.8.8-Kandidatenlinie
+
+- [x] Verbindliche Funktions-, Spielverlaufs-, Daten-, UI-, Sicherheits-, CI- und Release-Pflichten mit konkreten Quellen und offenen Nachweisen erfassen: `docs/VORRELEASE_PFLICHTMATRIX.md`.
+- [x] Release Autopilot lehnt leere/unbekannte Gate-Sätze als `RELEASE_INVALID` ab; Regression und Required Checks auf PR #279 nachgewiesen. Vor Integration endgültigen Head erneut prüfen.
+- [ ] Historischen Main-Integrity-Vorfall (Run 36186414235, Issue #277) abschließend auditieren: Hauptzweig-Commit `15b440c` ist kein Zwei-Eltern-Safe-Merge. Git-Historie nicht umschreiben; keine Check-Umgehung.
+- [x] Status-Sync-Drift auf PR #279 korrigiert: alle drei kanonischen Anker von PR #273 auf nachweisbaren PR #276 gesetzt; Remote-Status-Sync PASS (Run 39666775031). `main` bis gesicherter Integration unverändert.
+- [ ] UI-Audit vervollständigen: realer Chromium-Check bei 800×600 mit großer Schrift, Scrollbreite und Fokusfähigkeit PASS (Run 39666775754). Echte Tastatur-Tabfolge, 175–200 % Browserzoom sowie übrige Spielansichten noch offen.
+- [ ] Erst nach Feature-Freeze, grüner Gesamtprüfung und dokumentiertem Release-Kandidaten die gebündelte persönliche Endabnahme anfordern. Keine Nutzer-Zwischenabnahme.
 
 ---
 

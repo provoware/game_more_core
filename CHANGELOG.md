@@ -4,6 +4,20 @@ Alle relevanten Änderungen werden hier nachvollziehbar geführt.
 
 ## Unveröffentlicht
 
+### QA – PR #279: Status-Sync-Konsistenz und Browser-Grenzfall
+
+- Die drei Status-Sync-Anker auf den nachgewiesenen Safe-Merge PR #276 aktualisiert; hart codierte, veraltete PR-#273-Laufzeittests durch dauerhafte Dateikonsistenzprüfungen ersetzt. Der Git-Verlaufswächter selbst bleibt streng und unverändert.
+- Vorhandenen Chromium-Avatar-Context-Nachweis um 800×600, große Schrift, horizontale Seitenbreite und Fokusfähigkeit zweier primärer Bedienelemente erweitert. Zusätzlicher Testszenario-Vertrag in Presentation Core.
+- Historischen Main-Integrity-Vorfall #277 nicht umgangen; echter 175–200-%-Zoom und native Tab-Folge verbleiben als offene Vorrelease-Pflichten.
+
+### Vorrelease-Sicherheit – Fail-Closed-Promotion und Pflichtmatrix
+
+- Release-Autopilot gibt für einen **leeren** oder **unbekannten/ungültigen** Gate-Status nicht mehr irrtümlich `RELEASE_READY`, sondern `RELEASE_INVALID` zurück. Die bestehende Prüfung der Source- und SHA-256-Bindung bleibt unverändert.
+- Negativtests für leere, fehlende, unbekannte und fehlerhafte Gate-Einträge ergänzt. Keine Änderungen an Spielregeln, Spielständen, Journal oder Balance.
+- Vorrelease-Pflichtmatrix für konkrete Spielsysteme, vollständige Partien, Wiederherstellung, Sicherheit, 800×600/Skalierung, Tastatur, Browser, CI und Release-Nachweise angelegt. Rote Main-Integrity-/Status-Sync-Prüfungen als offen statt als PASS ausgewiesen.
+- Laiendokumentation: technische Paketbereitschaft ist keine Veröffentlichung; persönliche Gesamtprüfung erst nach vollständiger technischer Vorrelease-Abnahme unmittelbar vor Release.
+
+
 ### UX – 0.8.8-UX-RECEIPT-CLARITY
 
 - die bereits vorhandenen District-Receipt-Signale nach bestätigtem Settlement im bestehenden Control Deck als `NEU BESTÄTIGT`, `BEREITS BESTÄTIGT` oder `NICHT AUSGELÖST` verständlich sichtbar gemacht.

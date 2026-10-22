@@ -314,6 +314,39 @@ def _avatar_context_harness() -> str:
         throw new Error("Hoher Kontrast erreicht die bestätigte HUD-Marke nicht");
       }
 
+      // Zusätzlicher Realbrowser-Nachweis: 800×600 mit großer Schrift.
+      // Keine Änderung von Spielstand oder Gameplay; nur Anzeigeprofil und Fokus.
+      frame.style.width = "800px";
+      frame.style.height = "600px";
+      w.BunkerUIPrefs.set("largeText", true);
+      await waitFor(() => d.body.classList.contains("ui-large-text"), "Große Schrift bei 800x600");
+      await waitFor(() => w.innerWidth === 800, "800px Browser-Viewport");
+      const measuredFont = Number.parseFloat(w.getComputedStyle(d.body).fontSize);
+      if (!Number.isFinite(measuredFont) || measuredFont < 21) {
+        throw new Error("Große Schrift ist bei 800x600 nicht wirksam");
+      }
+      if (d.documentElement.scrollWidth > d.documentElement.clientWidth + 1) {
+        throw new Error("Horizontaler Seitenüberlauf bei 800x600 und großer Schrift");
+      }
+
+      const skipLink = d.querySelector('a.skip-link[href="#workspace"]');
+      const optionsButton = d.getElementById("ui-options-toggle");
+      if (!skipLink || !optionsButton || !d.getElementById("workspace")) {
+        throw new Error("Tastatur-Navigation besitzt keinen vollständigen Sprunglink/Ziel/Ansichtsknopf");
+      }
+      skipLink.focus();
+      if (d.activeElement !== skipLink) {
+        throw new Error("Sprunglink kann keinen Tastaturfokus annehmen");
+      }
+      const skipStyle = w.getComputedStyle(skipLink);
+      if (Number.parseFloat(skipStyle.left) < 0) {
+        throw new Error("Fokussierter Sprunglink bleibt außerhalb der Anzeige");
+      }
+      optionsButton.focus();
+      if (d.activeElement !== optionsButton) {
+        throw new Error("Ansichtsschaltfläche kann keinen Tastaturfokus annehmen");
+      }
+
       document.body.textContent = `AVATAR_CONTEXT_E2E: PASS
 ● BEREIT
 BUNKERFREQUENZ – Control Deck

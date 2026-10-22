@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from release_autopilot import (  # noqa: E402
     BLOCKED,
+    INVALID,
     QUARANTINE,
     READY,
     ReleaseInvalidError,
@@ -62,6 +63,19 @@ class ReleaseAutopilotContractTests(unittest.TestCase):
         self.assertEqual(evaluate_release_state(gates("NOT_RUN", "PASS")), QUARANTINE)
         self.assertEqual(evaluate_release_state(gates("FLAKY", "PASS")), QUARANTINE)
         self.assertEqual(evaluate_release_state(gates("PASS", "FAIL")), BLOCKED)
+
+    def test_release_state_rejects_empty_and_malformed_gate_sets(self):
+        self.assertEqual(evaluate_release_state({}), INVALID)
+        self.assertEqual(evaluate_release_state({"desktop_browser_e2e_pro": {"status": "PENDING"}}), INVALID)
+        self.assertEqual(evaluate_release_state({"desktop_browser_e2e_pro": {}}), INVALID)
+        self.assertEqual(evaluate_release_state({"desktop_browser_e2e_pro": None}), INVALID)
+        self.assertEqual(
+            evaluate_release_state({
+                "desktop_browser_e2e_pro": {"status": "PASS"},
+                "failure_containment_pro": {"status": "UNBEKANNT"},
+            }),
+            INVALID,
+        )
 
     def test_subgate_pass_is_bound_to_exact_source_and_evidence_hash(self):
         required = ["desktop_browser_e2e_pro", "failure_containment_pro"]

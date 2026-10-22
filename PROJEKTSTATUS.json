@@ -27,9 +27,9 @@
   },
   "status_sync": {
     "mode": "read_only_latest_relevant_safe_merge_anchor",
-    "anchor_pull_request": 273,
-    "anchor_merge_commit": "ad3b64d67200be639260159c675048cde21ccb8f",
-    "anchor_iteration": "0.8.8-GAMEPLAY-VENUE-SETTLEMENT-EVIDENCE-RESOLVER",
+    "anchor_pull_request": 276,
+    "anchor_merge_commit": "0d3122532e639bc347cd75db11e9f94aaa0e7a27",
+    "anchor_iteration": "0.8.8-QA-VENUE-EVIDENCE-SOURCE-VERSIONS",
     "canonical_documents": ["TODO.md", "FEATURE_POOL.md", "PROJEKTSTATUS.json"],
     "checker": "tools/status_sync.py",
     "workflow": ".github/workflows/status-sync.yml",
