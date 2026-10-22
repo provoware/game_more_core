@@ -26,3 +26,13 @@ Siehe bereits offenen PR #279 (`docs/VORRELEASE_PFLICHTMATRIX.md` auf dessen Ent
 3. Nach grünen Pflichtprüfungen erst den vollständigen technischen Release-Kandidaten einfrieren; persönliche Kubuntu-/Sichtabnahme bleibt bis dahin zurückgestellt.
 
 **Keine Freigabe, kein Merge, kein Release.**
+
+## Nachprüfung – 22.10.2026, 21:38 MESZ
+- Geprüfter GitHub-HEAD vor dieser Dokumentationsänderung: `7cd5109c8353d7495178b66c15f6b007f21d2375`.
+- Original-Renderer (Blob `477693f065e6c70c209ce29f8d8c034ae4b616e1`) und Original-Harness (Blob `efd71a837f8075820ee42174787792c82b548cb4`) direkt von diesem Branch gelesen.
+- **PASS:** unveränderter Renderer + bestehender Harness, 7/7 in isolierter JavaScript-Ausführung.
+- **PASS (Negativkontrolle):** erweiterter Harness scheitert wie erwartet beim Test „hidden focused location transfers focus to visible selection“ auf unverändertem Renderer (7 Tests vorher erfolgreich).
+- **PASS (nur vorgeschlagener Code):** exakt die geplante Fallback-Änderung im Speicher angewendet; erweiterter Harness 9/9.
+- **BLOCKED:** erneuter regulärer GitHub-`update_file`-Versuch für `web/a4/map_pro.js` von Sicherheitsprüfung abgewiesen; keine produktive Fokuskorrektur übertragen.
+- **OFFEN:** vollständiger Browserlauf, echte Tab-Folge und 800×600 mit 175–200 % Zoom; keine Freigabe aus isolierten Tests ableiten.
+- **Nächster Implementierungsschritt:** die zwei fokussierten Regressionen und die minimalen Renderer-Änderungen auf dem bestehenden Entwicklungszweig integrieren, anschließend Presentation Core und echte Browserabnahme prüfen.
