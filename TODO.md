@@ -309,3 +309,19 @@ Genau **einen** der fünf vorhandenen Venue-Werte gegen bestehende Domain-/Appli
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md`](docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md) · [`docs/VENUE_BENEFITS_LAIENHILFE.md`](docs/VENUE_BENEFITS_LAIENHILFE.md) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+
+
+## Vorrelease-Arbeitspaket – Karten-Tastatur und Skalierung (23.10.2026)
+
+- **Ziel:** Die reale Chromium-Tabfolge, Enter-Bedienung, Kartenaktualisierung und 200-%-Darstellung bei 800×600 automatisch absichern.
+- **Abnahme:** `tools/map_keyboard_zoom_browser_e2e.py` meldet auf demselben GitHub-HEAD PASS, `release-acceptance` und alle Pflichtprüfungen sind grün.
+- **Scope/Focused Read:** `AGENTS.md`, diese TODO, `docs/VORRELEASE_PFLICHTMATRIX.md`, `web/a4/map_pro.js`, `web/a4/index.html`, `tests/presentation/map_focus_refresh_harness.cjs`, `tools/start_a4_acceptance.py`, `.github/workflows/release-acceptance.yml`, `docs/LAIENHILFE_BERLIN_OPS_MAP.md`. Nachlesen von `styles.css` ausschließlich zur Browser-Skalierung; kein Domain-/Journal-/Save-Eingriff.
+- **Grund:** Bisherige Fokus-Regressionen liefen im Node-Modell; echte Tab-Tasten und große Darstellung waren nicht im automatischen Karten-Gate.
+- **Risiko:** Browser-Abhängigkeit nur im CI-Test, CSS-Zoom kann echtes Browser-Zoomverhalten nicht vollständig abbilden; eine rote Darstellung darf nicht wegdefiniert werden.
+- **Nicht-Ziele:** Keine neue Spiellogik, kein veränderter Save-Vertrag, keine Freigabe von PR #282, keine Nutzerabnahme.
+- **Implementiert:** Eigenständiger Chromium/Playwright-Test, in `release-acceptance.yml` verbindlich eingebunden; echter Kartenrenderer und tatsächlicher HTML-/CSS-Ausschnitt, synthetische read-only Testdaten.
+- **Teststatus:** Lokale Python-Syntaxprüfung PASS; isolierter Browser-Testaufbau gegen eine ausdrücklich vereinfachte Testattrappe PASS (kein Produktnachweis). GitHub-Tests des tatsächlichen Renderers stehen noch aus und sind erst nach Run-Auswertung zu bewerten.
+- **Vorrelease-Fortschritt:** Gesamtfreigabe 0 %; diese Prozentzahl bezeichnet nur die finale Freigabe, nicht den Entwicklungsumfang.
+- **Nächste Implementierung:** Eventuelle echte Browser-Fehler aus `release-acceptance` korrigieren, danach tatsächlichen Browser-Menüzoom 175–200 %, weitere Panels und langfristige Spielstände prüfen.
+- **Spätere Verbesserungsidee:** Browserprüfung über denselben isolierten lokalen Server wie die Release-Acceptance fahren und die echte Runtime-Projektion statt der Karten-Testdaten verwenden; erst nach stabilem isoliertem Test-Gate.
+- **Persönliche Sicht- und Kubuntu-Endabnahme:** Weiterhin gesammelt erst nach technisch vollständig geprüftem und eingefrorenem Kandidaten.
