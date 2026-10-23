@@ -58,3 +58,9 @@ Bei unerwarteter Auswahl: Sichtfilter „Alle“ wählen und den gewünschten Or
 Mit **Tab** erreichst du zunächst die Sichtfilter und danach die Kartensteuerung sowie die sichtbaren Orte. **Enter** aktiviert den gewählten Filter oder den Schalter **1:1**. Wenn du gerade einen Ort mit der Tastatur ausgewählt hast und die Karte neue bestätigte Informationen erhält, soll die Auswahl sichtbar bleiben. Verschwindet der Ort, springt der Fokus auf einen noch vorhandenen sichtbaren Ort.
 
 Für die technische Vorrelease-Prüfung wird die Karte automatisch bei **800 × 600** und einer **zweifachen Darstellungsskalierung** geprüft. Das ist eine zusätzliche Sicherheitsprüfung, aber noch kein Nachweis für den Browser-Menüzoom aller Spielansichten. Dein eigener Sichttest ist erst unmittelbar vor der späteren Veröffentlichung vorgesehen.
+
+## Schmale Fenster und starke Vergrößerung
+
+Bei stark vergrößerter Darstellung steht dem Spiel weniger Platz für die einzelnen Bedienelemente zur Verfügung. Deshalb werden die Kartenfilter bei schmaler Ansicht in zwei Spalten angeordnet; die Ortsdetails stehen unter der Karte. Die Schaltflächen funktionieren weiterhin mit **Tab** und **Enter**, auch bei großer Schrift und hohem Kontrast.
+
+Die automatische Prüfung verwendet zusätzlich eine **400 × 300 Bildpunkte große Browser-Innenfläche**. Das prüft die schmale Anordnung, die bei einem 800 × 600 großen Bildschirm und ungefähr 200 % Browserzoom entstehen kann. **Das ist eine technische Näherung und noch kein echter Browser-Menüzoom-Test.** Die vollständige Prüfung aller Spielansichten bleibt vor dem Vorrelease erforderlich. Deine persönliche Sichtprüfung erfolgt erst am fertigen, eingefrorenen Kandidaten.
