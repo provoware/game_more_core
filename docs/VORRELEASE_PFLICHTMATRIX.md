@@ -109,3 +109,17 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 | Vollständige UI-Navigation, Kontrast und Langzeitpartien | Noch kein Gesamt-Test auf eingefrorenem Kandidaten | **OFFEN** |
 
 Die Prüfung lädt den tatsächlichen Kartenabschnitt aus `web/a4/index.html`, das echte `styles.css` und `map_pro.js`; die Beispieldaten bleiben isoliert, es werden keine Spielstände geschrieben. Das Gate läuft verbindlich in `release-acceptance.yml` und muss auf dem endgültigen PR-HEAD grün sein. **PASS wird nicht vor einem tatsächlichen Remote-Lauf behauptet.**
+
+## Schmaler responsiver Karten-Viewport – Ergänzung 23.10.2026
+
+**Anlass:** Der bestehende 200-%-CSS-Zoomtest nutzt weiterhin eine 800 Pixel breite CSS-Innenfläche. Dadurch werden die Breakpoints bei 560 Pixeln nicht ausgelöst. Das kann einen fehlerhaften Eindruck vollständiger Zoom-Abdeckung erzeugen.
+
+**Prüfpflicht Q04/Q05 – neue Teilprobe:** `tools/map_narrow_viewport_browser_e2e.py` lädt den originalen Kartenabschnitt, die echten Styles und `map_pro.js` in Chromium mit **400×300 CSS-Pixeln** und aktiviert große Schrift, hohen Kontrast und reduzierte Bewegung. Geprüft werden die 560-Pixel-Layoutregel, horizontale Überbreite, untereinander angeordnete Karten-/Detailbereiche, vollständig innerhalb des Fensters liegende Filterknöpfe, echte Tab-/Enter-Bedienung und Fokus nach einer Kartenaktualisierung. Der Test verwendet nur isolierte Beispieldaten und keine Spielstände.
+
+**Abnahmequelle:** `.github/workflows/release-acceptance.yml`, neuer verpflichtender Schritt „Real browser Berlin map narrow responsive layout acceptance“. **Status vor tatsächlicher CI-Auswertung: OFFEN**; ein grüner alter Lauf gilt nicht für diesen neuen Head.
+
+**Grenze:** Ein 400-Pixel-CSS-Viewport simuliert die schmalen Umbruchbedingungen, **nicht** die Bedienung des echten Browser-Menüzooms. Vollständige Hauptspielansichten bei tatsächlichen 175–200 % und Langzeitpartien bleiben offen. Die persönliche Endabnahme bleibt am Ende.
+
+**Focused Read / Scope:** `AGENTS.md`, `TODO.md`, `docs/VORRELEASE_PFLICHTMATRIX.md`, `tools/map_keyboard_zoom_browser_e2e.py`, `web/a4/index.html`, `web/a4/styles.css`, `web/a4/map_pro.js`, `web/a4/ui_prefs.js` (nur zur Anzeige-Klassenprüfung), `.github/workflows/release-acceptance.yml`, `docs/LAIENHILFE_BERLIN_OPS_MAP.md`. **Nicht-Ziele:** Produktcode, Domain, Spielstände, Journal, Economy, Versionswechsel und Release.
+
+**Risiko:** Die schmale Darstellung kann echte CSS-Probleme aufdecken; fehlgeschlagene Tests müssen behoben, nicht deaktiviert werden. Nächste technische Implementierung: vollständigen Spielclient im echten Browser bei kleinem CSS-Viewport und anschließend echten Browser-Menüzoom testen.
