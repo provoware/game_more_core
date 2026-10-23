@@ -93,3 +93,19 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 - **Nächster Nachweis:** Entwurfs-PR erstellen; `presentation-core`, `runtime-core`, `repository-health`, Status-Sync und Main Integrity am **endgültigen PR-HEAD** prüfen. Danach echten Chromium-/Firefox-Test mit Tab, Filterwechsel, 800×600 und 200 % ergänzen. Persönliche Sicht-/Kubuntu-Abnahme erst am eingefrorenen Kandidaten.
 - **Risiko:** Karten-DOM und Sichtfilter können sich während einer Aktualisierung ändern; deshalb Fokus nicht außerhalb der Karte übernehmen. Regressionstests prüfen vorhandene, entfernte und ausgeblendete Ziele.
 - **Spätere Erweiterung:** Native Browser-Tastaturfolge im bestehenden Desktop-Browser-E2E automatisieren, statt eine zweite Kartenlogik einzuführen.
+
+
+## Karten-Browser-Prüfpflicht Q04/Q05 – Ergänzung 23.10.2026
+
+**Geprüfter Ausgangsstand:** PR #282, Basis `a285bbebb7e9afac53bb6297fea581f6662925e3`. Der neueste HEAD und seine CI-Ergebnisse müssen bei Abschluss neu eingetragen werden.
+
+| Unterpflicht | Automatischer Nachweis | Ist-Status |
+|---|---|---|
+| Native Tabfolge von Kartenfiltern bis zu sichtbaren Orten | `tools/map_keyboard_zoom_browser_e2e.py`, Chromium/Playwright, 800×600 | Test implementiert; Remote-Gate abzuwarten |
+| Filter über echte Enter-Taste, `aria-pressed`, verborgene Orte nicht per Tab | Gleiches Browser-Gate | Test implementiert; Remote-Gate abzuwarten |
+| Karten-Refresh und Entfernen des fokussierten Ortes | Gleiches Browser-Gate + zehn Node-Renderer-Regressionen | Test implementiert; Remote-Gate abzuwarten |
+| 200 % Anzeigevergrößerung, Reset über Enter, kein horizontaler Seitenüberlauf | Gleiches Browser-Gate mit CSS-`zoom: 200%` | Test implementiert; Remote-Gate abzuwarten |
+| **Echter Browser-Menüzoom 175–200 %** | Noch kein entsprechender Browser-Profilnachweis | **OFFEN** – CSS-Zoom ist nur ein Näherungstest |
+| Vollständige UI-Navigation, Kontrast und Langzeitpartien | Noch kein Gesamt-Test auf eingefrorenem Kandidaten | **OFFEN** |
+
+Die Prüfung lädt den tatsächlichen Kartenabschnitt aus `web/a4/index.html`, das echte `styles.css` und `map_pro.js`; die Beispieldaten bleiben isoliert, es werden keine Spielstände geschrieben. Das Gate läuft verbindlich in `release-acceptance.yml` und muss auf dem endgültigen PR-HEAD grün sein. **PASS wird nicht vor einem tatsächlichen Remote-Lauf behauptet.**
