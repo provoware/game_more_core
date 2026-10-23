@@ -27,6 +27,10 @@ jobs:
         run: PYTHONPATH=src python3 -m unittest discover -s tests/release -v
       - name: Real browser HTTP and UI responsiveness acceptance
         run: PYTHONPATH=src python3 tools/start_a4_acceptance.py --require-browser
+      - name: Install isolated browser QA driver
+        run: python3 -m pip install --disable-pip-version-check playwright==1.57.0
+      - name: Real browser Berlin map keyboard and 200-percent scale acceptance
+        run: python3 tools/map_keyboard_zoom_browser_e2e.py
       - name: Real browser Scene-Job payout context acceptance
         run: PYTHONPATH=src python3 tools/job_payout_context_browser_e2e.py
       - name: Real browser Equipment trade history acceptance
