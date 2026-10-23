@@ -42,3 +42,12 @@ Nichts. Zoom, Pan und Kartenfokus sind nur lokale Anzeigezustände. Nach einem N
 - keine zweite Map- oder Property-Engine aufbauen.
 
 Alle dargestellten Bezirke, Orte, Scores, Eigentumsstände und Ausbaulevel stammen weiterhin aus den bereits bestätigten BUNKERFREQUENZ-Projections.
+
+
+## Karte aktualisiert sich während der Tastaturbedienung
+
+Wenn neue bestätigte Spielinformationen eintreffen, baut die Oberfläche die Kartenknöpfe neu auf. Der aktuell fokussierte sichtbare Ort beziehungsweise Bezirk soll dabei ausgewählt bleiben; der Tastaturfokus springt auf seinen neuen Knopf. Ist der Ort verschwunden oder durch einen Sichtfilter ausgeblendet, wird stattdessen ein sichtbarer Ort gewählt. Gibt es keine passenden Orte, bleibt die Karte leer und die Tastatur wechselt zum aktiven Sichtfilter.
+
+**Wichtig:** Diese Korrektur betrifft nur Anzeige und Tastatur. Weder Spielstand noch Geld, Besitz, Bezirkswerte oder Karte werden dadurch verändert. Für die Bedienung außerhalb der Karte wird der Fokus nicht an sich gezogen.
+
+Bei unerwarteter Auswahl: Sichtfilter „Alle“ wählen und den gewünschten Ort erneut mit **Tab** erreichen.
