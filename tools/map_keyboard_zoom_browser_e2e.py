@@ -100,7 +100,12 @@ def run() -> None:
             _require(page.evaluate('document.activeElement?.dataset?.mapKey') == "location:club_alpha",
                      "Kartenaktualisierung verliert den nativen Tastaturfokus")
 
-            # Removal while focused must recover to an existing, visible location.
+            # A removed focused marker must hand focus to an existing visible one.
+            all_filter.focus()
+            page.keyboard.press("Enter")
+            other.focus()
+            _require(page.evaluate('document.activeElement?.dataset?.mapKey') == "location:club_beta",
+                     "Entfernungsprobe konnte Ort B nicht fokussieren")
             page.evaluate("model => window.BunkerMapPro.render(model)",
                           {**MODEL, "locations": [MODEL["locations"][0]],
                            "summary": {**MODEL["summary"], "location_count": 1}})
