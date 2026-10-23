@@ -31,6 +31,8 @@ jobs:
         run: python3 -m pip install --disable-pip-version-check playwright==1.57.0
       - name: Real browser Berlin map keyboard and 200-percent scale acceptance
         run: python3 tools/map_keyboard_zoom_browser_e2e.py
+      - name: Real browser Berlin map narrow responsive layout acceptance
+        run: python3 tools/map_narrow_viewport_browser_e2e.py
       - name: Real browser Scene-Job payout context acceptance
         run: PYTHONPATH=src python3 tools/job_payout_context_browser_e2e.py
       - name: Real browser Equipment trade history acceptance
