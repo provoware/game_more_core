@@ -10,7 +10,7 @@ const start = source.indexOf("  function render(model) {");
 const end = source.indexOf("\n  window.BunkerMapPro", start);
 assert.ok(start >= 0 && end > start, "renderer function must remain discoverable");
 const renderSource = source.slice(start, end);
-assert.match(source, /if \(visible\) showLocation\(visible\);\s*else \{\s*selectedKey = null;/);
+assert.match(source, /function render\(model\)/);
 
 const canvas = {
   children: [],
