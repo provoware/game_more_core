@@ -51,3 +51,10 @@ Wenn neue bestätigte Spielinformationen eintreffen, baut die Oberfläche die Ka
 **Wichtig:** Diese Korrektur betrifft nur Anzeige und Tastatur. Weder Spielstand noch Geld, Besitz, Bezirkswerte oder Karte werden dadurch verändert. Für die Bedienung außerhalb der Karte wird der Fokus nicht an sich gezogen.
 
 Bei unerwarteter Auswahl: Sichtfilter „Alle“ wählen und den gewünschten Ort erneut mit **Tab** erreichen.
+
+
+## Tastatur-Kurzprüfung bei großer Anzeige
+
+Mit **Tab** erreichst du zunächst die Sichtfilter und danach die Kartensteuerung sowie die sichtbaren Orte. **Enter** aktiviert den gewählten Filter oder den Schalter **1:1**. Wenn du gerade einen Ort mit der Tastatur ausgewählt hast und die Karte neue bestätigte Informationen erhält, soll die Auswahl sichtbar bleiben. Verschwindet der Ort, springt der Fokus auf einen noch vorhandenen sichtbaren Ort.
+
+Für die technische Vorrelease-Prüfung wird die Karte automatisch bei **800 × 600** und einer **zweifachen Darstellungsskalierung** geprüft. Das ist eine zusätzliche Sicherheitsprüfung, aber noch kein Nachweis für den Browser-Menüzoom aller Spielansichten. Dein eigener Sichttest ist erst unmittelbar vor der späteren Veröffentlichung vorgesehen.
