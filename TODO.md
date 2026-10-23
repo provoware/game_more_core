@@ -325,3 +325,16 @@ Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJE
 - **Nächste Implementierung:** Eventuelle echte Browser-Fehler aus `release-acceptance` korrigieren, danach tatsächlichen Browser-Menüzoom 175–200 %, weitere Panels und langfristige Spielstände prüfen.
 - **Spätere Verbesserungsidee:** Browserprüfung über denselben isolierten lokalen Server wie die Release-Acceptance fahren und die echte Runtime-Projektion statt der Karten-Testdaten verwenden; erst nach stabilem isoliertem Test-Gate.
 - **Persönliche Sicht- und Kubuntu-Endabnahme:** Weiterhin gesammelt erst nach technisch vollständig geprüftem und eingefrorenem Kandidaten.
+
+## Vorrelease-Arbeitspaket – schmaler Karten-Viewport (23.10.2026)
+
+- **Fortschritt:** 0 % Gesamtrelease-Freigabe; zusätzliches automatisiertes Teil-Gate implementiert, Ergebnis erst nach CI-Auswertung.
+- **Ziel/Abnahme:** Bei 400×300 CSS-Pixeln, großer Schrift, hohem Kontrast und reduzierter Bewegung muss die Berlin-Karte ohne horizontalen Seitenüberlauf bedienbar bleiben. Filter und Kartenfokus müssen nach echten Tab-/Enter-Eingaben und Aktualisierung korrekt sein.
+- **Scope:** `tools/map_narrow_viewport_browser_e2e.py`, `.github/workflows/release-acceptance.yml`, Vorrelease-Matrix, Karten-Laienspielanleitung, Changelog.
+- **Grund:** Der bisherige 200-%-CSS-Zoom bei 800 CSS-Pixeln prüft nicht die responsiven 560-Pixel-Umbrüche. 400 CSS-Pixel sind nur ein Layout-Proxy, kein echter Browser-Menüzoom.
+- **Risiko:** Enger Viewport kann bislang unerkannte Überbreite/Focus-Probleme zeigen; bei FAIL zuerst genau diesen Test analysieren.
+- **Nicht-Ziele:** Keine Änderungen an Domain, Spielständen, Journal, Economy, Map-Daten oder Version. Kein Merge/Release.
+- **Prüfung:** `python3 -m py_compile tools/map_narrow_viewport_browser_e2e.py`; `python3 tools/map_narrow_viewport_browser_e2e.py` im GitHub-Release-Acceptance-Job. PASS erst nach belegtem Run.
+- **Nächste Pflicht:** Tatsächlichen 175–200-%-Browser-Menüzoom und andere Spielpanels im vollständigen Client nachweisen; dann Langzeitpartien, Persistenz und Main-Integrity-Vorfall #277.
+- **Optimierungsidee:** Die vorhandene Browser-Acceptance später um einen gemeinsamen, realen Client-Test mit bestätigten Runtime-Projections bei mehreren Viewportgrößen erweitern, ohne eine zweite UI-Engine aufzubauen.
+- **Endabnahme:** Nutzer-Sichtprüfung/Kubuntu-Praxistest ausschließlich am vollständig technisch geprüften, eingefrorenen Kandidaten.
