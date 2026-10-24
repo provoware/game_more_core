@@ -87,9 +87,9 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 
 | Soll / Pflicht | Ist / Beleg | Status |
 |---|---|---|
-| Q01: State-Envelope mit Objekt, Schema, ganzzahliger Sequenz, Hash und Objekt-Daten | `src/bunkerfrequenz/infrastructure/persistence.py`; `tests/runtime/test_persistence_checkpoint_shape.py` | IMPLEMENTIERT – CI-Nachweis auf finalem SHA erforderlich |
-| Q01: Save-Metadaten mit Objekt, Sequenz und Journal-Hash | dieselben Dateien; boolesche und fehlerhafte Werte werden abgelehnt | IMPLEMENTIERT – CI-Nachweis erforderlich |
-| Q01: Snapshot-Fallback bei beschädigtem State/Meta | temporäre Saves und echter `PersistenceKernel.recover` in neuen Regressionen | TEST VORGESEHEN – CI-Nachweis erforderlich |
+| Q01: State-Envelope mit Objekt, Schema, ganzzahliger Sequenz, Hash und Objekt-Daten | `src/bunkerfrequenz/infrastructure/persistence.py`; `tests/runtime/test_persistence_checkpoint_shape.py` | PASS für diesen Teilschutz auf `2bb2fa12a99c0a22a53081f5bc82571c81422777`; finaler Dokumentations-HEAD erneut zu prüfen |
+| Q01: Save-Metadaten mit Objekt, Sequenz und Journal-Hash | dieselben Dateien; boolesche und fehlerhafte Werte werden abgelehnt | PASS für diesen Teilschutz auf `2bb2fa12a99c0a22a53081f5bc82571c81422777`; finaler HEAD erneut zu prüfen |
+| Q01: Snapshot-Fallback bei beschädigtem State/Meta | temporäre Saves und echter `PersistenceKernel.recover` in neuen Regressionen | PASS im `runtime-core` auf `2bb2fa12a99c0a22a53081f5bc82571c81422777`; finaler HEAD erneut zu prüfen |
 | Q01: Kein gültiger Checkpoint ⇒ kein Überschreiben | Bytevergleich vor/nach verweigerter Recovery | TEST VORGESEHEN – CI-Nachweis erforderlich |
 | Q01: Stromausfall, Dateisystem-Fehler, Langzeitpartie, Legacy-Migration | separate End-to-End- und Fehlermatrix noch nötig | OFFEN |
 | Q04–Q13: UI, Performance, Integrität, Release, persönliche Endabnahme | andere Pflichtpakete / historische Integritätsvorfälle #277 und #280 | OFFEN / BLOCKED; persönliche Abnahme zuletzt |
@@ -99,3 +99,13 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 **Abgrenzung:** Kein bestehender Spielstand wird geöffnet oder verändert. Keine neue Recovery-Engine, kein neues Save-Format, keine Änderungen an Journal/Gameplay/Map. Die frühere Legacy-Objektform bleibt zulässig, solange die zugehörigen Metadaten gültig sind. Der Entwicklungszweig ist unabhängig von Karten-PR #282.
 
 **Nächste technische Pflicht:** Journal- und Snapshot-Fehlerpfade mit simulierten Unterbrechungen und echten Event-Replays über die vollständige Spielschleife prüfen; dabei auch fehlerhafte Metadaten nach einem bestätigten Journalereignis abdecken. Erst anschließend Langzeitpartien und Release-Evidence-Chain.
+
+**Remote-Prüfung auf Implementierungs-HEAD `2bb2fa12a99c0a22a53081f5bc82571c81422777` (24.10.2026):**
+- Runtime Core: **PASS**, [Run #40070628591](https://github.com/provoware/game_more_core/actions/runs/40070628591), einschließlich der drei neuen Testmethoden mit 20 strukturell ungültigen State-/Meta-Varianten.
+- Presentation Core: **PASS**, [Run #40070628605](https://github.com/provoware/game_more_core/actions/runs/40070628605).
+- Repository Health: **PASS**, [Run #40070628628](https://github.com/provoware/game_more_core/actions/runs/40070628628).
+- Status Sync: **PASS**, [Run #40070628579](https://github.com/provoware/game_more_core/actions/runs/40070628579).
+- Release Acceptance: **PASS**, [Run #40070628569](https://github.com/provoware/game_more_core/actions/runs/40070628569).
+- Release Package: **PASS**, [Run #40070628597](https://github.com/provoware/game_more_core/actions/runs/40070628597).
+
+Diese Nachweise beziehen sich **nur auf den genannten Implementierungs-HEAD**. Der abschließende Dokumentations-Commit muss erneut geprüft werden. Der gesamte Vorrelease-Kandidat ist **nicht** freigegeben: Langzeitpartien, vollständige Recovery-Fehlermatrix, echter Browser-Menüzoom und Main-Integrity-Vorfälle bleiben offen.
