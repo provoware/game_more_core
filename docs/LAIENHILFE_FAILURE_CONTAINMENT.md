@@ -39,3 +39,9 @@ Browser und echter Desktop-Doppelklick werden hier ebenfalls nicht doppelt getes
 Nach erfolgreicher Robustheitsprüfung besitzt der Release Autopilot einen belegten `failure_containment_pro=PASS`-Nachweis. Solange der echte Desktop-/Browser-Test noch fehlt, bleibt das Paket trotzdem in **QUARANTINE** und wird dir nicht als finales Benutzer-ZIP angeboten.
 
 Dadurch sollst du technische Start-, Pfad-, Port-, Speicher- oder Recovery-Probleme nicht erst selbst finden müssen.
+
+## Zusätzlicher Schutz für beschädigte Speicherdateien (24.10.2026)
+
+Auch eine technisch lesbare Datei kann einen falschen Inhalt haben, etwa eine Liste statt der erwarteten Spielstanddaten oder eine ungültige Versionsnummer. Das Spiel soll dann **kontrolliert abbrechen** und nicht durch einen unverständlichen Programmfehler abstürzen. Ein vorhandener, überprüfbarer Sicherungsstand kann im getrennten Wiederherstellungsmodus verwendet werden. Gibt es keine verlässliche Sicherung, bleibt der beschädigte Originalstand unverändert und die Wiederherstellung wird verweigert.
+
+Diese Prüfung läuft mit **künstlich erzeugten Test-Spielständen**. Deine echten Spielstände werden dabei nicht geöffnet. Die neuen Tests ersetzen weder einen echten Stromausfalltest noch die vollständige Endabnahme.
