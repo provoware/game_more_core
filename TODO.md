@@ -314,6 +314,6 @@ Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJE
 
 - [x] Getrenntes Pflichtarbeitspaket auf `agent/prerelease-checkpoint-shape-20261024-0830`: State-Checkpoint und Metadaten auf gültige JSON-Objekte und typisierte Pflichtfelder prüfen; ungültige Schema-Versionen abweisen.
 - [x] Temporäre Test-Spielstände für beschädigte State-/Meta-Dateien, gültigen Snapshot-Fallback und verweigerte Recovery ohne gültigen Checkpoint ergänzt.
-- [ ] **CI auf endgültigem PR-HEAD** und echte Regressionsergebnisse dokumentieren; bis dahin kein Vorrelease-PASS.
+- [x] **CI auf Implementierungs-HEAD `2bb2fa12a99c0a22a53081f5bc82571c81422777`:** sechs GitHub-Gates PASS, einschließlich Runtime Core #40070628591 und Release Acceptance #40070628569; Links in `docs/VORRELEASE_PFLICHTMATRIX.md`. Dokumentations-HEAD ebenfalls erneut per PR-Gates prüfen. Dies ist **nur ein Q01-Teilerfolg**, kein Vorrelease-PASS.
 - [ ] Als Nächstes Journal-Replay nach beschädigtem Meta bei bestätigten Events, Snapshot-Fallback nach Unterbrechung, ENOSPC und längere Spielverläufe prüfen.
 - [ ] Spätere Verbesserungsidee: Recovery-Diagnose im lokalen Startbildschirm als **nur lesende** Anzeige des letzten sicheren Checkpoints; Nutzen: verständlicher Fehlerfall ohne riskante automatische Reparatur oder zweite Save-Autorität.
