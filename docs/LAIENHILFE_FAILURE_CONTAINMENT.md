@@ -45,3 +45,11 @@ Dadurch sollst du technische Start-, Pfad-, Port-, Speicher- oder Recovery-Probl
 Auch eine technisch lesbare Datei kann einen falschen Inhalt haben, etwa eine Liste statt der erwarteten Spielstanddaten oder eine ungültige Versionsnummer. Das Spiel soll dann **kontrolliert abbrechen** und nicht durch einen unverständlichen Programmfehler abstürzen. Ein vorhandener, überprüfbarer Sicherungsstand kann im getrennten Wiederherstellungsmodus verwendet werden. Gibt es keine verlässliche Sicherung, bleibt der beschädigte Originalstand unverändert und die Wiederherstellung wird verweigert.
 
 Diese Prüfung läuft mit **künstlich erzeugten Test-Spielständen**. Deine echten Spielstände werden dabei nicht geöffnet. Die neuen Tests ersetzen weder einen echten Stromausfalltest noch die vollständige Endabnahme.
+
+## Wenn die Wiederherstellung selbst scheitert (24.10.2026)
+
+Ein Spielstand kann einen beschädigten letzten Journaleintrag enthalten. Das Journal ist das Protokoll der bereits bestätigten Spielaktionen. Bei der Wiederherstellung muss das Spiel daraus die gespeicherten Aktionen erneut berechnen.
+
+**Neue Schutzregel:** Falls eine solche Berechnung fehlschlägt, darf das Spiel das ursprüngliche Journal nicht vorher verkürzen. Die Prüfung findet zunächst im Arbeitsspeicher statt. Nur wenn sie gelingt, wird der beschädigte Anhang gesondert gesichert und der gültige Stand wiederhergestellt.
+
+Zwei automatische Prüfungen verwenden ausschließlich erfundene Spielstände: einmal mit absichtlich fehlgeschlagener Berechnung, einmal mit erfolgreicher Wiederherstellung. Das ist ein Teilschutz; echte Stromausfälle und ein voller Datenträger müssen zusätzlich geprüft werden. Deine persönliche Sichtprüfung erfolgt erst ganz am Schluss.
