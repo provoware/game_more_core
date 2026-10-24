@@ -147,14 +147,27 @@ class PersistenceKernel:
                 raw = json.load(handle)
         except (OSError, json.JSONDecodeError) as exc:
             raise PersistenceError("State-Checkpoint ist beschädigt") from exc
+        if not isinstance(raw, dict):
+            raise PersistenceError("State-Checkpoint ist kein JSON-Objekt")
         if raw.get("state_envelope_version") == 1:
-            if raw.get("data_hash") != _hash_data(raw.get("data", {})):
+            sequence = raw.get("applied_sequence")
+            head_hash = raw.get("journal_head_hash")
+            data = raw.get("data")
+            if (
+                type(sequence) is not int or sequence < 0
+                or not isinstance(head_hash, str) or not head_hash
+                or not isinstance(data, dict)
+            ):
+                raise PersistenceError("State-Checkpoint besitzt ungültige Struktur")
+            if raw.get("data_hash") != _hash_data(data):
                 raise PersistenceError("State-Checkpoint besitzt ungültige Prüfsumme")
             return raw
-        # 0.5.0-alpha.1 legacy state: pair with meta if possible.
+        if "state_envelope_version" in raw:
+            raise PersistenceError("Unbekannte State-Checkpoint-Version")
+        # 0.5.0-alpha.1 legacy state: pair with verified meta if possible.
         meta = self._read_meta()
-        sequence = int(meta.get("last_sequence", 0)) if meta else 0
-        head_hash = str(meta.get("journal_head_hash", "GENESIS")) if meta else "GENESIS"
+        sequence = meta["last_sequence"] if meta else 0
+        head_hash = meta["journal_head_hash"] if meta else "GENESIS"
         return self._state_envelope(raw, sequence, head_hash)
 
     def _read_meta(self) -> dict | None:
@@ -162,9 +175,18 @@ class PersistenceKernel:
             return None
         try:
             with self.meta_path.open("r", encoding="utf-8") as handle:
-                return json.load(handle)
+                meta = json.load(handle)
         except (OSError, json.JSONDecodeError) as exc:
             raise PersistenceError("Save-Metadaten sind beschädigt") from exc
+        if (
+            not isinstance(meta, dict)
+            or type(meta.get("last_sequence")) is not int
+            or meta["last_sequence"] < 0
+            or not isinstance(meta.get("journal_head_hash"), str)
+            or not meta["journal_head_hash"]
+        ):
+            raise PersistenceError("Save-Metadaten besitzen ungültige Struktur")
+        return meta
 
     def load_state(self) -> dict | None:
         envelope = self._read_state_envelope()
