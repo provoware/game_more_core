@@ -309,3 +309,40 @@ Genau **einen** der fünf vorhandenen Venue-Werte gegen bestehende Domain-/Appli
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md`](docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md) · [`docs/VENUE_BENEFITS_LAIENHILFE.md`](docs/VENUE_BENEFITS_LAIENHILFE.md) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+
+
+## Vorrelease-Arbeitspaket – Karten-Tastatur und Skalierung (23.10.2026)
+
+- **Ziel:** Die reale Chromium-Tabfolge, Enter-Bedienung, Kartenaktualisierung und 200-%-Darstellung bei 800×600 automatisch absichern.
+- **Abnahme:** `tools/map_keyboard_zoom_browser_e2e.py` meldet auf demselben GitHub-HEAD PASS, `release-acceptance` und alle Pflichtprüfungen sind grün.
+- **Scope/Focused Read:** `AGENTS.md`, diese TODO, `docs/VORRELEASE_PFLICHTMATRIX.md`, `web/a4/map_pro.js`, `web/a4/index.html`, `tests/presentation/map_focus_refresh_harness.cjs`, `tools/start_a4_acceptance.py`, `.github/workflows/release-acceptance.yml`, `docs/LAIENHILFE_BERLIN_OPS_MAP.md`. Nachlesen von `styles.css` ausschließlich zur Browser-Skalierung; kein Domain-/Journal-/Save-Eingriff.
+- **Grund:** Bisherige Fokus-Regressionen liefen im Node-Modell; echte Tab-Tasten und große Darstellung waren nicht im automatischen Karten-Gate.
+- **Risiko:** Browser-Abhängigkeit nur im CI-Test, CSS-Zoom kann echtes Browser-Zoomverhalten nicht vollständig abbilden; eine rote Darstellung darf nicht wegdefiniert werden.
+- **Nicht-Ziele:** Keine neue Spiellogik, kein veränderter Save-Vertrag, keine Freigabe von PR #282, keine Nutzerabnahme.
+- **Implementiert:** Eigenständiger Chromium/Playwright-Test, in `release-acceptance.yml` verbindlich eingebunden; echter Kartenrenderer und tatsächlicher HTML-/CSS-Ausschnitt, synthetische read-only Testdaten.
+- **Teststatus:** Lokale Python-Syntaxprüfung PASS; isolierter Browser-Testaufbau gegen eine ausdrücklich vereinfachte Testattrappe PASS (kein Produktnachweis). GitHub-Tests des tatsächlichen Renderers stehen noch aus und sind erst nach Run-Auswertung zu bewerten.
+- **Vorrelease-Fortschritt:** Gesamtfreigabe 0 %; diese Prozentzahl bezeichnet nur die finale Freigabe, nicht den Entwicklungsumfang.
+- **Nächste Implementierung:** Eventuelle echte Browser-Fehler aus `release-acceptance` korrigieren, danach tatsächlichen Browser-Menüzoom 175–200 %, weitere Panels und langfristige Spielstände prüfen.
+- **Spätere Verbesserungsidee:** Browserprüfung über denselben isolierten lokalen Server wie die Release-Acceptance fahren und die echte Runtime-Projektion statt der Karten-Testdaten verwenden; erst nach stabilem isoliertem Test-Gate.
+- **Persönliche Sicht- und Kubuntu-Endabnahme:** Weiterhin gesammelt erst nach technisch vollständig geprüftem und eingefrorenem Kandidaten.
+
+## Vorrelease-Arbeitspaket – schmaler Karten-Viewport (23.10.2026)
+
+- **Fortschritt:** 0 % Gesamtrelease-Freigabe; zusätzliches automatisiertes Teil-Gate implementiert, Ergebnis erst nach CI-Auswertung.
+- **Ziel/Abnahme:** Bei 400×300 CSS-Pixeln, großer Schrift, hohem Kontrast und reduzierter Bewegung muss die Berlin-Karte ohne horizontalen Seitenüberlauf bedienbar bleiben. Filter und Kartenfokus müssen nach echten Tab-/Enter-Eingaben und Aktualisierung korrekt sein.
+- **Scope:** `tools/map_narrow_viewport_browser_e2e.py`, `.github/workflows/release-acceptance.yml`, Vorrelease-Matrix, Karten-Laienspielanleitung, Changelog.
+- **Grund:** Der bisherige 200-%-CSS-Zoom bei 800 CSS-Pixeln prüft nicht die responsiven 560-Pixel-Umbrüche. 400 CSS-Pixel sind nur ein Layout-Proxy, kein echter Browser-Menüzoom.
+- **Risiko:** Enger Viewport kann bislang unerkannte Überbreite/Focus-Probleme zeigen; bei FAIL zuerst genau diesen Test analysieren.
+- **Nicht-Ziele:** Keine Änderungen an Domain, Spielständen, Journal, Economy, Map-Daten oder Version. Kein Merge/Release.
+- **Prüfung:** `python3 -m py_compile tools/map_narrow_viewport_browser_e2e.py`; `python3 tools/map_narrow_viewport_browser_e2e.py` im GitHub-Release-Acceptance-Job. PASS erst nach belegtem Run.
+- **Nächste Pflicht:** Tatsächlichen 175–200-%-Browser-Menüzoom und andere Spielpanels im vollständigen Client nachweisen; dann Langzeitpartien, Persistenz und Main-Integrity-Vorfall #277.
+- **Optimierungsidee:** Die vorhandene Browser-Acceptance später um einen gemeinsamen, realen Client-Test mit bestätigten Runtime-Projections bei mehreren Viewportgrößen erweitern, ohne eine zweite UI-Engine aufzubauen.
+- **Endabnahme:** Nutzer-Sichtprüfung/Kubuntu-Praxistest ausschließlich am vollständig technisch geprüften, eingefrorenen Kandidaten.
+
+
+## Vorrelease-Browserprüfung – 24.10.2026
+
+- [x] **Gesamter A4-Spielclient statt Karten-Isolattest:** `tools/full_client_narrow_browser_e2e.py` prüft den lokal gestarteten Client mit echtem temporärem Runtime-Eigentum bei 800×600 und 400×300 CSS-Pixeln, großer Schrift, hohem Kontrast, reduzierter Bewegung, nativer Tastatur und ohne mutierende HTTP-Anfragen. Workflow `release-acceptance.yml` ergänzt. **PASS** in Release Acceptance #40051110217 auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88`; nachfolgende Dokumentations-/Testwartungsänderungen erneut auf finalem PR-HEAD prüfen.
+- [ ] **Echten Browser-Menüzoom** 175–200 % gesondert nachweisen (400 CSS-Pixel sind nur responsive Näherung).
+- [ ] **Unabhängige Restpflichten:** Gesamtpartien, Recovery und Main-Integrity-Issues #277/#280; keine persönliche Zwischenabnahme.
+- **Nächster technischer Schritt:** Echten Browser-Menüzoom 175–200 % prüfen; danach weitere vollständige Spielpfade und Recovery-Gesamttests. CSS-Überlauf bei 400 Pixeln behoben und auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88` erfolgreich erneut getestet.

@@ -80,3 +80,77 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 - **Echter Chromium-Nachweis:** Der vorhandene Avatar-Context-E2E misst nach dem bisherigen 760×680-Test nun zusätzlich eine **800×600**-Ansicht mit großer Schrift, horizontalem Seitenüberlauf sowie sichtbarem Fokus von Sprunglink und Ansichtsknopf. Ein anfänglicher fehlerhafter Vergleich mit der Scrollleisten-bereinigten Breite wurde korrigiert; **PASS:** https://github.com/provoware/game_more_core/actions/runs/39666775754 (Commit `4bd6a2b532a3b35b12202f11d81b865f6242adde`). **Grenze:** programmatischer Fokus ist noch kein nativer Tab-Tastaturtest und „große Schrift“ entspricht keiner bestätigten 175–200-%-Browser-Zoomprüfung.
 - **Historischer Main-Integrity-Vorfall #277:** https://github.com/provoware/game_more_core/issues/277. Exakter Fehler: Commit `15b440c974acb3bc594d2d4c8e7ecd3f53d28c31` in `main` ist kein zweielterlicher Safe-Merge, unabhängig davon, ob ein neuer PR grün wird. **Offen:** Berechtigungs-/Provenienz-Audit und künftige Safe-Merge-Regel sicherstellen. Kein Force-Push, keine Umschreibung, keine vorgetäuschte historische Freigabe.
 - **Nächste Pflicht:** eigene Browser-QA für echtes 175–200-%-Zoom, native Tastatur-Tabfolge und weitere Spielansichten, danach erneute Gesamtprüfkette mit endgültigem SHA. Nutzer-Endabnahme ausschließlich unmittelbar vor Release.
+
+
+## Technischer Zwischenstand – Kartenfokus bei Aktualisierung (23.10.2026)
+
+- **Scope / geplante Leseliste:** `web/a4/map_pro.js`, `tests/presentation/map_focus_refresh_harness.cjs`, `tests/presentation/test_a4_map_focus_refresh.py`, `.github/workflows/presentation-core.yml`; direkter Vertrag: `docs/LAIENHILFE_BERLIN_OPS_MAP.md`. Keine Änderungen an Domain, Spielständen, Journal oder Economy.
+- **Ausgangs-HEAD:** `5faf41499c9302f807ef8f1d8b5d8dde1b760b6b` (`main`). Entwicklungszweig: `agent/prerelease-map-focus-20261023-0234`.
+- **Befund (reproduziert):** Ein Karten-Neuaufbau entfernt zuvor fokussierte Schaltflächen; die Auswahl kann trotz Sichtfilter auf einem verborgenen Ort verbleiben.
+- **Änderung:** Vor dem Neuaufbau die Kartenfokus-Kennung sichern, nach dem Neuaufbau nur sichtbare und weiterhin vorhandene Ziele auswählen und Fokus ausschließlich innerhalb der zuvor aktiven Karte wiederherstellen; bei leerem Filter den Filterknopf verwenden. Ein fehlendes Modell löscht die alte Auswahl.
+- **Tests:** Das vorhandene Node-Harness prüft zehn Renderer-Fälle. Vor Korrektur scheitert der Test „location focus survives refresh“; mit Korrektur wurden im isolierten JavaScript-Test **10/10 PASS** beobachtet. Die Python-Testbrücke macht die zehn Fälle zum verpflichtenden `presentation-core`-Test, Node 20 wird im CI-Job eingerichtet.
+- **Status:** Implementierung auf separatem Entwicklungszweig. **CI, Browser-Tabfolge, 175–200 % Zoom, vollständige Spielverläufe, alle anderen Vorrelease-Pflichten und Main Integrity noch nicht freigegeben.** Keine Aussage über einen fertigen Release-Kandidaten.
+- **Nächster Nachweis:** Entwurfs-PR erstellen; `presentation-core`, `runtime-core`, `repository-health`, Status-Sync und Main Integrity am **endgültigen PR-HEAD** prüfen. Danach echten Chromium-/Firefox-Test mit Tab, Filterwechsel, 800×600 und 200 % ergänzen. Persönliche Sicht-/Kubuntu-Abnahme erst am eingefrorenen Kandidaten.
+- **Risiko:** Karten-DOM und Sichtfilter können sich während einer Aktualisierung ändern; deshalb Fokus nicht außerhalb der Karte übernehmen. Regressionstests prüfen vorhandene, entfernte und ausgeblendete Ziele.
+- **Spätere Erweiterung:** Native Browser-Tastaturfolge im bestehenden Desktop-Browser-E2E automatisieren, statt eine zweite Kartenlogik einzuführen.
+
+
+## Karten-Browser-Prüfpflicht Q04/Q05 – Ergänzung 23.10.2026
+
+**Geprüfter Ausgangsstand:** PR #282, Basis `a285bbebb7e9afac53bb6297fea581f6662925e3`. Der neueste HEAD und seine CI-Ergebnisse müssen bei Abschluss neu eingetragen werden.
+
+| Unterpflicht | Automatischer Nachweis | Ist-Status |
+|---|---|---|
+| Native Tabfolge von Kartenfiltern bis zu sichtbaren Orten | `tools/map_keyboard_zoom_browser_e2e.py`, Chromium/Playwright, 800×600 | Test implementiert; Remote-Gate abzuwarten |
+| Filter über echte Enter-Taste, `aria-pressed`, verborgene Orte nicht per Tab | Gleiches Browser-Gate | Test implementiert; Remote-Gate abzuwarten |
+| Karten-Refresh und Entfernen des fokussierten Ortes | Gleiches Browser-Gate + zehn Node-Renderer-Regressionen | Test implementiert; Remote-Gate abzuwarten |
+| 200 % Anzeigevergrößerung, Reset über Enter, kein horizontaler Seitenüberlauf | Gleiches Browser-Gate mit CSS-`zoom: 200%` | Test implementiert; Remote-Gate abzuwarten |
+| **Echter Browser-Menüzoom 175–200 %** | Noch kein entsprechender Browser-Profilnachweis | **OFFEN** – CSS-Zoom ist nur ein Näherungstest |
+| Vollständige UI-Navigation, Kontrast und Langzeitpartien | Noch kein Gesamt-Test auf eingefrorenem Kandidaten | **OFFEN** |
+
+Die Prüfung lädt den tatsächlichen Kartenabschnitt aus `web/a4/index.html`, das echte `styles.css` und `map_pro.js`; die Beispieldaten bleiben isoliert, es werden keine Spielstände geschrieben. Das Gate läuft verbindlich in `release-acceptance.yml` und muss auf dem endgültigen PR-HEAD grün sein. **PASS wird nicht vor einem tatsächlichen Remote-Lauf behauptet.**
+
+## Schmaler responsiver Karten-Viewport – Ergänzung 23.10.2026
+
+**Anlass:** Der bestehende 200-%-CSS-Zoomtest nutzt weiterhin eine 800 Pixel breite CSS-Innenfläche. Dadurch werden die Breakpoints bei 560 Pixeln nicht ausgelöst. Das kann einen fehlerhaften Eindruck vollständiger Zoom-Abdeckung erzeugen.
+
+**Prüfpflicht Q04/Q05 – neue Teilprobe:** `tools/map_narrow_viewport_browser_e2e.py` lädt den originalen Kartenabschnitt, die echten Styles und `map_pro.js` in Chromium mit **400×300 CSS-Pixeln** und aktiviert große Schrift, hohen Kontrast und reduzierte Bewegung. Geprüft werden die 560-Pixel-Layoutregel, horizontale Überbreite, untereinander angeordnete Karten-/Detailbereiche, vollständig innerhalb des Fensters liegende Filterknöpfe, echte Tab-/Enter-Bedienung und Fokus nach einer Kartenaktualisierung. Der Test verwendet nur isolierte Beispieldaten und keine Spielstände.
+
+**Abnahmequelle:** `.github/workflows/release-acceptance.yml`, neuer verpflichtender Schritt „Real browser Berlin map narrow responsive layout acceptance“. **Status vor tatsächlicher CI-Auswertung: OFFEN**; ein grüner alter Lauf gilt nicht für diesen neuen Head.
+
+**Grenze:** Ein 400-Pixel-CSS-Viewport simuliert die schmalen Umbruchbedingungen, **nicht** die Bedienung des echten Browser-Menüzooms. Vollständige Hauptspielansichten bei tatsächlichen 175–200 % und Langzeitpartien bleiben offen. Die persönliche Endabnahme bleibt am Ende.
+
+**Focused Read / Scope:** `AGENTS.md`, `TODO.md`, `docs/VORRELEASE_PFLICHTMATRIX.md`, `tools/map_keyboard_zoom_browser_e2e.py`, `web/a4/index.html`, `web/a4/styles.css`, `web/a4/map_pro.js`, `web/a4/ui_prefs.js` (nur zur Anzeige-Klassenprüfung), `.github/workflows/release-acceptance.yml`, `docs/LAIENHILFE_BERLIN_OPS_MAP.md`. **Nicht-Ziele:** Produktcode, Domain, Spielstände, Journal, Economy, Versionswechsel und Release.
+
+**Risiko:** Die schmale Darstellung kann echte CSS-Probleme aufdecken; fehlgeschlagene Tests müssen behoben, nicht deaktiviert werden. Nächste technische Implementierung: vollständigen Spielclient im echten Browser bei kleinem CSS-Viewport und anschließend echten Browser-Menüzoom testen.
+
+
+## Vollständiger A4-Spielclient: schmale Chromium-Ansichten (24.10.2026)
+
+**Ziel:** Nicht nur den isolierten Kartenabschnitt, sondern die **tatsächliche, lokal gestartete Spieloberfläche** bei 800×600 und 400×300 CSS-Pixeln einschließlich bestätigtem Runtime-Spielstand prüfen.
+
+**Soll/Ist und Beleg:**
+
+| Pflicht | Umsetzung und prüfbarer Beleg | Status |
+|---|---|---|
+| Echte lokale Runtime statt künstlicher Karten-HTML-Seite | `tools/full_client_narrow_browser_e2e.py` startet `start_a4_game_client.py` über den vorhandenen Acceptance-Helfer; Eigentum entsteht über kanonisches `property.purchase` in isoliertem temporären Spielstand | **PASS** – Chromium-Run #40051110217 auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88` |
+| Vollständige Panels und Runtime-Daten | Profil, Straße, Karte, Timeline, Property, Economy und Save werden im geladenen Client sichtbar erwartet; bestätigter Eigentumsmarker ist Voraussetzung | **PASS** – Chromium-Run #40051110217 auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88` |
+| 800×600 und 400×300 mit echtem Chromium | Zwei Browser-Innenflächen; 560px-Umbruch, Position und Breite der Hauptbereiche, kein horizontaler Seitenüberlauf | **PASS** – Chromium-Run #40051110217 auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88` |
+| Native Tastatur und Barrierefreiheit | Tab/Enter/Leertaste für Sprunglink, ANSICHT, große Schrift, hohen Kontrast, Schnellnavigation und Kartenfilter; reduzierte Bewegung | **PASS** – Chromium-Run #40051110217 auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88` |
+| Datenverlustschutz | Isolierter temporärer Save, keine produktiven Daten; Test scheitert bei mutierenden HTTP-Anfragen aus reinen Anzeigeaktionen | **PASS** – Chromium-Run #40051110217 auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88` |
+| Automatisierte Wiederholbarkeit | Verbindlicher Schritt `Real browser full A4 client at 800x600 and 400x300` in `.github/workflows/release-acceptance.yml` | **PASS** – Run #40051110217; finale Dokumentationsänderungen benötigen erneut CI |
+| **Echter Chromium-Menüzoom 175–200 %** | **Nicht** durch 400 CSS-Pixel, `device_scale_factor` oder CSS-`zoom` ersetzt | **OFFEN** |
+| Vollständige Spielverläufe, Recovery, Main-Integrität | Unveränderte Gesamtpflichten Q01–Q03, Q06–Q13, Issues #277/#280 | **OFFEN/BLOCKED** |
+
+**Planned Read / Scope:** Basis: `AGENTS.md`, `TODO.md`, Matrix, README. Arbeit: vorhandene Karten-Browserprüfungen, `start_a4_acceptance.py`, `start_a4_game_client.py` (Startvertrag), `web/a4/index.html`, `styles.css`, `ui_prefs.js`, Release-Acceptance-Workflow, neuer Browser-Test. Dokumentation: Matrix, TODO, Karten-Laienspielanleitung und Changelog. Kein Domain-, Journal-, Economy- oder Produktcode verändert. **Risiko:** Neue Gesamt-UI-Probe kann echte Layout- oder Initialisierungsfehler aufdecken; roten Gate-Befund gezielt beheben, nicht Test abschalten. **Abnahme:** Auf demselben finalen SHA vollständiger Chromium-Schritt PASS und sechs GitHub-Prüfketten grün. **Nicht-Ziele:** Versionswechsel, Release, persönlicher Kubuntu-Test, Main-Integrity-Reparatur. **Fortschritt:** QA-Teilarbeit implementiert; Vorrelease-Gesamtfortschritt nicht als Prozent ohne vollständige Gesamtgates quantifizierbar.
+
+**Nächste technische Implementierung:** Echten Chromium-Menüzoom 175–200 % mit nachprüfbarem Browserzustand untersuchen; danach vollständige Spielpfade und Recovery-Gesamtmatrix. Persönliche Abnahme ausschließlich am eingefrorenen Kandidaten.
+
+### Tatsächliche Fehleranalyse und Nachprüfung (24.10.2026)
+
+- **FAIL, erste echte Gesamt-UI-Probe:** [Release Acceptance #40050901464](https://github.com/provoware/game_more_core/actions/runs/40050901464). Bei 400×300 CSS-Pixeln betrug die Dokumentbreite 473 statt 400 Pixel. Die bisherige isolierte Kartenprüfung hatte den Fehler nicht entdeckt.
+- **Ursache, gezielt eingegrenzt:** [Release Acceptance #40051007459](https://github.com/provoware/game_more_core/actions/runs/40051007459) zeigte ein durch `aspect-ratio` und `min-height` zu breites `#berlin-map-canvas` (rechts 422 Pixel) und aus dem Fenster gedrückte `.deck-focus-button`-Schaltflächen (rechts bis 473 Pixel).
+- **Fix:** `web/a4/styles.css`: Kartenfläche auf `width: 100%; min-width: 0` begrenzt; bei höchstens 560 Pixeln dürfen `.panel-head`-Elemente umbrechen. Kein Eingriff in Domain, Spielstände oder Runtime.
+- **PASS auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88`:** [Release Acceptance #40051110217](https://github.com/provoware/game_more_core/actions/runs/40051110217). Beide Vollclient-Fälle 800×600 und 400×300 CSS, native Tab/Enter/Leertaste, sieben sichtbare Hauptbereiche, Runtime-Eigentum, große Schrift, hoher Kontrast, reduzierte Bewegung, kein horizontaler Seitenüberlauf und keine mutierenden HTTP-Anfragen.
+- **Weitere fünf PASS-Gates auf demselben Code-HEAD:** [Presentation Core #40051110214](https://github.com/provoware/game_more_core/actions/runs/40051110214), [Runtime Core #40051110281](https://github.com/provoware/game_more_core/actions/runs/40051110281), [Repository Health #40051110215](https://github.com/provoware/game_more_core/actions/runs/40051110215), [Status Sync #40051110366](https://github.com/provoware/game_more_core/actions/runs/40051110366), [Release Package #40051110276](https://github.com/provoware/game_more_core/actions/runs/40051110276).
+- **Grenzen:** Echte Browser-Menüvergrößerung, Langzeitpartien, Recovery-Gesamttests, Main Integrity #277/#280 und persönliche Endabnahme sind weiterhin **OFFEN/BLOCKED**. Ein grüner UI-Slice ist keine Vorrelease-Gesamtfreigabe. Finale PR-HEAD-CI nach den Dokumentations- und Wartbarkeitsänderungen erneut auswerten.
