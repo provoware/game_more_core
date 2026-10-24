@@ -499,6 +499,7 @@ class PersistenceKernel:
             replayed += 1
 
         quarantine_path = None
+        repaired_journal = None
         if scan.invalid_tail:
             tail_hash = hashlib.sha256(scan.invalid_tail).hexdigest()
             quarantine_path = self.quarantine_dir / f"events-tail-{tail_hash[:16]}.jsonl"
@@ -511,11 +512,11 @@ class PersistenceKernel:
                 "valid_head_hash": valid_head,
                 "tail_sha256": tail_hash,
             })
-            repaired = b"".join((_canonical_json(record) + "\n").encode("utf-8") for record in records)
-            _atomic_write_bytes(self.journal_path, repaired)
+            repaired_journal = b"".join((_canonical_json(record) + "\n").encode("utf-8") for record in records)
 
-        self._accept_scan(_JournalScan(records, None, b""))
-        self._recovery_required = False
+        # Keep the original journal and the in-memory recovery guard intact
+        # until both checkpoints are durable. If a write fails (e.g. ENOSPC),
+        # the next recovery attempt can still inspect the original corrupt tail.
         _atomic_write_json(self.state_path, self._state_envelope(state, valid_sequence, valid_head))
         _atomic_write_json(self.meta_path, {
             "schema_version": 2,
@@ -524,6 +525,12 @@ class PersistenceKernel:
             "last_sequence": valid_sequence,
             "last_transaction_id": records[-1]["transaction_id"] if records else None,
         })
+        if repaired_journal is not None:
+            _atomic_write_bytes(self.journal_path, repaired_journal)
+
+        # Do not expose a writable kernel after a partially failed recovery.
+        self._accept_scan(_JournalScan(records, None, b""))
+        self._recovery_required = False
 
         recovery_basis = {
             "checkpoint_kind": checkpoint["kind"],
