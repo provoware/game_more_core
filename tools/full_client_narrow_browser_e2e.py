@@ -37,8 +37,21 @@ def check_geometry(page, label: str) -> None:
             const box = node.getBoundingClientRect();
             return {selector, left: box.left, right: box.right, width: box.width};
           }));
+      const overflowing = Array.from(document.querySelectorAll('body *'))
+        .filter(node => node.getClientRects().length > 0 &&
+                        !node.closest('.quick-nav'))
+        .map(node => {
+          const box = node.getBoundingClientRect();
+          return {tag: node.tagName.toLowerCase(), id: node.id,
+                  className: typeof node.className === 'string' ? node.className.slice(0, 80) : '',
+                  left: Math.round(box.left), right: Math.round(box.right),
+                  scrollWidth: node.scrollWidth, clientWidth: node.clientWidth,
+                  overflowX: getComputedStyle(node).overflowX};
+        })
+        .filter(node => node.right > width + 1)
+        .sort((a, b) => b.right - a.right).slice(0, 15);
       return {width, clientWidth: root.clientWidth, scrollWidth: root.scrollWidth,
-              nodes};
+              nodes, overflowing};
     }""")
     require(geometry["scrollWidth"] <= geometry["clientWidth"] + 1,
             f"{label}: horizontaler Seitenüberlauf: {geometry}")
