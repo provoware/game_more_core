@@ -139,3 +139,25 @@ Diese Nachweise beziehen sich **nur auf den genannten Implementierungs-HEAD**. D
 - Release Package: **PASS** – https://github.com/provoware/game_more_core/actions/runs/40090502606
 
 **Wichtige Einschränkung:** Zwischen-HEAD `f2a6cfc897d5f4c9b7fbe32fb2136a1bf81e2cdc` hatte einen einmaligen Chromium-Timeout in Release Acceptance #40090424612, während der spätere Lauf #40090502603 PASS erreichte. Diese Instabilität bleibt als mögliche Browser-Testflakiness zu beobachten und zählt **nicht** als Freigabe des Gesamtprojekts. Die vorliegende Matrix-Dokumentation erhält einen neuen HEAD und muss erneut durch die PR-Gates.
+
+## 24.10.2026 – Q01: Recovery-Schreibfehler / ENOSPC (Entwicklungs-PR #283)
+
+**Basis:** `main` `5faf41499c9302f807ef8f1d8b5d8dde1b760b6b`. **Code-Commit:** `fee6f0e112b702ff9b505da2345596cc6072efaa`. **Test-Commit:** `c5c7cd00712a80ea07f088de1cccf0bddffa07f2`. **PR:** https://github.com/provoware/game_more_core/pull/283 (Entwurf).
+
+**Fehler:** Recovery kürzte bei beschädigtem Journalende das Originaljournal und setzte die interne Schreibsperre zurück, **bevor** State und Metadaten erfolgreich geschrieben waren. Bei simuliertem vollem Datenträger konnte so ein unvollständiger Wiederherstellungsversuch bereits das Original verändern und den laufenden Kernel als beschreibbar erscheinen lassen.
+
+**Änderung:** Erst Replay im Arbeitsspeicher, dann Quarantäne, danach State- und Meta-Schreiben; das Journal wird erst anschließend atomar ersetzt. Die interne Schreibsperre wird erst nach allen drei erfolgreichen Schritten aufgehoben. Bestehendes Journal-/Save-Format und Gameplay bleiben unverändert.
+
+| Pflicht / Soll | Umsetzung / Test | Status |
+|---|---|---|
+| Q01 – ENOSPC beim State-Schreiben | `test_enospc_state_or_meta_keeps_original_journal_and_recovery_guard`; Originaljournal bytegleich, Recovery-Sperre aktiv, erneuter Recovery-Versuch | IMPLEMENTIERT, CI AUSSTEHEND |
+| Q01 – ENOSPC beim Meta-Schreiben | dieselbe Regression mit zweitem Fehlerziel; bestätigtes Event beim Wiederanlauf genau einmal | IMPLEMENTIERT, CI AUSSTEHEND |
+| Q01 – ENOSPC beim Journal-Ersatz | `test_enospc_journal_replacement_keeps_original_and_allows_retry`; Originaljournal bytegleich, erneut reparierbar | IMPLEMENTIERT, CI AUSSTEHEND |
+| Q01 – ENOSPC beim Post-Recovery-Snapshot | `test_enospc_snapshot_after_recovery_leaves_playable_save`; normale Öffnung trotz Snapshot-Fehler möglich | IMPLEMENTIERT, CI AUSSTEHEND |
+| Q01 – tatsächlicher Stromausfall, Verzeichnis-Fsync, Crash nach Snapshot-/Beleg-Schreiben | noch keine reale Systemprüfung; Mehrdatei-Transaktion ist kein vollständig atomarer Dateisystem-Commit | OFFEN |
+| Q03 – vollständige Langzeitpartien und ältere Original-Saves | End-to-End- und Migrationsnachweise fehlen | OFFEN |
+| Q04/Q05 – 800×600, 175–200-%-Browserzoom, native Tastatur | separate reale Browserprüfungen fehlen | OFFEN |
+| Q10 – Main-Integrität #277/#280, Konflikt PR #282 | keine Schutzumgehung, keine Integration | BLOCKED / OFFEN |
+| Benutzer-Endabnahme und Release | erst nach allen technischen Gates und eingefrorenem Kandidaten | ZURÜCKGESTELLT |
+
+**Prüfplan:** `PYTHONPATH=src python3 -m unittest tests.runtime.test_recovery_write_failures -v`, vollständiger Runtime-Core und alle sechs PR-Gates auf endgültigem HEAD. Bis zum nachgewiesenen Ergebnis keine PASS-Einstufung. Kein Merge, kein Release. Nächste konkrete Implementierung: simulierte Unterbrechungen nach Snapshot-Index und Recovery-Beleg sowie mehrstufiger Wiederanlauf mit wiederholten bestätigten Events.
