@@ -338,3 +338,11 @@ Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJE
 - **Nächste Pflicht:** Tatsächlichen 175–200-%-Browser-Menüzoom und andere Spielpanels im vollständigen Client nachweisen; dann Langzeitpartien, Persistenz und Main-Integrity-Vorfall #277.
 - **Optimierungsidee:** Die vorhandene Browser-Acceptance später um einen gemeinsamen, realen Client-Test mit bestätigten Runtime-Projections bei mehreren Viewportgrößen erweitern, ohne eine zweite UI-Engine aufzubauen.
 - **Endabnahme:** Nutzer-Sichtprüfung/Kubuntu-Praxistest ausschließlich am vollständig technisch geprüften, eingefrorenen Kandidaten.
+
+
+## Vorrelease-Browserprüfung – 24.10.2026
+
+- [ ] **Gesamter A4-Spielclient statt Karten-Isolattest:** `tools/full_client_narrow_browser_e2e.py` prüft den lokal gestarteten Client mit echtem temporärem Runtime-Eigentum bei 800×600 und 400×300 CSS-Pixeln, großer Schrift, hohem Kontrast, reduzierter Bewegung, nativer Tastatur und ohne mutierende HTTP-Anfragen. Workflow `release-acceptance.yml` ergänzt; endgültigen PR-HEAD und Remote-CI abwarten.
+- [ ] **Echten Browser-Menüzoom** 175–200 % gesondert nachweisen (400 CSS-Pixel sind nur responsive Näherung).
+- [ ] **Unabhängige Restpflichten:** Gesamtpartien, Recovery und Main-Integrity-Issues #277/#280; keine persönliche Zwischenabnahme.
+- **Nächster technischer Schritt:** Vollclient-Browser-Gate auswerten, bei Fehlern konkreten Layout-/Initialisierungsfehler beheben, anschließend echten Browserzoom prüfen.
