@@ -322,6 +322,7 @@ Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJE
 
 - [x] Sicheres Recovery-Replay: bei fehlerhaftem Replay keine Kürzung des Originaljournals vornehmen; Quarantäne und Kürzung erst nach erfolgreicher Berechnung.
 - [x] Zwei Regressionen mit künstlichen Spielständen: absichtlich fehlgeschlagenes Replay nach beschädigtem Journalende und erfolgreicher Wiederanlauf mit Quarantäne.
-- [ ] GitHub-Runtime und sämtliche PR-Prüfungen auf finalem HEAD prüfen und genaue Run-IDs in PR #283 festhalten.
+- [x] Sechs GitHub-PR-Prüfungen auf `c5aa4eb55f2baf4ba9db5ec498c212c1367f27ca` PASS; Run-IDs in PR #283 und Pflichtmatrix. Neuer Dokumentations-HEAD muss erneut geprüft werden.
+- [ ] Separat beobachten: Chromium-Timeout in Release Acceptance #40090424612 auf Zwischen-HEAD; neuerer Lauf #40090502603 PASS, keine Gesamtfreigabe daraus ableiten.
 - [ ] Nächstes Pflichtpaket: ENOSPC-/Schreibfehler bei Recovery-State, Metadaten und Snapshot; Neustart mit konsistentem Journal sowie mehrstufige Spielverläufe.
 - [ ] Erweiterungsidee: rein lesende Wiederherstellungsvorschau mit verifiziertem Ereigniszähler und verständlichem Risikohinweis.
