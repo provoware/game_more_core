@@ -147,14 +147,27 @@ class PersistenceKernel:
                 raw = json.load(handle)
         except (OSError, json.JSONDecodeError) as exc:
             raise PersistenceError("State-Checkpoint ist beschädigt") from exc
-        if raw.get("state_envelope_version") == 1:
-            if raw.get("data_hash") != _hash_data(raw.get("data", {})):
+        if not isinstance(raw, dict):
+            raise PersistenceError("State-Checkpoint ist kein JSON-Objekt")
+        if type(raw.get("state_envelope_version")) is int and raw["state_envelope_version"] == 1:
+            sequence = raw.get("applied_sequence")
+            head_hash = raw.get("journal_head_hash")
+            data = raw.get("data")
+            if (
+                type(sequence) is not int or sequence < 0
+                or not isinstance(head_hash, str) or not head_hash
+                or not isinstance(data, dict)
+            ):
+                raise PersistenceError("State-Checkpoint besitzt ungültige Struktur")
+            if raw.get("data_hash") != _hash_data(data):
                 raise PersistenceError("State-Checkpoint besitzt ungültige Prüfsumme")
             return raw
-        # 0.5.0-alpha.1 legacy state: pair with meta if possible.
+        if "state_envelope_version" in raw:
+            raise PersistenceError("Unbekannte State-Checkpoint-Version")
+        # 0.5.0-alpha.1 legacy state: pair with verified meta if possible.
         meta = self._read_meta()
-        sequence = int(meta.get("last_sequence", 0)) if meta else 0
-        head_hash = str(meta.get("journal_head_hash", "GENESIS")) if meta else "GENESIS"
+        sequence = meta["last_sequence"] if meta else 0
+        head_hash = meta["journal_head_hash"] if meta else "GENESIS"
         return self._state_envelope(raw, sequence, head_hash)
 
     def _read_meta(self) -> dict | None:
@@ -162,9 +175,18 @@ class PersistenceKernel:
             return None
         try:
             with self.meta_path.open("r", encoding="utf-8") as handle:
-                return json.load(handle)
+                meta = json.load(handle)
         except (OSError, json.JSONDecodeError) as exc:
             raise PersistenceError("Save-Metadaten sind beschädigt") from exc
+        if (
+            not isinstance(meta, dict)
+            or type(meta.get("last_sequence")) is not int
+            or meta["last_sequence"] < 0
+            or not isinstance(meta.get("journal_head_hash"), str)
+            or not meta["journal_head_hash"]
+        ):
+            raise PersistenceError("Save-Metadaten besitzen ungültige Struktur")
+        return meta
 
     def load_state(self) -> dict | None:
         envelope = self._read_state_envelope()
@@ -466,7 +488,18 @@ class PersistenceKernel:
             self._accept_scan(scan)
             return RecoveryReceipt("healthy", None, state_checkpoint["kind"], int(state_checkpoint["sequence"]), 0, None, valid_sequence, valid_head, state_checkpoint.get("snapshot_id"))
 
+        # Replay zuerst vollständig im Arbeitsspeicher prüfen. Schlägt eine
+        # Fachregel fehl, bleiben Journal und Checkpoints unverändert.
+        state = json.loads(json.dumps(checkpoint["state"]))
+        replayed = 0
+        for record in records:
+            if int(record["sequence"]) <= int(checkpoint["sequence"]):
+                continue
+            state = replay_event(state, record)
+            replayed += 1
+
         quarantine_path = None
+        repaired_journal = None
         if scan.invalid_tail:
             tail_hash = hashlib.sha256(scan.invalid_tail).hexdigest()
             quarantine_path = self.quarantine_dir / f"events-tail-{tail_hash[:16]}.jsonl"
@@ -479,19 +512,11 @@ class PersistenceKernel:
                 "valid_head_hash": valid_head,
                 "tail_sha256": tail_hash,
             })
-            repaired = b"".join((_canonical_json(record) + "\n").encode("utf-8") for record in records)
-            _atomic_write_bytes(self.journal_path, repaired)
+            repaired_journal = b"".join((_canonical_json(record) + "\n").encode("utf-8") for record in records)
 
-        state = json.loads(json.dumps(checkpoint["state"]))
-        replayed = 0
-        for record in records:
-            if int(record["sequence"]) <= int(checkpoint["sequence"]):
-                continue
-            state = replay_event(state, record)
-            replayed += 1
-
-        self._accept_scan(_JournalScan(records, None, b""))
-        self._recovery_required = False
+        # Keep the original journal and the in-memory recovery guard intact
+        # until both checkpoints are durable. If a write fails (e.g. ENOSPC),
+        # the next recovery attempt can still inspect the original corrupt tail.
         _atomic_write_json(self.state_path, self._state_envelope(state, valid_sequence, valid_head))
         _atomic_write_json(self.meta_path, {
             "schema_version": 2,
@@ -500,6 +525,12 @@ class PersistenceKernel:
             "last_sequence": valid_sequence,
             "last_transaction_id": records[-1]["transaction_id"] if records else None,
         })
+        if repaired_journal is not None:
+            _atomic_write_bytes(self.journal_path, repaired_journal)
+
+        # Do not expose a writable kernel after a partially failed recovery.
+        self._accept_scan(_JournalScan(records, None, b""))
+        self._recovery_required = False
 
         recovery_basis = {
             "checkpoint_kind": checkpoint["kind"],

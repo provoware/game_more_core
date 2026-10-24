@@ -309,3 +309,28 @@ Genau **einen** der fünf vorhandenen Venue-Werte gegen bestehende Domain-/Appli
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md`](docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md) · [`docs/VENUE_BENEFITS_LAIENHILFE.md`](docs/VENUE_BENEFITS_LAIENHILFE.md) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+
+## Vorrelease-Q01 – Strukturvalidierung lokaler Saves (24.10.2026)
+
+- [x] Getrenntes Pflichtarbeitspaket auf `agent/prerelease-checkpoint-shape-20261024-0830`: State-Checkpoint und Metadaten auf gültige JSON-Objekte und typisierte Pflichtfelder prüfen; ungültige Schema-Versionen abweisen.
+- [x] Temporäre Test-Spielstände für beschädigte State-/Meta-Dateien, gültigen Snapshot-Fallback und verweigerte Recovery ohne gültigen Checkpoint ergänzt.
+- [x] **CI auf Implementierungs-HEAD `2bb2fa12a99c0a22a53081f5bc82571c81422777`:** sechs GitHub-Gates PASS, einschließlich Runtime Core #40070628591 und Release Acceptance #40070628569; Links in `docs/VORRELEASE_PFLICHTMATRIX.md`. Dokumentations-HEAD ebenfalls erneut per PR-Gates prüfen. Dies ist **nur ein Q01-Teilerfolg**, kein Vorrelease-PASS.
+- [ ] Als Nächstes Journal-Replay nach beschädigtem Meta bei bestätigten Events, Snapshot-Fallback nach Unterbrechung, ENOSPC und längere Spielverläufe prüfen.
+- [ ] Spätere Verbesserungsidee: Recovery-Diagnose im lokalen Startbildschirm als **nur lesende** Anzeige des letzten sicheren Checkpoints; Nutzen: verständlicher Fehlerfall ohne riskante automatische Reparatur oder zweite Save-Autorität.
+
+## Vorrelease-Q01 – Replay vor Journaländerung (24.10.2026)
+
+- [x] Sicheres Recovery-Replay: bei fehlerhaftem Replay keine Kürzung des Originaljournals vornehmen; Quarantäne und Kürzung erst nach erfolgreicher Berechnung.
+- [x] Zwei Regressionen mit künstlichen Spielständen: absichtlich fehlgeschlagenes Replay nach beschädigtem Journalende und erfolgreicher Wiederanlauf mit Quarantäne.
+- [x] Sechs GitHub-PR-Prüfungen auf `c5aa4eb55f2baf4ba9db5ec498c212c1367f27ca` PASS; Run-IDs in PR #283 und Pflichtmatrix. Neuer Dokumentations-HEAD muss erneut geprüft werden.
+- [ ] Separat beobachten: Chromium-Timeout in Release Acceptance #40090424612 auf Zwischen-HEAD; neuerer Lauf #40090502603 PASS, keine Gesamtfreigabe daraus ableiten.
+- [ ] Nächstes Pflichtpaket: ENOSPC-/Schreibfehler bei Recovery-State, Metadaten und Snapshot; Neustart mit konsistentem Journal sowie mehrstufige Spielverläufe.
+- [ ] Erweiterungsidee: rein lesende Wiederherstellungsvorschau mit verifiziertem Ereigniszähler und verständlichem Risikohinweis.
+
+## Vorrelease-Q01 – Schreibfehler bei Wiederherstellung (24.10.2026, Fortsetzung)
+
+- [x] Auf PR #283 getrennt vom Hauptzweig implementiert: Recovery schreibt State und Metadaten **vor** dem Kürzen eines beschädigten Journals; die interne Schreibsperre bleibt bis nach allen notwendigen Schreibschritten aktiv.
+- [x] Drei neue Regressionstests in `tests/runtime/test_recovery_write_failures.py`: künstliches ENOSPC bei State-/Meta-Schreiben, beim Journal-Ersatz und beim anschließenden Snapshot. Für State/Meta/Journal: Originaljournal bleibt bei Fehler bytegleich, bestätigtes Event nach erneutem Recovery genau einmal vorhanden; Schreiben mit unvollständiger Recovery bleibt verboten.
+- [x] GitHub-CI auf `a41a58882c834fc3acd3a222abcec80f0763a525`: sechs Gates PASS, Runtime Core 311/311 Tests; konkrete Links in `docs/VORRELEASE_PFLICHTMATRIX.md`. Der abschließende Dokumentations-HEAD muss erneut geprüft werden; keine Gesamtfreigabe.
+- [ ] Weiter: Crash-/Stromausfall-Fenster nach Snapshot-Index/Recovery-Beleg, Wiederholbarkeit mit realem Dateisystem und Langzeitpartien. ENOSPC hier nur per Fehler-Injektion, **kein** echter Datenträger-voll- oder Stromausfalltest.
+- [ ] Separate UX-/Integritätsgates: echter 175–200-%-Zoom, native Tab-Reihenfolge, historische Main-Integrity-Issues #277/#280; PR #282-Dokumentationsüberschneidung vor Integration abgleichen.
