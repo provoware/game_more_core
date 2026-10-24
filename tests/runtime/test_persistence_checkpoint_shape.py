@@ -34,6 +34,7 @@ class CheckpointShapeRecoveryTest(unittest.TestCase):
                 "non_string_head": {**valid, "journal_head_hash": []},
                 "empty_head": {**valid, "journal_head_hash": ""},
                 "unknown_version": {**valid, "state_envelope_version": 99},
+                "boolean_version": {**valid, "state_envelope_version": True},
             }
             for label, malformed in variants.items():
                 with self.subTest(label=label):
