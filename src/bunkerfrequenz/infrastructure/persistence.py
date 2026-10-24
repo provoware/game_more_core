@@ -149,7 +149,7 @@ class PersistenceKernel:
             raise PersistenceError("State-Checkpoint ist beschädigt") from exc
         if not isinstance(raw, dict):
             raise PersistenceError("State-Checkpoint ist kein JSON-Objekt")
-        if raw.get("state_envelope_version") == 1:
+        if type(raw.get("state_envelope_version")) is int and raw["state_envelope_version"] == 1:
             sequence = raw.get("applied_sequence")
             head_hash = raw.get("journal_head_hash")
             data = raw.get("data")
