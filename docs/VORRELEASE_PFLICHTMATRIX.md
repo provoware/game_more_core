@@ -120,8 +120,8 @@ Diese Nachweise beziehen sich **nur auf den genannten Implementierungs-HEAD**. D
 
 | Soll / Pflicht | Ist / Evidenz | Status |
 |---|---|---|
-| Q01: Replay-Fehler nach gültigem Snapshot und bestätigtem Event | `test_recovery_replay_atomicity.py::test_failed_replay_preserves_original_journal_and_checkpoints`; Bytevergleich Journal/State/Meta | IMPLEMENTIERT; CI auf finalem HEAD ausstehend |
-| Q01: Erfolgreicher Replay mit beschädigtem Tail | `test_successful_replay_quarantines_tail_and_restores_state`; Quarantäne, genau ein Event, erneutes normales Öffnen | IMPLEMENTIERT; CI auf finalem HEAD ausstehend |
+| Q01: Replay-Fehler nach gültigem Snapshot und bestätigtem Event | `test_recovery_replay_atomicity.py::test_failed_replay_preserves_original_journal_and_checkpoints`; Bytevergleich Journal/State/Meta | PASS auf `c5aa4eb55f2baf4ba9db5ec498c212c1367f27ca`; finales Dokumentations-HEAD erneut prüfen |
+| Q01: Erfolgreicher Replay mit beschädigtem Tail | `test_successful_replay_quarantines_tail_and_restores_state`; Quarantäne, genau ein Event, erneutes normales Öffnen | PASS auf `c5aa4eb55f2baf4ba9db5ec498c212c1367f27ca`; finales Dokumentations-HEAD erneut prüfen |
 | Q01: Snapshot- und Meta-Schreibfehler / voller Datenträger / Crash bei Recovery | Fehler-Injektion für `atomic_write_json` und Wiederanlauf noch nicht vollständig | OFFEN |
 | Q01: End-to-End-Langzeitpartie, Legacy-Migration, echtes Stromausfallverhalten | gesonderte vollständige Regression und reale Systemgrenzen nötig | OFFEN |
 | Q04–Q13: Browserzoom, native Tastatur, Main-Integrität, Gesamtfreigabe | getrennte Prüfungen; Issues #277/#280 weiterhin klärungsbedürftig | OFFEN / BLOCKED; persönliche Abnahme zuletzt |
@@ -129,3 +129,13 @@ Diese Nachweise beziehen sich **nur auf den genannten Implementierungs-HEAD**. D
 **Geplanter Test:** vollständiger `Runtime Core` samt beiden neuen Regressionen sowie die sechs PR-Prüfketten auf dem endgültigen Dokumentations-HEAD. `PASS` nur nach GitHub-Ergebnis. Keine echten Spielstände bearbeitet; keine Main-Änderung, kein Merge, kein Release.
 
 **Nächste Pflicht:** Dateisystemfehler während Recovery-State-/Meta-Schreiben simulieren und nach Neustart auf unveränderte bestätigte Ereignisse und erneute Wiederherstellbarkeit prüfen. Danach längere echte Spielverläufe. **Spätere Verbesserungsidee:** Read-only Recovery-Vorschau mit Anzeige des letzten verifizierten Journalstands und der möglichen Replay-Ereignisse, damit der Nutzer vor einem Eingriff weiß, was wiederhergestellt werden kann.
+
+**Verifizierte sechs PR-Prüfketten auf `c5aa4eb55f2baf4ba9db5ec498c212c1367f27ca` (24.10.2026):**
+- Runtime Core: **PASS** – https://github.com/provoware/game_more_core/actions/runs/40090502601
+- Presentation Core: **PASS** – https://github.com/provoware/game_more_core/actions/runs/40090502602
+- Repository Health: **PASS** – https://github.com/provoware/game_more_core/actions/runs/40090502625
+- Status Sync: **PASS** – https://github.com/provoware/game_more_core/actions/runs/40090502658
+- Release Acceptance: **PASS** – https://github.com/provoware/game_more_core/actions/runs/40090502603
+- Release Package: **PASS** – https://github.com/provoware/game_more_core/actions/runs/40090502606
+
+**Wichtige Einschränkung:** Zwischen-HEAD `f2a6cfc897d5f4c9b7fbe32fb2136a1bf81e2cdc` hatte einen einmaligen Chromium-Timeout in Release Acceptance #40090424612, während der spätere Lauf #40090502603 PASS erreichte. Diese Instabilität bleibt als mögliche Browser-Testflakiness zu beobachten und zählt **nicht** als Freigabe des Gesamtprojekts. Die vorliegende Matrix-Dokumentation erhält einen neuen HEAD und muss erneut durch die PR-Gates.
