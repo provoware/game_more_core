@@ -8,7 +8,7 @@ viewport exercises narrow responsive layout, NOT Chromium's menu zoom.
 """
 from __future__ import annotations
 
-import shutil
+import subprocess
 import sys
 import tempfile
 
@@ -182,7 +182,7 @@ def run() -> None:
                 process.terminate()
             try:
                 process.wait(timeout=5)
-            except Exception:
+            except subprocess.TimeoutExpired:
                 process.kill()
                 process.wait(timeout=5)
             if process.stdout is not None:
