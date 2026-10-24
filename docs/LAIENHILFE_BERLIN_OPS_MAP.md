@@ -64,3 +64,12 @@ Für die technische Vorrelease-Prüfung wird die Karte automatisch bei **800 × 
 Bei stark vergrößerter Darstellung steht dem Spiel weniger Platz für die einzelnen Bedienelemente zur Verfügung. Deshalb werden die Kartenfilter bei schmaler Ansicht in zwei Spalten angeordnet; die Ortsdetails stehen unter der Karte. Die Schaltflächen funktionieren weiterhin mit **Tab** und **Enter**, auch bei großer Schrift und hohem Kontrast.
 
 Die automatische Prüfung verwendet zusätzlich eine **400 × 300 Bildpunkte große Browser-Innenfläche**. Das prüft die schmale Anordnung, die bei einem 800 × 600 großen Bildschirm und ungefähr 200 % Browserzoom entstehen kann. **Das ist eine technische Näherung und noch kein echter Browser-Menüzoom-Test.** Die vollständige Prüfung aller Spielansichten bleibt vor dem Vorrelease erforderlich. Deine persönliche Sichtprüfung erfolgt erst am fertigen, eingefrorenen Kandidaten.
+
+
+## Neue automatische Gesamtprüfung des Spiels
+
+Die bisherige schmale Browserprüfung untersuchte nur die Berlin-Karte. Die neue Prüfung öffnet zusätzlich das **wirkliche lokale Spiel** mit einem eigens für den Test erzeugten Spielstand. Sie kontrolliert Profil, Straße, Karte, Timeline, Orte, Handel und Speichern bei **800 × 600** und **400 × 300** Bildpunkten.
+
+Die Teststeuerung benutzt echte Tastendrücke: **Tab** wechselt zum nächsten Bedienelement, **Enter** öffnet die Ansicht oder einen Kartenfilter, **Leertaste** schaltet große Schrift und hohen Kontrast ein. Dabei darf die gesamte Seite nicht seitlich aus dem Fenster ragen. Die reine Anzeigeprüfung darf keine Spielaktion speichern.
+
+**Wichtig:** Der kleine Testbildschirm ersetzt weiterhin **nicht** den echten Browser-Menüzoom. Auch diese neue automatische Prüfung ist keine persönliche Abnahme. Deine abschließende Sichtprüfung bleibt bis zur technisch vollständigen Vorrelease-Freigabe zurückgestellt.
