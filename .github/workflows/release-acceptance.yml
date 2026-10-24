@@ -33,6 +33,8 @@ jobs:
         run: python3 tools/map_keyboard_zoom_browser_e2e.py
       - name: Real browser Berlin map narrow responsive layout acceptance
         run: python3 tools/map_narrow_viewport_browser_e2e.py
+      - name: Real browser full A4 client at 800x600 and 400x300
+        run: PYTHONPATH=src python3 tools/full_client_narrow_browser_e2e.py
       - name: Real browser Scene-Job payout context acceptance
         run: PYTHONPATH=src python3 tools/job_payout_context_browser_e2e.py
       - name: Real browser Equipment trade history acceptance
