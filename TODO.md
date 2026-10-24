@@ -309,3 +309,11 @@ Genau **einen** der fünf vorhandenen Venue-Werte gegen bestehende Domain-/Appli
 - Produktversion erst nach eigener Release-Abnahme erhöhen.
 
 Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJEKTSTATUS.json) · [`docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md`](docs/VENUE_OPERATING_PROFILE_PRESENTATION_CONTRACT.md) · [`docs/VENUE_BENEFITS_LAIENHILFE.md`](docs/VENUE_BENEFITS_LAIENHILFE.md) · [`docs/STATUS_SYNC_LAIENHILFE.md`](docs/STATUS_SYNC_LAIENHILFE.md) · [`AGENTS.md`](AGENTS.md)
+
+## Vorrelease-Q01 – Strukturvalidierung lokaler Saves (24.10.2026)
+
+- [x] Getrenntes Pflichtarbeitspaket auf `agent/prerelease-checkpoint-shape-20261024-0830`: State-Checkpoint und Metadaten auf gültige JSON-Objekte und typisierte Pflichtfelder prüfen; ungültige Schema-Versionen abweisen.
+- [x] Temporäre Test-Spielstände für beschädigte State-/Meta-Dateien, gültigen Snapshot-Fallback und verweigerte Recovery ohne gültigen Checkpoint ergänzt.
+- [ ] **CI auf endgültigem PR-HEAD** und echte Regressionsergebnisse dokumentieren; bis dahin kein Vorrelease-PASS.
+- [ ] Als Nächstes Journal-Replay nach beschädigtem Meta bei bestätigten Events, Snapshot-Fallback nach Unterbrechung, ENOSPC und längere Spielverläufe prüfen.
+- [ ] Spätere Verbesserungsidee: Recovery-Diagnose im lokalen Startbildschirm als **nur lesende** Anzeige des letzten sicheren Checkpoints; Nutzen: verständlicher Fehlerfall ohne riskante automatische Reparatur oder zweite Save-Autorität.
