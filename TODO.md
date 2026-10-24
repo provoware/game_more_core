@@ -342,7 +342,7 @@ Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJE
 
 ## Vorrelease-Browserprüfung – 24.10.2026
 
-- [ ] **Gesamter A4-Spielclient statt Karten-Isolattest:** `tools/full_client_narrow_browser_e2e.py` prüft den lokal gestarteten Client mit echtem temporärem Runtime-Eigentum bei 800×600 und 400×300 CSS-Pixeln, großer Schrift, hohem Kontrast, reduzierter Bewegung, nativer Tastatur und ohne mutierende HTTP-Anfragen. Workflow `release-acceptance.yml` ergänzt; endgültigen PR-HEAD und Remote-CI abwarten.
+- [x] **Gesamter A4-Spielclient statt Karten-Isolattest:** `tools/full_client_narrow_browser_e2e.py` prüft den lokal gestarteten Client mit echtem temporärem Runtime-Eigentum bei 800×600 und 400×300 CSS-Pixeln, großer Schrift, hohem Kontrast, reduzierter Bewegung, nativer Tastatur und ohne mutierende HTTP-Anfragen. Workflow `release-acceptance.yml` ergänzt. **PASS** in Release Acceptance #40051110217 auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88`; nachfolgende Dokumentations-/Testwartungsänderungen erneut auf finalem PR-HEAD prüfen.
 - [ ] **Echten Browser-Menüzoom** 175–200 % gesondert nachweisen (400 CSS-Pixel sind nur responsive Näherung).
 - [ ] **Unabhängige Restpflichten:** Gesamtpartien, Recovery und Main-Integrity-Issues #277/#280; keine persönliche Zwischenabnahme.
-- **Nächster technischer Schritt:** Vollclient-Browser-Gate auswerten, bei Fehlern konkreten Layout-/Initialisierungsfehler beheben, anschließend echten Browserzoom prüfen.
+- **Nächster technischer Schritt:** Echten Browser-Menüzoom 175–200 % prüfen; danach weitere vollständige Spielpfade und Recovery-Gesamttests. CSS-Überlauf bei 400 Pixeln behoben und auf Code-HEAD `51caad58ca9893c095dc615878e51f3eeda48b88` erfolgreich erneut getestet.
