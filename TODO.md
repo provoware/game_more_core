@@ -317,3 +317,11 @@ Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJE
 - [x] **CI auf Implementierungs-HEAD `2bb2fa12a99c0a22a53081f5bc82571c81422777`:** sechs GitHub-Gates PASS, einschließlich Runtime Core #40070628591 und Release Acceptance #40070628569; Links in `docs/VORRELEASE_PFLICHTMATRIX.md`. Dokumentations-HEAD ebenfalls erneut per PR-Gates prüfen. Dies ist **nur ein Q01-Teilerfolg**, kein Vorrelease-PASS.
 - [ ] Als Nächstes Journal-Replay nach beschädigtem Meta bei bestätigten Events, Snapshot-Fallback nach Unterbrechung, ENOSPC und längere Spielverläufe prüfen.
 - [ ] Spätere Verbesserungsidee: Recovery-Diagnose im lokalen Startbildschirm als **nur lesende** Anzeige des letzten sicheren Checkpoints; Nutzen: verständlicher Fehlerfall ohne riskante automatische Reparatur oder zweite Save-Autorität.
+
+## Vorrelease-Q01 – Replay vor Journaländerung (24.10.2026)
+
+- [x] Sicheres Recovery-Replay: bei fehlerhaftem Replay keine Kürzung des Originaljournals vornehmen; Quarantäne und Kürzung erst nach erfolgreicher Berechnung.
+- [x] Zwei Regressionen mit künstlichen Spielständen: absichtlich fehlgeschlagenes Replay nach beschädigtem Journalende und erfolgreicher Wiederanlauf mit Quarantäne.
+- [ ] GitHub-Runtime und sämtliche PR-Prüfungen auf finalem HEAD prüfen und genaue Run-IDs in PR #283 festhalten.
+- [ ] Nächstes Pflichtpaket: ENOSPC-/Schreibfehler bei Recovery-State, Metadaten und Snapshot; Neustart mit konsistentem Journal sowie mehrstufige Spielverläufe.
+- [ ] Erweiterungsidee: rein lesende Wiederherstellungsvorschau mit verifiziertem Ereigniszähler und verständlichem Risikohinweis.
