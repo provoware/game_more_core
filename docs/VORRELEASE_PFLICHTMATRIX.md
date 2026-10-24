@@ -109,3 +109,23 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 - Release Package: **PASS**, [Run #40070628597](https://github.com/provoware/game_more_core/actions/runs/40070628597).
 
 Diese Nachweise beziehen sich **nur auf den genannten Implementierungs-HEAD**. Der abschließende Dokumentations-Commit muss erneut geprüft werden. Der gesamte Vorrelease-Kandidat ist **nicht** freigegeben: Langzeitpartien, vollständige Recovery-Fehlermatrix, echter Browser-Menüzoom und Main-Integrity-Vorfälle bleiben offen.
+
+## 24.10.2026 – Q01: Replay-Fehler darf kein Journal abschneiden
+
+**Ausgangs-main:** `5faf41499c9302f807ef8f1d8b5d8dde1b760b6b`. **Entwicklungs-PR:** [#283](https://github.com/provoware/game_more_core/pull/283). **Implementierungs-HEAD:** `f2a6cfc897d5f4c9b7fbe32fb2136a1bf81e2cdc`.
+
+**Fehlerursache:** Bei beschädigtem Journalende wurde das Originaljournal bereits vor dem fachlichen Replay auf den gültigen Teil gekürzt. Schlug das Replay danach fehl, war das Originaljournal bereits verändert, obwohl keine Wiederherstellung abgeschlossen war.
+
+**Änderung:** `PersistenceKernel.recover` berechnet den Zielzustand zunächst vollständig im Arbeitsspeicher. Erst nach erfolgreichem Replay werden ein ungültiger Journalanhang gesichert, das Journal gekürzt und State/Meta aktualisiert. Bestehendes Format und reguläre Spielaktionen unverändert.
+
+| Soll / Pflicht | Ist / Evidenz | Status |
+|---|---|---|
+| Q01: Replay-Fehler nach gültigem Snapshot und bestätigtem Event | `test_recovery_replay_atomicity.py::test_failed_replay_preserves_original_journal_and_checkpoints`; Bytevergleich Journal/State/Meta | IMPLEMENTIERT; CI auf finalem HEAD ausstehend |
+| Q01: Erfolgreicher Replay mit beschädigtem Tail | `test_successful_replay_quarantines_tail_and_restores_state`; Quarantäne, genau ein Event, erneutes normales Öffnen | IMPLEMENTIERT; CI auf finalem HEAD ausstehend |
+| Q01: Snapshot- und Meta-Schreibfehler / voller Datenträger / Crash bei Recovery | Fehler-Injektion für `atomic_write_json` und Wiederanlauf noch nicht vollständig | OFFEN |
+| Q01: End-to-End-Langzeitpartie, Legacy-Migration, echtes Stromausfallverhalten | gesonderte vollständige Regression und reale Systemgrenzen nötig | OFFEN |
+| Q04–Q13: Browserzoom, native Tastatur, Main-Integrität, Gesamtfreigabe | getrennte Prüfungen; Issues #277/#280 weiterhin klärungsbedürftig | OFFEN / BLOCKED; persönliche Abnahme zuletzt |
+
+**Geplanter Test:** vollständiger `Runtime Core` samt beiden neuen Regressionen sowie die sechs PR-Prüfketten auf dem endgültigen Dokumentations-HEAD. `PASS` nur nach GitHub-Ergebnis. Keine echten Spielstände bearbeitet; keine Main-Änderung, kein Merge, kein Release.
+
+**Nächste Pflicht:** Dateisystemfehler während Recovery-State-/Meta-Schreiben simulieren und nach Neustart auf unveränderte bestätigte Ereignisse und erneute Wiederherstellbarkeit prüfen. Danach längere echte Spielverläufe. **Spätere Verbesserungsidee:** Read-only Recovery-Vorschau mit Anzeige des letzten verifizierten Journalstands und der möglichen Replay-Ereignisse, damit der Nutzer vor einem Eingriff weiß, was wiederhergestellt werden kann.
