@@ -123,3 +123,25 @@ Die Prüfung lädt den tatsächlichen Kartenabschnitt aus `web/a4/index.html`, d
 **Focused Read / Scope:** `AGENTS.md`, `TODO.md`, `docs/VORRELEASE_PFLICHTMATRIX.md`, `tools/map_keyboard_zoom_browser_e2e.py`, `web/a4/index.html`, `web/a4/styles.css`, `web/a4/map_pro.js`, `web/a4/ui_prefs.js` (nur zur Anzeige-Klassenprüfung), `.github/workflows/release-acceptance.yml`, `docs/LAIENHILFE_BERLIN_OPS_MAP.md`. **Nicht-Ziele:** Produktcode, Domain, Spielstände, Journal, Economy, Versionswechsel und Release.
 
 **Risiko:** Die schmale Darstellung kann echte CSS-Probleme aufdecken; fehlgeschlagene Tests müssen behoben, nicht deaktiviert werden. Nächste technische Implementierung: vollständigen Spielclient im echten Browser bei kleinem CSS-Viewport und anschließend echten Browser-Menüzoom testen.
+
+
+## Vollständiger A4-Spielclient: schmale Chromium-Ansichten (24.10.2026)
+
+**Ziel:** Nicht nur den isolierten Kartenabschnitt, sondern die **tatsächliche, lokal gestartete Spieloberfläche** bei 800×600 und 400×300 CSS-Pixeln einschließlich bestätigtem Runtime-Spielstand prüfen.
+
+**Soll/Ist und Beleg:**
+
+| Pflicht | Umsetzung und prüfbarer Beleg | Status |
+|---|---|---|
+| Echte lokale Runtime statt künstlicher Karten-HTML-Seite | `tools/full_client_narrow_browser_e2e.py` startet `start_a4_game_client.py` über den vorhandenen Acceptance-Helfer; Eigentum entsteht über kanonisches `property.purchase` in isoliertem temporären Spielstand | Implementiert; CI offen |
+| Vollständige Panels und Runtime-Daten | Profil, Straße, Karte, Timeline, Property, Economy und Save werden im geladenen Client sichtbar erwartet; bestätigter Eigentumsmarker ist Voraussetzung | Implementiert; CI offen |
+| 800×600 und 400×300 mit echtem Chromium | Zwei Browser-Innenflächen; 560px-Umbruch, Position und Breite der Hauptbereiche, kein horizontaler Seitenüberlauf | Implementiert; CI offen |
+| Native Tastatur und Barrierefreiheit | Tab/Enter/Leertaste für Sprunglink, ANSICHT, große Schrift, hohen Kontrast, Schnellnavigation und Kartenfilter; reduzierte Bewegung | Implementiert; CI offen |
+| Datenverlustschutz | Isolierter temporärer Save, keine produktiven Daten; Test scheitert bei mutierenden HTTP-Anfragen aus reinen Anzeigeaktionen | Implementiert; CI offen |
+| Automatisierte Wiederholbarkeit | Verbindlicher Schritt `Real browser full A4 client at 800x600 and 400x300` in `.github/workflows/release-acceptance.yml` | CI auf endgültigem PR-HEAD auswerten |
+| **Echter Chromium-Menüzoom 175–200 %** | **Nicht** durch 400 CSS-Pixel, `device_scale_factor` oder CSS-`zoom` ersetzt | **OFFEN** |
+| Vollständige Spielverläufe, Recovery, Main-Integrität | Unveränderte Gesamtpflichten Q01–Q03, Q06–Q13, Issues #277/#280 | **OFFEN/BLOCKED** |
+
+**Planned Read / Scope:** Basis: `AGENTS.md`, `TODO.md`, Matrix, README. Arbeit: vorhandene Karten-Browserprüfungen, `start_a4_acceptance.py`, `start_a4_game_client.py` (Startvertrag), `web/a4/index.html`, `styles.css`, `ui_prefs.js`, Release-Acceptance-Workflow, neuer Browser-Test. Dokumentation: Matrix, TODO, Karten-Laienspielanleitung und Changelog. Kein Domain-, Journal-, Economy- oder Produktcode verändert. **Risiko:** Neue Gesamt-UI-Probe kann echte Layout- oder Initialisierungsfehler aufdecken; roten Gate-Befund gezielt beheben, nicht Test abschalten. **Abnahme:** Auf demselben finalen SHA vollständiger Chromium-Schritt PASS und sechs GitHub-Prüfketten grün. **Nicht-Ziele:** Versionswechsel, Release, persönlicher Kubuntu-Test, Main-Integrity-Reparatur. **Fortschritt:** QA-Teilarbeit implementiert; Vorrelease-Gesamtfortschritt nicht als Prozent ohne vollständige Gesamtgates quantifizierbar.
+
+**Nächste technische Implementierung:** Echten Chromium-Menüzoom 175–200 % mit nachprüfbarem Browserzustand untersuchen; danach vollständige Spielpfade und Recovery-Gesamtmatrix. Persönliche Abnahme ausschließlich am eingefrorenen Kandidaten.
