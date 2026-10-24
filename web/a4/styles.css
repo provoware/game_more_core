@@ -157,6 +157,9 @@ footer { padding: 1rem 1.5rem 2rem; text-align: center; font-size: .78rem; }
 .map-stage-wrap { min-width: 0; }
 .berlin-map-canvas {
   position: relative;
+  /* Aspect ratio plus min-height must not enlarge the map beyond its grid cell. */
+  width: 100%;
+  min-width: 0;
   min-height: 31rem;
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -337,6 +340,9 @@ body.ui-high-contrast button.primary { border-color: #fff; }
   .map-marker { width: 2.7rem; height: 2.7rem; }
 }
 @media (max-width: 560px) {
+  /* Long panel headings must move focus controls to a new line, not off-screen. */
+  .panel-head { flex-wrap: wrap; }
+  .panel-head > * { min-width: 0; }
   .status-stack { grid-template-columns: 1fr 1fr; }
   .ops-hud { position: relative; top: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .quick-nav { top: 0; }
