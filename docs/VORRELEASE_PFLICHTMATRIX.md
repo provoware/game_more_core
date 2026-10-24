@@ -80,3 +80,22 @@ Die folgende Aufteilung ist aus README, TODO, FEATURE_POOL, Status und den beste
 - **Echter Chromium-Nachweis:** Der vorhandene Avatar-Context-E2E misst nach dem bisherigen 760×680-Test nun zusätzlich eine **800×600**-Ansicht mit großer Schrift, horizontalem Seitenüberlauf sowie sichtbarem Fokus von Sprunglink und Ansichtsknopf. Ein anfänglicher fehlerhafter Vergleich mit der Scrollleisten-bereinigten Breite wurde korrigiert; **PASS:** https://github.com/provoware/game_more_core/actions/runs/39666775754 (Commit `4bd6a2b532a3b35b12202f11d81b865f6242adde`). **Grenze:** programmatischer Fokus ist noch kein nativer Tab-Tastaturtest und „große Schrift“ entspricht keiner bestätigten 175–200-%-Browser-Zoomprüfung.
 - **Historischer Main-Integrity-Vorfall #277:** https://github.com/provoware/game_more_core/issues/277. Exakter Fehler: Commit `15b440c974acb3bc594d2d4c8e7ecd3f53d28c31` in `main` ist kein zweielterlicher Safe-Merge, unabhängig davon, ob ein neuer PR grün wird. **Offen:** Berechtigungs-/Provenienz-Audit und künftige Safe-Merge-Regel sicherstellen. Kein Force-Push, keine Umschreibung, keine vorgetäuschte historische Freigabe.
 - **Nächste Pflicht:** eigene Browser-QA für echtes 175–200-%-Zoom, native Tastatur-Tabfolge und weitere Spielansichten, danach erneute Gesamtprüfkette mit endgültigem SHA. Nutzer-Endabnahme ausschließlich unmittelbar vor Release.
+
+## 24.10.2026 – Q01: Checkpoint- und Metadatenstruktur (separater Entwicklungszweig)
+
+**Ziel:** Beschädigte, aber syntaktisch gültige JSON-Spielstände und Save-Metadaten dürfen weder ungefangene Typfehler noch stille Datenübernahme verursachen. **Abnahme:** ungültige Objektformen werden als `PersistenceError` kontrolliert abgewiesen; mit gültigem Snapshot gelingt Recovery ohne Verlust des gespeicherten Zustands; ohne gültigen Checkpoint bleiben Quelldateien bytegleich und Recovery verweigert den Eingriff.
+
+| Soll / Pflicht | Ist / Beleg | Status |
+|---|---|---|
+| Q01: State-Envelope mit Objekt, Schema, ganzzahliger Sequenz, Hash und Objekt-Daten | `src/bunkerfrequenz/infrastructure/persistence.py`; `tests/runtime/test_persistence_checkpoint_shape.py` | IMPLEMENTIERT – CI-Nachweis auf finalem SHA erforderlich |
+| Q01: Save-Metadaten mit Objekt, Sequenz und Journal-Hash | dieselben Dateien; boolesche und fehlerhafte Werte werden abgelehnt | IMPLEMENTIERT – CI-Nachweis erforderlich |
+| Q01: Snapshot-Fallback bei beschädigtem State/Meta | temporäre Saves und echter `PersistenceKernel.recover` in neuen Regressionen | TEST VORGESEHEN – CI-Nachweis erforderlich |
+| Q01: Kein gültiger Checkpoint ⇒ kein Überschreiben | Bytevergleich vor/nach verweigerter Recovery | TEST VORGESEHEN – CI-Nachweis erforderlich |
+| Q01: Stromausfall, Dateisystem-Fehler, Langzeitpartie, Legacy-Migration | separate End-to-End- und Fehlermatrix noch nötig | OFFEN |
+| Q04–Q13: UI, Performance, Integrität, Release, persönliche Endabnahme | andere Pflichtpakete / historische Integritätsvorfälle #277 und #280 | OFFEN / BLOCKED; persönliche Abnahme zuletzt |
+
+**Geplante Prüfung:** `PYTHONPATH=src python3 -m unittest tests.runtime.test_persistence_checkpoint_shape -v`, vollständiges `runtime-core`-Gate, danach sämtliche PR-Gates auf exakt dem letzten SHA. Status `PASS` erst nach echten Nachweisen; kein Merge, kein Release.
+
+**Abgrenzung:** Kein bestehender Spielstand wird geöffnet oder verändert. Keine neue Recovery-Engine, kein neues Save-Format, keine Änderungen an Journal/Gameplay/Map. Die frühere Legacy-Objektform bleibt zulässig, solange die zugehörigen Metadaten gültig sind. Der Entwicklungszweig ist unabhängig von Karten-PR #282.
+
+**Nächste technische Pflicht:** Journal- und Snapshot-Fehlerpfade mit simulierten Unterbrechungen und echten Event-Replays über die vollständige Spielschleife prüfen; dabei auch fehlerhafte Metadaten nach einem bestätigten Journalereignis abdecken. Erst anschließend Langzeitpartien und Release-Evidence-Chain.
