@@ -150,10 +150,10 @@ Diese Nachweise beziehen sich **nur auf den genannten Implementierungs-HEAD**. D
 
 | Pflicht / Soll | Umsetzung / Test | Status |
 |---|---|---|
-| Q01 – ENOSPC beim State-Schreiben | `test_enospc_state_or_meta_keeps_original_journal_and_recovery_guard`; Originaljournal bytegleich, Recovery-Sperre aktiv, erneuter Recovery-Versuch | IMPLEMENTIERT, CI AUSSTEHEND |
-| Q01 – ENOSPC beim Meta-Schreiben | dieselbe Regression mit zweitem Fehlerziel; bestätigtes Event beim Wiederanlauf genau einmal | IMPLEMENTIERT, CI AUSSTEHEND |
-| Q01 – ENOSPC beim Journal-Ersatz | `test_enospc_journal_replacement_keeps_original_and_allows_retry`; Originaljournal bytegleich, erneut reparierbar | IMPLEMENTIERT, CI AUSSTEHEND |
-| Q01 – ENOSPC beim Post-Recovery-Snapshot | `test_enospc_snapshot_after_recovery_leaves_playable_save`; normale Öffnung trotz Snapshot-Fehler möglich | IMPLEMENTIERT, CI AUSSTEHEND |
+| Q01 – ENOSPC beim State-Schreiben | `test_enospc_state_or_meta_keeps_original_journal_and_recovery_guard`; Originaljournal bytegleich, Recovery-Sperre aktiv, erneuter Recovery-Versuch | PASS (GitHub Runtime Core auf `a41a58882c834fc3acd3a222abcec80f0763a525`) |
+| Q01 – ENOSPC beim Meta-Schreiben | dieselbe Regression mit zweitem Fehlerziel; bestätigtes Event beim Wiederanlauf genau einmal | PASS (GitHub Runtime Core auf `a41a58882c834fc3acd3a222abcec80f0763a525`) |
+| Q01 – ENOSPC beim Journal-Ersatz | `test_enospc_journal_replacement_keeps_original_and_allows_retry`; Originaljournal bytegleich, erneut reparierbar | PASS (GitHub Runtime Core auf `a41a58882c834fc3acd3a222abcec80f0763a525`) |
+| Q01 – ENOSPC beim Post-Recovery-Snapshot | `test_enospc_snapshot_after_recovery_leaves_playable_save`; normale Öffnung trotz Snapshot-Fehler möglich | PASS (GitHub Runtime Core auf `a41a58882c834fc3acd3a222abcec80f0763a525`) |
 | Q01 – tatsächlicher Stromausfall, Verzeichnis-Fsync, Crash nach Snapshot-/Beleg-Schreiben | noch keine reale Systemprüfung; Mehrdatei-Transaktion ist kein vollständig atomarer Dateisystem-Commit | OFFEN |
 | Q03 – vollständige Langzeitpartien und ältere Original-Saves | End-to-End- und Migrationsnachweise fehlen | OFFEN |
 | Q04/Q05 – 800×600, 175–200-%-Browserzoom, native Tastatur | separate reale Browserprüfungen fehlen | OFFEN |
@@ -161,3 +161,5 @@ Diese Nachweise beziehen sich **nur auf den genannten Implementierungs-HEAD**. D
 | Benutzer-Endabnahme und Release | erst nach allen technischen Gates und eingefrorenem Kandidaten | ZURÜCKGESTELLT |
 
 **Prüfplan:** `PYTHONPATH=src python3 -m unittest tests.runtime.test_recovery_write_failures -v`, vollständiger Runtime-Core und alle sechs PR-Gates auf endgültigem HEAD. Bis zum nachgewiesenen Ergebnis keine PASS-Einstufung. Kein Merge, kein Release. Nächste konkrete Implementierung: simulierte Unterbrechungen nach Snapshot-Index und Recovery-Beleg sowie mehrstufiger Wiederanlauf mit wiederholten bestätigten Events.
+
+**Echte GitHub-Prüfungen auf `a41a58882c834fc3acd3a222abcec80f0763a525` (24.10.2026):** Runtime Core **311/311 PASS** [#40112008486](https://github.com/provoware/game_more_core/actions/runs/40112008486), Presentation Core **PASS** [#40112008604](https://github.com/provoware/game_more_core/actions/runs/40112008604), Repository Health **PASS** [#40112008515](https://github.com/provoware/game_more_core/actions/runs/40112008515), Status Sync **PASS** [#40112008699](https://github.com/provoware/game_more_core/actions/runs/40112008699), Release Acceptance **PASS** [#40112008587](https://github.com/provoware/game_more_core/actions/runs/40112008587), Release Package **PASS** [#40112008540](https://github.com/provoware/game_more_core/actions/runs/40112008540). Alle sechs Runs gehören zum genannten SHA. **Der anschließende Dokumentations-HEAD braucht neue CI; keine Gesamt-Vorrelease-Freigabe.**
