@@ -331,6 +331,6 @@ Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJE
 
 - [x] Auf PR #283 getrennt vom Hauptzweig implementiert: Recovery schreibt State und Metadaten **vor** dem Kürzen eines beschädigten Journals; die interne Schreibsperre bleibt bis nach allen notwendigen Schreibschritten aktiv.
 - [x] Drei neue Regressionstests in `tests/runtime/test_recovery_write_failures.py`: künstliches ENOSPC bei State-/Meta-Schreiben, beim Journal-Ersatz und beim anschließenden Snapshot. Für State/Meta/Journal: Originaljournal bleibt bei Fehler bytegleich, bestätigtes Event nach erneutem Recovery genau einmal vorhanden; Schreiben mit unvollständiger Recovery bleibt verboten.
-- [ ] GitHub-CI für finalen Dokumentations-HEAD prüfen und Ergebnis mit exakt zugehörigem SHA dokumentieren. Ein eingereichter Test ist **kein** PASS ohne ausgeführten Lauf.
+- [x] GitHub-CI auf `a41a58882c834fc3acd3a222abcec80f0763a525`: sechs Gates PASS, Runtime Core 311/311 Tests; konkrete Links in `docs/VORRELEASE_PFLICHTMATRIX.md`. Der abschließende Dokumentations-HEAD muss erneut geprüft werden; keine Gesamtfreigabe.
 - [ ] Weiter: Crash-/Stromausfall-Fenster nach Snapshot-Index/Recovery-Beleg, Wiederholbarkeit mit realem Dateisystem und Langzeitpartien. ENOSPC hier nur per Fehler-Injektion, **kein** echter Datenträger-voll- oder Stromausfalltest.
 - [ ] Separate UX-/Integritätsgates: echter 175–200-%-Zoom, native Tab-Reihenfolge, historische Main-Integrity-Issues #277/#280; PR #282-Dokumentationsüberschneidung vor Integration abgleichen.
