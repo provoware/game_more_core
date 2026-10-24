@@ -488,6 +488,16 @@ class PersistenceKernel:
             self._accept_scan(scan)
             return RecoveryReceipt("healthy", None, state_checkpoint["kind"], int(state_checkpoint["sequence"]), 0, None, valid_sequence, valid_head, state_checkpoint.get("snapshot_id"))
 
+        # Replay zuerst vollständig im Arbeitsspeicher prüfen. Schlägt eine
+        # Fachregel fehl, bleiben Journal und Checkpoints unverändert.
+        state = json.loads(json.dumps(checkpoint["state"]))
+        replayed = 0
+        for record in records:
+            if int(record["sequence"]) <= int(checkpoint["sequence"]):
+                continue
+            state = replay_event(state, record)
+            replayed += 1
+
         quarantine_path = None
         if scan.invalid_tail:
             tail_hash = hashlib.sha256(scan.invalid_tail).hexdigest()
@@ -503,14 +513,6 @@ class PersistenceKernel:
             })
             repaired = b"".join((_canonical_json(record) + "\n").encode("utf-8") for record in records)
             _atomic_write_bytes(self.journal_path, repaired)
-
-        state = json.loads(json.dumps(checkpoint["state"]))
-        replayed = 0
-        for record in records:
-            if int(record["sequence"]) <= int(checkpoint["sequence"]):
-                continue
-            state = replay_event(state, record)
-            replayed += 1
 
         self._accept_scan(_JournalScan(records, None, b""))
         self._recovery_required = False
