@@ -326,3 +326,11 @@ Siehe auch: [`FEATURE_POOL.md`](FEATURE_POOL.md) · [`PROJEKTSTATUS.json`](PROJE
 - [ ] Separat beobachten: Chromium-Timeout in Release Acceptance #40090424612 auf Zwischen-HEAD; neuerer Lauf #40090502603 PASS, keine Gesamtfreigabe daraus ableiten.
 - [ ] Nächstes Pflichtpaket: ENOSPC-/Schreibfehler bei Recovery-State, Metadaten und Snapshot; Neustart mit konsistentem Journal sowie mehrstufige Spielverläufe.
 - [ ] Erweiterungsidee: rein lesende Wiederherstellungsvorschau mit verifiziertem Ereigniszähler und verständlichem Risikohinweis.
+
+## Vorrelease-Q01 – Schreibfehler bei Wiederherstellung (24.10.2026, Fortsetzung)
+
+- [x] Auf PR #283 getrennt vom Hauptzweig implementiert: Recovery schreibt State und Metadaten **vor** dem Kürzen eines beschädigten Journals; die interne Schreibsperre bleibt bis nach allen notwendigen Schreibschritten aktiv.
+- [x] Drei neue Regressionstests in `tests/runtime/test_recovery_write_failures.py`: künstliches ENOSPC bei State-/Meta-Schreiben, beim Journal-Ersatz und beim anschließenden Snapshot. Für State/Meta/Journal: Originaljournal bleibt bei Fehler bytegleich, bestätigtes Event nach erneutem Recovery genau einmal vorhanden; Schreiben mit unvollständiger Recovery bleibt verboten.
+- [ ] GitHub-CI für finalen Dokumentations-HEAD prüfen und Ergebnis mit exakt zugehörigem SHA dokumentieren. Ein eingereichter Test ist **kein** PASS ohne ausgeführten Lauf.
+- [ ] Weiter: Crash-/Stromausfall-Fenster nach Snapshot-Index/Recovery-Beleg, Wiederholbarkeit mit realem Dateisystem und Langzeitpartien. ENOSPC hier nur per Fehler-Injektion, **kein** echter Datenträger-voll- oder Stromausfalltest.
+- [ ] Separate UX-/Integritätsgates: echter 175–200-%-Zoom, native Tab-Reihenfolge, historische Main-Integrity-Issues #277/#280; PR #282-Dokumentationsüberschneidung vor Integration abgleichen.
